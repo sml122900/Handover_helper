@@ -125,3 +125,21 @@ npm run dev         # Supabase 셋업 후: 프로젝트 상세 → 업로드 →
 5. 상대 import의 `.js` 확장자 전부 제거 — Next 번들러가 `.js`→`.ts` 매핑을 못 함. tsx/vitest는 확장자 없이도 동작 확인.
 
 ---
+
+## 세션 1-3: 브라우저 화면 녹화 ✅ (2026-06-10)
+
+### 완료한 것
+- `ScreenRecorder.tsx` — MediaRecorder로 화면(getDisplayMedia) + 마이크(getUserMedia) 동시 캡처, 일시정지/재개, 경과 시간 표시(일시정지 중 멈춤), 종료 시 기존 업로드 파이프라인으로 바로 전달
+- 한국어 안내: 미지원 브라우저 / 화면 공유 거부 / 마이크 거부 각각 구분된 메시지. 브라우저 자체 "공유 중지" 버튼 처리(`track.onended`)
+- `lib/upload-client.ts` — VideoUploader와 업로드 헬퍼 공유 (probeDuration/uploadWithProgress 추출)
+- 빌드 통과. 실 녹화 테스트는 Supabase 셋업 후 가능
+
+### 사용자가 할 일 (TODO)
+- [ ] Supabase 셋업 후 Chrome/Edge에서 실 녹화 → 업로드 → (STT 연동 전이라 failed) 확인
+
+### 스스로 내린 판단과 이유
+1. **시스템 오디오 미캡처 (마이크만)** — 화면 오디오 + 마이크 믹싱은 AudioContext 필요(복잡도↑). 인수인계 내레이션은 마이크가 본질. 후속 TODO 주석.
+2. **녹화 길이 = 측정한 경과 시간** — MediaRecorder webm은 duration 메타데이터가 없는 경우 많음. 타이머 측정값을 prepareUpload에 전달 (비용 가드 정확성 유지).
+3. mimeType: vp9+opus 지원 시 사용, 아니면 기본 webm 폴백.
+
+---

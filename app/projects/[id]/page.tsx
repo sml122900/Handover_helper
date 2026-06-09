@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { VideoUploader } from "./VideoUploader";
+import { ScreenRecorder } from "./ScreenRecorder";
 import { VideoStatusPoller } from "./VideoStatusPoller";
 
 export const dynamic = "force-dynamic";
@@ -53,7 +54,10 @@ export default async function ProjectDetailPage(props: { params: Promise<{ id: s
 
       <section className="mb-10">
         <h2 className="mb-3 text-lg font-semibold text-zinc-200">영상</h2>
-        <VideoUploader projectId={id} />
+        <div className="flex flex-col gap-3">
+          <ScreenRecorder projectId={id} />
+          <VideoUploader projectId={id} />
+        </div>
         <ul className="mt-3 flex flex-col gap-2">
           {(videos ?? []).map((v) => (
             <li
