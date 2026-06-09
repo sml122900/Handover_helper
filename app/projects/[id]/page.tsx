@@ -1,15 +1,22 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { VideoUploader } from "./VideoUploader";
+import { VideoStatusPoller } from "./VideoStatusPoller";
 
 export const dynamic = "force-dynamic";
 
 const STATUS_LABEL: Record<string, string> = {
-  uploaded: "업로드됨",
+  uploaded: "업로드됨 · 처리 대기",
   transcribing: "음성 인식 중",
   structuring: "문서 생성 중",
   done: "완료",
   failed: "실패",
+};
+
+const STATUS_COLOR: Record<string, string> = {
+  done: "bg-emerald-900 text-emerald-200",
+  failed: "bg-red-900 text-red-200",
 };
 
 export default async function ProjectDetailPage(props: { params: Promise<{ id: string }> }) {
@@ -26,7 +33,7 @@ export default async function ProjectDetailPage(props: { params: Promise<{ id: s
   const [{ data: videos }, { data: documents }] = await Promise.all([
     supabase
       .from("videos")
-      .select("id, status, duration_seconds, created_at")
+      .select("id, status, duration_seconds, error_message, created_at")
       .eq("project_id", id)
       .order("created_at", { ascending: false }),
     supabase
@@ -38,6 +45,7 @@ export default async function ProjectDetailPage(props: { params: Promise<{ id: s
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-10">
+      <VideoStatusPoller projectId={id} statuses={(videos ?? []).map((v) => v.status)} />
       <Link href="/projects" className="text-sm text-zinc-400 hover:text-zinc-200">
         ← 프로젝트 목록
       </Link>
@@ -45,22 +53,27 @@ export default async function ProjectDetailPage(props: { params: Promise<{ id: s
 
       <section className="mb-10">
         <h2 className="mb-3 text-lg font-semibold text-zinc-200">영상</h2>
-        <div className="rounded-lg border border-dashed border-zinc-800 px-4 py-8 text-center text-sm text-zinc-500">
-          영상 업로드는 다음 단계(세션 1-2)에서 추가됩니다.
-        </div>
+        <VideoUploader projectId={id} />
         <ul className="mt-3 flex flex-col gap-2">
           {(videos ?? []).map((v) => (
             <li
               key={v.id}
-              className="flex items-center justify-between rounded-lg border border-zinc-800 px-4 py-3 text-sm"
+              className="rounded-lg border border-zinc-800 px-4 py-3 text-sm"
             >
-              <span className="text-zinc-300">
-                {new Date(v.created_at).toLocaleString("ko-KR")}
-                {v.duration_seconds != null && ` · ${Math.round(v.duration_seconds / 60)}분`}
-              </span>
-              <span className="rounded bg-zinc-800 px-2 py-1 text-xs text-zinc-300">
-                {STATUS_LABEL[v.status] ?? v.status}
-              </span>
+              <div className="flex items-center justify-between">
+                <span className="text-zinc-300">
+                  {new Date(v.created_at).toLocaleString("ko-KR")}
+                  {v.duration_seconds != null && ` · ${Math.round(v.duration_seconds / 60)}분`}
+                </span>
+                <span
+                  className={`rounded px-2 py-1 text-xs ${STATUS_COLOR[v.status] ?? "bg-zinc-800 text-zinc-300"}`}
+                >
+                  {STATUS_LABEL[v.status] ?? v.status}
+                </span>
+              </div>
+              {v.status === "failed" && v.error_message && (
+                <p className="mt-2 text-xs text-red-400">{v.error_message}</p>
+              )}
             </li>
           ))}
         </ul>
@@ -69,7 +82,9 @@ export default async function ProjectDetailPage(props: { params: Promise<{ id: s
       <section>
         <h2 className="mb-3 text-lg font-semibold text-zinc-200">문서</h2>
         {(documents ?? []).length === 0 ? (
-          <p className="text-sm text-zinc-500">아직 생성된 문서가 없습니다.</p>
+          <p className="text-sm text-zinc-500">
+            아직 생성된 문서가 없습니다. 영상을 업로드하면 자동으로 문서가 만들어집니다.
+          </p>
         ) : (
           <ul className="flex flex-col gap-2">
             {(documents ?? []).map((d) => (
@@ -78,6 +93,7 @@ export default async function ProjectDetailPage(props: { params: Promise<{ id: s
                 className="rounded-lg border border-zinc-800 px-4 py-3 text-sm text-zinc-300"
               >
                 문서 ({d.prompt_version}) — {new Date(d.created_at).toLocaleString("ko-KR")}
+                <span className="ml-2 text-xs text-zinc-500">에디터는 세션 1-5에서 추가</span>
               </li>
             ))}
           </ul>

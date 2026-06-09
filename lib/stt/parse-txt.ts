@@ -1,4 +1,4 @@
-import type { Transcript, TranscriptSegment } from "./types.js";
+import type { Transcript, TranscriptSegment } from "./types";
 
 // 트랜스크립트 .txt 파일 파서 (STT 건너뛰고 구조화 테스트용)
 // 지원 형식:

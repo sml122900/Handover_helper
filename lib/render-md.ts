@@ -1,4 +1,4 @@
-import type { HandoverDocument } from "./ai/schema.js";
+import type { HandoverDocument } from "./ai/schema";
 
 // 구조화 문서 → 사람이 읽기 좋은 마크다운
 

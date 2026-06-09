@@ -94,3 +94,34 @@ npm run build  # 프로덕션 빌드 검증
 5. npm audit: next 내부 postcss 모더레이트 1건 — next 패치 대기, 동작 영향 없음.
 
 ---
+
+## 세션 1-2: 업로드 + 비동기 변환 파이프라인 ✅ (2026-06-10)
+
+### 완료한 것
+- `lib/plan.ts` — 비용 가드 순수 로직 (Free 총 20분 / Paid 120분, 영상 1개 한도·NaN 방어) + **vitest 7개 테스트 통과** (`npm test`)
+- `app/projects/[id]/upload-actions.ts` — ① `prepareUpload`: 인증→소유권→**STT/LLM 호출 전 비용 가드**→video 행 생성→signed upload URL ② `completeUpload`: `after()`로 백그라운드 파이프라인 시작 ③ `getVideoStatuses`: 폴링용
+- `VideoUploader.tsx` — 파일 선택→영상 길이 메타데이터 추출→XHR 업로드 **진행률 표시**→완료 시 파이프라인 트리거. mp4/webm/m4a + **txt 트랜스크립트 직접 업로드 지원**
+- `lib/pipeline/process-video.ts` — 상태머신 uploaded→transcribing→structuring→done/failed. txt면 STT 생략, Phase 0 구조화 프롬프트 재사용, documents 저장 + **ai_usage_logs 토큰 기록**, 실패 시 error_message 저장
+- `VideoStatusPoller.tsx` — 처리 중 영상 있으면 3초 폴링→화면 갱신
+- `supabase/migrations/0002_storage.sql` — private `videos` 버킷 (2GB 한도, MIME 화이트리스트) + 본인 폴더 RLS
+- 빌드·테스트·CLI 회귀 전부 통과 (Supabase 키 없어 E2E는 미실행)
+
+### 실행 방법
+```
+npm test            # 비용 가드 단위 테스트
+npm run dev         # Supabase 셋업 후: 프로젝트 상세 → 업로드 → 자동 변환 → 문서 생성
+```
+
+### 사용자가 할 일 (TODO)
+- [ ] 0002_storage.sql도 Supabase SQL Editor에서 실행 (0001 다음에)
+- [ ] Supabase 셋업 후 E2E 확인: txt 업로드 → done 상태 → documents 행 생성
+- [ ] 영상(mp4) 업로드는 STT 연동 전까지 `failed`로 떨어짐 (의도된 동작 — OPENAI_API_KEY 후 연동)
+
+### 스스로 내린 판단과 이유
+1. **작업 큐 = Next `after()` 훅 (응답 후 실행)** — Inngest는 외부 가입 필요(외부 결정 금지 항목). 로컬·소규모엔 충분. Vercel 함수 타임아웃 한계는 코드 주석 + TODO로 명시 (스케일 시 Inngest/Supabase Edge Functions 이전).
+2. **웹 업로드도 .txt 트랜스크립트 허용** — STT mock 상태에서도 E2E 파이프라인이 완전 동작하도록. Phase 0 CLI와 동일한 판단.
+3. **진행률 = signed upload URL + XHR PUT** — supabase-js `upload()`은 진행률 콜백 미지원. 서명 URL 방식이면 XHR로 진행률 표시 가능 + 클라이언트에 service key 노출 0.
+4. **mock STT로 가짜 트랜스크립트를 만들지 않음** — 환각 금지 원칙. 영상 업로드는 STT 연동 전까지 명시적 failed("STT 미연동" 안내)가 올바른 동작.
+5. 상대 import의 `.js` 확장자 전부 제거 — Next 번들러가 `.js`→`.ts` 매핑을 못 함. tsx/vitest는 확장자 없이도 동작 확인.
+
+---

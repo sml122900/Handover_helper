@@ -1,7 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
-import { DocumentSchema, type HandoverDocument } from "./schema.js";
-import { STRUCTURE_SYSTEM_PROMPT, buildUserPrompt, PROMPT_VERSION } from "./prompts/structure-v1.js";
+import { DocumentSchema, type HandoverDocument } from "./schema";
+import { STRUCTURE_SYSTEM_PROMPT, buildUserPrompt, PROMPT_VERSION } from "./prompts/structure-v1";
 
 // CLAUDE.md 명시 모델 claude-sonnet-4-20250514 는 2026-06-15 retire 예정 → 후속 alias 사용.
 // (PROGRESS.md 판단 기록 참조. 변경 원하면 HANDOVER_MODEL 환경변수로 override)

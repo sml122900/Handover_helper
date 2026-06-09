@@ -12,12 +12,12 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from 
 import { basename, join } from "node:path";
 import Anthropic from "@anthropic-ai/sdk";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
-import { EvalResultSchema, missRate, type EvalResult } from "../lib/ai/eval-schema.js";
+import { EvalResultSchema, missRate, type EvalResult } from "../lib/ai/eval-schema";
 import {
   EVAL_SYSTEM_PROMPT,
   buildEvalUserPrompt,
   EVAL_PROMPT_VERSION,
-} from "../lib/ai/prompts/evaluate-v1.js";
+} from "../lib/ai/prompts/evaluate-v1";
 
 if (existsSync(".env")) process.loadEnvFile(".env");
 

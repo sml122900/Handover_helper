@@ -6,11 +6,11 @@
 
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { basename, extname, join } from "node:path";
-import { parseTranscriptText, transcriptToPromptText } from "../lib/stt/parse-txt.js";
-import { WhisperStt } from "../lib/stt/whisper.js";
-import { structureTranscript } from "../lib/ai/structure.js";
-import { renderMarkdown } from "../lib/render-md.js";
-import type { Transcript } from "../lib/stt/types.js";
+import { parseTranscriptText, transcriptToPromptText } from "../lib/stt/parse-txt";
+import { WhisperStt } from "../lib/stt/whisper";
+import { structureTranscript } from "../lib/ai/structure";
+import { renderMarkdown } from "../lib/render-md";
+import type { Transcript } from "../lib/stt/types";
 
 if (existsSync(".env")) process.loadEnvFile(".env");
 

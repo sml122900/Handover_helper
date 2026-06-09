@@ -1,4 +1,4 @@
-import type { SttProvider, Transcript } from "./types.js";
+import type { SttProvider, Transcript } from "./types";
 
 // TODO(Phase 0 잔여): OpenAI API 키 확보 후 Whisper API 연동.
 // - verbose_json + timestamp_granularities=segment 로 타임스탬프 포함 요청
