@@ -64,3 +64,33 @@ npm run evaluate -- --all                 # golden/ 전체 배치
 3. 심판 모델도 `claude-sonnet-4-6` (`HANDOVER_EVAL_MODEL`로 override 가능). 테스트 호출 누적 2/5회.
 
 ---
+
+## 세션 1-1: Next.js + Supabase 셋업 ✅ (2026-06-10)
+
+### 완료한 것
+- Next.js 16 (App Router) + TypeScript strict + Tailwind v4 — 기존 CLI 워크스페이스에 수동 스캐폴딩 (`npm run build` 통과, CLI 회귀 0)
+- 다크모드 기본 레이아웃: `/` 랜딩 → `/login` (이메일+비밀번호 로그인/가입, server actions) → `/projects` 목록·생성 → `/projects/[id]` 상세 (영상 상태 뱃지·문서 목록 — 업로드는 세션 1-2)
+- `lib/supabase/{server,client}.ts` + `middleware.ts` — @supabase/ssr 세션 갱신 + `/projects` 라우트 보호
+- `supabase/migrations/0001_init.sql` — 도메인 모델 5종(projects/videos/transcripts/documents/keyframes) + `ai_usage_logs`(토큰 기록 규칙) + video_status enum 상태머신 + 소유자 RLS 전부 + updated_at 트리거
+- Supabase 미설정 시: 빌드·실행 안전 (로그인 페이지에 셋업 안내 표시, middleware 통과)
+
+### 실행 방법
+```
+npm run dev    # http://localhost:3000 (Supabase 키 없으면 /login에 셋업 안내)
+npm run build  # 프로덕션 빌드 검증
+```
+
+### 사용자가 할 일 (TODO)
+- [ ] **새 Supabase 프로젝트 생성** (⚠️ 현재 `.env`의 SUPABASE_* 키는 다른 프로젝트(Lifebook) 것 — 절대 재사용 금지, 그 DB를 오염시킴)
+- [ ] `supabase/migrations/0001_init.sql`을 Supabase SQL Editor에서 실행
+- [ ] `.env`에 `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` / `SUPABASE_SERVICE_ROLE_KEY` 입력
+- [ ] Supabase Auth > Email 설정 확인 (기본: 이메일 인증 ON — 로컬 테스트 시 OFF 가능)
+
+### 스스로 내린 판단과 이유
+1. **`.env`의 기존 Supabase 키 미사용** — Lifebook 프로젝트의 운영 DB를 가리킴. 마이그레이션을 거기 적용하면 다른 제품 오염. 새 프로젝트 placeholder로 처리하고 빌드는 키 없이도 통과하도록 가드.
+2. **이메일 로그인 = 비밀번호 방식** — magic link는 SMTP 설정 필요(외부 결정). 비밀번호 방식은 Supabase 기본으로 즉시 동작.
+3. **`create-next-app` 대신 수동 스캐폴딩** — 기존 파일(package.json, CLAUDE.md, scripts/)과 충돌. 디렉터리 병합이 더 안전.
+4. **`ai_usage_logs` 테이블을 1-1에서 선반영** — CLAUDE.md "모든 AI 호출 토큰 DB 기록" 규칙. 스키마 변경 비용이 크므로 초기 마이그레이션에 포함.
+5. npm audit: next 내부 postcss 모더레이트 1건 — next 패치 대기, 동작 영향 없음.
+
+---
