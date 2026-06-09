@@ -3,6 +3,9 @@ import { createAdminClient } from "../supabase/admin";
 import { parseTranscriptText, transcriptToPromptText } from "../stt/parse-txt";
 import { WhisperStt } from "../stt/whisper";
 import { structureTranscript } from "../ai/structure";
+import { extractKeyframes } from "../keyframes/extract";
+import { matchKeyframesToSteps } from "../keyframes/match";
+import type { HandoverDocument } from "../ai/schema";
 import type { Transcript } from "../stt/types";
 
 // 비동기 변환 파이프라인: uploaded → transcribing → structuring → done/failed
@@ -49,12 +52,30 @@ export async function processVideo(videoId: string): Promise<void> {
     await setStatus("structuring");
     const result = await structureTranscript(transcriptToPromptText(transcript));
 
-    const { error: dErr } = await supabase.from("documents").insert({
-      project_id: video.project_id,
-      content: result.document,
-      prompt_version: result.meta.promptVersion,
-    });
-    if (dErr) throw new Error(`문서 저장 실패: ${dErr.message}`);
+    const { data: doc, error: dErr } = await supabase
+      .from("documents")
+      .insert({
+        project_id: video.project_id,
+        content: result.document,
+        prompt_version: result.meta.promptVersion,
+      })
+      .select("id")
+      .single();
+    if (dErr || !doc) throw new Error(`문서 저장 실패: ${dErr?.message}`);
+
+    // 2.5) 키프레임 추출 + 절차 매칭 (영상 파일만, 실패해도 문서는 유지)
+    if (!video.storage_path.endsWith(".txt") && !video.storage_path.endsWith(".md")) {
+      try {
+        await extractAndMatchKeyframes(supabase, {
+          videoId,
+          storagePath: video.storage_path,
+          documentId: doc.id,
+          document: result.document,
+        });
+      } catch (e) {
+        console.error(`[pipeline] 키프레임 추출 실패 (무시, ${videoId}):`, e);
+      }
+    }
 
     // 3) 토큰 사용량 DB 기록 (CLAUDE.md 규칙)
     const { data: project } = await supabase
@@ -77,6 +98,62 @@ export async function processVideo(videoId: string): Promise<void> {
     console.error(`[pipeline] 처리 실패 (${videoId}):`, message);
     await setStatus("failed", message);
   }
+}
+
+// 키프레임: ffmpeg 장면 전환 → keyframes 버킷 업로드 → DB 행 → 절차 단계 매칭 → 문서 content에 keyframeId 기록
+async function extractAndMatchKeyframes(
+  supabase: ReturnType<typeof createAdminClient>,
+  args: {
+    videoId: string;
+    storagePath: string;
+    documentId: string;
+    document: HandoverDocument;
+  }
+): Promise<void> {
+  const { data: file, error } = await supabase.storage.from("videos").download(args.storagePath);
+  if (error || !file) throw new Error(`영상 다운로드 실패: ${error?.message}`);
+
+  const ext = args.storagePath.split(".").pop() ?? "mp4";
+  const frames = await extractKeyframes(Buffer.from(await file.arrayBuffer()), ext);
+  if (frames.length === 0) return;
+
+  const keyframeRefs: { id: string; timestampSeconds: number }[] = [];
+  for (let i = 0; i < frames.length; i++) {
+    const imagePath = `${args.storagePath}.keyframes/frame_${String(i).padStart(3, "0")}.jpg`;
+    const { error: upErr } = await supabase.storage
+      .from("keyframes")
+      .upload(imagePath, frames[i].jpeg, { contentType: "image/jpeg", upsert: true });
+    if (upErr) throw new Error(`키프레임 업로드 실패: ${upErr.message}`);
+
+    const { data: row, error: kErr } = await supabase
+      .from("keyframes")
+      .insert({
+        video_id: args.videoId,
+        timestamp_seconds: frames[i].timestampSeconds,
+        image_path: imagePath,
+      })
+      .select("id")
+      .single();
+    if (kErr || !row) throw new Error(`키프레임 저장 실패: ${kErr?.message}`);
+    keyframeRefs.push({ id: row.id, timestampSeconds: frames[i].timestampSeconds });
+  }
+
+  const matches = matchKeyframesToSteps(
+    args.document.procedures.map((p) => ({
+      step: p.step,
+      startSeconds: p.sourceTimestamp?.start ?? null,
+    })),
+    keyframeRefs
+  );
+
+  const content = {
+    ...args.document,
+    procedures: args.document.procedures.map((p) => ({
+      ...p,
+      keyframeId: matches.get(p.step) ?? null,
+    })),
+  };
+  await supabase.from("documents").update({ content }).eq("id", args.documentId);
 }
 
 async function getTranscript(

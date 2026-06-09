@@ -143,3 +143,23 @@ npm run dev         # Supabase 셋업 후: 프로젝트 상세 → 업로드 →
 3. mimeType: vp9+opus 지원 시 사용, 아니면 기본 webm 폴백.
 
 ---
+
+## 세션 1-4: 키프레임 추출 ✅ (2026-06-10)
+
+### 완료한 것
+- `lib/keyframes/extract.ts` — ffmpeg 장면 전환 감지(`select=gt(scene,0.3)` + showinfo pts_time 파싱) → jpg + 타임스탬프. 최대 30장, 임시폴더 정리 보장. **합성 영상(빨강→파랑→초록 3초씩)으로 로컬 검증: t=3, t=6 정확히 감지**
+- `lib/keyframes/match.ts` — 절차 단계 sourceTimestamp ↔ 가장 가까운 키프레임 매칭 (±90초 윈도우, 순수 함수) + **vitest 6개 테스트** (총 13개 통과)
+- 파이프라인 통합 — 문서 저장 후 영상 파일이면 키프레임 추출→`keyframes` 버킷 업로드→DB 행→문서 content의 `procedures[].keyframeId` 갱신. **실패해도 문서는 유지** (비파괴)
+- `supabase/migrations/0003_keyframes_storage.sql` — private keyframes 버킷 + 본인 폴더 조회 RLS
+- 후보 목록(에디터에서 교체용)은 keyframes 테이블 전체가 후보 — 세션 1-5에서 UI 연결
+
+### 사용자가 할 일 (TODO)
+- [ ] 0003 마이그레이션도 SQL Editor에서 실행
+- [ ] (참고) 실제 영상 E2E는 STT 연동 후에만 — 현재 영상 업로드는 STT 단계에서 failed
+
+### 스스로 내린 판단과 이유
+1. **ffmpeg = `ffmpeg-static` npm 의존성** — 시스템에 ffmpeg 없음, 전역 설치 금지 규칙 → 로컬 패키지로 해결. Vercel 서버리스 용량 한계는 TODO 주석 (스케일 시 작업 큐 이전과 함께).
+2. **키프레임 매칭 결과는 문서 content(jsonb)에 `keyframeId`로 기록** — 스키마 마이그레이션 0건. zod 구조화 스키마(LLM 출력)에는 안 넣음 (LLM이 만들 값이 아님 — 환각 방지).
+3. **키프레임 실패는 non-fatal** — 문서가 본질, 이미지는 보조. try/catch로 격리.
+
+---
