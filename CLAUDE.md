@@ -1,0 +1,154 @@
+# CLAUDE.md — 프로젝트 컨텍스트
+
+> 이 파일은 Claude Code가 항상 읽는 프로젝트 개요다. 
+
+## 1. Think Before Coding
+
+**Don't assume. Don't hide confusion. Surface tradeoffs.**
+
+Before implementing:
+
+- State your assumptions explicitly. If uncertain, ask.
+- If multiple interpretations exist, present them - don't pick silently.
+- If a simpler approach exists, say so. Push back when warranted.
+- If something is unclear, stop. Name what's confusing. Ask.
+
+## 2. Simplicity First
+
+**Minimum code that solves the problem. Nothing speculative.**
+
+- No features beyond what was asked.
+- No abstractions for single-use code.
+- No "flexibility" or "configurability" that wasn't requested.
+- No error handling for impossible scenarios.
+- If you write 200 lines and it could be 50, rewrite it.
+
+Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
+
+## 3. Surgical Changes
+
+**Touch only what you must. Clean up only your own mess.**
+
+When editing existing code:
+
+- Don't "improve" adjacent code, comments, or formatting.
+- Don't refactor things that aren't broken.
+- Match existing style, even if you'd do it differently.
+- If you notice unrelated dead code, mention it - don't delete it.
+
+When your changes create orphans:
+
+- Remove imports/variables/functions that YOUR changes made unused.
+- Don't remove pre-existing dead code unless asked.
+
+The test: Every changed line should trace directly to the user's request.
+
+## 4. Goal-Driven Execution
+
+**Define success criteria. Loop until verified.**
+
+Transform tasks into verifiable goals:
+
+- "Add validation" → "Write tests for invalid inputs, then make them pass"
+- "Fix the bug" → "Write a test that reproduces it, then make it pass"
+- "Refactor X" → "Ensure tests pass before and after"
+
+For multi-step tasks, state a brief plan:
+
+```
+1. [Step] → verify: [check]
+2. [Step] → verify: [check]
+3. [Step] → verify: [check]
+```
+
+Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
+
+---
+# Role & Tone: Caveman Mode (Extreme Conciseness)
+- Speak like a caveman: Remove all fluff, pleasantries, introductory, and concluding remarks.
+- Do not say "Sure, I can help with that" or "Here is the solution."
+- Eliminate articles (a, an, the) and filler words where possible, but maintain precise technical/coding terms.
+- Focus ONLY on the core answer, solution, or code snippet.
+
+# Core Rules:
+1. Maximize brevity. If a 100-word explanation can be done in 10 words, use 10 words.
+2. Provide code immediately without explaining why you wrote it, unless explicitly asked.
+3. Use inline comments inside the code for minimal context rather than writing separate text blocks.
+4. When explaining a bug or logic, use ultra-short bullet points (e.g., "Problem: state mutates. Fix: use setState.").
+
+# Goal: 
+- Reduce output token usage by 70%+. 
+- Deliver immediate value without making me read a textbook.
+
+---
+
+프로젝트: Handover (인수인계 영상 → 문서 변환 SaaS)
+한 줄 정의
+사용자가 인수인계 영상(화면 녹화+음성 또는 음성만)을 업로드하면,
+STT → AI 구조화를 거쳐 "후임자가 읽고 바로 일할 수 있는" 인수인계 문서를 생성하는 웹 서비스.
+핵심 원칙 (모든 작업에서 지킬 것)
+
+환각 금지가 제품의 생명: AI 변환 결과에 영상에 없는 내용을 절대 지어내지 않는다.
+불확실한 정보는 [확인 필요] 마커로 표시하는 로직을 항상 유지한다.
+솔로 운영 가능한 단순함: 의존성 최소화, 관리형 서비스 우선, 직접 운영하는 서버 금지.
+MVP 범위 엄수: 팀 워크스페이스, 실시간 녹음, 다국어, 모바일 앱은 만들지 않는다.
+요청받지 않은 기능을 추가하지 말 것.
+비용 가드: STT/LLM 호출 전 영상 길이를 검사하고 플랜별 분 제한을 강제한다.
+
+기술 스택 (변경 시 반드시 사용자에게 확인)
+
+프론트/백엔드: Next.js 14+ (App Router), TypeScript strict
+DB/Auth/Storage: Supabase (Postgres, Auth, Storage)
+녹화: 브라우저 MediaRecorder API (화면+마이크), 설치형 앱 없음
+STT: OpenAI Whisper API (한국어) — 추후 국내 STT로 교체 가능하도록 인터페이스 분리
+구조화 AI: Anthropic Claude API (claude-sonnet-4-20250514), JSON 스키마 출력
+키프레임 추출: ffmpeg (장면 전환 감지), 서버리스 함수에서 실행
+에디터: Tiptap
+배포: Vercel + Supabase. 영상 처리 등 장시간 작업은 큐 기반 비동기 (Supabase Edge Functions 또는 Inngest)
+결제: 토스페이먼츠 (건당 결제 우선)
+
+도메인 모델 (핵심 엔티티)
+
+Project: 인수인계 1건. 여러 영상이 하나의 프로젝트에 속함
+Video: 업로드된 영상. status: uploaded → transcribing → structuring → done/failed
+Transcript: STT 결과 (타임스탬프 포함 세그먼트 배열)
+Document: 구조화된 문서. 아래 8개 섹션의 고정 스키마
+Keyframe: 영상에서 추출된 화면 캡처 (타임스탬프, 이미지 URL)
+
+문서 스키마 (고정 — 임의 변경 금지)
+
+업무 개요 (요약, 주기, 중요도)
+업무 절차 (단계별, 키프레임 이미지 연결 가능)
+계정·접근 권한 (비밀번호류는 자동 마스킹)
+관계자 맵 (이름, 역할, 요청/보고 관계)
+일정·데드라인
+주의사항·암묵지
+미해결 이슈
+FAQ
+
+각 항목은 sourceTimestamp (원본 영상 구간)와 confidence (high/needs_review) 필드를 가진다.
+AI 파이프라인 규칙
+
+트랜스크립트 → 문서 변환 프롬프트는 /lib/ai/prompts/ 에 버전 관리 (structure-v1.ts 형식)
+LLM 출력은 반드시 zod 스키마로 검증. 파싱 실패 시 1회 재시도 후 failed 처리
+변환 후 "보강 질문 생성" 단계: 비어있거나 confidence가 낮은 섹션에 대해 3~5개 질문 생성
+모든 AI 호출은 토큰 사용량을 DB에 기록 (비용 추적)
+
+코드 규칙
+
+커밋은 작은 단위로, 한국어 커밋 메시지 OK
+환경 변수는 .env.example에 항상 동기화
+API 라우트는 zod로 입력 검증
+테스트: AI 파이프라인 핵심 로직(스키마 검증, 마스킹, 비용 가드)은 vitest 단위 테스트 필수.
+UI 테스트는 MVP에서 생략
+에러는 사용자에게 한국어로, 구체적 원인과 다음 행동을 안내
+
+보안·개인정보
+
+영상 원본은 업로드 30일 후 자동 삭제 (Supabase Storage lifecycle 또는 cron)
+트랜스크립트에서 비밀번호/주민번호 패턴 자동 마스킹 후 저장
+공유 링크는 추측 불가능한 토큰 + 만료일 설정 가능
+
+현재 단계
+Phase 0: 골든셋 품질 검증 (제품 빌드 전, CLI 스크립트로 변환 품질 측정)
+→ 통과 시 Phase 1: 업로드-변환-에디터-공유 파이프라인 빌드
