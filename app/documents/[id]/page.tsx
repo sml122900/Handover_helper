@@ -5,6 +5,8 @@ import { documentToHtml } from "@/lib/doc-html";
 import { DocumentSchema } from "@/lib/ai/schema";
 import { DocumentEditor } from "./DocumentEditor";
 import { EnrichPanel } from "./EnrichPanel";
+import { ShareControls } from "./ShareControls";
+import { listShareLinks } from "./share-actions";
 import type { EnrichQuestion } from "@/lib/ai/enrich";
 
 export const dynamic = "force-dynamic";
@@ -30,6 +32,7 @@ export default async function DocumentPage(props: { params: Promise<{ id: string
   }
 
   const questions = (doc.enrich_questions ?? []) as EnrichQuestion[];
+  const shareLinks = await listShareLinks(doc.id);
 
   return (
     <main className="mx-auto max-w-6xl px-6 py-10">
@@ -45,7 +48,8 @@ export default async function DocumentPage(props: { params: Promise<{ id: string
         <div className="min-w-0 flex-1">
           <DocumentEditor documentId={doc.id} initialHtml={initialHtml} />
         </div>
-        <aside className="w-full shrink-0 lg:w-80">
+        <aside className="flex w-full shrink-0 flex-col gap-4 lg:w-80">
+          <ShareControls documentId={doc.id} initialLinks={shareLinks} />
           <EnrichPanel documentId={doc.id} questions={questions} />
         </aside>
       </div>

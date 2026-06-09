@@ -186,3 +186,48 @@ npm run dev         # Supabase 셋업 후: 프로젝트 상세 → 업로드 →
 4. 에디터↔패널 연결 = CustomEvent — 상태 끌어올리기 없이 형제 컴포넌트 통신 최소 구현.
 
 ---
+
+## 세션 1-6: 공유 링크 + PDF ✅ (2026-06-10) — **Phase 1 완료**
+
+### 완료한 것
+- `supabase/migrations/0005_share.sql` — `share_links` 테이블 (32바이트 base64url 토큰 unique + `expires_at`) + 소유자 RLS
+- `ShareControls` (문서 페이지 사이드) — 만료 7/30/90일/없음 선택, 링크 생성·복사·삭제(revoke)
+- `/share/[token]` — 로그인 없는 읽기 전용 공개 뷰. 만료 검사, **sanitize-html로 XSS 방지** (작성자 편집 HTML을 제3자에게 노출하므로), 하단 가입 유도 배너(바이럴 루프)
+- PDF = "PDF로 저장/인쇄" 버튼 + print CSS (다크→화이트 전환, OS 한글 폰트)
+- 빌드 통과. `/share`는 middleware 보호 대상 아님(의도된 공개)
+
+### 사용자가 할 일 (TODO)
+- [ ] 0005 마이그레이션 실행
+- [ ] E2E: 문서 → 링크 생성 → 시크릿 창에서 열람 → 만료 동작 확인
+
+### 스스로 내린 판단과 이유
+1. **PDF = 브라우저 인쇄(print CSS)** — 서버 사이드 PDF는 한글 폰트 임베드 + 렌더러(puppeteer 등) 무게가 MVP 과잉. OS 폰트로 한글 출력 충분. 키프레임 이미지 포함은 STT 연동(실영상) 후에만 의미 있어 함께 TODO.
+2. **공개 뷰에서 sanitize-html** — content_html은 작성자가 편집한 HTML. 공유 페이지 열람자 보호를 위해 태그 화이트리스트 적용.
+3. 공개 조회는 service_role + 토큰 매칭 (anon RLS 정책을 여는 것보다 좁은 표면).
+
+---
+
+# 🏁 전체 요약 (사용자 기상 후 읽을 것)
+
+## 상태: Phase 0 코드 완료 + Phase 1 (1-1~1-6) 전체 완료
+
+커밋 7개, 빌드·vitest 13개·CLI 회귀 전부 통과. 실 Claude API 테스트 3회/한도 5회.
+
+## 지금 바로 해볼 수 있는 것 (키 입력 없이)
+```
+npm run convert -- samples/sample-handover.txt   # Phase 0 변환 (ANTHROPIC_API_KEY 사용)
+npm run evaluate -- sample-handover              # 채점 (누락률 11.1%, 환각 0 재현)
+npm test                                         # 단위 테스트 13개
+npm run dev                                      # 웹 (Supabase 셋업 전엔 /login에 안내 표시)
+```
+
+## 깨어나서 해야 할 일 (우선순위순)
+1. **새 Supabase 프로젝트 생성** → `supabase/migrations/0001~0005` 순서대로 SQL Editor 실행 → `.env`에 3개 키 입력 (⚠️ 기존 .env의 SUPABASE_*는 Lifebook 것 — 재사용 금지)
+2. 웹 E2E: 가입 → 프로젝트 → **txt 트랜스크립트 업로드** → 자동 변환 → 에디터/보강 질문/공유 확인
+3. **OPENAI_API_KEY 발급** → 요청 시 Whisper STT 연동 (영상 업로드가 실제로 동작하게 됨)
+4. **Phase 0 본체**: 실제 인수인계 영상/트랜스크립트 10개 + 정답 문서 작성 → `npm run evaluate -- --all` → 누락률 <10%/환각 0까지 프롬프트 v2, v3 반복
+5. 모델 결정 확인: CLAUDE.md의 `claude-sonnet-4-20250514`가 **2026-06-15 retire**라 `claude-sonnet-4-6`으로 교체해 둠 (`HANDOVER_MODEL` env로 변경 가능)
+
+## 다음 빌드 세션
+- Phase 2-1 결제(토스), 2-2 마스킹+30일 삭제 cron, 2-3 랜딩 페이지 (지시 범위 밖이라 미진행)
+- 후속 TODO: Whisper 연동, 서버 사이드 PDF(한글 폰트+키프레임), 작업 큐(Inngest) 이전, 에디터 키프레임 교체 UI
