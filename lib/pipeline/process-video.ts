@@ -3,6 +3,7 @@ import { createAdminClient } from "../supabase/admin";
 import { parseTranscriptText, transcriptToPromptText } from "../stt/parse-txt";
 import { WhisperStt } from "../stt/whisper";
 import { structureTranscript } from "../ai/structure";
+import { generateEnrichQuestions } from "../ai/enrich";
 import { extractKeyframes } from "../keyframes/extract";
 import { matchKeyframesToSteps } from "../keyframes/match";
 import type { HandoverDocument } from "../ai/schema";
@@ -91,6 +92,24 @@ export async function processVideo(videoId: string): Promise<void> {
       input_tokens: result.meta.inputTokens,
       output_tokens: result.meta.outputTokens,
     });
+
+    // 4) 보강 질문 생성 (빈/불확실 섹션 대상 3~5개, 실패해도 문서는 유지)
+    try {
+      const { questions, usage } = await generateEnrichQuestions(
+        JSON.stringify(result.document)
+      );
+      await supabase.from("documents").update({ enrich_questions: questions }).eq("id", doc.id);
+      await supabase.from("ai_usage_logs").insert({
+        user_id: project?.owner_id ?? null,
+        project_id: video.project_id,
+        kind: "enrich_questions",
+        model: usage.model,
+        input_tokens: usage.inputTokens,
+        output_tokens: usage.outputTokens,
+      });
+    } catch (e) {
+      console.error(`[pipeline] 보강 질문 생성 실패 (무시, ${videoId}):`, e);
+    }
 
     await setStatus("done");
   } catch (e) {

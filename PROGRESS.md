@@ -163,3 +163,26 @@ npm run dev         # Supabase 셋업 후: 프로젝트 상세 → 업로드 →
 3. **키프레임 실패는 non-fatal** — 문서가 본질, 이미지는 보조. try/catch로 격리.
 
 ---
+
+## 세션 1-5: 문서 에디터 + 보강 질문 ✅ (2026-06-10)
+
+### 완료한 것
+- `/documents/[id]` — Tiptap(StarterKit+Highlight) 에디터. 8섹션 HTML 구조 유지 자유 편집, **needs_review 항목 노란 하이라이트**(`<mark>`), **2초 디바운스 자동 저장** + 저장 상태 표시
+- `lib/doc-html.ts` — AI 산출 JSON → 8섹션 에디터 HTML 변환 (XSS escape 포함)
+- **보강 질문 파이프라인**: 변환 직후 빈/불확실 섹션 대상 3~5개 질문 자동 생성(`lib/ai/enrich.ts` + `enrich-v1` 프롬프트) → `documents.enrich_questions`(jsonb) 저장 + 토큰 기록
+- **보강 패널**: 질문에 답하면 AI가 문어체로 다듬어(내용 추가 금지 가드) 해당 섹션 끝에 "(보강 답변)" 항목으로 삽입 → 자동 저장. 답한 질문 ✓ 처리
+- `supabase/migrations/0004_editor.sql` — `content_html`, `enrich_questions` 컬럼
+- middleware에 `/documents` 라우트 보호 추가 (누락 발견·픽스)
+- **실 API 테스트 1회 (3/5)**: 샘플 문서로 질문 5개 생성 — 품질 우수 (노션 링크·선택 기준·월간 리포트 소재 등 실무 빈틈을 정확히 짚음). 토큰 in=2498/out=559
+
+### 사용자가 할 일 (TODO)
+- [ ] 0004 마이그레이션 실행
+- [ ] Supabase 셋업 후: txt 업로드 → 문서 클릭 → 에디터·하이라이트·보강 질문 E2E 확인
+
+### 스스로 내린 판단과 이유
+1. **편집본 = `content_html`(text), AI 원본 = `content`(jsonb) 분리 보존** — HTML→8섹션 JSON 역변환은 손실·복잡(과잉 설계). 원본 스냅샷은 채점·재생성용으로 유지, PDF(1-6)는 HTML 사용.
+2. **보강 답변 반영 = "해당 섹션 끝에 추가"** — AI가 문서 본문을 직접 재작성하게 하면 사용자 편집을 덮어쓸 위험. 추가 전용 + "(보강 답변)" 표식이 안전.
+3. **reflectAnswer 프롬프트에 환각 가드** — "답변에 없는 내용 추가 금지, 다듬기만". 비밀번호 마스킹도 적용.
+4. 에디터↔패널 연결 = CustomEvent — 상태 끌어올리기 없이 형제 컴포넌트 통신 최소 구현.
+
+---

@@ -92,12 +92,13 @@ export default async function ProjectDetailPage(props: { params: Promise<{ id: s
         ) : (
           <ul className="flex flex-col gap-2">
             {(documents ?? []).map((d) => (
-              <li
-                key={d.id}
-                className="rounded-lg border border-zinc-800 px-4 py-3 text-sm text-zinc-300"
-              >
-                문서 ({d.prompt_version}) — {new Date(d.created_at).toLocaleString("ko-KR")}
-                <span className="ml-2 text-xs text-zinc-500">에디터는 세션 1-5에서 추가</span>
+              <li key={d.id}>
+                <Link
+                  href={`/documents/${d.id}`}
+                  className="block rounded-lg border border-zinc-800 px-4 py-3 text-sm text-zinc-300 hover:border-zinc-600"
+                >
+                  📄 문서 열기 ({d.prompt_version}) — {new Date(d.created_at).toLocaleString("ko-KR")}
+                </Link>
               </li>
             ))}
           </ul>
