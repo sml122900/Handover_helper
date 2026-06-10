@@ -19,7 +19,8 @@ const { structureTranscript } = await import("../lib/ai/structure");
 const { runEvaluation } = await import("../lib/ai/evaluate");
 const { getStructurePrompt } = await import("../lib/ai/prompts");
 const { parseTranscriptText, transcriptToPromptText } = await import("../lib/stt/parse-txt");
-const { EvalResultSchema } = await import("../lib/ai/eval-schema");
+const { EvalResultSchema, ChecklistSchema } = await import("../lib/ai/eval-schema");
+const { DocumentSchema } = await import("../lib/ai/schema");
 const { renderCompareTable, aggregateMissesBySection, renderSectionMissReport, summarizeByVersion } =
   await import("../lib/ai/compare-report");
 type SampleEvalRow = import("../lib/ai/compare-report").SampleEvalRow;
@@ -47,12 +48,22 @@ async function main(): Promise<void> {
   const names = readdirSync("golden")
     .filter((f) => f.endsWith(".md"))
     .map((f) => basename(f, ".md"))
+    .filter((name) => !name.endsWith("-checklist"))
     .filter((name) => {
-      if (existsSync(join("samples", `${name}.txt`))) return true;
-      console.warn(`  건너뜀: samples/${name}.txt 없음 (변환 입력 필요)`);
-      return false;
+      if (!existsSync(join("samples", `${name}.txt`))) {
+        console.warn(`  건너뜀: samples/${name}.txt 없음 (변환 입력 필요)`);
+        return false;
+      }
+      if (!existsSync(join("golden", `${name}-checklist.json`))) {
+        console.warn(`  건너뜀: golden/${name}-checklist.json 없음 — 먼저: npm run checklist -- ${name}`);
+        return false;
+      }
+      return true;
     });
-  if (names.length === 0) throw new Error("비교할 샘플이 없습니다 (golden/{name}.md + samples/{name}.txt 쌍 필요).");
+  if (names.length === 0)
+    throw new Error(
+      "비교할 샘플이 없습니다 (golden/{name}.md + samples/{name}.txt + golden/{name}-checklist.json 필요)."
+    );
 
   mkdirSync(join("output", "compare"), { recursive: true });
   mkdirSync(join("results", "compare"), { recursive: true });
@@ -65,32 +76,41 @@ async function main(): Promise<void> {
     const transcriptText = readFileSync(join("samples", `${name}.txt`), "utf-8");
     const promptText = transcriptToPromptText(parseTranscriptText(transcriptText));
     const goldenMarkdown = readFileSync(join("golden", `${name}.md`), "utf-8");
+    const checklist = ChecklistSchema.parse(
+      JSON.parse(readFileSync(join("golden", `${name}-checklist.json`), "utf-8"))
+    ).items;
 
     for (const version of versions) {
       // 1) 변환 (캐시)
       const convPath = join("output", "compare", `${name}@${version}.json`);
-      let documentJson: string;
+      let aiDocument: import("../lib/ai/schema").HandoverDocument;
       if (!force && existsSync(convPath)) {
-        documentJson = JSON.stringify(JSON.parse(readFileSync(convPath, "utf-8")).document, null, 2);
+        aiDocument = DocumentSchema.parse(JSON.parse(readFileSync(convPath, "utf-8")).document);
         console.log(`  [캐시] 변환 ${name} × ${version}`);
       } else {
         const r = await structureTranscript(promptText, { promptVersion: version });
         apiCalls++;
         writeFileSync(convPath, JSON.stringify({ document: r.document, meta: r.meta }, null, 2), "utf-8");
-        documentJson = JSON.stringify(r.document, null, 2);
+        aiDocument = r.document;
         console.log(`  변환 ${name} × ${version} — 토큰 in=${r.meta.inputTokens} out=${r.meta.outputTokens}`);
       }
 
-      // 2) 채점 (캐시)
+      // 2) 채점 (캐시 — 구 포맷이면 파싱 실패 → 재채점)
       const evalPath = join("results", "compare", `${name}@${version}-eval.json`);
+      let cached: import("../lib/ai/eval-schema").EvalResult | null = null;
       if (!force && existsSync(evalPath)) {
-        rows.push({ name, version, result: EvalResultSchema.parse(JSON.parse(readFileSync(evalPath, "utf-8"))) });
+        const parsed = EvalResultSchema.safeParse(JSON.parse(readFileSync(evalPath, "utf-8")));
+        cached = parsed.success ? parsed.data : null;
+      }
+      if (cached) {
+        rows.push({ name, version, result: cached });
         console.log(`  [캐시] 채점 ${name} × ${version}`);
       } else {
         const { result, meta } = await runEvaluation(client, {
-          goldenMarkdown,
-          aiDocumentJson: documentJson,
+          checklist,
+          aiDocument,
           transcriptText,
+          goldenMarkdown,
         });
         apiCalls++;
         writeFileSync(evalPath, JSON.stringify(result, null, 2), "utf-8");

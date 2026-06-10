@@ -17,10 +17,16 @@ if (!existsSync("results")) {
     console.error("results/*-eval.json 이 없습니다. 먼저 npm run evaluate 를 실행하세요.");
     process.exitCode = 1;
   } else {
-    const evals = files.map((f) => ({
-      name: f.replace(/-eval\.json$/, ""),
-      result: EvalResultSchema.parse(JSON.parse(readFileSync(join("results", f), "utf-8"))),
-    }));
+    const evals = files.flatMap((f) => {
+      const parsed = EvalResultSchema.safeParse(
+        JSON.parse(readFileSync(join("results", f), "utf-8"))
+      );
+      if (!parsed.success) {
+        console.warn(`  건너뜀: ${f} — 구 포맷 (재채점: npm run evaluate)`);
+        return [];
+      }
+      return [{ name: f.replace(/-eval\.json$/, ""), result: parsed.data }];
+    });
 
     const misses = aggregateMissesBySection(evals);
     const md = [

@@ -24,7 +24,7 @@ export function aggregateMissesBySection(
       const section = m.section.trim() || "(섹션 미상)";
       const entry = map.get(section) ?? { section, count: 0, items: [] };
       entry.count++;
-      entry.items.push(`[${e.name}] ${m.item}`);
+      entry.items.push(`[${e.name}] ${m.critical ? "⚠ " : ""}${m.item}`);
       map.set(section, entry);
     }
   }

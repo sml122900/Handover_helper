@@ -12,8 +12,6 @@ function evalResult(over: Partial<EvalResult>): EvalResult {
     goldenKeyItemCount: 10,
     missedItems: [],
     hallucinations: [],
-    sectionScores: [],
-    overallComment: "",
     ...over,
   };
 }
@@ -24,8 +22,8 @@ const rows: SampleEvalRow[] = [
     version: "structure-v1",
     result: evalResult({
       missedItems: [
-        { item: "노션 링크", section: "업무 절차" },
-        { item: "보고 주기", section: "관계자 맵" },
+        { item: "노션 링크", section: "업무 절차", critical: true },
+        { item: "보고 주기", section: "관계자 맵", critical: false },
       ],
       hallucinations: [{ item: "x", reason: "근거 없음" }],
     }),
@@ -35,7 +33,7 @@ const rows: SampleEvalRow[] = [
     version: "structure-v1",
     result: evalResult({
       goldenKeyItemCount: 20,
-      missedItems: [{ item: "마감일", section: "업무 절차" }],
+      missedItems: [{ item: "마감일", section: "업무 절차", critical: false }],
     }),
   },
   { name: "a", version: "structure-v2", result: evalResult({}) },
@@ -48,13 +46,13 @@ describe("aggregateMissesBySection", () => {
       rows.filter((r) => r.version === "structure-v1").map((r) => ({ name: r.name, result: r.result }))
     );
     expect(agg[0]).toMatchObject({ section: "업무 절차", count: 2 });
-    expect(agg[0].items).toEqual(["[a] 노션 링크", "[b] 마감일"]);
+    expect(agg[0].items).toEqual(["[a] ⚠ 노션 링크", "[b] 마감일"]);
     expect(agg[1]).toMatchObject({ section: "관계자 맵", count: 1 });
   });
 
   it("빈 섹션명은 (섹션 미상)으로", () => {
     const agg = aggregateMissesBySection([
-      { name: "x", result: evalResult({ missedItems: [{ item: "i", section: " " }] }) },
+      { name: "x", result: evalResult({ missedItems: [{ item: "i", section: " ", critical: false }] }) },
     ]);
     expect(agg[0].section).toBe("(섹션 미상)");
   });

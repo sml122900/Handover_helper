@@ -9,6 +9,8 @@
     "evaluate": "tsx scripts/evaluate.ts",
     "compare": "tsx scripts/compare-prompts.ts",
     "report": "tsx scripts/report-misses.ts",
+    "checklist": "tsx scripts/build-checklist.ts",
+    "e2e": "node --conditions=react-server --import tsx scripts/e2e-pipeline.ts",
     "typecheck": "tsc --noEmit",
     "dev": "next dev",
     "build": "next build",

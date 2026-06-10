@@ -245,6 +245,45 @@ npm run convert -- recording.m4a                   # OPENAI_API_KEY 있으면 �
 
 ---
 
+## 세션 1-8: 체크리스트 기반 채점 (비결정성 해결) + Supabase 키 검증 ✅ (2026-06-11)
+
+> 사용자 지시: Supabase 키 확인→마이그레이션→E2E, 채점을 체크리스트 기반으로 재설계 (호출 12회 이내)
+
+### 완료한 것
+- **`.env` Supabase 키 형식 정정** — URL에 따옴표+`/rest/v1/` 접미사가 붙어 있어 supabase-js가 깨지는 상태 → 베이스 URL로 정정. 서비스 키 유효 확인(auth admin 200)
+- **`supabase/ALL_MIGRATIONS.sql`** — 0001~0005 합본 (SQL Editor에 1회 붙여넣기용)
+- **`npm run e2e`** (`scripts/e2e-pipeline.ts`) — txt 업로드 E2E 자동화: 테스트 유저→프로젝트→Storage 업로드→video 행→processVideo 직접 호출→done/transcripts/documents/로그 검증. 스키마 없으면 안내 후 종료 (react-server 조건으로 server-only 우회 실행)
+- **체크리스트 채점 v2** — 비결정성 해결 (전 버전: 심판이 분모를 매번 다르게 셈 → 11.1% vs 0% 널뜀)
+  - `npm run checklist -- {name}` : 정답 문서 → 원자적 사실 27개(critical 17) JSON, `golden/{name}-checklist.json` 캐시 (1회 호출)
+  - 심판(judge-v1, temperature 0)은 **항목별 yes/no + 근거 인용만**: ① 체크리스트 사실이 AI 문서(주장 목록)에 존재? ② AI 문서 주장 각각 근거 있음? — 누락률·환각 집계는 코드(`lib/ai/eval-core.ts`)가 결정적으로 계산. 판정 누락 시 throw
+  - `evaluate --repeat 3` 재현성 플래그, compare·report 새 포맷 적용 (구 캐시는 자동 무효화)
+- **재현성 검증: 3회 연속 누락 항목까지 완전 동일** (7.4%, 2/27, 환각 0 × 3회)
+- **판별력 검증(네거티브 테스트)**: 일부러 계정·관계자 섹션 삭제 + "구독자 100만 명" 가짜 사실 추가 → 누락 2건(critical 계정 이메일 포함)·환각 1건 정확 검출. 이 과정에서 **심판 결함 발견·수정** (트랜스크립트에 있으면 AI 문서에 없어도 present 판정 → 판정 기준을 주장 목록으로 명시 고정)
+- vitest 34개 통과 (eval-core 5개 신규), typecheck·build 통과
+
+### 실행 방법
+```
+npm run checklist -- sample-handover            # 정답→체크리스트 (캐시, 검토 필수)
+npm run evaluate -- sample-handover --repeat 3  # 채점 + 재현성
+npm run compare -- structure-v1 structure-v2    # 버전 비교 (체크리스트 필요)
+npm run e2e                                     # 마이그레이션 후 txt 업로드 E2E
+```
+
+### 사용자가 할 일 (TODO)
+- [ ] **마이그레이션 실행**: Supabase Dashboard > SQL Editor에 `supabase/ALL_MIGRATIONS.sql` 통째로 붙여넣고 Run → `npm run e2e`로 검증 (DB 비밀번호/access token이 없어 코드로는 적용 불가했음)
+- [ ] `golden/sample-handover-checklist.json` 열어 27개 항목 검토 — **이 파일이 채점 기준(분모)**. 잘못 분해된 항목은 직접 수정 가능 (JSON 편집)
+- [ ] 실 골든셋 작성 시 흐름: golden/{name}.md 작성 → `npm run checklist -- {name}` → 항목 검토 → convert → evaluate
+
+### 스스로 내린 판단과 이유
+1. **심판 출력에서 점수·총평 제거** — 판정(yes/no)만 LLM, 계산은 코드. 분모가 체크리스트로 고정되니 회차 간 흔들릴 여지가 판정 자체로 좁혀짐. 실측: 3회 연속 동일.
+2. **네거티브 테스트를 통과 테스트보다 중시** — "전부 통과"는 판별력 증명이 아님. 망가뜨린 문서에서 정확히 그 결함만 검출되는지 확인했고, 덕분에 심판 결함 1건을 출시 전에 잡음.
+3. **flatten 결함 수정** — overview.importance를 주장 목록에서 빼서 "중요도 높음" 체크리스트 항목이 항상 누락 판정됨 → 포함하도록 수정 (다음 채점부터 누락 1건 감소 예상). 남은 실질 누락 1건(구독자 1.2만 수치)은 첫날 v1 채점과 동일한 발견 — 채점 일관성의 방증.
+4. **구 evaluate-v1 프롬프트 파일 삭제** — 메커니즘 자체가 대체돼 미사용 (git 이력에 보존).
+5. **⚠️ API 호출 13회 — 한도 12회 1회 초과** — compare 실행 전 네거티브 테스트 임시 골든 파일을 정리하지 않아 의도치 않은 변환+채점 2회 발생. 사과. (내역: 체크리스트 1, 재현성 3×2세트, 네거티브 2, compare 3)
+6. **git push 안 함** — 지시대로. 커밋만.
+
+---
+
 # 🏁 전체 요약 (사용자 기상 후 읽을 것)
 
 ## 상태: Phase 0 코드 + Phase 1 전체 + 골든셋 반복 도구(1-7) 완료
@@ -260,10 +299,10 @@ npm run dev                                      # 웹 (Supabase 셋업 전엔 /
 ```
 
 ## 깨어나서 해야 할 일 (우선순위순)
-1. **⚠️ .env 확인** — OPENAI_API_KEY가 .env에 없음 (넣었다고 하셨으나 미반영, .env 수정일 6/9). 새 Supabase 키(NEXT_PUBLIC_SUPABASE_*)도 없음
-2. **새 Supabase 프로젝트 생성** → `supabase/migrations/0001~0005` 순서대로 SQL Editor 실행 → `.env`에 3개 키 입력 (⚠️ 기존 .env의 SUPABASE_*는 Lifebook 것 — 재사용 금지)
-3. 웹 E2E: 가입 → 프로젝트 → **txt 트랜스크립트 업로드** → 자동 변환 → 에디터/보강 질문/공유 확인 (영상 업로드는 OPENAI_API_KEY 추가 시 자동으로 실 Whisper 동작)
-4. **Phase 0 본체**: 실 트랜스크립트 10개(samples/) + 정답 문서(golden/) → `npm run compare -- structure-v1` 기준선 → structure-v2 작성·레지스트리 등록 → `npm run compare -- structure-v1 structure-v2` → `npm run report`로 반복 누락 섹션 확인 → 누락률 <10%/환각 0까지 반복
+1. **마이그레이션**: SQL Editor에 `supabase/ALL_MIGRATIONS.sql` 붙여넣고 Run → `npm run e2e` (Supabase 키는 확인·정정 완료, 스키마만 미적용)
+2. 웹 확인: `npm run dev` → e2e가 만든 계정으로 로그인 → 에디터/보강 질문/공유 확인
+3. **OPENAI_API_KEY는 여전히 .env에 없음** — 추가하면 영상 업로드가 실 Whisper로 동작
+4. **Phase 0 본체**: 실 트랜스크립트 10개(samples/) + 정답 문서(golden/) → `npm run checklist -- --all` + 항목 검토 → `npm run compare -- structure-v1` 기준선 → structure-v2 작성·등록 → compare로 비교 → `npm run report`로 반복 누락 섹션 확인 → 누락률 <10%/환각 0까지 반복
 
 ## 다음 빌드 세션
 - Phase 2-1 결제(토스), 2-2 마스킹+30일 삭제 cron, 2-3 랜딩 페이지 (지시 범위 밖이라 미진행)
