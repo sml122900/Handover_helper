@@ -149,6 +149,8 @@ UI 테스트는 MVP에서 생략
 트랜스크립트에서 비밀번호/주민번호 패턴 자동 마스킹 후 저장
 공유 링크는 추측 불가능한 토큰 + 만료일 설정 가능
 
-현재 단계
-Phase 0: 골든셋 품질 검증 (제품 빌드 전, CLI 스크립트로 변환 품질 측정)
-→ 통과 시 Phase 1: 업로드-변환-에디터-공유 파이프라인 빌드
+현재 단계 (2026-06-11)
+Phase 0 도구 완비 + Phase 1 (업로드-변환-에디터-공유) 코드 완료.
+- 채점: 체크리스트 기반 (checklist → evaluate/compare/report), 재현성 검증 완료
+- 남은 것: ① Supabase 마이그레이션 실행(ALL_MIGRATIONS.sql) 후 `npm run e2e` ② OPENAI_API_KEY 추가 시 실 Whisper 동작 ③ Phase 0 본체 = 실 골든셋 10개로 누락률 <10%/환각 0까지 프롬프트 반복
+- Phase 2 (결제·마스킹 cron·랜딩)는 미착수. 상세 이력: PROGRESS.md
