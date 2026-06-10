@@ -1,7 +1,7 @@
 import "server-only";
 import { createAdminClient } from "../supabase/admin";
 import { parseTranscriptText, transcriptToPromptText } from "../stt/parse-txt";
-import { WhisperStt } from "../stt/whisper";
+import { getSttProvider } from "../stt";
 import { structureTranscript } from "../ai/structure";
 import { generateEnrichQuestions } from "../ai/enrich";
 import { extractKeyframes } from "../keyframes/extract";
@@ -179,11 +179,16 @@ async function getTranscript(
   supabase: ReturnType<typeof createAdminClient>,
   storagePath: string
 ): Promise<Transcript> {
+  const { data, error } = await supabase.storage.from("videos").download(storagePath);
+  if (error || !data) throw new Error(`Storage 다운로드 실패: ${error?.message}`);
+
   if (storagePath.endsWith(".txt") || storagePath.endsWith(".md")) {
-    const { data, error } = await supabase.storage.from("videos").download(storagePath);
-    if (error || !data) throw new Error(`Storage 다운로드 실패: ${error?.message}`);
     return parseTranscriptText(await data.text());
   }
-  // TODO: OPENAI_API_KEY 확보 후 Whisper 연동 (현재 mock — 에러로 failed 처리)
-  return new WhisperStt().transcribe(storagePath);
+  // Whisper STT (OPENAI_API_KEY 없거나 HANDOVER_STT=mock 이면 에러 → failed 처리)
+  const filename = storagePath.split("/").pop() ?? storagePath;
+  return getSttProvider().transcribe({
+    data: new Uint8Array(await data.arrayBuffer()),
+    filename,
+  });
 }

@@ -1,18 +1,21 @@
 // 변환 품질 검증 CLI (Phase 0 세션 0-1)
 // 사용법:
-//   npm run convert -- samples/sample-handover.txt        (트랜스크립트 직접 입력)
-//   npm run convert -- recording.mp4                       (영상 — 현재 STT mock, 에러 안내)
+//   npm run convert -- samples/sample-handover.txt              (트랜스크립트 직접 입력)
+//   npm run convert -- recording.mp4                             (영상 — OPENAI_API_KEY 있으면 Whisper STT)
+//   npm run convert -- samples/x.txt --prompt structure-v2       (프롬프트 버전 지정)
 // 결과: output/{파일명}.json + output/{파일명}.md
 
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { basename, extname, join } from "node:path";
-import { parseTranscriptText, transcriptToPromptText } from "../lib/stt/parse-txt";
-import { WhisperStt } from "../lib/stt/whisper";
-import { structureTranscript } from "../lib/ai/structure";
-import { renderMarkdown } from "../lib/render-md";
 import type { Transcript } from "../lib/stt/types";
 
 if (existsSync(".env")) process.loadEnvFile(".env");
+
+// .env 로드 후 import (모델명·STT 프로바이더가 env를 읽음)
+const { parseTranscriptText, transcriptToPromptText } = await import("../lib/stt/parse-txt");
+const { getSttProvider } = await import("../lib/stt");
+const { structureTranscript } = await import("../lib/ai/structure");
+const { renderMarkdown } = await import("../lib/render-md");
 
 const TEXT_EXTS = new Set([".txt", ".md"]);
 const MEDIA_EXTS = new Set([".mp4", ".webm", ".m4a", ".mp3", ".wav"]);
@@ -23,12 +26,15 @@ async function getTranscript(filePath: string): Promise<Transcript> {
     return parseTranscriptText(readFileSync(filePath, "utf-8"));
   }
   if (MEDIA_EXTS.has(ext)) {
-    return new WhisperStt().transcribe(filePath); // TODO: OPENAI_API_KEY 확보 후 실제 STT
+    return getSttProvider().transcribe({
+      data: new Uint8Array(readFileSync(filePath)),
+      filename: basename(filePath),
+    });
   }
   throw new Error(`지원하지 않는 확장자: ${ext} (지원: .txt .md / ${[...MEDIA_EXTS].join(" ")})`);
 }
 
-async function convertOne(filePath: string): Promise<void> {
+async function convertOne(filePath: string, promptVersion?: string): Promise<void> {
   const name = basename(filePath, extname(filePath));
   console.log(`\n=== 변환: ${filePath}`);
 
@@ -36,7 +42,7 @@ async function convertOne(filePath: string): Promise<void> {
   console.log(`  세그먼트 ${transcript.segments.length}개 (source=${transcript.source})`);
 
   const promptText = transcriptToPromptText(transcript);
-  const result = await structureTranscript(promptText);
+  const result = await structureTranscript(promptText, { promptVersion });
 
   mkdirSync("output", { recursive: true });
   const jsonPath = join("output", `${name}.json`);
@@ -57,16 +63,22 @@ async function convertOne(filePath: string): Promise<void> {
   );
 }
 
-const files = process.argv.slice(2);
+const args = process.argv.slice(2);
+const promptIdx = args.indexOf("--prompt");
+const promptVersion = promptIdx >= 0 ? args[promptIdx + 1] : undefined;
+const files = args.filter((_, i) => !(promptIdx >= 0 && (i === promptIdx || i === promptIdx + 1)));
+
 if (files.length === 0) {
-  console.error("사용법: npm run convert -- <파일 경로...>  (.txt/.md 트랜스크립트 또는 영상/오디오)");
+  console.error(
+    "사용법: npm run convert -- <파일 경로...> [--prompt structure-v2]  (.txt/.md 트랜스크립트 또는 영상/오디오)"
+  );
   process.exit(1);
 }
 
 let failed = 0;
 for (const f of files) {
   try {
-    await convertOne(f);
+    await convertOne(f, promptVersion);
   } catch (e) {
     failed++;
     console.error(`  실패: ${e instanceof Error ? e.message : e}`);

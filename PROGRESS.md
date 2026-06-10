@@ -116,6 +116,7 @@ npm run dev         # Supabase 셋업 후: 프로젝트 상세 → 업로드 →
 - [ ] 0002_storage.sql도 Supabase SQL Editor에서 실행 (0001 다음에)
 - [ ] Supabase 셋업 후 E2E 확인: txt 업로드 → done 상태 → documents 행 생성
 - [ ] 영상(mp4) 업로드는 STT 연동 전까지 `failed`로 떨어짐 (의도된 동작 — OPENAI_API_KEY 후 연동)
+- [ ] **실영상 STT 도입 시 Vercel 함수 타임아웃 리스크 → Inngest 전환 필요** (after() 큐는 사용자 승인 — 단 영상 STT는 수 분 소요라 서버리스 타임아웃에 걸림. STT 켜고 첫 실영상 테스트 전에 전환 판단)
 
 ### 스스로 내린 판단과 이유
 1. **작업 큐 = Next `after()` 훅 (응답 후 실행)** — Inngest는 외부 가입 필요(외부 결정 금지 항목). 로컬·소규모엔 충분. Vercel 함수 타임아웃 한계는 코드 주석 + TODO로 명시 (스케일 시 Inngest/Supabase Edge Functions 이전).
@@ -207,27 +208,63 @@ npm run dev         # Supabase 셋업 후: 프로젝트 상세 → 업로드 →
 
 ---
 
+## 세션 1-7: 골든셋 반복 도구 — Whisper 실연동 + 프롬프트 비교 + 누락 리포트 ✅ (2026-06-11)
+
+> 사용자 지시: 결정 3건 반영 + 골든셋 반복 환경 구축. Phase 2 진입 금지.
+
+### 완료한 것
+- **결정 3건 반영**: ① CLAUDE.md 모델 표기 `claude-sonnet-4-6`으로 수정 ② Inngest 전환 리스크 TODO 명시 (세션 1-2 TODO + 아래 후속) ③ print CSS PDF 유지
+- **Whisper STT 실연동** (`lib/stt/whisper.ts`) — fetch+FormData로 OpenAI `audio/transcriptions` 호출 (SDK 의존성 0). verbose_json + 세그먼트 타임스탬프, language=ko. 25MB 상한 가드(호출 전), 키 없음/HTTP 실패 시 한국어 안내
+- **env 전환** (`lib/stt/index.ts` `getSttProvider`) — `HANDOVER_STT=whisper|mock` 강제, 미설정이면 OPENAI_API_KEY 유무로 자동. mock은 가짜 트랜스크립트 대신 명시적 에러 (환각 금지). CLI·웹 파이프라인 양쪽 적용
+- **프롬프트 버전 레지스트리** (`lib/ai/prompts/index.ts`) — `structureTranscript(text, {promptVersion})`. 새 버전 = structure-v2.ts 작성 후 레지스트리 등록
+- **`npm run compare -- structure-v1 structure-v2`** (`scripts/compare-prompts.ts`) — golden/ 전체 샘플 × 버전별 변환+채점 → 누락률·환각 비교표 + 버전별 섹션 누락 집계 → `results/compare-*.md`. **캐시 내장** (같은 샘플×버전 재호출 0회, `--force`로 무시) — 반복 비용 최소화
+- **`npm run report`** (`scripts/report-misses.ts`) — results/*-eval.json 전체에서 누락 항목을 섹션별 집계 (어느 섹션이 반복 누락인지) → `results/miss-report.md`. API 호출 0회
+- vitest 16개 추가 (STT 매핑·가드·env 전환 10 + 비교 리포트 6) → **총 29개 통과**. typecheck·next build 통과
+- 실 API 검증 2회: compare 파이프라인 E2E (변환+채점, 이번 채점 누락 0/18·환각 0) + 캐시 재실행 0회 확인
+
+### 실행 방법
+```
+npm run compare -- structure-v1                    # 버전 1개 = 기준선 배치
+npm run compare -- structure-v1 structure-v2       # 버전 비교 (캐시 자동)
+npm run report                                     # 섹션별 누락 집계 (호출 0회)
+npm run convert -- samples/x.txt --prompt structure-v2
+npm run convert -- recording.m4a                   # OPENAI_API_KEY 있으면 실제 Whisper
+```
+
+### 사용자가 할 일 (TODO)
+- [ ] **⚠️ OPENAI_API_KEY가 .env에 없음** — "넣었다"고 하셨지만 `.env`(수정일 6/9)에 해당 키가 없습니다. 추가하면 Whisper가 자동 활성화 (코드 변경 불필요). 추가 후 짧은 음성 파일로 `npm run convert -- test.m4a` 검증
+- [ ] **새 Supabase 키도 .env에 없음** (NEXT_PUBLIC_SUPABASE_*) → txt 업로드 E2E 미실행 (아래 판단 4)
+- [ ] 25MB 초과 영상은 현재 거부됨 — 실영상 테스트에서 걸리면 ffmpeg 오디오 추출 단계 추가 요청
+
+### 스스로 내린 판단과 이유
+1. **Whisper를 OpenAI SDK 없이 fetch로 호출** — 엔드포인트 1개에 SDK 의존성 추가는 과잉. Node 24 내장 fetch/FormData로 충분.
+2. **STT 입력을 파일 경로 → 바이트(Uint8Array)로 변경** — 웹 파이프라인은 Supabase Storage 다운로드(Buffer)라 로컬 경로가 없음. 인터페이스를 바이트로 통일해 CLI/웹 공용.
+3. **compare에 캐시 내장** — 골든셋 10개 × 버전 2개 = 호출 40회. 프롬프트 반복 시 변경된 버전만 재호출되도록 샘플×버전 단위 캐시 (`output/compare/`, `results/compare/`). "빠르게 돌릴 수 있는 환경" 요구의 핵심.
+4. **txt 업로드 E2E 미실행 (차단)** — 새 Supabase 키가 .env에 없고, 기존 SUPABASE_*는 Lifebook 운영 DB라 사용 금지. 키 입력 즉시 실행 가능: 가입 → 프로젝트 → samples/sample-handover.txt 업로드 → done 확인.
+5. **채점 분산 관찰** — 같은 샘플·프롬프트인데 어제 누락률 11.1%, 오늘 0%. 심판 LLM의 핵심 정보 카운트가 비결정적. 골든셋 10개로 늘리면 평균이 안정되지만, 버전 비교 시 **같은 날 같은 캐시 기준으로 비교**할 것 (compare가 이를 보장).
+
+---
+
 # 🏁 전체 요약 (사용자 기상 후 읽을 것)
 
-## 상태: Phase 0 코드 완료 + Phase 1 (1-1~1-6) 전체 완료
+## 상태: Phase 0 코드 + Phase 1 전체 + 골든셋 반복 도구(1-7) 완료
 
-커밋 7개, 빌드·vitest 13개·CLI 회귀 전부 통과. 실 Claude API 테스트 3회/한도 5회.
+빌드·vitest 29개 전부 통과. 판단 3건(모델·after() 큐·print PDF)은 사용자 승인 완료.
 
 ## 지금 바로 해볼 수 있는 것 (키 입력 없이)
 ```
-npm run convert -- samples/sample-handover.txt   # Phase 0 변환 (ANTHROPIC_API_KEY 사용)
-npm run evaluate -- sample-handover              # 채점 (누락률 11.1%, 환각 0 재현)
-npm test                                         # 단위 테스트 13개
+npm run compare -- structure-v1                  # 골든셋 배치 변환+채점 (캐시 덕에 재실행 무료)
+npm run report                                   # 섹션별 누락 집계 (호출 0회)
+npm test                                         # 단위 테스트 29개
 npm run dev                                      # 웹 (Supabase 셋업 전엔 /login에 안내 표시)
 ```
 
 ## 깨어나서 해야 할 일 (우선순위순)
-1. **새 Supabase 프로젝트 생성** → `supabase/migrations/0001~0005` 순서대로 SQL Editor 실행 → `.env`에 3개 키 입력 (⚠️ 기존 .env의 SUPABASE_*는 Lifebook 것 — 재사용 금지)
-2. 웹 E2E: 가입 → 프로젝트 → **txt 트랜스크립트 업로드** → 자동 변환 → 에디터/보강 질문/공유 확인
-3. **OPENAI_API_KEY 발급** → 요청 시 Whisper STT 연동 (영상 업로드가 실제로 동작하게 됨)
-4. **Phase 0 본체**: 실제 인수인계 영상/트랜스크립트 10개 + 정답 문서 작성 → `npm run evaluate -- --all` → 누락률 <10%/환각 0까지 프롬프트 v2, v3 반복
-5. 모델 결정 확인: CLAUDE.md의 `claude-sonnet-4-20250514`가 **2026-06-15 retire**라 `claude-sonnet-4-6`으로 교체해 둠 (`HANDOVER_MODEL` env로 변경 가능)
+1. **⚠️ .env 확인** — OPENAI_API_KEY가 .env에 없음 (넣었다고 하셨으나 미반영, .env 수정일 6/9). 새 Supabase 키(NEXT_PUBLIC_SUPABASE_*)도 없음
+2. **새 Supabase 프로젝트 생성** → `supabase/migrations/0001~0005` 순서대로 SQL Editor 실행 → `.env`에 3개 키 입력 (⚠️ 기존 .env의 SUPABASE_*는 Lifebook 것 — 재사용 금지)
+3. 웹 E2E: 가입 → 프로젝트 → **txt 트랜스크립트 업로드** → 자동 변환 → 에디터/보강 질문/공유 확인 (영상 업로드는 OPENAI_API_KEY 추가 시 자동으로 실 Whisper 동작)
+4. **Phase 0 본체**: 실 트랜스크립트 10개(samples/) + 정답 문서(golden/) → `npm run compare -- structure-v1` 기준선 → structure-v2 작성·레지스트리 등록 → `npm run compare -- structure-v1 structure-v2` → `npm run report`로 반복 누락 섹션 확인 → 누락률 <10%/환각 0까지 반복
 
 ## 다음 빌드 세션
 - Phase 2-1 결제(토스), 2-2 마스킹+30일 삭제 cron, 2-3 랜딩 페이지 (지시 범위 밖이라 미진행)
-- 후속 TODO: Whisper 연동, 서버 사이드 PDF(한글 폰트+키프레임), 작업 큐(Inngest) 이전, 에디터 키프레임 교체 UI
+- 후속 TODO: **실영상 STT 시 Vercel 타임아웃 → Inngest 전환**, Whisper 25MB 초과 시 ffmpeg 오디오 추출, 서버 사이드 PDF(한글 폰트+키프레임), 에디터 키프레임 교체 UI

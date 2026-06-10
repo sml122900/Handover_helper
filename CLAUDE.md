@@ -101,7 +101,7 @@ MVP 범위 엄수: 팀 워크스페이스, 실시간 녹음, 다국어, 모바�
 DB/Auth/Storage: Supabase (Postgres, Auth, Storage)
 녹화: 브라우저 MediaRecorder API (화면+마이크), 설치형 앱 없음
 STT: OpenAI Whisper API (한국어) — 추후 국내 STT로 교체 가능하도록 인터페이스 분리
-구조화 AI: Anthropic Claude API (claude-sonnet-4-20250514), JSON 스키마 출력
+구조화 AI: Anthropic Claude API (claude-sonnet-4-6), JSON 스키마 출력 — `HANDOVER_MODEL` env로 override 가능
 키프레임 추출: ffmpeg (장면 전환 감지), 서버리스 함수에서 실행
 에디터: Tiptap
 배포: Vercel + Supabase. 영상 처리 등 장시간 작업은 큐 기반 비동기 (Supabase Edge Functions 또는 Inngest)

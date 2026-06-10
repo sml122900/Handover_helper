@@ -14,6 +14,13 @@ export interface Transcript {
   source: "whisper" | "text-file" | "mock";
 }
 
+export interface SttInput {
+  /** 미디어 파일 바이트 (CLI: 파일 읽기, 파이프라인: Storage 다운로드) */
+  data: Uint8Array;
+  /** 확장자 포함 파일명 — Whisper가 포맷 판별에 사용 */
+  filename: string;
+}
+
 export interface SttProvider {
-  transcribe(filePath: string): Promise<Transcript>;
+  transcribe(input: SttInput): Promise<Transcript>;
 }

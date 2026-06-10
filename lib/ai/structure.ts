@@ -1,10 +1,9 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { DocumentSchema, type HandoverDocument } from "./schema";
-import { STRUCTURE_SYSTEM_PROMPT, buildUserPrompt, PROMPT_VERSION } from "./prompts/structure-v1";
+import { getStructurePrompt } from "./prompts";
 
-// CLAUDE.md 명시 모델 claude-sonnet-4-20250514 는 2026-06-15 retire 예정 → 후속 alias 사용.
-// (PROGRESS.md 판단 기록 참조. 변경 원하면 HANDOVER_MODEL 환경변수로 override)
+// 모델: claude-sonnet-4-6 (사용자 승인 — 구 claude-sonnet-4-20250514 는 2026-06-15 retire)
 export const STRUCTURE_MODEL = process.env.HANDOVER_MODEL ?? "claude-sonnet-4-6";
 
 // 비용 가드: 트랜스크립트 길이 상한 (약 2시간 분량 한국어 발화 여유치)
@@ -21,7 +20,11 @@ export interface StructureResult {
   };
 }
 
-export async function structureTranscript(transcriptText: string): Promise<StructureResult> {
+export async function structureTranscript(
+  transcriptText: string,
+  opts?: { promptVersion?: string }
+): Promise<StructureResult> {
+  const prompt = getStructurePrompt(opts?.promptVersion);
   if (transcriptText.trim().length === 0) {
     throw new Error("트랜스크립트가 비어 있습니다.");
   }
@@ -40,8 +43,8 @@ export async function structureTranscript(transcriptText: string): Promise<Struc
       const response = await client.messages.parse({
         model: STRUCTURE_MODEL,
         max_tokens: 16000,
-        system: STRUCTURE_SYSTEM_PROMPT,
-        messages: [{ role: "user", content: buildUserPrompt(transcriptText) }],
+        system: prompt.system,
+        messages: [{ role: "user", content: prompt.buildUserPrompt(transcriptText) }],
         output_config: { format: zodOutputFormat(DocumentSchema) },
       });
 
@@ -57,7 +60,7 @@ export async function structureTranscript(transcriptText: string): Promise<Struc
         document,
         meta: {
           model: STRUCTURE_MODEL,
-          promptVersion: PROMPT_VERSION,
+          promptVersion: prompt.version,
           inputTokens: response.usage.input_tokens,
           outputTokens: response.usage.output_tokens,
           attempts: attempt,

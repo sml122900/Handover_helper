@@ -7,6 +7,8 @@
   "scripts": {
     "convert": "tsx scripts/convert.ts",
     "evaluate": "tsx scripts/evaluate.ts",
+    "compare": "tsx scripts/compare-prompts.ts",
+    "report": "tsx scripts/report-misses.ts",
     "typecheck": "tsc --noEmit",
     "dev": "next dev",
     "build": "next build",
