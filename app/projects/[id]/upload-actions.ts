@@ -7,7 +7,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { processVideo } from "@/lib/pipeline/process-video";
 import { checkUploadAllowed, FREE_PLAN } from "@/lib/plan";
 
-const ALLOWED_EXTS = new Set(["mp4", "webm", "m4a", "txt"]);
+const ALLOWED_EXTS = new Set(["mp4", "webm", "m4a", "mov", "txt"]);
 
 export type PrepareUploadResult =
   | { ok: true; videoId: string; signedUrl: string; token: string; path: string }
@@ -35,7 +35,7 @@ export async function prepareUpload(args: {
 
   const ext = args.fileName.split(".").pop()?.toLowerCase() ?? "";
   if (!ALLOWED_EXTS.has(ext)) {
-    return { ok: false, error: "지원 형식: mp4, webm, m4a (영상/오디오) 또는 txt (트랜스크립트)" };
+    return { ok: false, error: "지원 형식: mp4, mov, webm, m4a (영상/오디오) 또는 txt (트랜스크립트)" };
   }
 
   // 비용 가드: 계정 전체 누적 분 (실패 영상 제외) — STT/LLM 호출 전 차단

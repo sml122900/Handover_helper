@@ -45,9 +45,11 @@ export default async function SharePage(props: { params: Promise<{ token: string
   }
   // 작성자 편집 HTML을 제3자에게 보여주므로 sanitize (XSS 방지)
   const safeHtml = sanitizeHtml(html, {
-    allowedTags: ["h1", "h2", "h3", "p", "ul", "ol", "li", "strong", "em", "mark", "br", "a"],
-    allowedAttributes: { a: ["href"] },
+    allowedTags: ["h1", "h2", "h3", "p", "ul", "ol", "li", "strong", "em", "mark", "code", "br", "a", "img"],
+    allowedAttributes: { a: ["href"], img: ["src", "alt", "style"] },
     allowedSchemes: ["http", "https"],
+    // /api/keyframes/* 경로 허용 (상대 경로 — 스킴 없음)
+    allowedSchemesAppliedToAttributes: ["href"],
   });
 
   return (

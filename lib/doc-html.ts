@@ -1,8 +1,9 @@
 import type { HandoverDocument } from "./ai/schema";
 
 // 구조화 문서(JSON) → 에디터 초기 HTML (8섹션 구조 유지, 스키마 v2)
-// needs_review 항목은 <mark>로 감싸 Tiptap Highlight로 노란 하이라이트
-// inferred(AI 보완) 항목은 <mark>[AI 보완] …</mark> — 작성자가 확인 후 mark 해제/수정
+// needs_review 항목은 <mark>로 감싸 왼쪽 보더 하이라이트
+// inferred(AI 보완) 항목은 <mark><code>[AI 보완]</code> …</mark>
+// keyframeUrlMap: 절차 step 번호 → 키프레임 이미지 URL (없으면 이미지 미삽입)
 
 function esc(s: string): string {
   return s.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
@@ -17,9 +18,13 @@ function fmt(sec: number): string {
 function item(
   text: string,
   meta: { confidence: "high" | "needs_review"; inferred?: boolean },
-  ts: { start: number; end: number } | null
+  ts: { start: number; end: number } | null,
+  imgUrl?: string
 ): string {
   const suffix = ts ? ` <em>(영상 ${fmt(ts.start)}~${fmt(ts.end)})</em>` : "";
+  const imgHtml = imgUrl
+    ? `<img src="${imgUrl}" alt="키프레임" style="max-width:100%;margin:4px 0;border-radius:4px;">`
+    : "";
   let body = text;
   if (meta.inferred) {
     // code 마크 = 에디터에서 초록 pill 스타일 ([AI 보완] 라벨 전용 — strong은 절차 제목과 충돌)
@@ -27,10 +32,13 @@ function item(
   } else if (meta.confidence === "needs_review") {
     body = `<mark>${text} [확인 필요]</mark>`;
   }
-  return `<li>${body}${suffix}</li>`;
+  return `<li>${body}${suffix}${imgHtml ? `<br>${imgHtml}` : ""}</li>`;
 }
 
-export function documentToHtml(doc: HandoverDocument): string {
+export function documentToHtml(
+  doc: HandoverDocument,
+  keyframeUrlMap?: Map<number, string>
+): string {
   const parts: string[] = [];
 
   parts.push("<h2>1. 업무 개요</h2><ul>");
@@ -49,8 +57,9 @@ export function documentToHtml(doc: HandoverDocument): string {
   parts.push("<h2>2. 절차</h2>");
   parts.push(doc.procedures.length === 0 ? "<p>내용 없음</p>" : "<ol>");
   for (const p of doc.procedures) {
+    const imgUrl = keyframeUrlMap?.get(p.step);
     parts.push(
-      item(`<strong>${esc(p.title)}</strong> — ${esc(p.details)}`, p, p.sourceTimestamp)
+      item(`<strong>${esc(p.title)}</strong> — ${esc(p.details)}`, p, p.sourceTimestamp, imgUrl)
     );
   }
   if (doc.procedures.length > 0) parts.push("</ol>");

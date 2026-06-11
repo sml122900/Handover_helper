@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Highlight from "@tiptap/extension-highlight";
+import Image from "@tiptap/extension-image";
 import { saveDocumentHtml } from "./actions";
 
 type SaveState = "saved" | "saving" | "dirty" | "error";
@@ -20,7 +21,7 @@ export function DocumentEditor({
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const editor = useEditor({
-    extensions: [StarterKit, Highlight],
+    extensions: [StarterKit, Highlight, Image.configure({ inline: false })],
     content: initialHtml,
     immediatelyRender: false,
     editorProps: {
@@ -35,7 +36,8 @@ export function DocumentEditor({
           "[&_em]:text-xs [&_em]:italic [&_em]:text-[var(--accent)] " +
           // [AI 보완] 라벨(code): 초록 테두리형 pill
           "[&_code]:rounded-full [&_code]:border [&_code]:border-[var(--green)] [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:text-[11px] [&_code]:font-bold [&_code]:text-[var(--green)] " +
-          "[&_p]:text-[var(--text)] [&_li]:text-[var(--text)] [&_strong]:text-[var(--text)]",
+          "[&_p]:text-[var(--text)] [&_li]:text-[var(--text)] [&_strong]:text-[var(--text)] " +
+          "[&_img]:max-w-full [&_img]:rounded [&_img]:mt-1",
       },
     },
     onUpdate: () => {
@@ -69,6 +71,21 @@ export function DocumentEditor({
     }
     window.addEventListener("handover:append-section", onAppend);
     return () => window.removeEventListener("handover:append-section", onAppend);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editor]);
+
+  // 키프레임 변경 시 KeyframeManager가 새 HTML 전달 → 에디터 전체 교체
+  useEffect(() => {
+    function onSetContent(e: Event) {
+      const html = (e as CustomEvent<string>).detail;
+      if (!editor) return;
+      editor.commands.setContent(html);
+      setSaveState("dirty");
+      if (timerRef.current) clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(save, 2000);
+    }
+    window.addEventListener("handover:set-content", onSetContent);
+    return () => window.removeEventListener("handover:set-content", onSetContent);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editor]);
 

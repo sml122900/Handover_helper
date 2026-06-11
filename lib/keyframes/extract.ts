@@ -10,8 +10,9 @@ const execFileAsync = promisify(execFile);
 // 바이너리: ffmpeg-static (npm 의존성, 전역 설치 X)
 // TODO(배포): Vercel 서버리스 용량/시간 한계 → 별도 작업 큐(Inngest 등)로 이전 검토
 
-const SCENE_THRESHOLD = 0.3;
-const MAX_KEYFRAMES = 30;
+// 0.15: 실물 촬영(폰 손떨림) 대응 — 화면 녹화(0.3)보다 낮춰 주요 장면 검출 개선
+const SCENE_THRESHOLD = 0.15;
+const MAX_KEYFRAMES = 60;
 
 export interface ExtractedFrame {
   timestampSeconds: number;
