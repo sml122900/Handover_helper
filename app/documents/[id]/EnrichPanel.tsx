@@ -20,7 +20,7 @@ export function EnrichPanel({
 
   if (questions.length === 0) {
     return (
-      <div className="rounded-lg border border-zinc-800 bg-zinc-900/40 p-4 text-sm text-zinc-500">
+      <div className="rounded-lg border border-[#2A3140] bg-[#1A1F2B] p-4 text-sm text-[#C9C7C2]">
         보강 질문이 없습니다. 문서가 충분히 채워졌거나, 질문 생성 전입니다.
       </div>
     );
@@ -47,16 +47,18 @@ export function EnrichPanel({
   }
 
   return (
-    <div className="rounded-lg border border-zinc-800 bg-zinc-900/40 p-4">
-      <h2 className="mb-1 text-sm font-semibold text-zinc-200">AI 보강 질문</h2>
-      <p className="mb-4 text-xs text-zinc-500">
+    <div className="rounded-lg border border-[#2A3140] bg-[#1A1F2B] p-4">
+      <h2 className="mb-1 text-sm font-semibold text-[#E8E6E0]">AI 보강 질문</h2>
+      <p className="mb-4 text-xs text-[#C9C7C2]">
         영상에서 빠졌거나 불확실한 부분입니다. 답하면 문서에 반영됩니다.
       </p>
       <ul className="flex flex-col gap-3">
         {questions.map((q, i) => (
-          <li key={i} className="rounded-md border border-zinc-800 p-3">
-            <p className="text-xs text-zinc-500">[{q.section}]</p>
-            <p className={`mt-1 text-sm ${q.answered ? "text-zinc-500 line-through" : "text-zinc-200"}`}>
+          <li key={i} className="rounded-md border border-[#2A3140] p-3">
+            <span className="inline-block rounded-full bg-[#FFB454] px-2 py-0.5 text-[11px] font-bold text-[#1A1208]">
+              {q.section}
+            </span>
+            <p className={`mt-1.5 text-sm ${q.answered ? "text-[#C9C7C2] line-through" : "text-[#E8E6E0]"}`}>
               {q.question}
             </p>
             {q.answered ? (
@@ -99,7 +101,7 @@ export function EnrichPanel({
                   setAnswer("");
                   setError(null);
                 }}
-                className="mt-2 text-xs text-zinc-400 underline hover:text-zinc-200"
+                className="mt-2 text-xs text-[#C9C7C2] underline hover:text-white"
               >
                 답하기
               </button>

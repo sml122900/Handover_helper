@@ -22,7 +22,8 @@ function item(
   const suffix = ts ? ` <em>(영상 ${fmt(ts.start)}~${fmt(ts.end)})</em>` : "";
   let body = text;
   if (meta.inferred) {
-    body = `<mark><strong>[AI 보완]</strong> ${text} — 작성자 확인 필요</mark>`;
+    // code 마크 = 에디터에서 초록 pill 스타일 ([AI 보완] 라벨 전용 — strong은 절차 제목과 충돌)
+    body = `<mark><code>[AI 보완]</code> ${text} — 작성자 확인 필요</mark>`;
   } else if (meta.confidence === "needs_review") {
     body = `<mark>${text} [확인 필요]</mark>`;
   }

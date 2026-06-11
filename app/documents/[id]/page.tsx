@@ -38,7 +38,7 @@ export default async function DocumentPage(props: { params: Promise<{ id: string
     <main className="mx-auto max-w-6xl px-6 py-10">
       <Link
         href={`/projects/${doc.project_id}`}
-        className="text-sm text-zinc-400 hover:text-zinc-200"
+        className="text-sm text-[#C9C7C2] hover:text-white"
       >
         ← 프로젝트로
       </Link>

@@ -27,11 +27,16 @@ export function DocumentEditor({
     editorProps: {
       attributes: {
         class:
-          "max-w-none min-h-[60vh] rounded-lg border border-zinc-800 bg-zinc-900/40 px-6 py-4 text-sm leading-relaxed focus:outline-none " +
+          "max-w-none min-h-[60vh] rounded-lg border border-[#2A3140] bg-[#161B22] px-6 py-4 text-sm leading-relaxed focus:outline-none " +
           "[&_ul]:list-disc [&_ol]:list-decimal [&_ul]:pl-5 [&_ol]:pl-5 [&_li]:my-1 " +
-          "[&_mark]:bg-yellow-300 [&_mark]:text-zinc-900 [&_mark]:rounded [&_mark]:px-1 " +
-          "[&_h2]:text-zinc-100 [&_h2]:mt-6 [&_h2]:mb-2 [&_h2]:text-lg [&_h2]:font-semibold " +
-          "[&_p]:text-zinc-300 [&_li]:text-zinc-300 [&_em]:text-zinc-500 [&_strong]:text-zinc-100",
+          // needs_review·AI 보완: 노란 배경 대신 왼쪽 3px 보더 + 옅은 배경 (눈 피로 감소)
+          "[&_mark]:bg-[#FFB454]/[0.08] [&_mark]:text-[#E8E6E0] [&_mark]:border-l-[3px] [&_mark]:border-l-[#FFB454] [&_mark]:pl-2 [&_mark]:py-0.5 [&_mark]:rounded-r " +
+          "[&_h2]:text-[#E8E6E0] [&_h2]:mt-10 [&_h2]:mb-3 [&_h2]:text-xl [&_h2]:font-semibold " +
+          // 타임스탬프(em): 본문과 분리 — 작은 폰트 + accent + 이탤릭
+          "[&_em]:text-xs [&_em]:italic [&_em]:text-[#FFB454] " +
+          // [AI 보완] 라벨(code): 초록 테두리형 pill
+          "[&_code]:rounded-full [&_code]:border [&_code]:border-[#7FD8A4] [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:text-[11px] [&_code]:font-bold [&_code]:text-[#7FD8A4] " +
+          "[&_p]:text-[#E8E6E0] [&_li]:text-[#E8E6E0] [&_strong]:text-white",
       },
     },
     onUpdate: () => {
@@ -81,7 +86,7 @@ export function DocumentEditor({
     <div>
       <div className="mb-2 flex justify-end">
         <span
-          className={`text-xs ${saveState === "error" ? "text-red-400" : "text-zinc-500"}`}
+          className={`text-xs ${saveState === "error" ? "text-red-400" : "text-[#C9C7C2]"}`}
         >
           {label[saveState]}
         </span>
