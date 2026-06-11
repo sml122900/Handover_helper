@@ -1,7 +1,7 @@
 import "server-only";
 import { createAdminClient } from "../supabase/admin";
 import { parseTranscriptText, transcriptToPromptText } from "../stt/parse-txt";
-import { getSttProvider } from "../stt";
+import { processAudio } from "../audio/processor";
 import { structureTranscript } from "../ai/structure";
 import { generateEnrichQuestions } from "../ai/enrich";
 import { extractKeyframes } from "../keyframes/extract";
@@ -185,10 +185,11 @@ async function getTranscript(
   if (storagePath.endsWith(".txt") || storagePath.endsWith(".md")) {
     return parseTranscriptText(await data.text());
   }
-  // Whisper STT (OPENAI_API_KEY 없거나 HANDOVER_STT=mock 이면 에러 → failed 처리)
+
+  // 영상/오디오: processAudio() 경유 — ffmpeg mp3 추출 + 25MB 초과 시 청크 분할
+  // processAudio는 내부에서 getSttProvider()를 호출 (HANDOVER_STT 또는 API 키 자동 선택)
+  const ext = storagePath.split(".").pop() ?? "mp4";
   const filename = storagePath.split("/").pop() ?? storagePath;
-  return getSttProvider().transcribe({
-    data: new Uint8Array(await data.arrayBuffer()),
-    filename,
-  });
+  const inputData = Buffer.from(await data.arrayBuffer());
+  return processAudio(inputData, ext, filename);
 }
