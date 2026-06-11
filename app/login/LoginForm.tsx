@@ -12,17 +12,17 @@ export function LoginForm() {
 
   return (
     <form action={formAction} className="flex flex-col gap-4">
-      <label className="flex flex-col gap-1 text-sm text-zinc-300">
+      <label className="flex flex-col gap-1 text-sm text-[var(--text)]">
         이메일
         <input
           name="email"
           type="email"
           required
           autoComplete="email"
-          className="rounded-md border border-zinc-700 bg-zinc-900 px-3 py-2 text-zinc-100 focus:border-zinc-400 focus:outline-none"
+          className="rounded-md border border-[var(--card-border)] bg-[var(--card)] px-3 py-2 text-[var(--text)] placeholder:text-[var(--text-sub)] focus:border-[var(--text-sub)] focus:outline-none"
         />
       </label>
-      <label className="flex flex-col gap-1 text-sm text-zinc-300">
+      <label className="flex flex-col gap-1 text-sm text-[var(--text)]">
         비밀번호 (8자 이상)
         <input
           name="password"
@@ -30,7 +30,7 @@ export function LoginForm() {
           required
           minLength={8}
           autoComplete={mode === "login" ? "current-password" : "new-password"}
-          className="rounded-md border border-zinc-700 bg-zinc-900 px-3 py-2 text-zinc-100 focus:border-zinc-400 focus:outline-none"
+          className="rounded-md border border-[var(--card-border)] bg-[var(--card)] px-3 py-2 text-[var(--text)] placeholder:text-[var(--text-sub)] focus:border-[var(--text-sub)] focus:outline-none"
         />
       </label>
 
@@ -40,7 +40,7 @@ export function LoginForm() {
       <button
         type="submit"
         disabled={pending}
-        className="rounded-md bg-white py-2 font-medium text-zinc-900 hover:bg-zinc-200 disabled:opacity-50"
+        className="rounded-md bg-[var(--text)] py-2 font-medium text-[var(--bg)] hover:opacity-80 disabled:opacity-50"
       >
         {pending ? "처리 중…" : mode === "login" ? "로그인" : "가입하기"}
       </button>
@@ -48,7 +48,7 @@ export function LoginForm() {
       <button
         type="button"
         onClick={() => setMode(mode === "login" ? "signup" : "login")}
-        className="text-sm text-zinc-400 underline hover:text-zinc-200"
+        className="text-sm text-[var(--text-sub)] underline hover:text-[var(--text)]"
       >
         {mode === "login" ? "계정이 없나요? 가입하기" : "이미 계정이 있나요? 로그인"}
       </button>

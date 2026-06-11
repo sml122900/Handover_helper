@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { ThemeProvider } from "./components/ThemeProvider";
+import { ThemeToggle } from "./components/ThemeToggle";
 
 export const metadata: Metadata = {
   title: "Handover — 인수인계 영상을 문서로",
@@ -8,8 +10,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ko" className="dark">
-      <body className="min-h-screen antialiased">{children}</body>
+    <html lang="ko" suppressHydrationWarning>
+      <body className="min-h-screen antialiased">
+        <ThemeProvider>
+          <header className="sticky top-0 z-50 flex items-center justify-end border-b border-[var(--card-border)] bg-[var(--bg)] px-6 py-2">
+            <ThemeToggle />
+          </header>
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   );
 }

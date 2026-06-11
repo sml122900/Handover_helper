@@ -18,7 +18,7 @@ export default function LoginPage() {
   }
   return (
     <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-6">
-      <h1 className="mb-8 text-center text-2xl font-bold text-white">Handover 로그인</h1>
+      <h1 className="mb-8 text-center text-2xl font-bold text-[var(--text)]">Handover 로그인</h1>
       <LoginForm />
     </main>
   );

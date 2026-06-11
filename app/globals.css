@@ -1,11 +1,37 @@
 @import "tailwindcss";
 
-:root {
+/* ── 다크 토큰 ─────────────────────────────── */
+:root,
+.dark {
   color-scheme: dark;
+  --bg: #0a0d11;
+  --card: #161b22;
+  --card-border: #2a3140;
+  --card-border-hover: #3d4760;
+  --text: #e8e6e0;
+  --text-sub: #c9c7c2;
+  --accent: #ffb454;
+  --accent-bg: rgb(255 180 84 / 0.08);
+  --green: #7fd8a4;
+  --green-text: #1a1208;
+}
+
+/* ── 라이트 토큰 ────────────────────────────── */
+.light {
+  color-scheme: light;
+  --bg: #f5f4f0;
+  --card: #ffffff;
+  --card-border: #e2ddd5;
+  --card-border-hover: #c8c2b8;
+  --text: #1a1714;
+  --text-sub: #4a4540;
+  --accent: #b8860b;
+  --accent-bg: rgb(184 134 11 / 0.08);
+  --green: #1a7a45;
+  --green-text: #f0fff4;
 }
 
 body {
-  /* 가독성 기준: 다크 배경 #0A0D11, 본문 #E8E6E0 이상 밝기 */
-  background-color: #0a0d11;
-  color: #e8e6e0;
+  background-color: var(--bg);
+  color: var(--text);
 }

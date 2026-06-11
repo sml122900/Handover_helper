@@ -48,15 +48,15 @@ export function ShareControls({
   }
 
   return (
-    <div className="rounded-lg border border-zinc-800 bg-zinc-900/40 p-4">
-      <h2 className="mb-1 text-sm font-semibold text-zinc-200">공유</h2>
-      <p className="mb-3 text-xs text-zinc-500">읽기 전용 링크를 만들어 후임자에게 보내세요.</p>
+    <div className="rounded-lg border border-[var(--card-border)] bg-[var(--card)] p-4">
+      <h2 className="mb-1 text-sm font-semibold text-[var(--text)]">공유</h2>
+      <p className="mb-3 text-xs text-[var(--text-sub)]">읽기 전용 링크를 만들어 후임자에게 보내세요.</p>
 
       <div className="flex gap-2">
         <select
           value={expiry}
           onChange={(e) => setExpiry(e.target.value)}
-          className="rounded-md border border-zinc-700 bg-zinc-950 px-2 py-1.5 text-xs text-zinc-200"
+          className="rounded-md border border-[var(--card-border)] bg-[var(--bg)] px-2 py-1.5 text-xs text-[var(--text)]"
         >
           <option value="7">7일 후 만료</option>
           <option value="30">30일 후 만료</option>
@@ -66,7 +66,7 @@ export function ShareControls({
         <button
           onClick={() => void create()}
           disabled={busy}
-          className="rounded-md bg-white px-3 py-1.5 text-xs font-medium text-zinc-900 hover:bg-zinc-200 disabled:opacity-50"
+          className="rounded-md bg-[var(--text)] px-3 py-1.5 text-xs font-medium text-[var(--bg)] hover:opacity-80 disabled:opacity-50"
         >
           {busy ? "생성 중…" : "링크 만들기"}
         </button>
@@ -78,9 +78,9 @@ export function ShareControls({
           {links.map((l) => {
             const expired = l.expires_at !== null && new Date(l.expires_at) < new Date();
             return (
-              <li key={l.id} className="rounded-md border border-zinc-800 p-2 text-xs">
+              <li key={l.id} className="rounded-md border border-[var(--card-border)] p-2 text-xs">
                 <div className="flex items-center justify-between gap-2">
-                  <span className={expired ? "text-red-400" : "text-zinc-400"}>
+                  <span className={expired ? "text-red-400" : "text-[var(--text-sub)]"}>
                     {expired
                       ? "만료됨"
                       : l.expires_at
@@ -90,7 +90,7 @@ export function ShareControls({
                   <div className="flex gap-2">
                     <button
                       onClick={() => void copy(l)}
-                      className="text-zinc-300 underline hover:text-white"
+                      className="text-[var(--text-sub)] underline hover:text-[var(--text)]"
                     >
                       {copiedId === l.id ? "복사됨!" : "링크 복사"}
                     </button>

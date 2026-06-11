@@ -24,8 +24,8 @@ export default async function SharePage(props: { params: Promise<{ token: string
   if (link.expires_at && new Date(link.expires_at) < new Date()) {
     return (
       <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-6 text-center">
-        <p className="text-lg text-zinc-200">이 공유 링크는 만료되었습니다.</p>
-        <p className="mt-2 text-sm text-zinc-500">문서 작성자에게 새 링크를 요청하세요.</p>
+        <p className="text-lg text-[var(--text)]">이 공유 링크는 만료되었습니다.</p>
+        <p className="mt-2 text-sm text-[var(--text-sub)]">문서 작성자에게 새 링크를 요청하세요.</p>
       </main>
     );
   }
@@ -53,32 +53,33 @@ export default async function SharePage(props: { params: Promise<{ token: string
   return (
     <main className="mx-auto max-w-3xl px-6 py-10 print:py-0">
       <div className="mb-6 flex items-center justify-between print:hidden">
-        <span className="text-sm text-zinc-500">읽기 전용 공유 문서</span>
+        <span className="text-sm text-[var(--text-sub)]">읽기 전용 공유 문서</span>
         <PrintButton />
       </div>
 
       <article
-        className="rounded-lg border border-zinc-800 bg-zinc-900/40 px-6 py-4 text-sm leading-relaxed text-zinc-300
-          [&_h2]:mt-6 [&_h2]:mb-2 [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:text-zinc-100
+        className="rounded-lg border border-[var(--card-border)] bg-[var(--card)] px-6 py-4 text-sm leading-relaxed text-[var(--text)]
+          [&_h2]:mt-8 [&_h2]:mb-3 [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-[var(--text)]
           [&_ul]:list-disc [&_ol]:list-decimal [&_ul]:pl-5 [&_ol]:pl-5 [&_li]:my-1
-          [&_mark]:rounded [&_mark]:bg-yellow-300 [&_mark]:px-1 [&_mark]:text-zinc-900
-          [&_em]:text-zinc-500 [&_strong]:text-zinc-100
+          [&_mark]:bg-[var(--accent-bg)] [&_mark]:border-l-[3px] [&_mark]:border-l-[var(--accent)] [&_mark]:pl-2 [&_mark]:py-0.5 [&_mark]:rounded-r [&_mark]:text-[var(--text)]
+          [&_em]:text-xs [&_em]:italic [&_em]:text-[var(--accent)]
+          [&_strong]:text-[var(--text)] [&_p]:text-[var(--text)] [&_li]:text-[var(--text)]
           print:border-0 print:bg-white print:text-zinc-900
           print:[&_h2]:text-zinc-900 print:[&_strong]:text-zinc-900 print:[&_em]:text-zinc-600 print:[&_li]:text-zinc-900 print:[&_p]:text-zinc-900"
         dangerouslySetInnerHTML={{ __html: safeHtml }}
       />
 
       {/* 가입 유도 배너 (바이럴 루프) */}
-      <div className="mt-8 rounded-lg border border-zinc-700 bg-zinc-900 p-6 text-center print:hidden">
-        <p className="text-zinc-200">
+      <div className="mt-8 rounded-lg border border-[var(--card-border)] bg-[var(--card)] p-6 text-center print:hidden">
+        <p className="text-[var(--text)]">
           이 문서는 <strong>Handover</strong>로 만들었습니다.
         </p>
-        <p className="mt-1 text-sm text-zinc-500">
+        <p className="mt-1 text-sm text-[var(--text-sub)]">
           퇴사 전 30분 녹화로, 한 달치 인수인계를 끝내세요.
         </p>
         <Link
           href="/login"
-          className="mt-4 inline-block rounded-md bg-white px-5 py-2 text-sm font-medium text-zinc-900 hover:bg-zinc-200"
+          className="mt-4 inline-block rounded-md bg-[var(--text)] px-5 py-2 text-sm font-medium text-[var(--bg)] hover:opacity-80"
         >
           무료로 시작하기
         </Link>

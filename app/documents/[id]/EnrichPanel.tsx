@@ -20,7 +20,7 @@ export function EnrichPanel({
 
   if (questions.length === 0) {
     return (
-      <div className="rounded-lg border border-[#2A3140] bg-[#1A1F2B] p-4 text-sm text-[#C9C7C2]">
+      <div className="rounded-lg border border-[var(--card-border)] bg-[var(--card)] p-4 text-sm text-[var(--text-sub)]">
         보강 질문이 없습니다. 문서가 충분히 채워졌거나, 질문 생성 전입니다.
       </div>
     );
@@ -35,7 +35,6 @@ export function EnrichPanel({
       setError(result.error);
       return;
     }
-    // 에디터에 삽입 요청
     window.dispatchEvent(
       new CustomEvent("handover:append-section", {
         detail: { section: result.section, text: result.text },
@@ -47,22 +46,22 @@ export function EnrichPanel({
   }
 
   return (
-    <div className="rounded-lg border border-[#2A3140] bg-[#1A1F2B] p-4">
-      <h2 className="mb-1 text-sm font-semibold text-[#E8E6E0]">AI 보강 질문</h2>
-      <p className="mb-4 text-xs text-[#C9C7C2]">
+    <div className="rounded-lg border border-[var(--card-border)] bg-[var(--card)] p-4">
+      <h2 className="mb-1 text-sm font-semibold text-[var(--text)]">AI 보강 질문</h2>
+      <p className="mb-4 text-xs text-[var(--text-sub)]">
         영상에서 빠졌거나 불확실한 부분입니다. 답하면 문서에 반영됩니다.
       </p>
       <ul className="flex flex-col gap-3">
         {questions.map((q, i) => (
-          <li key={i} className="rounded-md border border-[#2A3140] p-3">
-            <span className="inline-block rounded-full bg-[#FFB454] px-2 py-0.5 text-[11px] font-bold text-[#1A1208]">
+          <li key={i} className="rounded-md border border-[var(--card-border)] p-3">
+            <span className="inline-block rounded-full bg-[var(--accent)] px-2 py-0.5 text-[11px] font-bold text-[var(--green-text)]">
               {q.section}
             </span>
-            <p className={`mt-1.5 text-sm ${q.answered ? "text-[#C9C7C2] line-through" : "text-[#E8E6E0]"}`}>
+            <p className={`mt-1.5 text-sm ${q.answered ? "text-[var(--text-sub)] line-through" : "text-[var(--text)]"}`}>
               {q.question}
             </p>
             {q.answered ? (
-              <p className="mt-2 text-xs text-emerald-400">✓ 반영됨</p>
+              <p className="mt-2 text-xs text-emerald-500">✓ 반영됨</p>
             ) : openIndex === i ? (
               <div className="mt-2">
                 <textarea
@@ -71,13 +70,13 @@ export function EnrichPanel({
                   rows={3}
                   maxLength={2000}
                   placeholder="아는 대로 편하게 적어주세요. AI가 문서 문장으로 다듬어 넣습니다."
-                  className="w-full rounded-md border border-zinc-700 bg-zinc-950 px-2 py-1.5 text-sm text-zinc-100 focus:border-zinc-400 focus:outline-none"
+                  className="w-full rounded-md border border-[var(--card-border)] bg-[var(--bg)] px-2 py-1.5 text-sm text-[var(--text)] focus:border-[var(--text-sub)] focus:outline-none"
                 />
                 <div className="mt-2 flex gap-2">
                   <button
                     onClick={() => void submit(i)}
                     disabled={busy || answer.trim().length === 0}
-                    className="rounded-md bg-white px-3 py-1 text-xs font-medium text-zinc-900 hover:bg-zinc-200 disabled:opacity-50"
+                    className="rounded-md bg-[var(--text)] px-3 py-1 text-xs font-medium text-[var(--bg)] hover:opacity-80 disabled:opacity-50"
                   >
                     {busy ? "반영 중…" : "문서에 반영"}
                   </button>
@@ -87,7 +86,7 @@ export function EnrichPanel({
                       setAnswer("");
                       setError(null);
                     }}
-                    className="rounded-md border border-zinc-700 px-3 py-1 text-xs text-zinc-300 hover:bg-zinc-800"
+                    className="rounded-md border border-[var(--card-border)] px-3 py-1 text-xs text-[var(--text-sub)] hover:text-[var(--text)]"
                   >
                     취소
                   </button>
@@ -101,7 +100,7 @@ export function EnrichPanel({
                   setAnswer("");
                   setError(null);
                 }}
-                className="mt-2 text-xs text-[#C9C7C2] underline hover:text-white"
+                className="mt-2 text-xs text-[var(--text-sub)] underline hover:text-[var(--text)]"
               >
                 답하기
               </button>

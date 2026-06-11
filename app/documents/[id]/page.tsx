@@ -38,11 +38,11 @@ export default async function DocumentPage(props: { params: Promise<{ id: string
     <main className="mx-auto max-w-6xl px-6 py-10">
       <Link
         href={`/projects/${doc.project_id}`}
-        className="text-sm text-[#C9C7C2] hover:text-white"
+        className="text-sm text-[var(--text-sub)] hover:text-[var(--text)]"
       >
         ← 프로젝트로
       </Link>
-      <h1 className="mt-2 mb-6 text-2xl font-bold text-white">인수인계 문서</h1>
+      <h1 className="mt-2 mb-6 text-2xl font-bold text-[var(--text)]">인수인계 문서</h1>
 
       <div className="flex flex-col gap-8 lg:flex-row">
         <div className="min-w-0 flex-1">

@@ -22,11 +22,11 @@ export default async function ProjectsPage(props: {
   return (
     <main className="mx-auto max-w-3xl px-6 py-10">
       <header className="mb-8 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-white">내 프로젝트</h1>
-        <div className="flex items-center gap-3 text-sm text-zinc-400">
+        <h1 className="text-2xl font-bold text-[var(--text)]">내 프로젝트</h1>
+        <div className="flex items-center gap-3 text-sm text-[var(--text-sub)]">
           <span>{user?.email}</span>
           <form action={logout}>
-            <button className="rounded-md border border-zinc-700 px-3 py-1 hover:bg-zinc-900">
+            <button className="rounded-md border border-[var(--card-border)] px-3 py-1 text-[var(--text-sub)] hover:text-[var(--text)] hover:border-[var(--card-border-hover)]">
               로그아웃
             </button>
           </form>
@@ -39,9 +39,9 @@ export default async function ProjectsPage(props: {
           required
           maxLength={200}
           placeholder="새 인수인계 프로젝트 이름 (예: 주간 뉴스레터 발송)"
-          className="flex-1 rounded-md border border-zinc-700 bg-zinc-900 px-3 py-2 text-zinc-100 focus:border-zinc-400 focus:outline-none"
+          className="flex-1 rounded-md border border-[var(--card-border)] bg-[var(--card)] px-3 py-2 text-[var(--text)] placeholder:text-[var(--text-sub)] focus:border-[var(--text-sub)] focus:outline-none"
         />
-        <button className="rounded-md bg-white px-4 py-2 font-medium text-zinc-900 hover:bg-zinc-200">
+        <button className="rounded-md bg-[var(--text)] px-4 py-2 font-medium text-[var(--bg)] hover:opacity-80">
           만들기
         </button>
       </form>
@@ -56,17 +56,17 @@ export default async function ProjectsPage(props: {
           <li key={p.id}>
             <Link
               href={`/projects/${p.id}`}
-              className="block rounded-lg border border-zinc-800 bg-zinc-900/50 px-4 py-3 hover:border-zinc-600"
+              className="block rounded-lg border border-[var(--card-border)] bg-[var(--card)] px-4 py-3 hover:border-[var(--card-border-hover)]"
             >
-              <span className="font-medium text-zinc-100">{p.title}</span>
-              <span className="ml-3 text-xs text-zinc-500">
+              <span className="font-medium text-[var(--text)]">{p.title}</span>
+              <span className="ml-3 text-xs text-[var(--text-sub)]">
                 {new Date(p.created_at).toLocaleDateString("ko-KR")}
               </span>
             </Link>
           </li>
         ))}
         {(projects ?? []).length === 0 && (
-          <li className="rounded-lg border border-dashed border-zinc-800 px-4 py-8 text-center text-sm text-zinc-500">
+          <li className="rounded-lg border border-dashed border-[var(--card-border)] px-4 py-8 text-center text-sm text-[var(--text-sub)]">
             아직 프로젝트가 없습니다. 위에서 첫 프로젝트를 만들어 보세요.
           </li>
         )}

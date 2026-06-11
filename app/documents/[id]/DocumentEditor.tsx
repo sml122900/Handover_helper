@@ -9,7 +9,6 @@ import { saveDocumentHtml } from "./actions";
 type SaveState = "saved" | "saving" | "dirty" | "error";
 
 // Tiptap 에디터 — 8섹션 HTML 자유 편집 + 2초 디바운스 자동 저장
-// needs_review 항목은 <mark> = 노란 하이라이트
 export function DocumentEditor({
   documentId,
   initialHtml,
@@ -27,16 +26,16 @@ export function DocumentEditor({
     editorProps: {
       attributes: {
         class:
-          "max-w-none min-h-[60vh] rounded-lg border border-[#2A3140] bg-[#161B22] px-6 py-4 text-sm leading-relaxed focus:outline-none " +
+          "max-w-none min-h-[60vh] rounded-lg border border-[var(--card-border)] bg-[var(--card)] px-6 py-4 text-sm leading-relaxed focus:outline-none " +
           "[&_ul]:list-disc [&_ol]:list-decimal [&_ul]:pl-5 [&_ol]:pl-5 [&_li]:my-1 " +
-          // needs_review·AI 보완: 노란 배경 대신 왼쪽 3px 보더 + 옅은 배경 (눈 피로 감소)
-          "[&_mark]:bg-[#FFB454]/[0.08] [&_mark]:text-[#E8E6E0] [&_mark]:border-l-[3px] [&_mark]:border-l-[#FFB454] [&_mark]:pl-2 [&_mark]:py-0.5 [&_mark]:rounded-r " +
-          "[&_h2]:text-[#E8E6E0] [&_h2]:mt-10 [&_h2]:mb-3 [&_h2]:text-xl [&_h2]:font-semibold " +
-          // 타임스탬프(em): 본문과 분리 — 작은 폰트 + accent + 이탤릭
-          "[&_em]:text-xs [&_em]:italic [&_em]:text-[#FFB454] " +
+          // needs_review·AI 보완: 왼쪽 3px 보더 + 옅은 배경 (테마별 --accent, --accent-bg 사용)
+          "[&_mark]:bg-[var(--accent-bg)] [&_mark]:text-[var(--text)] [&_mark]:border-l-[3px] [&_mark]:border-l-[var(--accent)] [&_mark]:pl-2 [&_mark]:py-0.5 [&_mark]:rounded-r " +
+          "[&_h2]:text-[var(--text)] [&_h2]:mt-10 [&_h2]:mb-3 [&_h2]:text-xl [&_h2]:font-semibold " +
+          // 타임스탬프(em): accent색 + 작은 이탤릭
+          "[&_em]:text-xs [&_em]:italic [&_em]:text-[var(--accent)] " +
           // [AI 보완] 라벨(code): 초록 테두리형 pill
-          "[&_code]:rounded-full [&_code]:border [&_code]:border-[#7FD8A4] [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:text-[11px] [&_code]:font-bold [&_code]:text-[#7FD8A4] " +
-          "[&_p]:text-[#E8E6E0] [&_li]:text-[#E8E6E0] [&_strong]:text-white",
+          "[&_code]:rounded-full [&_code]:border [&_code]:border-[var(--green)] [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:text-[11px] [&_code]:font-bold [&_code]:text-[var(--green)] " +
+          "[&_p]:text-[var(--text)] [&_li]:text-[var(--text)] [&_strong]:text-[var(--text)]",
       },
     },
     onUpdate: () => {
@@ -53,14 +52,12 @@ export function DocumentEditor({
     setSaveState(result.ok ? "saved" : "error");
   }
 
-  // 언마운트 시 타이머 정리
   useEffect(() => {
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
   }, []);
 
-  // EnrichPanel이 보낸 "섹션에 문장 추가" 이벤트 수신
   useEffect(() => {
     function onAppend(e: Event) {
       const { section, text } = (e as CustomEvent<{ section: string; text: string }>).detail;
@@ -86,7 +83,7 @@ export function DocumentEditor({
     <div>
       <div className="mb-2 flex justify-end">
         <span
-          className={`text-xs ${saveState === "error" ? "text-red-400" : "text-[#C9C7C2]"}`}
+          className={`text-xs ${saveState === "error" ? "text-red-400" : "text-[var(--text-sub)]"}`}
         >
           {label[saveState]}
         </span>
@@ -108,7 +105,6 @@ function appendToSection(
 
   const insertion = `<ul><li>${text} <em>(보강 답변)</em></li></ul>`;
   if (!target) {
-    // 섹션을 못 찾으면 문서 끝에 추가
     editor.commands.insertContentAt(editor.state.doc.content.size, insertion);
     return;
   }
