@@ -76,7 +76,7 @@ npm run evaluate -- --all                 # golden/ 전체 배치
 
 ### 실행 방법
 ```
-npm run dev    # http://localhost:3000 (Supabase 키 없으면 /login에 셋업 안내)
+npm run dev    # http://localhost:3010 (Supabase 키 없으면 /login에 셋업 안내)
 npm run build  # 프로덕션 빌드 검증
 ```
 
