@@ -23,6 +23,7 @@ async function ffmpegPath(): Promise<string> {
   const mod = await import("ffmpeg-static");
   const p = mod.default as unknown as string | null;
   if (!p) throw new Error("ffmpeg 바이너리를 찾을 수 없습니다 (ffmpeg-static).");
+  console.log("[ffmpeg] path:", p);
   return p;
 }
 

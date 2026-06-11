@@ -9,7 +9,7 @@ import {
   buildReflectUserPrompt,
 } from "./prompts/enrich-v2";
 
-// 보강 질문: 변환 직후 빈/불확실 섹션에 대해 3~5개 생성 → documents.enrich_questions(jsonb)
+// 보강 질문: 변환 직후 빈/불확실 섹션 + 직종 필수 누락 항목 → 5~7개 생성 → documents.enrich_questions(jsonb)
 
 export const EnrichQuestionSchema = z.object({
   section: z.string().describe("대상 섹션 이름"),
@@ -17,7 +17,7 @@ export const EnrichQuestionSchema = z.object({
 });
 
 export const EnrichQuestionsSchema = z.object({
-  questions: z.array(EnrichQuestionSchema).describe("3~5개"),
+  questions: z.array(EnrichQuestionSchema).describe("5~7개"),
 });
 
 export interface EnrichQuestion {
@@ -46,7 +46,7 @@ export async function generateEnrichQuestions(
   if (!response.parsed_output) throw new Error("보강 질문 생성 파싱 실패");
   return {
     questions: response.parsed_output.questions
-      .slice(0, 5)
+      .slice(0, 7)
       .map((q) => ({ ...q, answered: false })),
     usage: {
       model: STRUCTURE_MODEL,

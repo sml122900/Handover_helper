@@ -156,9 +156,14 @@ UI 테스트는 MVP에서 생략
 트랜스크립트에서 비밀번호/주민번호 패턴 자동 마스킹 후 저장
 공유 링크는 추측 불가능한 토큰 + 만료일 설정 가능
 
-현재 단계 (2026-06-11)
+현재 단계 (2026-06-12)
 Phase 0 도구 완비 + Phase 1 (업로드-변환-에디터-공유) 코드 완료. E2E 통과 (마이그레이션 적용됨).
 - 스키마 v2 (직종 보편형) + structure-v2가 운영 기본. v1 대비: 누락 3.7%→0%, 환각 0 유지
 - 채점: 체크리스트 기반 (checklist → evaluate/compare/report), 재현성 검증 완료. inferred는 환각 아님(별도 집계)
-- 남은 것: ① OPENAI_API_KEY 추가 시 실 Whisper 동작 ② Phase 0 본체 = 실 골든셋 10개(매장·현장 샘플 포함)로 누락률 <10%/환각 0까지 프롬프트 반복 ③ 실물 촬영 키프레임·모바일 카메라 동선 (PROGRESS.md 1-9 TODO)
+- 마스킹 정책: 개인식별정보(주민번호·신용카드)만 마스킹, 업무용 접근 정보(포스기PW·도어락)는 그대로
+- 보강 질문 (enrich-v2): 업무 유형 추론 기반 누락 감지 추가 → 섹션 부재 누락도 질문 생성. 5~7개
+- ffmpeg: serverExternalPackages로 번들 제외 완료. 33MB 영상 mp3 추출 확인
+- STT: GROQ_API_KEY + HANDOVER_STT=groq 세팅 시 Groq Whisper 자동 선택 동작
+- sample-01 합산 기준: 누락 7.0% (3/43), critical 2건, 환각 0 — 목표 <10% 달성
+- 남은 것: ① Groq STT 실 영상 E2E 전체 통과 확인 ② Phase 0 본체 = 골든셋 10개(매장·현장 포함)로 반복 ③ structure-v2 "업무 중요도: 높음" 환각 1건 보완 검토
 - Phase 2 (결제·마스킹 cron·랜딩)는 미착수. 상세 이력: PROGRESS.md

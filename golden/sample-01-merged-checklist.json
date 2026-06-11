@@ -1,0 +1,221 @@
+{
+  "promptVersion": "checklist-v2",
+  "model": "claude-sonnet-4-6",
+  "items": [
+    {
+      "fact": "근무지는 코엑스 팝업 매장이다.",
+      "section": "업무 개요",
+      "critical": true
+    },
+    {
+      "fact": "마감조 주요 업무는 안경·선글라스 판매, 고객 응대, 매장 청결 및 마감 관리이다.",
+      "section": "업무 개요",
+      "critical": true
+    },
+    {
+      "fact": "출근 시 업무용 핸드폰 비밀번호는 8351이다.",
+      "section": "절차",
+      "critical": true
+    },
+    {
+      "fact": "출근 시 카카오톡 팝업오프라인 채널에 '출근했습니다'라고 카톡을 전송해야 한다.",
+      "section": "연락·보고",
+      "critical": true
+    },
+    {
+      "fact": "출근 시 서랍장 제일 아래 칸에서 허리띠를 꺼내 착용해야 한다.",
+      "section": "절차",
+      "critical": false
+    },
+    {
+      "fact": "출근 시 안경을 착용해야 한다(브랜드 이미지 유지 목적).",
+      "section": "절차",
+      "critical": false
+    },
+    {
+      "fact": "포스기 비밀번호는 0000이다.",
+      "section": "절차",
+      "critical": true
+    },
+    {
+      "fact": "포스기 결제 시 '상품 등록' 버튼을 누른다.",
+      "section": "절차",
+      "critical": true
+    },
+    {
+      "fact": "포스기 결제 시 '보다' 버튼을 누른다.",
+      "section": "절차",
+      "critical": true
+    },
+    {
+      "fact": "판매 단가는 8만 9천 원 또는 10만 9천 원 중 선택한다.",
+      "section": "절차",
+      "critical": true
+    },
+    {
+      "fact": "단가 입력 후 엔터를 누른다.",
+      "section": "절차",
+      "critical": true
+    },
+    {
+      "fact": "결제 방법은 신용카드 또는 현금 버튼으로 선택한다.",
+      "section": "절차",
+      "critical": true
+    },
+    {
+      "fact": "결제 전 포인트 적립 여부를 고객에게 확인해야 한다.",
+      "section": "절차",
+      "critical": false
+    },
+    {
+      "fact": "카드 결제 시 카드 단말기에 카드를 삽입하거나 태그한다.",
+      "section": "절차",
+      "critical": true
+    },
+    {
+      "fact": "영수증은 반드시 출력해서 고객에게 전달해야 한다.",
+      "section": "절차",
+      "critical": true
+    },
+    {
+      "fact": "안경 안쪽 한 면에 브랜드 번호, 반대 면에 일련번호가 표시된다.",
+      "section": "절차",
+      "critical": false
+    },
+    {
+      "fact": "일련번호 형식은 숫자 4~5자리 + 색상 코드이다(예: 5733CO, 58005).",
+      "section": "절차",
+      "critical": false
+    },
+    {
+      "fact": "일련번호에서 숫자 부분은 모델 번호, 뒤의 문자는 색상 코드이다.",
+      "section": "절차",
+      "critical": false
+    },
+    {
+      "fact": "케이스 바코드는 '00 + 모델번호 + 색상번호' 형식으로 구성된다.",
+      "section": "절차",
+      "critical": false
+    },
+    {
+      "fact": "케이스는 내림차순 정렬되어 있으므로 번호 순서대로 찾는다.",
+      "section": "절차",
+      "critical": false
+    },
+    {
+      "fact": "진열 안경은 안경 닦기로 주기적으로 닦되 손상에 주의해야 한다.",
+      "section": "절차",
+      "critical": false
+    },
+    {
+      "fact": "거울 먼지는 수시로 닦아야 한다.",
+      "section": "절차",
+      "critical": false
+    },
+    {
+      "fact": "에어 블로워로 먼지를 제거한다(시간 날 때 또는 마감 시).",
+      "section": "절차",
+      "critical": false
+    },
+    {
+      "fact": "포장 시 쌓여 있는 박스에서 파우치를 꺼낸다.",
+      "section": "절차",
+      "critical": false
+    },
+    {
+      "fact": "포장 시 파우치에 안경을 넣는다.",
+      "section": "절차",
+      "critical": false
+    },
+    {
+      "fact": "포장 시 영수증을 반드시 파우치에 동봉해야 한다.",
+      "section": "절차",
+      "critical": true
+    },
+    {
+      "fact": "포장 시 종이백에 박스를 담아 고객에게 전달한다.",
+      "section": "절차",
+      "critical": false
+    },
+    {
+      "fact": "퇴근 시 매장 쓰레기통 쓰레기를 화장실 일반 쓰레기통에 버린다.",
+      "section": "절차",
+      "critical": false
+    },
+    {
+      "fact": "비닐봉지는 재활용하여 원래 꽂혀 있던 자리에 다시 꽂아둔다.",
+      "section": "절차",
+      "critical": false
+    },
+    {
+      "fact": "퇴근 시 페넌트(할인 축제 배너)를 제자리에 걸어야 한다.",
+      "section": "절차",
+      "critical": false
+    },
+    {
+      "fact": "명찰은 퇴근 시 좌석 옆면에 붙여놓고 덮어두어야 한다.",
+      "section": "주의사항",
+      "critical": true
+    },
+    {
+      "fact": "명찰은 집에 가져가면 안 된다.",
+      "section": "주의사항",
+      "critical": true
+    },
+    {
+      "fact": "업무용 핸드폰은 매장 내에 있으며 카카오톡 출근 보고에 사용한다.",
+      "section": "장비·위치·물품",
+      "critical": true
+    },
+    {
+      "fact": "허리띠는 서랍장 제일 아래 칸에 보관되어 있다.",
+      "section": "장비·위치·물품",
+      "critical": false
+    },
+    {
+      "fact": "에어 블로워는 C타입 충전기 전용이다.",
+      "section": "장비·위치·물품",
+      "critical": true
+    },
+    {
+      "fact": "에어 블로워는 반드시 꼬임 있는 C타입 충전기만 사용해야 한다.",
+      "section": "주의사항",
+      "critical": true
+    },
+    {
+      "fact": "에어 블로워에 다른 충전기를 사용하면 전압이 달라 기기가 망가진다.",
+      "section": "주의사항",
+      "critical": true
+    },
+    {
+      "fact": "외국인 고객은 카드 태그 방식을 선호한다.",
+      "section": "예외 상황·꿀팁",
+      "critical": false
+    },
+    {
+      "fact": "코엑스 팝업 판매 가격(8만9천/10만9천)은 호텔 고객 대상 40% 할인이 적용된 가격이다.",
+      "section": "예외 상황·꿀팁",
+      "critical": false
+    },
+    {
+      "fact": "매장 분위기 조성을 위해 블루투스 스피커로 음악을 틀고 수시로 순회한다.",
+      "section": "일정·루틴",
+      "critical": false
+    },
+    {
+      "fact": "문제 발생 시 연락할 담당자 및 연락처가 인수인계 문서에 없다.",
+      "section": "미해결·인계 항목",
+      "critical": true
+    },
+    {
+      "fact": "현금 결제 시 거스름돈 처리 방법이 인수인계 문서에 없다.",
+      "section": "미해결·인계 항목",
+      "critical": true
+    },
+    {
+      "fact": "근무 중 착용하는 안경의 보관 위치가 불명확하다.",
+      "section": "미해결·인계 항목",
+      "critical": false
+    }
+  ]
+}
