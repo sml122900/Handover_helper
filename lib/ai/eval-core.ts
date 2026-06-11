@@ -8,14 +8,16 @@ export interface DocumentClaim {
   index: number;
   section: string;
   text: string;
+  /** AI 보완(inferred:true) 항목 — 라벨이 있으므로 환각 집계에서 제외 */
+  inferred: boolean;
 }
 
-/** AI 문서를 환각 검사용 원자 주장 목록으로 평탄화 (8섹션 항목 단위) */
+/** AI 문서를 환각 검사용 원자 주장 목록으로 평탄화 (스키마 v2 8섹션 항목 단위) */
 export function flattenDocumentClaims(doc: HandoverDocument): DocumentClaim[] {
   const claims: DocumentClaim[] = [];
-  const add = (section: string, text: string) => {
+  const add = (section: string, text: string, inferred = false) => {
     const t = text.trim();
-    if (t) claims.push({ index: claims.length, section, text: t });
+    if (t) claims.push({ index: claims.length, section, text: t, inferred });
   };
 
   add("업무 개요", doc.overview.summary);
@@ -24,16 +26,20 @@ export function flattenDocumentClaims(doc: HandoverDocument): DocumentClaim[] {
     const label = { high: "높음", medium: "중간", low: "낮음" }[doc.overview.importance];
     add("업무 개요", `업무 중요도: ${label}`);
   }
-  for (const p of doc.procedures) add("업무 절차", `${p.step}. ${p.title}: ${p.details}`);
-  for (const a of doc.accounts)
-    add("계정·접근 권한", [a.system, a.account, a.notes].filter(Boolean).join(" — "));
-  for (const s of doc.stakeholders)
-    add("관계자 맵", [`${s.name} (${s.role})`, s.relationship].filter(Boolean).join(" — "));
-  for (const s of doc.schedules)
-    add("일정·데드라인", [`${s.title}: ${s.when}`, s.details].filter(Boolean).join(" — "));
-  for (const c of doc.cautions) add("주의사항·암묵지", c.content);
-  for (const o of doc.openIssues) add("미해결 이슈", o.content);
-  for (const f of doc.faq) add("FAQ", `Q: ${f.question} A: ${f.answer}`);
+  // inferred는 절차에만 존재 (스키마 v2)
+  for (const p of doc.procedures) add("절차", `${p.step}. ${p.title}: ${p.details}`, p.inferred);
+  for (const e of doc.equipment)
+    add(
+      "장비·위치·물품",
+      [e.name, e.location ? `위치: ${e.location}` : null, e.notes].filter(Boolean).join(" — ")
+    );
+  for (const r of doc.routines)
+    add("일정·루틴", [`${r.title}: ${r.when}`, r.details].filter(Boolean).join(" — "));
+  for (const c of doc.contacts)
+    add("연락·보고", [`${c.name} (${c.role})`, c.contact, c.relationship].filter(Boolean).join(" — "));
+  for (const x of doc.exceptions) add("예외 상황·꿀팁", `${x.situation} → ${x.tip}`);
+  for (const c of doc.cautions) add("주의사항", c.content);
+  for (const o of doc.openItems) add("미해결·인계 항목", o.content);
 
   return claims;
 }
@@ -60,13 +66,18 @@ export function applyJudgments(args: {
     .filter((x) => !x.judgment.present)
     .map((x) => ({ item: x.item.fact, section: x.item.section, critical: x.item.critical }));
 
+  // 환각 = 근거 없음 + inferred 라벨도 없음 (라벨된 AI 보완은 별도 집계)
   const hallucinations = args.claims
     .map((claim) => ({ claim, judgment: claimByIndex.get(claim.index)! }))
-    .filter((x) => !x.judgment.supported)
+    .filter((x) => !x.judgment.supported && !x.claim.inferred)
     .map((x) => ({
       item: `[${x.claim.section}] ${x.claim.text}`,
       reason: x.judgment.evidence,
     }));
 
-  return { goldenKeyItemCount: args.checklist.length, missedItems, hallucinations };
+  const inferredClaims = args.claims
+    .filter((c) => c.inferred)
+    .map((c) => `[${c.section}] ${c.text}`);
+
+  return { goldenKeyItemCount: args.checklist.length, missedItems, hallucinations, inferredClaims };
 }

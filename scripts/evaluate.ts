@@ -105,6 +105,10 @@ function renderEvalMarkdown(name: string, r: EvalResult): string {
   if (r.hallucinations.length === 0) lines.push("_없음_");
   for (const h of r.hallucinations) lines.push(`- ${h.item}`, `  - 판정 근거: ${h.reason}`);
 
+  lines.push("", "## AI 보완 항목 (inferred — 환각 아님, 작성자 확인 대상)", "");
+  if (r.inferredClaims.length === 0) lines.push("_없음_");
+  for (const c of r.inferredClaims) lines.push(`- ${c}`);
+
   lines.push("");
   return lines.join("\n");
 }

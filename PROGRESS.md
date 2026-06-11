@@ -284,6 +284,41 @@ npm run e2e                                     # 마이그레이션 후 txt 업
 
 ---
 
+## 세션 1-9: 포지셔닝 개편 — 직종 보편형 스키마 v2 + AI 보완(inferred) ✅ (2026-06-11)
+
+> 사용자 지시: 매장·현장직 포지셔닝 반영 (CLAUDE.md·스키마·프롬프트·에디터·체크리스트 갱신, 보강 질문 강화, 키프레임 점검), v1 대비 비교 리포트. 호출 10회 이내.
+
+### 완료한 것
+- **CLAUDE.md 개편** — 한 줄 정의(매장·현장직·실물 업무 차별점), AI 보완 허용 원칙 추가, 문서 스키마 v2로 교체
+- **스키마 v2** (`lib/ai/schema.ts`) — ①업무 개요 ②절차 ③장비·위치·물품 ④일정·루틴 ⑤연락·보고 ⑥예외 상황·꿀팁 ⑦주의사항 ⑧미해결·인계 항목. 절차에 `inferred: boolean` (AI 추론 보완 라벨)
+- **structure-v2 프롬프트** — 매장·현장 어휘, AI 보완 규칙(생략 단계만, inferred+needs_review+timestamp null 강제, 절차 외 추론 금지), 섹션 배치 지침. **기본 버전을 v2로 전환**
+- **enrich-v2** — 보강 질문 우선순위 ① 건너뛴 단계 감지(절차 간 논리 비약) ② inferred 확인 ③ 빈/needs_review
+- **checklist-v2** — 새 8섹션 명칭
+- **채점 갱신** — flatten v2 섹션 대응. inferred 주장은 환각 집계에서 제외하고 `inferredClaims`로 별도 보고 (라벨 없는 추론만 환각). compare는 채점 캐시 우선 조회로 구 스키마 v1 캐시도 비교 가능
+- **에디터/렌더러** — doc-html·render-md v2 섹션, inferred 항목은 `<mark>[AI 보완] … — 작성자 확인 필요</mark>` 하이라이트 (needs_review와 동일한 확인 동선)
+- **비교 결과 (sample-handover, 체크리스트 27개 동일 분모)**: v1 누락 3.7% (1/27) → **v2 0.0% (0/27)**, 환각 둘 다 0건. → `results/compare-structure-v1-vs-structure-v2.md`
+- vitest 36개·typecheck 통과. API 호출: 성공 2회 (변환+채점) + 실패 2회×재시도 (아래 판단 2)
+
+### 키프레임·모바일 점검 결과 (코드 변경 없음 — TODO)
+- 매칭(`match.ts`)은 STT 타임스탬프 기반이라 실물 촬영 영상에서도 동작 — 문제 없음
+- **리스크**: `extract.ts` scene 임계값 0.3은 화면 녹화용. 폰 촬영은 손떨림·팬으로 과다 검출 + `-frames:v 30` 캡이 영상 앞부분에서 소진될 수 있음 → 실물 영상으로 임계값 0.4~0.5 실험 + 키프레임 최소 간격(예: 5초) 필터 필요
+- **`.mov`(아이폰 기본 포맷) 미지원** — 업로더 accept·convert MEDIA_EXTS에 추가 필요
+- **모바일 카메라 동선 없음** — 업로더에 `accept="video/*" capture="environment"` 촬영 버튼 추가, ScreenRecorder(getDisplayMedia)는 모바일 미지원이므로 모바일에선 촬영 버튼만 노출
+
+### 사용자가 할 일 (TODO)
+- [ ] 마이그레이션 완료·E2E 통과 확인됨 — 단, **기존 DB 문서는 구 스키마**라 새 에디터 초기 HTML 생성에서 제외됨(safeParse 폴백, 안 깨짐). `npm run e2e` 재실행하면 v2 문서로 재생성
+- [ ] `output/sample-handover.json`(구 스키마)은 stale — 재생성: `npm run convert -- samples/sample-handover.txt`
+- [ ] 실 골든셋부터는 `npm run checklist`가 checklist-v2(새 섹션명)로 생성됨. 기존 `golden/sample-handover-checklist.json`은 구 섹션명이지만 채점은 사실 텍스트 대조라 영향 없음 (리포트 그룹명만 구 명칭)
+
+### 스스로 내린 판단과 이유
+1. **inferred를 절차 전용으로 한정** — 전 항목에 넣자 structured output "compiled grammar too large" 400 에러 (재시도 포함 2회×2). AI 보완 원칙 자체가 "생략된 **단계**" 보완이므로 절차 한정이 요구사항과 일치하고 grammar 한도도 해결.
+2. **API 호출 내역 (한도 10)** — grammar 초과 실패 4회(과금 전 검증 단계 400 추정) + 성공 2회(v2 변환 1, v2 채점 1). v1 쪽은 채점 캐시 재사용 0회.
+3. **v1 비교는 어제 채점 캐시 재사용** — 같은 체크리스트(27개) 분모라 공정 비교 성립. compare 루프를 채점 캐시 우선으로 재배치해 구 스키마 변환 캐시를 파싱하지 않고도 비교 가능하게 함.
+4. **기본 프롬프트 버전 v2 전환** — 스키마가 v2로 교체돼 v1 프롬프트는 구 스키마 전제. 비교에서도 v2가 우위(0% vs 3.7%).
+5. **sample-handover(유튜브 운영, 사무직)로 v2 검증** — 매장·현장 샘플이 없어 신규 섹션(장비·예외)의 실전 검증은 실 골든셋에서. 이번 샘플에서도 v2가 장비 3·예외 3건을 적절히 분류함.
+
+---
+
 # 🏁 전체 요약 (사용자 기상 후 읽을 것)
 
 ## 상태: Phase 0 코드 + Phase 1 전체 + 골든셋 반복 도구(1-7) 완료
@@ -302,8 +337,9 @@ npm run dev                                      # 웹 (Supabase 셋업 전엔 /
 1. **마이그레이션**: SQL Editor에 `supabase/ALL_MIGRATIONS.sql` 붙여넣고 Run → `npm run e2e` (Supabase 키는 확인·정정 완료, 스키마만 미적용)
 2. 웹 확인: `npm run dev` → e2e가 만든 계정으로 로그인 → 에디터/보강 질문/공유 확인
 3. **OPENAI_API_KEY는 여전히 .env에 없음** — 추가하면 영상 업로드가 실 Whisper로 동작
-4. **Phase 0 본체**: 실 트랜스크립트 10개(samples/) + 정답 문서(golden/) → `npm run checklist -- --all` + 항목 검토 → `npm run compare -- structure-v1` 기준선 → structure-v2 작성·등록 → compare로 비교 → `npm run report`로 반복 누락 섹션 확인 → 누락률 <10%/환각 0까지 반복
+4. **Phase 0 본체**: 실 트랜스크립트 10개(samples/) — 매장·현장직 샘플 포함 권장 + 정답 문서(golden/) → `npm run checklist -- --all` + 항목 검토 → `npm run compare -- structure-v2` 기준선 → 개선 버전(v3) 작성·등록 → compare로 비교 → `npm run report`로 반복 누락 섹션 확인 → 누락률 <10%/환각 0까지 반복
 
 ## 다음 빌드 세션
 - Phase 2-1 결제(토스), 2-2 마스킹+30일 삭제 cron, 2-3 랜딩 페이지 (지시 범위 밖이라 미진행)
 - 후속 TODO: **실영상 STT 시 Vercel 타임아웃 → Inngest 전환**, Whisper 25MB 초과 시 ffmpeg 오디오 추출, 서버 사이드 PDF(한글 폰트+키프레임), 에디터 키프레임 교체 UI
+- 후속 TODO (세션 1-9 점검): 실물 촬영 키프레임 — scene 임계값 0.4~0.5 실험 + 최소 간격 필터, `.mov` 지원, 모바일 웹 카메라 촬영 버튼(`capture="environment"`)·업로드 동선

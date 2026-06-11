@@ -7,7 +7,7 @@ import {
   buildQuestionUserPrompt,
   REFLECT_SYSTEM_PROMPT,
   buildReflectUserPrompt,
-} from "./prompts/enrich-v1";
+} from "./prompts/enrich-v2";
 
 // 보강 질문: 변환 직후 빈/불확실 섹션에 대해 3~5개 생성 → documents.enrich_questions(jsonb)
 

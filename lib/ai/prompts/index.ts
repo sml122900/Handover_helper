@@ -3,6 +3,7 @@
 // 비교: npm run compare -- structure-v1 structure-v2
 
 import * as v1 from "./structure-v1";
+import * as v2 from "./structure-v2";
 
 export interface StructurePrompt {
   version: string;
@@ -16,10 +17,15 @@ const REGISTRY: Record<string, StructurePrompt> = {
     system: v1.STRUCTURE_SYSTEM_PROMPT,
     buildUserPrompt: v1.buildUserPrompt,
   },
+  [v2.PROMPT_VERSION]: {
+    version: v2.PROMPT_VERSION,
+    system: v2.STRUCTURE_SYSTEM_PROMPT,
+    buildUserPrompt: v2.buildUserPrompt,
+  },
 };
 
 /** 운영 기본 버전 — 새 버전이 비교에서 이기면 여기를 올린다 */
-export const DEFAULT_PROMPT_VERSION = "structure-v1";
+export const DEFAULT_PROMPT_VERSION = "structure-v2"; // 스키마 v2 개편과 함께 전환 (v1은 구 스키마용)
 
 export function getStructurePrompt(version = DEFAULT_PROMPT_VERSION): StructurePrompt {
   const p = REGISTRY[version];

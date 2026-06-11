@@ -5,7 +5,7 @@ import {
   CHECKLIST_SYSTEM_PROMPT,
   buildChecklistUserPrompt,
   CHECKLIST_PROMPT_VERSION,
-} from "./prompts/checklist-v1";
+} from "./prompts/checklist-v2";
 
 export const CHECKLIST_MODEL = process.env.HANDOVER_EVAL_MODEL ?? "claude-sonnet-4-6";
 export { CHECKLIST_PROMPT_VERSION };

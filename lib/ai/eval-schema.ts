@@ -44,6 +44,8 @@ export const EvalResultSchema = z.object({
     z.object({ item: z.string(), section: z.string(), critical: z.boolean() })
   ),
   hallucinations: z.array(z.object({ item: z.string(), reason: z.string() })),
+  // AI 보완(inferred:true) 주장 — 환각 아님, 작성자 확인 대상 (구 캐시 호환 위해 default)
+  inferredClaims: z.array(z.string()).default([]),
 });
 export type EvalResult = z.infer<typeof EvalResultSchema>;
 

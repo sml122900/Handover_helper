@@ -12,6 +12,7 @@ function evalResult(over: Partial<EvalResult>): EvalResult {
     goldenKeyItemCount: 10,
     missedItems: [],
     hallucinations: [],
+    inferredClaims: [],
     ...over,
   };
 }

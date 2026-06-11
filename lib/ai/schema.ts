@@ -1,15 +1,17 @@
 import { z } from "zod";
 
-// 문서 스키마 (CLAUDE.md 고정 8개 섹션 — 임의 변경 금지)
+// 문서 스키마 v2 (CLAUDE.md 고정 8개 섹션 — 직종 보편형, 임의 변경 금지)
 // 각 항목: sourceTimestamp(원본 영상 구간, 초) + confidence(high/needs_review)
+// 절차 항목만 추가로 inferred(AI 추론 보완 여부)
+// 주의: structured output grammar 한도 → describe는 최소화, 작성 지침은 structure-v2 프롬프트에
 
 export const ConfidenceSchema = z.enum(["high", "needs_review"]);
 
 // 트랜스크립트에 타임스탬프가 없으면 null
 export const SourceTimestampSchema = z
   .object({
-    start: z.number().describe("구간 시작 (초)"),
-    end: z.number().describe("구간 끝 (초)"),
+    start: z.number(),
+    end: z.number(),
   })
   .nullable();
 
@@ -19,37 +21,47 @@ const itemBase = {
 };
 
 export const OverviewSchema = z.object({
-  summary: z.string().describe("업무 한 줄 요약"),
-  cycle: z.string().nullable().describe("업무 주기 (예: 매주 월요일). 없으면 null"),
+  summary: z.string(),
+  cycle: z.string().nullable(),
   importance: z.enum(["high", "medium", "low"]).nullable(),
   ...itemBase,
 });
 
+// inferred는 절차에만: AI 보완 원칙 = "생략된 단계"를 추론으로 채움 (라벨 필수, 라벨 없는 추론 = 환각)
+// (전 항목에 두면 structured output grammar 한도 초과 — 2026-06-11 400 에러로 확인)
 export const ProcedureStepSchema = z.object({
-  step: z.number().int().describe("단계 번호 (1부터)"),
+  step: z.number().int(),
   title: z.string(),
   details: z.string(),
+  inferred: z.boolean().describe("AI 추론 보완 단계면 true"),
   ...itemBase,
 });
 
-export const AccountSchema = z.object({
-  system: z.string().describe("시스템/서비스 이름"),
-  account: z.string().nullable().describe("계정 ID. 비밀번호류는 절대 포함 금지 — *** 마스킹"),
-  notes: z.string().nullable().describe("권한 요청 방법 등. 비밀번호류는 *** 마스킹"),
+export const EquipmentSchema = z.object({
+  name: z.string(),
+  location: z.string().nullable(),
+  notes: z.string().nullable(),
   ...itemBase,
 });
 
-export const StakeholderSchema = z.object({
+export const RoutineSchema = z.object({
+  title: z.string(),
+  when: z.string(),
+  details: z.string().nullable(),
+  ...itemBase,
+});
+
+export const ContactSchema = z.object({
   name: z.string(),
   role: z.string(),
-  relationship: z.string().nullable().describe("요청/보고 관계 (예: 매주 보고, 자료 요청처)"),
+  contact: z.string().nullable(),
+  relationship: z.string().nullable(),
   ...itemBase,
 });
 
-export const ScheduleSchema = z.object({
-  title: z.string(),
-  when: z.string().describe("일정/데드라인 (예: 매월 25일, 6월 말)"),
-  details: z.string().nullable(),
+export const ExceptionTipSchema = z.object({
+  situation: z.string(),
+  tip: z.string(),
   ...itemBase,
 });
 
@@ -58,21 +70,15 @@ export const NoteItemSchema = z.object({
   ...itemBase,
 });
 
-export const FaqSchema = z.object({
-  question: z.string(),
-  answer: z.string(),
-  ...itemBase,
-});
-
 export const DocumentSchema = z.object({
   overview: OverviewSchema.describe("1. 업무 개요"),
-  procedures: z.array(ProcedureStepSchema).describe("2. 업무 절차"),
-  accounts: z.array(AccountSchema).describe("3. 계정·접근 권한"),
-  stakeholders: z.array(StakeholderSchema).describe("4. 관계자 맵"),
-  schedules: z.array(ScheduleSchema).describe("5. 일정·데드라인"),
-  cautions: z.array(NoteItemSchema).describe("6. 주의사항·암묵지"),
-  openIssues: z.array(NoteItemSchema).describe("7. 미해결 이슈"),
-  faq: z.array(FaqSchema).describe("8. FAQ"),
+  procedures: z.array(ProcedureStepSchema).describe("2. 절차"),
+  equipment: z.array(EquipmentSchema).describe("3. 장비·위치·물품"),
+  routines: z.array(RoutineSchema).describe("4. 일정·루틴"),
+  contacts: z.array(ContactSchema).describe("5. 연락·보고"),
+  exceptions: z.array(ExceptionTipSchema).describe("6. 예외 상황·꿀팁"),
+  cautions: z.array(NoteItemSchema).describe("7. 주의사항"),
+  openItems: z.array(NoteItemSchema).describe("8. 미해결·인계 항목"),
 });
 
 export type HandoverDocument = z.infer<typeof DocumentSchema>;

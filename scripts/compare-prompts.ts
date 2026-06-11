@@ -81,13 +81,29 @@ async function main(): Promise<void> {
     ).items;
 
     for (const version of versions) {
-      // 1) 변환 (캐시)
+      // 1) 채점 캐시 먼저 — 적중하면 변환 결과 파싱도 생략
+      //    (스키마 v2 전환 후에도 구 스키마(v1) 변환 캐시의 채점 결과를 그대로 비교에 쓸 수 있게)
+      const evalPath = join("results", "compare", `${name}@${version}-eval.json`);
+      if (!force && existsSync(evalPath)) {
+        const parsed = EvalResultSchema.safeParse(JSON.parse(readFileSync(evalPath, "utf-8")));
+        if (parsed.success) {
+          rows.push({ name, version, result: parsed.data });
+          console.log(`  [캐시] 채점 ${name} × ${version}`);
+          continue;
+        }
+      }
+
+      // 2) 변환 (캐시 — 현행 스키마와 안 맞는 구 포맷이면 재변환)
       const convPath = join("output", "compare", `${name}@${version}.json`);
-      let aiDocument: import("../lib/ai/schema").HandoverDocument;
+      let aiDocument: import("../lib/ai/schema").HandoverDocument | null = null;
       if (!force && existsSync(convPath)) {
-        aiDocument = DocumentSchema.parse(JSON.parse(readFileSync(convPath, "utf-8")).document);
-        console.log(`  [캐시] 변환 ${name} × ${version}`);
-      } else {
+        const parsed = DocumentSchema.safeParse(JSON.parse(readFileSync(convPath, "utf-8")).document);
+        if (parsed.success) {
+          aiDocument = parsed.data;
+          console.log(`  [캐시] 변환 ${name} × ${version}`);
+        }
+      }
+      if (!aiDocument) {
         const r = await structureTranscript(promptText, { promptVersion: version });
         apiCalls++;
         writeFileSync(convPath, JSON.stringify({ document: r.document, meta: r.meta }, null, 2), "utf-8");
@@ -95,28 +111,17 @@ async function main(): Promise<void> {
         console.log(`  변환 ${name} × ${version} — 토큰 in=${r.meta.inputTokens} out=${r.meta.outputTokens}`);
       }
 
-      // 2) 채점 (캐시 — 구 포맷이면 파싱 실패 → 재채점)
-      const evalPath = join("results", "compare", `${name}@${version}-eval.json`);
-      let cached: import("../lib/ai/eval-schema").EvalResult | null = null;
-      if (!force && existsSync(evalPath)) {
-        const parsed = EvalResultSchema.safeParse(JSON.parse(readFileSync(evalPath, "utf-8")));
-        cached = parsed.success ? parsed.data : null;
-      }
-      if (cached) {
-        rows.push({ name, version, result: cached });
-        console.log(`  [캐시] 채점 ${name} × ${version}`);
-      } else {
-        const { result, meta } = await runEvaluation(client, {
-          checklist,
-          aiDocument,
-          transcriptText,
-          goldenMarkdown,
-        });
-        apiCalls++;
-        writeFileSync(evalPath, JSON.stringify(result, null, 2), "utf-8");
-        rows.push({ name, version, result });
-        console.log(`  채점 ${name} × ${version} — 토큰 in=${meta.inputTokens} out=${meta.outputTokens}`);
-      }
+      // 3) 채점
+      const { result, meta } = await runEvaluation(client, {
+        checklist,
+        aiDocument,
+        transcriptText,
+        goldenMarkdown,
+      });
+      apiCalls++;
+      writeFileSync(evalPath, JSON.stringify(result, null, 2), "utf-8");
+      rows.push({ name, version, result });
+      console.log(`  채점 ${name} × ${version} — 토큰 in=${meta.inputTokens} out=${meta.outputTokens}`);
     }
   }
 
