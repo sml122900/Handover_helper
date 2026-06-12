@@ -7,3 +7,4 @@ results/
 .next/
 *.log
 .DS_Store
+video/
