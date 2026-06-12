@@ -29,7 +29,7 @@ export default async function ProjectDetailPage(props: { params: Promise<{ id: s
 
   const { data: project } = await supabase
     .from("projects")
-    .select("id, title, created_at")
+    .select("id, title, created_at, plan")
     .eq("id", id)
     .single();
   if (!project) notFound();
@@ -53,7 +53,19 @@ export default async function ProjectDetailPage(props: { params: Promise<{ id: s
       <Link href="/projects" className="text-sm text-[var(--text-sub)] hover:text-[var(--text)]">
         ← 프로젝트 목록
       </Link>
-      <h1 className="mt-2 mb-8 text-2xl font-bold text-[var(--text)]">{project.title}</h1>
+      <div className="mt-2 mb-8 flex items-center gap-3">
+        <h1 className="text-2xl font-bold text-[var(--text)]">{project.title}</h1>
+        {project.plan === "paid" ? (
+          <span className="rounded-full bg-emerald-900 px-2.5 py-0.5 text-xs font-semibold text-emerald-200">PRO</span>
+        ) : (
+          <Link
+            href={`/projects/${id}/upgrade`}
+            className="rounded-full border border-[var(--card-border)] px-2.5 py-0.5 text-xs text-[var(--text-sub)] hover:border-[var(--card-border-hover)] hover:text-[var(--text)]"
+          >
+            업그레이드
+          </Link>
+        )}
+      </div>
 
       <section className="mb-10">
         <h2 className="mb-3 text-lg font-semibold text-[var(--text)]">영상</h2>

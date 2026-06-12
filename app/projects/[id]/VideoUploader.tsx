@@ -11,14 +11,19 @@ export function VideoUploader({ projectId }: { projectId: string }) {
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const [progress, setProgress] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [upgradeUrl, setUpgradeUrl] = useState<string | null>(null);
 
   async function handleFile(file: File) {
     setError(null);
+    setUpgradeUrl(null);
     setProgress(0);
     try {
       const durationSeconds = await probeDuration(file);
       const prep = await prepareUpload({ projectId, fileName: file.name, durationSeconds });
-      if (!prep.ok) throw new Error(prep.error);
+      if (!prep.ok) {
+        if (!prep.ok && prep.upgradeUrl) setUpgradeUrl(prep.upgradeUrl);
+        throw new Error(prep.error);
+      }
 
       await uploadWithProgress(prep.signedUrl, file, file.type, setProgress);
 
@@ -91,6 +96,14 @@ export function VideoUploader({ projectId }: { projectId: string }) {
         </div>
       )}
       {error && <p className="mt-3 text-sm text-red-400">{error}</p>}
+      {upgradeUrl && (
+        <a
+          href={upgradeUrl}
+          className="mt-2 inline-block rounded-md border border-[var(--card-border)] px-3 py-1.5 text-xs text-[var(--text-sub)] hover:border-[var(--card-border-hover)] hover:text-[var(--text)]"
+        >
+          업그레이드 →
+        </a>
+      )}
     </div>
   );
 }

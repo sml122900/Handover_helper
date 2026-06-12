@@ -5,13 +5,13 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { processVideo } from "@/lib/pipeline/process-video";
-import { checkUploadAllowed, FREE_PLAN } from "@/lib/plan";
+import { checkUploadAllowed, FREE_PLAN, PAID_PLAN } from "@/lib/plan";
 
 const ALLOWED_EXTS = new Set(["mp4", "webm", "m4a", "mov", "txt"]);
 
 export type PrepareUploadResult =
   | { ok: true; videoId: string; signedUrl: string; token: string; path: string }
-  | { ok: false; error: string };
+  | { ok: false; error: string; upgradeUrl?: string };
 
 // 1단계: 비용 가드 → video 행 생성 → 서명된 업로드 URL 발급
 export async function prepareUpload(args: {
@@ -28,7 +28,7 @@ export async function prepareUpload(args: {
   // 소유권 확인 (RLS로 본인 프로젝트만 조회됨)
   const { data: project } = await supabase
     .from("projects")
-    .select("id")
+    .select("id, plan")
     .eq("id", args.projectId)
     .single();
   if (!project) return { ok: false, error: "프로젝트를 찾을 수 없습니다." };
@@ -38,25 +38,38 @@ export async function prepareUpload(args: {
     return { ok: false, error: "지원 형식: mp4, mov, webm, m4a (영상/오디오) 또는 txt (트랜스크립트)" };
   }
 
-  // 비용 가드: 계정 전체 누적 분 (실패 영상 제외) — STT/LLM 호출 전 차단
+  // 비용 가드 — paid: 프로젝트 단위 2시간, free: 계정 전체 20분
   const admin = createAdminClient();
-  const { data: myProjects } = await admin.from("projects").select("id").eq("owner_id", user.id);
-  const projectIds = (myProjects ?? []).map((p) => p.id);
-  const { data: myVideos } = await admin
-    .from("videos")
-    .select("duration_seconds, status")
-    .in("project_id", projectIds.length > 0 ? projectIds : ["00000000-0000-0000-0000-000000000000"]);
-  const usedSeconds = (myVideos ?? [])
-    .filter((v) => v.status !== "failed")
-    .reduce((sum, v) => sum + (v.duration_seconds ?? 0), 0);
+  let usedSeconds: number;
+  if (project.plan === "paid") {
+    const { data: projVideos } = await admin
+      .from("videos")
+      .select("duration_seconds, status")
+      .eq("project_id", args.projectId);
+    usedSeconds = (projVideos ?? [])
+      .filter((v) => v.status !== "failed")
+      .reduce((sum, v) => sum + (v.duration_seconds ?? 0), 0);
+  } else {
+    const { data: myProjects } = await admin.from("projects").select("id").eq("owner_id", user.id);
+    const projectIds = (myProjects ?? []).map((p) => p.id);
+    const { data: myVideos } = await admin
+      .from("videos")
+      .select("duration_seconds, status")
+      .in("project_id", projectIds.length > 0 ? projectIds : ["00000000-0000-0000-0000-000000000000"]);
+    usedSeconds = (myVideos ?? [])
+      .filter((v) => v.status !== "failed")
+      .reduce((sum, v) => sum + (v.duration_seconds ?? 0), 0);
+  }
 
-  // TODO(Phase 2 결제): 결제 여부에 따라 PAID_PLAN 적용. 현재 전원 Free.
-  const check = checkUploadAllowed({
-    plan: FREE_PLAN,
-    usedSeconds,
-    newDurationSeconds: args.durationSeconds,
-  });
-  if (!check.allowed) return { ok: false, error: check.reason };
+  const plan = project.plan === "paid" ? PAID_PLAN : FREE_PLAN;
+  const check = checkUploadAllowed({ plan, usedSeconds, newDurationSeconds: args.durationSeconds });
+  if (!check.allowed) {
+    return {
+      ok: false,
+      error: check.reason,
+      ...(project.plan !== "paid" && { upgradeUrl: `/projects/${args.projectId}/upgrade` }),
+    };
+  }
 
   const path = `${user.id}/${args.projectId}/${crypto.randomUUID()}.${ext}`;
 
