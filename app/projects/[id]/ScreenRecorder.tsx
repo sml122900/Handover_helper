@@ -140,11 +140,11 @@ export function ScreenRecorder({ projectId }: { projectId: string }) {
   }
 
   return (
-    <div className="rounded-lg border border-zinc-800 bg-zinc-900/40 px-4 py-4">
-      <div className="flex items-center justify-between">
+    <div className="rounded-lg border border-[var(--card-border)] bg-[var(--card)] px-4 py-4">
+      <div className="flex flex-wrap items-center justify-between gap-y-3">
         <div>
-          <p className="text-sm font-medium text-zinc-200">브라우저 화면 녹화</p>
-          <p className="text-xs text-zinc-500">설치 없이 화면 + 마이크를 녹화해 바로 변환합니다.</p>
+          <p className="text-sm font-medium text-[var(--text)]">브라우저 화면 녹화</p>
+          <p className="text-xs text-[var(--text-sub)]">설치 없이 화면 + 마이크를 녹화해 바로 변환합니다.</p>
         </div>
 
         {phase === "idle" && (
@@ -157,28 +157,28 @@ export function ScreenRecorder({ projectId }: { projectId: string }) {
         )}
 
         {(phase === "recording" || phase === "paused") && (
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-sm text-zinc-300">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="font-mono text-sm text-[var(--text)]">
               {phase === "paused" ? "⏸" : "⏺"} {fmtElapsed(elapsed)}
             </span>
             {phase === "recording" ? (
               <button
                 onClick={pause}
-                className="rounded-md border border-zinc-700 px-3 py-2 text-sm text-zinc-200 hover:bg-zinc-800"
+                className="rounded-md border border-[var(--card-border)] px-3 py-2 text-sm text-[var(--text)] hover:border-[var(--card-border-hover)]"
               >
                 일시정지
               </button>
             ) : (
               <button
                 onClick={resume}
-                className="rounded-md border border-zinc-700 px-3 py-2 text-sm text-zinc-200 hover:bg-zinc-800"
+                className="rounded-md border border-[var(--card-border)] px-3 py-2 text-sm text-[var(--text)] hover:border-[var(--card-border-hover)]"
               >
                 재개
               </button>
             )}
             <button
               onClick={stop}
-              className="rounded-md bg-white px-3 py-2 text-sm font-medium text-zinc-900 hover:bg-zinc-200"
+              className="rounded-md bg-[var(--text)] px-3 py-2 text-sm font-medium text-[var(--bg)] hover:opacity-80"
             >
               종료·업로드
             </button>
@@ -186,7 +186,7 @@ export function ScreenRecorder({ projectId }: { projectId: string }) {
         )}
 
         {phase === "uploading" && (
-          <span className="text-sm text-zinc-400">업로드 중… {progress}%</span>
+          <span className="text-sm text-[var(--text-sub)]">업로드 중… {progress}%</span>
         )}
       </div>
       {error && <p className="mt-3 text-sm text-red-400">{error}</p>}

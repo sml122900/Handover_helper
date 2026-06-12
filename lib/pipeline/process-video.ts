@@ -47,7 +47,7 @@ export async function processVideo(videoId: string): Promise<void> {
       segments: transcript.segments,
       language: transcript.language,
     });
-    if (tErr) throw new Error(`트랜스크립트 저장 실패: ${tErr.message}`);
+    if (tErr) throw new Error("트랜스크립트 저장에 실패했습니다. 잠시 후 재시도하세요.");
 
     // 2) 구조화 (Phase 0 검증 프롬프트 재사용)
     await setStatus("structuring");
@@ -62,7 +62,7 @@ export async function processVideo(videoId: string): Promise<void> {
       })
       .select("id")
       .single();
-    if (dErr || !doc) throw new Error(`문서 저장 실패: ${dErr?.message}`);
+    if (dErr || !doc) throw new Error("문서 저장에 실패했습니다. 잠시 후 재시도하세요.");
 
     // 2.5) 키프레임 추출 + 절차 매칭 (영상 파일만, 실패해도 문서는 유지)
     if (!video.storage_path.endsWith(".txt") && !video.storage_path.endsWith(".md")) {
@@ -180,7 +180,7 @@ async function getTranscript(
   storagePath: string
 ): Promise<Transcript> {
   const { data, error } = await supabase.storage.from("videos").download(storagePath);
-  if (error || !data) throw new Error(`Storage 다운로드 실패: ${error?.message}`);
+  if (error || !data) throw new Error("영상 파일을 불러올 수 없습니다. 다시 업로드하거나 잠시 후 시도하세요.");
 
   if (storagePath.endsWith(".txt") || storagePath.endsWith(".md")) {
     return parseTranscriptText(await data.text());

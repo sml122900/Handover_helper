@@ -77,7 +77,7 @@ export async function prepareUpload(args: {
     .createSignedUploadUrl(path);
   if (sErr || !signed) {
     await admin.from("videos").delete().eq("id", video.id);
-    return { ok: false, error: `업로드 URL 발급 실패: ${sErr?.message ?? "알 수 없음"}` };
+    return { ok: false, error: "업로드 URL 발급에 실패했습니다. 잠시 후 다시 시도하세요." };
   }
 
   return { ok: true, videoId: video.id, signedUrl: signed.signedUrl, token: signed.token, path };
@@ -102,6 +102,35 @@ export async function completeUpload(videoId: string): Promise<{ ok: boolean; er
   after(() => processVideo(videoId));
   revalidatePath(`/projects/${video.project_id}`);
   return { ok: true };
+}
+
+// 실패한 영상 재시도: 상태 초기화 → 파이프라인 재실행
+export async function retryVideo(formData: FormData): Promise<void> {
+  const videoId = formData.get("videoId") as string;
+  if (!videoId) return;
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return;
+
+  // RLS: 본인 영상만 조회됨 — 소유권 자동 검증, failed 상태만 재시도 허용
+  const { data: video } = await supabase
+    .from("videos")
+    .select("id, project_id")
+    .eq("id", videoId)
+    .eq("status", "failed")
+    .single();
+  if (!video) return;
+
+  await supabase
+    .from("videos")
+    .update({ status: "uploaded", error_message: null })
+    .eq("id", videoId);
+
+  after(() => processVideo(videoId));
+  revalidatePath(`/projects/${video.project_id}`);
 }
 
 // 폴링용: 프로젝트 영상 상태 조회

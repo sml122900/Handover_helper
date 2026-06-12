@@ -339,6 +339,18 @@ npm run dev                                      # 웹 (Supabase 셋업 전엔 /
 3. **OPENAI_API_KEY는 여전히 .env에 없음** — 추가하면 영상 업로드가 실 Whisper로 동작
 4. **Phase 0 본체**: 실 트랜스크립트 10개(samples/) — 매장·현장직 샘플 포함 권장 + 정답 문서(golden/) → `npm run checklist -- --all` + 항목 검토 → `npm run compare -- structure-v2` 기준선 → 개선 버전(v3) 작성·등록 → compare로 비교 → `npm run report`로 반복 누락 섹션 확인 → 누락률 <10%/환각 0까지 반복
 
+## 아키텍처 결정 기록 (2026-06-12)
+
+### 녹화·업로드 전략 — Phase 2 후반 구현 예정
+
+| 경로 | 현재 (Phase 1) | Phase 2 후반 목표 |
+|---|---|---|
+| 브라우저 화면 녹화 | MediaRecorder → 종료 후 통째 업로드 | MediaRecorder `timeslice` 조각 분할 + 실시간 스트리밍 업로드 → 대용량 영상 & 업로드 중단 복구 |
+| 외부 파일 업로드 | 원본 파일 통째 Supabase Storage | 클라이언트에서 ffmpeg.wasm으로 오디오·키프레임 추출 후 전송 → 서버 처리 부하·비용 절감 |
+
+**현재 방식의 한계**: 대용량 영상(1GB+)은 단일 XHR PUT이 실패할 수 있음. 서버에서 ffmpeg 처리 시 Vercel 함수 메모리·타임아웃 위험.  
+**Phase 2 후반 전환 신호**: 실 사용자 유입 후 업로드 실패율·처리 비용 모니터링 결과로 판단.
+
 ## 다음 빌드 세션
 - Phase 2-1 결제(토스), 2-2 마스킹+30일 삭제 cron, 2-3 랜딩 페이지 (지시 범위 밖이라 미진행)
 - 후속 TODO: **실영상 STT 시 Vercel 타임아웃 → Inngest 전환**, Whisper 25MB 초과 시 ffmpeg 오디오 추출, 서버 사이드 PDF(한글 폰트+키프레임), 에디터 키프레임 교체 UI

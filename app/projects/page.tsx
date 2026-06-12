@@ -33,7 +33,7 @@ export default async function ProjectsPage(props: {
         </div>
       </header>
 
-      <form action={createProject} className="mb-8 flex gap-2">
+      <form id="project-create" action={createProject} className="mb-8 flex gap-2">
         <input
           name="title"
           required
@@ -66,8 +66,14 @@ export default async function ProjectsPage(props: {
           </li>
         ))}
         {(projects ?? []).length === 0 && (
-          <li className="rounded-lg border border-dashed border-[var(--card-border)] px-4 py-8 text-center text-sm text-[var(--text-sub)]">
-            아직 프로젝트가 없습니다. 위에서 첫 프로젝트를 만들어 보세요.
+          <li className="rounded-lg border border-dashed border-[var(--card-border)] px-4 py-10 text-center text-sm">
+            <p className="text-[var(--text-sub)]">아직 프로젝트가 없습니다.</p>
+            <a
+              href="#project-create"
+              className="mt-3 inline-block rounded-md border border-[var(--card-border)] px-4 py-1.5 text-xs text-[var(--text-sub)] hover:border-[var(--card-border-hover)] hover:text-[var(--text)]"
+            >
+              ↑ 첫 프로젝트 만들기
+            </a>
           </li>
         )}
       </ul>

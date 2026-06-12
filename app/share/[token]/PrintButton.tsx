@@ -6,7 +6,7 @@ export function PrintButton() {
   return (
     <button
       onClick={() => window.print()}
-      className="rounded-md border border-zinc-700 px-3 py-1.5 text-xs text-zinc-200 hover:bg-zinc-800"
+      className="rounded-md border border-[var(--card-border)] px-3 py-1.5 text-xs text-[var(--text-sub)] hover:border-[var(--card-border-hover)] hover:text-[var(--text)]"
     >
       PDF로 저장 / 인쇄
     </button>
