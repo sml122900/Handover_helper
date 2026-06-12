@@ -156,14 +156,18 @@ UI 테스트는 MVP에서 생략
 트랜스크립트에서 비밀번호/주민번호 패턴 자동 마스킹 후 저장
 공유 링크는 추측 불가능한 토큰 + 만료일 설정 가능
 
-현재 단계 (2026-06-12)
-Phase 0 도구 완비 + Phase 1 (업로드-변환-에디터-공유) 코드 완료. E2E 통과 (마이그레이션 적용됨).
+현재 단계 (2026-06-13)
+Phase 0 + Phase 1 + Phase 2 일부(cron·랜딩·UI 다듬기) 완료.
 - 스키마 v2 (직종 보편형) + structure-v2가 운영 기본. v1 대비: 누락 3.7%→0%, 환각 0 유지
-- 채점: 체크리스트 기반 (checklist → evaluate/compare/report), 재현성 검증 완료. inferred는 환각 아님(별도 집계)
-- 마스킹 정책: 개인식별정보(주민번호·신용카드)만 마스킹, 업무용 접근 정보(포스기PW·도어락)는 그대로
-- 보강 질문 (enrich-v2): 업무 유형 추론 기반 누락 감지 추가 → 섹션 부재 누락도 질문 생성. 5~7개
+- 채점: 체크리스트 기반, 재현성 검증 완료. inferred는 환각 아님(별도 집계)
+- 마스킹 정책: 개인식별정보만 마스킹, 업무용 접근 정보(포스기PW·도어락)는 그대로
+- 보강 질문 (enrich-v2): 업무 유형 추론 기반 누락 감지. 5~7개
 - ffmpeg: serverExternalPackages로 번들 제외 완료. 33MB 영상 mp3 추출 확인
-- STT: GROQ_API_KEY + HANDOVER_STT=groq 세팅 시 Groq Whisper 자동 선택 동작
-- sample-01 합산 기준: 누락 7.0% (3/43), critical 2건, 환각 0 — 목표 <10% 달성
-- 남은 것: ① Groq STT 실 영상 E2E 전체 통과 확인 ② Phase 0 본체 = 골든셋 10개(매장·현장 포함)로 반복 ③ structure-v2 "업무 중요도: 높음" 환각 1건 보완 검토
-- Phase 2 (결제·마스킹 cron·랜딩)는 미착수. 상세 이력: PROGRESS.md
+- STT: GROQ_API_KEY + HANDOVER_STT=groq → Groq Whisper 자동 선택
+- sample-01 합산: 누락 7.0% (3/43), critical 2건, 환각 0 — 목표 <10% 달성
+- structure-v2 nullable 필드 규칙 추가 → importance 환각 방지
+- 배포 전 UI 다듬기: empty state·에러 한국어화·retry 버튼·로딩 애니·테마·모바일 완료
+- Phase 2-2: 영상 30일 자동 삭제 cron (vercel.json + /api/cron/cleanup-videos). CRON_SECRET 설정 필요
+- Phase 2-3: 랜딩 페이지 개선 (pain point·how it works·features·CTA)
+- 남은 것: ① Groq STT 실 영상 E2E 확인 ② Phase 0 본체 = 골든셋 10개 반복 ③ Phase 2-1 결제(토스페이먼츠) 미착수
+- 상세 이력: PROGRESS.md
