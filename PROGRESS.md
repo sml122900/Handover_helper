@@ -355,3 +355,66 @@ npm run dev                                      # 웹 (Supabase 셋업 전엔 /
 - Phase 2-1 결제(토스), 2-2 마스킹+30일 삭제 cron, 2-3 랜딩 페이지 (지시 범위 밖이라 미진행)
 - 후속 TODO: **실영상 STT 시 Vercel 타임아웃 → Inngest 전환**, Whisper 25MB 초과 시 ffmpeg 오디오 추출, 서버 사이드 PDF(한글 폰트+키프레임), 에디터 키프레임 교체 UI
 - 후속 TODO (세션 1-9 점검): 실물 촬영 키프레임 — scene 임계값 0.4~0.5 실험 + 최소 간격 필터, `.mov` 지원, 모바일 웹 카메라 촬영 버튼(`capture="environment"`)·업로드 동선
+
+---
+
+## 세션 2-A: UI 다듬기 + Phase 2 착수 ✅ (2026-06-12~13)
+
+> 사용자 지시: ① 배포 전 UI 다듬기 7건 ② structure-v2 환각 1건 수정 ③ 30일 cron ④ 랜딩 페이지 ⑤ 토스페이먼츠 건당 결제
+
+### 완료한 것
+
+**UI 다듬기**
+- 공유 페이지(/share) CSS variable 팔레트 적용, 인쇄 버튼 다크/라이트 대응
+- ScreenRecorder.tsx 전체 zinc 하드코딩 → CSS var
+- 빈 상태 개선: 프로젝트 0개, 영상 0개, 문서 없음 — 안내 문구 + 다음 행동 버튼
+- 영상 처리 중 `animate-pulse` 배지, 실패 시 `재시도` 버튼 + retryVideo 서버 액션
+- 에러 메시지 전수 한국어 교체 (process-video.ts 3건, upload-actions.ts)
+- 모바일 375px: ScreenRecorder flex-wrap + gap-y-3, 그 외 레이아웃 수정
+
+**Phase 2-0: structure-v2 환각 수정**
+- `overview.importance` — nullable 필드 규칙 추가: 트랜스크립트에서 명시적으로 언급된 경우에만, 없으면 반드시 null. 백틱 파싱 에러 수정
+
+**Phase 2-2: 30일 영상 자동 삭제 cron**
+- `/api/cron/cleanup-videos` — keyframe 이미지 → 영상 파일 → video DB 행(CASCADE) 삭제
+- `vercel.json` — `0 0 * * *` Vercel cron 등록, CRON_SECRET Bearer 인증
+
+**Phase 2-3: 랜딩 페이지 개선**
+- `app/page.tsx` — Hero, 이런 분들께(3카드), 사용 방법(3단계), 주요 기능(6항목), 하단 CTA
+
+**Phase 2-1: 토스페이먼츠 건당 결제**
+- `supabase/migrations/0006_payments.sql` — payments 테이블 + projects.plan(free|paid)
+- `lib/payments/confirm-logic.ts` — validateConfirmRequest 순수 함수 (금액·상태 검증)
+- `lib/payments/toss.ts` — confirmTossPayment (토스 서버 승인 API 호출)
+- `lib/payments/confirm-logic.test.ts` — vitest 7개 (금액 변조·이중 승인·잘못된 상태)
+- `/projects/[id]/upgrade` — 토스 위젯 결제 페이지 (PaymentWidget.tsx + page.tsx)
+- `/projects/[id]/upgrade/success` — 서버 승인: 금액 서버 검증 → confirmTossPayment → plan=paid 전환, 멱등성 처리
+- `/projects/[id]/upgrade/fail` — 결제 실패/취소 안내 (취소는 에러 표시 안 함)
+- `/payments` — 결제 내역 페이지
+- 비용 가드 분기: paid 프로젝트 = 프로젝트 단위 2시간, free = 계정 전체 20분
+- 한도 초과 시 upgradeUrl 반환 → VideoUploader 업그레이드 링크
+- 프로젝트 상세 페이지 PRO 배지 / 업그레이드 링크
+- .env.example NEXT_PUBLIC_TOSS_CLIENT_KEY + TOSS_SECRET_KEY 추가
+- ALL_MIGRATIONS.sql에 0006 합본
+
+### 실행 방법
+```
+# DB 마이그레이션 (0006_payments.sql 또는 ALL_MIGRATIONS.sql 재실행)
+# Supabase Dashboard > SQL Editor > supabase/migrations/0006_payments.sql 실행
+
+# 토스 결제 테스트
+# .env에 NEXT_PUBLIC_TOSS_CLIENT_KEY, TOSS_SECRET_KEY(테스트 키) 설정 후
+npm run dev
+# 프로젝트 > 업그레이드 > 토스 테스트 카드로 결제 → 성공 리다이렉트 확인
+```
+
+### 사용자가 할 일 (TODO)
+- [ ] **0006_payments.sql 실행**: Supabase Dashboard > SQL Editor > `supabase/migrations/0006_payments.sql` 실행
+- [ ] **토스 E2E**: 테스트 카드 결제 → `/projects/[id]?upgraded=1` 리다이렉트 → PRO 배지 확인 → 업로드 2시간 한도 동작 확인
+- [ ] 남은 Phase 0 본체: 골든셋 10개(매장·현장 포함) + structure-v2 반복 채점
+
+### 스스로 내린 판단과 이유
+1. **successUrl/failUrl — 환경변수 없이 headers()에서 baseUrl 추출** — NEXT_PUBLIC_APP_URL 추가 없이 dev/prod 양쪽 동작. x-forwarded-proto + host.
+2. **결제 기존 pending 재사용** — 업그레이드 페이지를 새로고침해도 동일 orderId 유지. 토스는 같은 orderId 중복 결제를 거부하므로 pending 재사용이 안전.
+3. **PaymentWidget SDK 수정** — 설치된 @tosspayments/tosspayments-sdk는 loadTossPayments + widgets() 패턴. loadPaymentWidget 미존재 → 빌드 에러 → loadTossPayments + tossPayments.widgets() + setAmount() 패턴으로 수정.
+4. **vitest 43개 통과, build 통과 후 커밋**
