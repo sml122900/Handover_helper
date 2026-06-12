@@ -2,6 +2,18 @@
 
 > Problem(문제) — Action(행동) — Result(결과) 형식으로 기록.
 
+## 소재 8: 결제 보안 — 서버 금액 검증 설계 (2026-06-13)
+
+- **Problem**: 클라이언트가 `successUrl?amount=100`으로 조작 시 9,900원 결제가 100원으로 승인될 위험. PG사 confirm API를 서버에서 호출하되 금액을 클라이언트 파라미터가 아닌 DB에서 조회해야 함
+- **Action**: `validateConfirmRequest({ queryAmount, dbAmount, dbStatus })` 순수 함수 설계 → 금액 불일치·이중 승인·0원·음수 등 7개 케이스 vitest 작성 → 성공 시에만 Toss confirm API 호출, 실패 시 payments.status=failed 기록
+- **Result** (수치 포함): 금액 변조 방어 로직 vitest 7/7 통과, 멱등성(success URL 중복 접근) 처리 포함. "보안 로직은 순수 함수로 분리해 테스트" 원칙 적용
+
+## 소재 9: 토스페이먼츠 SDK 3단계 디버깅 (2026-06-13)
+
+- **Problem**: 결제 위젯 로딩 실패 — 에러 메시지만 있고 원인 불명. 사업자 미등록으로 테스트 환경 제약
+- **Action**: ① catch 에서 에러 삼킴 → 실제 메시지 화면 출력으로 에러 가시화 ② `loadPaymentWidget` 미존재 → SDK 소스 직접 열람으로 `loadTossPayments` 확인 ③ `customerKey: userId` → `ANONYMOUS` 상수 ④ "API 개별 연동 키 지원 안 함" 에러 → 토스 키 종류(위젯 키 vs API 개별 키) 차이 파악 → `@tosspayments/payment-sdk`로 패키지 교체
+- **Result** (수치 포함): 30분 내 3단계 연속 이슈 해결, 사업자 등록 전 환경에서 결제 플로우 완성. SDK 소스 열람(node_modules 직접 분석)으로 문서 불일치 극복
+
 ## 소재 1: LLM 채점 비결정성 해결 (2026-06-11)
 
 - **Problem**: AI 문서 품질 채점을 심판 LLM에 일임하니 같은 입력에서 누락률이 11.1%↔0%로 널뜀 — 분모(핵심 정보 개수)를 매번 다르게 세서 프롬프트 버전 비교가 불가능
