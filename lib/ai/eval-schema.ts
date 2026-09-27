@@ -17,17 +17,19 @@ export const ChecklistSchema = z.object({
 });
 
 // ── 심판 출력 (항목 단위 판정만 — 집계·계산은 코드 담당) ──
+// 필드 순서 = 생성 순서: 근거(evidence)를 먼저 쓰고 판정(present/supported)을 나중에
+// (판정 먼저면 근거와 모순된 판정이 확정될 수 있음 — docs/eval-methodology-notes.md #3)
 
 export const FactJudgmentSchema = z.object({
   index: z.number().int().describe("체크리스트 항목 번호 (입력 그대로)"),
-  present: z.boolean().describe("AI 문서에 이 사실이 존재하는가"),
   evidence: z.string().describe("존재하면 AI 문서에서 해당 부분 인용, 없으면 빈 문자열"),
+  present: z.boolean().describe("AI 문서에 이 사실이 존재하는가"),
 });
 
 export const ClaimJudgmentSchema = z.object({
   index: z.number().int().describe("AI 문서 주장 번호 (입력 그대로)"),
-  supported: z.boolean().describe("트랜스크립트(또는 정답 문서)에 근거가 있는가"),
   evidence: z.string().describe("근거 인용. 근거 없으면 왜 없는지 한 줄"),
+  supported: z.boolean().describe("트랜스크립트(또는 정답 문서)에 근거가 있는가"),
 });
 
 export const JudgeOutputSchema = z.object({
