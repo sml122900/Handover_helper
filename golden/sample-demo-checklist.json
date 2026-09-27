@@ -1,0 +1,356 @@
+{
+  "promptVersion": "checklist-v2",
+  "model": "claude-sonnet-4-6",
+  "items": [
+    {
+      "fact": "마감조 근무 시간은 18:00~22:30이다.",
+      "section": "업무 개요",
+      "critical": true
+    },
+    {
+      "fact": "마감조는 보통 홀 1명, 바 1명으로 총 2명이 근무한다.",
+      "section": "업무 개요",
+      "critical": true
+    },
+    {
+      "fact": "해당 인수인계는 바 담당 기준이다.",
+      "section": "업무 개요",
+      "critical": false
+    },
+    {
+      "fact": "카페 좌석은 약 20석 규모의 동네 카페이다.",
+      "section": "업무 개요",
+      "critical": false
+    },
+    {
+      "fact": "출근 시 뒷문으로 입장한다.",
+      "section": "절차",
+      "critical": true
+    },
+    {
+      "fact": "뒷문 도어락 비밀번호는 점장님이 첫날 따로 알려준다.",
+      "section": "절차",
+      "critical": true
+    },
+    {
+      "fact": "앞치마는 오른쪽 직원 사물함 위 선반에 있다.",
+      "section": "장비·위치·물품",
+      "critical": false
+    },
+    {
+      "fact": "출근 시 포스기에서 근무자 선택 후 본인 이름을 선택해 출근 처리를 해야 한다.",
+      "section": "절차",
+      "critical": true
+    },
+    {
+      "fact": "포스기 출근 처리를 하지 않으면 급여 계산이 되지 않는다.",
+      "section": "주의사항",
+      "critical": true
+    },
+    {
+      "fact": "출근 후 매장 직원 단톡방에 '마감조 출근했습니다'를 전송해야 한다.",
+      "section": "연락·보고",
+      "critical": true
+    },
+    {
+      "fact": "단톡방 출근 메시지는 점장님 출근 체크용이다.",
+      "section": "연락·보고",
+      "critical": false
+    },
+    {
+      "fact": "레시피 북은 에스프레소 머신 옆 선반에 있다.",
+      "section": "장비·위치·물품",
+      "critical": true
+    },
+    {
+      "fact": "시럽 펌프 1회는 10ml이다.",
+      "section": "절차",
+      "critical": false
+    },
+    {
+      "fact": "바닐라 라떼는 시럽 펌프를 2회 사용한다.",
+      "section": "절차",
+      "critical": false
+    },
+    {
+      "fact": "디저트 쇼케이스 정리는 20:30경에 한다.",
+      "section": "일정·루틴",
+      "critical": true
+    },
+    {
+      "fact": "당일 제조 케이크가 남으면 폐기 대장에 기록 후 폐기한다.",
+      "section": "절차",
+      "critical": true
+    },
+    {
+      "fact": "쿠키 등 포장 제품은 유통기한 확인 후 다시 진열한다.",
+      "section": "절차",
+      "critical": false
+    },
+    {
+      "fact": "폐기 대장은 쇼케이스 아래 서랍 첫 번째 칸 파란색 파일이다.",
+      "section": "장비·위치·물품",
+      "critical": true
+    },
+    {
+      "fact": "폐기 대장에는 날짜·품목·개수·본인 이름을 기록한다.",
+      "section": "절차",
+      "critical": true
+    },
+    {
+      "fact": "에스프레소 머신 청소는 21:30 라스트 오더 이후에 시작한다.",
+      "section": "일정·루틴",
+      "critical": true
+    },
+    {
+      "fact": "라스트 오더 전에 머신 청소를 시작하면 안 된다.",
+      "section": "주의사항",
+      "critical": true
+    },
+    {
+      "fact": "머신 청소 시 포터필터를 전부 빼서 바스켓을 분리하고 블라인드 필터를 장착한다.",
+      "section": "절차",
+      "critical": true
+    },
+    {
+      "fact": "백플러싱 시 세척 약품을 한 스푼 넣는다.",
+      "section": "절차",
+      "critical": true
+    },
+    {
+      "fact": "백플러싱은 10초 추출 / 10초 정지를 5회 반복한다.",
+      "section": "절차",
+      "critical": true
+    },
+    {
+      "fact": "백플러싱 후 블라인드 필터를 빼고 물로만 5회 헹군다.",
+      "section": "절차",
+      "critical": true
+    },
+    {
+      "fact": "물 헹굼을 생략하면 다음 날 첫 커피에서 약품 맛이 난다.",
+      "section": "주의사항",
+      "critical": true
+    },
+    {
+      "fact": "세척 약품을 과다 투입하면 거품이 넘치므로 한 스푼만 사용해야 한다.",
+      "section": "주의사항",
+      "critical": true
+    },
+    {
+      "fact": "포터필터·바스켓은 싱크대 왼쪽 스테인리스 통에 뜨거운 물과 약품을 풀어 담가둔다.",
+      "section": "절차",
+      "critical": true
+    },
+    {
+      "fact": "담가둔 포터필터·바스켓은 오픈조가 아침에 헹군다.",
+      "section": "연락·보고",
+      "critical": false
+    },
+    {
+      "fact": "스팀 노즐은 젖은 행주로 닦고 스팀을 한 번 빼야 한다.",
+      "section": "절차",
+      "critical": true
+    },
+    {
+      "fact": "굳은 우유는 노즐 전용 솔로 제거한다.",
+      "section": "절차",
+      "critical": true
+    },
+    {
+      "fact": "노즐 전용 솔은 머신 오른쪽 옆에 있다.",
+      "section": "장비·위치·물품",
+      "critical": false
+    },
+    {
+      "fact": "그라인더 호퍼에 남은 원두는 매일 빼서 밀폐 용기에 보관한다.",
+      "section": "절차",
+      "critical": true
+    },
+    {
+      "fact": "그라인더 날 청소는 주 1회 금요일에만 한다.",
+      "section": "일정·루틴",
+      "critical": false
+    },
+    {
+      "fact": "냉장고 우유는 유통기한 짧은 것을 앞으로 선입선출한다.",
+      "section": "절차",
+      "critical": false
+    },
+    {
+      "fact": "우유가 1팩 이하로 남으면 재고 노트에 기록한다.",
+      "section": "절차",
+      "critical": true
+    },
+    {
+      "fact": "재고 노트는 냉장고 옆 클립보드에 있다.",
+      "section": "장비·위치·물품",
+      "critical": false
+    },
+    {
+      "fact": "홀 정리 시 의자를 테이블 위에 올린다.",
+      "section": "절차",
+      "critical": false
+    },
+    {
+      "fact": "홀 정리 시 빗자루로 쓸고 대걸레질을 한다.",
+      "section": "절차",
+      "critical": false
+    },
+    {
+      "fact": "대걸레는 짜서 화장실 옆 청소 도구함에 세워서 보관한다.",
+      "section": "절차",
+      "critical": false
+    },
+    {
+      "fact": "대걸레를 눕혀서 보관하면 냄새가 난다.",
+      "section": "주의사항",
+      "critical": false
+    },
+    {
+      "fact": "쓰레기는 일반·재활용·음식물(원두 찌꺼기 포함)로 분리한다.",
+      "section": "절차",
+      "critical": false
+    },
+    {
+      "fact": "분리수거장은 뒷문 나가서 왼쪽 건물 뒤편에 있다.",
+      "section": "장비·위치·물품",
+      "critical": false
+    },
+    {
+      "fact": "커피 찌꺼기가 많으면 봉투 2개로 나눠 담는다.",
+      "section": "예외 상황·꿀팁",
+      "critical": false
+    },
+    {
+      "fact": "포스 마감 시 카드·현금 매출을 확인한다.",
+      "section": "절차",
+      "critical": true
+    },
+    {
+      "fact": "현금 시재를 세서 포스 현금 금액과 대조한다.",
+      "section": "절차",
+      "critical": true
+    },
+    {
+      "fact": "금고는 카운터 아래에 있다.",
+      "section": "장비·위치·물품",
+      "critical": true
+    },
+    {
+      "fact": "금고에 기본 시재 10만 원을 남기고 나머지는 봉투에 넣어 금고 위 칸에 보관한다.",
+      "section": "절차",
+      "critical": true
+    },
+    {
+      "fact": "현금 봉투에 날짜와 금액을 기록한다.",
+      "section": "절차",
+      "critical": true
+    },
+    {
+      "fact": "정산 영수증은 2장 출력한다.",
+      "section": "절차",
+      "critical": true
+    },
+    {
+      "fact": "정산 영수증 1장은 현금 봉투에, 1장은 정산 파일에 보관한다.",
+      "section": "절차",
+      "critical": true
+    },
+    {
+      "fact": "정산 파일은 폐기 대장 옆 서랍에 있다.",
+      "section": "장비·위치·물품",
+      "critical": false
+    },
+    {
+      "fact": "단톡방에 매출 합계 영수증 사진을 업로드한다.",
+      "section": "연락·보고",
+      "critical": true
+    },
+    {
+      "fact": "에스프레소 머신은 퇴근 시 끄지 않고 24시간 켜둔다.",
+      "section": "주의사항",
+      "critical": true
+    },
+    {
+      "fact": "퇴근 시 그라인더·조명·음악 스피커·에어컨을 끈다.",
+      "section": "절차",
+      "critical": true
+    },
+    {
+      "fact": "간판 불은 22:30에 자동 소등된다.",
+      "section": "일정·루틴",
+      "critical": false
+    },
+    {
+      "fact": "퇴근 전 창문 닫힘을 확인하고 문을 잠근다.",
+      "section": "절차",
+      "critical": true
+    },
+    {
+      "fact": "보안 설정은 뒷문 옆 패널에서 하며, 방법은 점장님께 첫날 같이 해달라고 요청해야 한다.",
+      "section": "미해결·인계 항목",
+      "critical": true
+    },
+    {
+      "fact": "점장님은 매일 아침 출근 체크와 매출을 확인한다.",
+      "section": "연락·보고",
+      "critical": false
+    },
+    {
+      "fact": "점장님 전화번호는 단톡방 공지에 있다.",
+      "section": "연락·보고",
+      "critical": false
+    },
+    {
+      "fact": "급한 문제는 점장님에게 전화한다.",
+      "section": "연락·보고",
+      "critical": true
+    },
+    {
+      "fact": "비 오는 날은 21시 이후 손님이 거의 없어 청소를 일찍 시작해도 된다.",
+      "section": "예외 상황·꿀팁",
+      "critical": false
+    },
+    {
+      "fact": "라스트 오더 이후 10잔 넘는 단체 포장 주문은 정중히 거절할 수 있다.",
+      "section": "예외 상황·꿀팁",
+      "critical": false
+    },
+    {
+      "fact": "단체 포장 주문 거절은 점장님 방침이다.",
+      "section": "예외 상황·꿀팁",
+      "critical": false
+    },
+    {
+      "fact": "제빙기는 건드리지 않는다.",
+      "section": "주의사항",
+      "critical": true
+    },
+    {
+      "fact": "제빙기는 업체가 월 1회 청소한다.",
+      "section": "일정·루틴",
+      "critical": false
+    },
+    {
+      "fact": "제빙기 누수 시 점장님께 즉시 연락한다.",
+      "section": "연락·보고",
+      "critical": true
+    },
+    {
+      "fact": "재고 부족 시 발주 방법은 설명이 누락되어 있다.",
+      "section": "미해결·인계 항목",
+      "critical": true
+    },
+    {
+      "fact": "현금 시재가 포스 금액과 맞지 않을 때의 처리 방법은 설명이 없다.",
+      "section": "미해결·인계 항목",
+      "critical": true
+    },
+    {
+      "fact": "세척 약품의 정확한 위치는 불명확하다.",
+      "section": "미해결·인계 항목",
+      "critical": true
+    }
+  ]
+}
