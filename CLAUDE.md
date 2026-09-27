@@ -171,3 +171,28 @@ Phase 0 + Phase 1 + Phase 2 일부(cron·랜딩·UI 다듬기) 완료.
 - Phase 2-3: 랜딩 페이지 개선 (pain point·how it works·features·CTA)
 - 남은 것: ① Groq STT 실 영상 E2E 확인 ② Phase 0 본체 = 골든셋 10개 반복 ③ Phase 2-1 결제(토스페이먼츠) 미착수
 - 상세 이력: PROGRESS.md
+
+## Phase 3 — 포트폴리오·출시 완성 (공통 규칙)
+목표: 취업 포트폴리오에 넣을 수 있는 수준. 심사자가 배포 링크에서 5분 안에
+가입 → 샘플 체험 → 문서 확인 → 공유까지 막힘 없이 끝낼 수 있고,
+코드·테스트·README가 그 품질을 증명해야 한다.
+
+완성 기준(DoD)
+- 배포 URL에서 신규 가입 → 샘플 프로젝트 → 문서 생성 → 공유 링크 → docx 내보내기까지 오류 0
+- 30분 영상 처리가 Vercel 타임아웃 없이 끝남 (Inngest)
+- 실패 상태가 화면에 사유와 함께 보이고 "다시 시도"가 됨
+- 390px 모바일에서 핵심 화면 깨짐 없음. 화면 녹화 미지원 환경에선 촬영·업로드만 노출
+- Lighthouse(배포 URL, 모바일): Performance ≥ 80, Accessibility ≥ 90, Best Practices ≥ 90, PWA 설치 가능
+- CI(GitHub Actions) green: lint · typecheck · unit · build
+- 이용약관 · 개인정보처리방침 · 계정 삭제 존재
+- README: 문제·차별점·아키텍처·파이프라인·품질 검증 지표·실행법·데모 GIF
+
+자율 모드 규칙 (Phase 3 추가분)
+- 질문하지 말고 진행. 외부 계정·키·대시보드 설정이 필요한 건 mock/placeholder 처리 후 PROGRESS.md "사용자가 할 일"에 기록
+- 같은 에러 3회면 건너뛰고 기록. git push 금지
+- 세션마다 명시된 API 실호출 한도 준수. 테스트는 전부 mock(HANDOVER_STT=mock, 모델 mock)
+- 문서 스키마 v2 변경 금지. golden/, scripts/evaluate.ts, scripts/build-checklist.ts 로직 수정 금지
+- 기존 랜딩·앱 문구는 오탈자 외 수정 금지. 새 화면 문구만 작성하고 "사용자 검토 필요"로 목록화
+- golden/ 내용은 공개 데모·스크린샷·README에 노출 금지 (실제 매장 정보 포함)
+- 한 세션에서 못 끝내면 PROGRESS.md에 멈춘 지점 기록. 다음 세션은 같은 프롬프트로 이어감
+- 세션 종료 시 PROGRESS.md에: 완료한 것 / 사용자가 할 일 / 스스로 내린 판단과 이유 / 남은 것

@@ -418,3 +418,13 @@ npm run dev
 2. **결제 기존 pending 재사용** — 업그레이드 페이지를 새로고침해도 동일 orderId 유지. 토스는 같은 orderId 중복 결제를 거부하므로 pending 재사용이 안전.
 3. **PaymentWidget SDK 수정** — 설치된 @tosspayments/tosspayments-sdk는 loadTossPayments + widgets() 패턴. loadPaymentWidget 미존재 → 빌드 에러 → loadTossPayments + tossPayments.widgets() + setAmount() 패턴으로 수정.
 4. **vitest 43개 통과, build 통과 후 커밋**
+
+---
+
+## 세션 3-A ①: 기준선 정리 · 실데이터 분리 · 마스킹 코드 계층 · 보안 감사 (2026-09-27)
+
+### 기준선 (클론 직후, 코드 변경 전)
+- `npm install`/`npm ci` **실패** — lockfile 불일치: `@tiptap/extension-image@3.26.1` peer `@tiptap/core@3.26.1` vs 설치된 core 3.26.0 → image를 3.26.0으로 정렬 후 설치 성공
+- vitest: **43/43 통과** (6 files)
+- typecheck: **에러 0**
+- next build (16.2.7 Turbopack): **성공**, 경고 1 — `middleware` 파일 규칙 deprecated (→ `proxy`)
