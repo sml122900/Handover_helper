@@ -1,17 +1,17 @@
 // 채점 스크립트 (체크리스트 기반 v2 — 비결정성 해결)
 // 입력 규약 (파일명 {name} 기준):
 //   output/{name}.json              — AI 산출 문서 (convert.ts 결과)
-//   golden/{name}.md                — 정답 문서
-//   golden/{name}-checklist.json    — 원자적 사실 체크리스트 (npm run checklist 로 생성)
-//   samples/{name}.txt              — (선택) 원본 트랜스크립트 — 환각 판정 근거
+//   {GOLDEN_DIR}/{name}.md          — 정답 문서 (GOLDEN_DIR 기본 ./golden, golden/README.md)
+//   {GOLDEN_DIR}/{name}-checklist.json — 원자적 사실 체크리스트 (npm run checklist 로 생성)
+//   {GOLDEN_DIR}/{name}.txt → samples/{name}.txt — (선택) 원본 트랜스크립트 — 환각 판정 근거
 // 사용법:
 //   npm run evaluate -- sample-handover              (이름 1개 이상)
-//   npm run evaluate -- --all                        (golden/ 전체 배치)
+//   npm run evaluate -- --all                        (GOLDEN_DIR 전체 배치)
 //   npm run evaluate -- sample-handover --repeat 3   (같은 입력 N회 채점 — 재현성 확인)
-// 결과: results/{name}-eval.md (+ .json)
+// 결과: results/{name}-eval.md (+ .json) — GOLDEN_DIR가 비공개 경로면 그 상위의 output/·results/ 사용
 
-import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from "node:fs";
-import { basename, join } from "node:path";
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
+import { join } from "node:path";
 import Anthropic from "@anthropic-ai/sdk";
 
 if (existsSync(".env")) process.loadEnvFile(".env");
@@ -20,14 +20,16 @@ if (existsSync(".env")) process.loadEnvFile(".env");
 const { runEvaluation, EVAL_MODEL, JUDGE_PROMPT_VERSION } = await import("../lib/ai/evaluate");
 const { ChecklistSchema, missRate } = await import("../lib/ai/eval-schema");
 const { DocumentSchema } = await import("../lib/ai/schema");
+const { GOLDEN_DIR, OUTPUT_DIR, RESULTS_DIR, transcriptPath: findTranscript, listGoldenNames } =
+  await import("../lib/golden-paths");
 type EvalResult = import("../lib/ai/eval-schema").EvalResult;
 
 async function evaluateOne(client: Anthropic, name: string, repeat: number): Promise<void> {
   console.log(`\n=== 채점: ${name}${repeat > 1 ? ` (${repeat}회 반복)` : ""}`);
 
-  const aiPath = join("output", `${name}.json`);
-  const goldenPath = join("golden", `${name}.md`);
-  const checklistPath = join("golden", `${name}-checklist.json`);
+  const aiPath = join(OUTPUT_DIR, `${name}.json`);
+  const goldenPath = join(GOLDEN_DIR, `${name}.md`);
+  const checklistPath = join(GOLDEN_DIR, `${name}-checklist.json`);
   if (!existsSync(aiPath)) throw new Error(`AI 문서 없음: ${aiPath} (먼저 convert 실행)`);
   if (!existsSync(goldenPath)) throw new Error(`정답 문서 없음: ${goldenPath}`);
   if (!existsSync(checklistPath)) {
@@ -37,7 +39,7 @@ async function evaluateOne(client: Anthropic, name: string, repeat: number): Pro
   const aiDocument = DocumentSchema.parse(JSON.parse(readFileSync(aiPath, "utf-8")).document);
   const checklist = ChecklistSchema.parse(JSON.parse(readFileSync(checklistPath, "utf-8"))).items;
   const goldenMarkdown = readFileSync(goldenPath, "utf-8");
-  const transcriptPath = join("samples", `${name}.txt`);
+  const transcriptPath = findTranscript(name);
   const transcriptText = existsSync(transcriptPath)
     ? readFileSync(transcriptPath, "utf-8")
     : undefined;
@@ -76,10 +78,10 @@ async function evaluateOne(client: Anthropic, name: string, repeat: number): Pro
   }
 
   const result = runs[runs.length - 1];
-  mkdirSync("results", { recursive: true });
-  writeFileSync(join("results", `${name}-eval.json`), JSON.stringify(result, null, 2), "utf-8");
-  writeFileSync(join("results", `${name}-eval.md`), renderEvalMarkdown(name, result), "utf-8");
-  console.log(`  → results/${name}-eval.md`);
+  mkdirSync(RESULTS_DIR, { recursive: true });
+  writeFileSync(join(RESULTS_DIR, `${name}-eval.json`), JSON.stringify(result, null, 2), "utf-8");
+  writeFileSync(join(RESULTS_DIR, `${name}-eval.md`), renderEvalMarkdown(name, result), "utf-8");
+  console.log(`  → ${join(RESULTS_DIR, `${name}-eval.md`)}`);
 }
 
 function renderEvalMarkdown(name: string, r: EvalResult): string {
@@ -120,13 +122,11 @@ let names = argv.filter(
   (a, i) => a !== "--all" && !(repeatIdx >= 0 && (i === repeatIdx || i === repeatIdx + 1))
 );
 if (argv.includes("--all")) {
-  if (!existsSync("golden")) {
-    console.error("golden/ 폴더가 없습니다. 정답 문서(golden/{name}.md)를 먼저 작성하세요.");
+  if (!existsSync(GOLDEN_DIR)) {
+    console.error(`${GOLDEN_DIR} 폴더가 없습니다. 정답 문서({name}.md)를 먼저 작성하세요.`);
     process.exitCode = 1;
   } else {
-    names = readdirSync("golden")
-      .filter((f) => f.endsWith(".md"))
-      .map((f) => basename(f, ".md"));
+    names = listGoldenNames();
   }
 }
 if (names.length === 0) {

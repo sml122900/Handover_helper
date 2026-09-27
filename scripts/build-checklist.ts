@@ -1,16 +1,17 @@
 // 정답 문서 → 원자적 사실 체크리스트 (채점 분모 고정 — 비결정성 해결)
 // 사용법:
 //   npm run checklist -- sample-handover          (이름 1개 이상)
-//   npm run checklist -- --all                    (golden/*.md 전체)
+//   npm run checklist -- --all                    (GOLDEN_DIR/*.md 전체, 기본 ./golden)
 //   npm run checklist -- sample-handover --force  (캐시 무시 재생성)
-// 결과: golden/{name}-checklist.json (캐시 — 있으면 호출 0회)
+// 결과: {GOLDEN_DIR}/{name}-checklist.json (캐시 — 있으면 호출 0회)
 
-import { readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
-import { basename, join } from "node:path";
+import { readFileSync, writeFileSync, existsSync } from "node:fs";
+import { join } from "node:path";
 import Anthropic from "@anthropic-ai/sdk";
 
 if (existsSync(".env")) process.loadEnvFile(".env");
 
+const { GOLDEN_DIR, listGoldenNames } = await import("../lib/golden-paths");
 const { buildChecklist, CHECKLIST_MODEL, CHECKLIST_PROMPT_VERSION } = await import(
   "../lib/ai/checklist"
 );
@@ -18,11 +19,7 @@ const { buildChecklist, CHECKLIST_MODEL, CHECKLIST_PROMPT_VERSION } = await impo
 const force = process.argv.includes("--force");
 let names = process.argv.slice(2).filter((a) => !a.startsWith("--"));
 if (process.argv.includes("--all")) {
-  names = existsSync("golden")
-    ? readdirSync("golden")
-        .filter((f) => f.endsWith(".md"))
-        .map((f) => basename(f, ".md"))
-    : [];
+  names = listGoldenNames();
 }
 
 if (names.length === 0) {
@@ -33,9 +30,9 @@ if (names.length === 0) {
   let failed = 0;
   for (const name of names) {
     try {
-      const goldenPath = join("golden", `${name}.md`);
+      const goldenPath = join(GOLDEN_DIR, `${name}.md`);
       if (!existsSync(goldenPath)) throw new Error(`정답 문서 없음: ${goldenPath}`);
-      const outPath = join("golden", `${name}-checklist.json`);
+      const outPath = join(GOLDEN_DIR, `${name}-checklist.json`);
 
       if (!force && existsSync(outPath)) {
         const cached = JSON.parse(readFileSync(outPath, "utf-8"));

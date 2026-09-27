@@ -8,18 +8,21 @@ import { join } from "node:path";
 import { EvalResultSchema } from "../lib/ai/eval-schema";
 import { aggregateMissesBySection, renderSectionMissReport } from "../lib/ai/compare-report";
 
-if (!existsSync("results")) {
-  console.error("results/ 폴더가 없습니다. 먼저 npm run evaluate 를 실행하세요.");
+if (existsSync(".env")) process.loadEnvFile(".env");
+const { RESULTS_DIR } = await import("../lib/golden-paths"); // .env의 GOLDEN_DIR 반영 후 import
+
+if (!existsSync(RESULTS_DIR)) {
+  console.error(`${RESULTS_DIR} 폴더가 없습니다. 먼저 npm run evaluate 를 실행하세요.`);
   process.exitCode = 1;
 } else {
-  const files = readdirSync("results").filter((f) => f.endsWith("-eval.json"));
+  const files = readdirSync(RESULTS_DIR).filter((f) => f.endsWith("-eval.json"));
   if (files.length === 0) {
-    console.error("results/*-eval.json 이 없습니다. 먼저 npm run evaluate 를 실행하세요.");
+    console.error(`${RESULTS_DIR}/*-eval.json 이 없습니다. 먼저 npm run evaluate 를 실행하세요.`);
     process.exitCode = 1;
   } else {
     const evals = files.flatMap((f) => {
       const parsed = EvalResultSchema.safeParse(
-        JSON.parse(readFileSync(join("results", f), "utf-8"))
+        JSON.parse(readFileSync(join(RESULTS_DIR, f), "utf-8"))
       );
       if (!parsed.success) {
         console.warn(`  건너뜀: ${f} — 구 포맷 (재채점: npm run evaluate)`);
@@ -36,7 +39,7 @@ if (!existsSync("results")) {
       "",
       renderSectionMissReport(misses, "섹션별 누락 집계"),
     ].join("\n");
-    writeFileSync(join("results", "miss-report.md"), md, "utf-8");
+    writeFileSync(join(RESULTS_DIR, "miss-report.md"), md, "utf-8");
 
     if (misses.length === 0) {
       console.log("누락 없음 ✓");
@@ -44,6 +47,6 @@ if (!existsSync("results")) {
       console.log(`섹션별 누락 (채점 ${evals.length}개 집계):`);
       for (const m of misses) console.log(`  ${m.section}: ${m.count}건`);
     }
-    console.log(`→ results/miss-report.md`);
+    console.log(`→ ${join(RESULTS_DIR, "miss-report.md")}`);
   }
 }

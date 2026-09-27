@@ -3,7 +3,7 @@
 //   npm run convert -- samples/sample-handover.txt              (트랜스크립트 직접 입력)
 //   npm run convert -- recording.mp4                             (영상 — OPENAI_API_KEY 있으면 Whisper STT)
 //   npm run convert -- samples/x.txt --prompt structure-v2       (프롬프트 버전 지정)
-// 결과: output/{파일명}.json + output/{파일명}.md
+// 결과: output/{파일명}.json + .md (GOLDEN_DIR가 비공개 경로면 그 상위의 output/)
 
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { basename, extname, join } from "node:path";
@@ -16,6 +16,8 @@ const { parseTranscriptText, transcriptToPromptText } = await import("../lib/stt
 const { getSttProvider } = await import("../lib/stt");
 const { structureTranscript } = await import("../lib/ai/structure");
 const { renderMarkdown } = await import("../lib/render-md");
+const { OUTPUT_DIR } = await import("../lib/golden-paths");
+const { maskDeep } = await import("../lib/privacy/mask");
 
 const TEXT_EXTS = new Set([".txt", ".md"]);
 const MEDIA_EXTS = new Set([".mp4", ".webm", ".m4a", ".mp3", ".wav"]);
@@ -38,15 +40,16 @@ async function convertOne(filePath: string, promptVersion?: string): Promise<voi
   const name = basename(filePath, extname(filePath));
   console.log(`\n=== 변환: ${filePath}`);
 
-  const transcript = await getTranscript(filePath);
+  const transcript = maskDeep(await getTranscript(filePath)); // 마스킹 1차
   console.log(`  세그먼트 ${transcript.segments.length}개 (source=${transcript.source})`);
 
   const promptText = transcriptToPromptText(transcript);
-  const result = await structureTranscript(promptText, { promptVersion });
+  const structured = await structureTranscript(promptText, { promptVersion });
+  const result = { ...structured, document: maskDeep(structured.document) }; // 마스킹 2차
 
-  mkdirSync("output", { recursive: true });
-  const jsonPath = join("output", `${name}.json`);
-  const mdPath = join("output", `${name}.md`);
+  mkdirSync(OUTPUT_DIR, { recursive: true });
+  const jsonPath = join(OUTPUT_DIR, `${name}.json`);
+  const mdPath = join(OUTPUT_DIR, `${name}.md`);
 
   writeFileSync(
     jsonPath,

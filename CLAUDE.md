@@ -192,8 +192,9 @@ Phase 0 + Phase 1 + Phase 2(결제·cron·랜딩·UI 다듬기) 완료. Phase 3 
 - 질문하지 말고 진행. 외부 계정·키·대시보드 설정이 필요한 건 mock/placeholder 처리 후 PROGRESS.md "사용자가 할 일"에 기록
 - 같은 에러 3회면 건너뛰고 기록. git push 금지
 - 세션마다 명시된 API 실호출 한도 준수. 테스트는 전부 mock(HANDOVER_STT=mock, 모델 mock)
-- 문서 스키마 v2 변경 금지. golden/, scripts/evaluate.ts, scripts/build-checklist.ts 로직 수정 금지
+- 문서 스키마 v2 변경 금지. 골든셋 내용, scripts/evaluate.ts, scripts/build-checklist.ts 로직 수정 금지
 - 기존 랜딩·앱 문구는 오탈자 외 수정 금지. 새 화면 문구만 작성하고 "사용자 검토 필요"로 목록화
-- golden/ 내용은 공개 데모·스크린샷·README에 노출 금지 (실제 매장 정보 포함)
+- 실데이터(private-data/, 비공개 골든셋)는 공개 데모·스크린샷·README에 노출 금지 (실제 매장 정보 포함). golden/에는 가상 샘플만
+- README·문서의 품질 지표(누락률 등)는 비공개 골든셋 기준임을 명시. sample-demo 점수는 지표로 인용 금지
 - 한 세션에서 못 끝내면 PROGRESS.md에 멈춘 지점 기록. 다음 세션은 같은 프롬프트로 이어감
 - 세션 종료 시 PROGRESS.md에: 완료한 것 / 사용자가 할 일 / 스스로 내린 판단과 이유 / 남은 것

@@ -1,5 +1,5 @@
 // 프롬프트 버전 비교 (Phase 0 골든셋 반복용)
-// golden/ 전체 샘플을 각 버전으로 변환+채점하고 버전별 누락률·환각 비교표 출력.
+// GOLDEN_DIR(기본 ./golden) 전체 샘플을 각 버전으로 변환+채점하고 버전별 누락률·환각 비교표 출력.
 // 사용법:
 //   npm run compare -- structure-v1 structure-v2        (버전 1개 이상)
 //   npm run compare -- structure-v1 structure-v2 --force (캐시 무시, 전부 재호출)
@@ -8,8 +8,8 @@
 //   results/compare/{name}@{version}-eval.json  — 채점 결과
 // 결과: results/compare-{v1}-vs-{v2}.md (비교표 + 버전별 섹션 누락 집계)
 
-import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from "node:fs";
-import { basename, join } from "node:path";
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
+import { join } from "node:path";
 import Anthropic from "@anthropic-ai/sdk";
 
 if (existsSync(".env")) process.loadEnvFile(".env");
@@ -21,8 +21,12 @@ const { getStructurePrompt } = await import("../lib/ai/prompts");
 const { parseTranscriptText, transcriptToPromptText } = await import("../lib/stt/parse-txt");
 const { EvalResultSchema, ChecklistSchema } = await import("../lib/ai/eval-schema");
 const { DocumentSchema } = await import("../lib/ai/schema");
+const { maskDeep } = await import("../lib/privacy/mask");
 const { renderCompareTable, aggregateMissesBySection, renderSectionMissReport, summarizeByVersion } =
   await import("../lib/ai/compare-report");
+const { GOLDEN_DIR, OUTPUT_DIR, RESULTS_DIR, transcriptPath, listGoldenNames } = await import(
+  "../lib/golden-paths"
+);
 type SampleEvalRow = import("../lib/ai/compare-report").SampleEvalRow;
 
 const force = process.argv.includes("--force");
@@ -42,48 +46,46 @@ if (versions.length === 0) {
 }
 
 async function main(): Promise<void> {
-  if (!existsSync("golden")) {
-    throw new Error("golden/ 폴더가 없습니다. 정답 문서(golden/{name}.md)를 먼저 작성하세요.");
+  if (!existsSync(GOLDEN_DIR)) {
+    throw new Error(`${GOLDEN_DIR} 폴더가 없습니다. 정답 문서({name}.md)를 먼저 작성하세요.`);
   }
-  const names = readdirSync("golden")
-    .filter((f) => f.endsWith(".md"))
-    .map((f) => basename(f, ".md"))
+  const names = listGoldenNames()
     .filter((name) => !name.endsWith("-checklist"))
     .filter((name) => {
-      if (!existsSync(join("samples", `${name}.txt`))) {
-        console.warn(`  건너뜀: samples/${name}.txt 없음 (변환 입력 필요)`);
+      if (!existsSync(transcriptPath(name))) {
+        console.warn(`  건너뜀: ${transcriptPath(name)} 없음 (변환 입력 필요)`);
         return false;
       }
-      if (!existsSync(join("golden", `${name}-checklist.json`))) {
-        console.warn(`  건너뜀: golden/${name}-checklist.json 없음 — 먼저: npm run checklist -- ${name}`);
+      if (!existsSync(join(GOLDEN_DIR, `${name}-checklist.json`))) {
+        console.warn(`  건너뜀: ${join(GOLDEN_DIR, `${name}-checklist.json`)} 없음 — 먼저: npm run checklist -- ${name}`);
         return false;
       }
       return true;
     });
   if (names.length === 0)
     throw new Error(
-      "비교할 샘플이 없습니다 (golden/{name}.md + samples/{name}.txt + golden/{name}-checklist.json 필요)."
+      "비교할 샘플이 없습니다 ({GOLDEN_DIR}/{name}.md + {name}.txt + {name}-checklist.json 필요)."
     );
 
-  mkdirSync(join("output", "compare"), { recursive: true });
-  mkdirSync(join("results", "compare"), { recursive: true });
+  mkdirSync(join(OUTPUT_DIR, "compare"), { recursive: true });
+  mkdirSync(join(RESULTS_DIR, "compare"), { recursive: true });
 
   const client = new Anthropic();
   const rows: SampleEvalRow[] = [];
   let apiCalls = 0;
 
   for (const name of names) {
-    const transcriptText = readFileSync(join("samples", `${name}.txt`), "utf-8");
-    const promptText = transcriptToPromptText(parseTranscriptText(transcriptText));
-    const goldenMarkdown = readFileSync(join("golden", `${name}.md`), "utf-8");
+    const transcriptText = readFileSync(transcriptPath(name), "utf-8");
+    const promptText = transcriptToPromptText(maskDeep(parseTranscriptText(transcriptText))); // 운영 파이프라인과 동일 마스킹
+    const goldenMarkdown = readFileSync(join(GOLDEN_DIR, `${name}.md`), "utf-8");
     const checklist = ChecklistSchema.parse(
-      JSON.parse(readFileSync(join("golden", `${name}-checklist.json`), "utf-8"))
+      JSON.parse(readFileSync(join(GOLDEN_DIR, `${name}-checklist.json`), "utf-8"))
     ).items;
 
     for (const version of versions) {
       // 1) 채점 캐시 먼저 — 적중하면 변환 결과 파싱도 생략
       //    (스키마 v2 전환 후에도 구 스키마(v1) 변환 캐시의 채점 결과를 그대로 비교에 쓸 수 있게)
-      const evalPath = join("results", "compare", `${name}@${version}-eval.json`);
+      const evalPath = join(RESULTS_DIR, "compare", `${name}@${version}-eval.json`);
       if (!force && existsSync(evalPath)) {
         const parsed = EvalResultSchema.safeParse(JSON.parse(readFileSync(evalPath, "utf-8")));
         if (parsed.success) {
@@ -94,7 +96,7 @@ async function main(): Promise<void> {
       }
 
       // 2) 변환 (캐시 — 현행 스키마와 안 맞는 구 포맷이면 재변환)
-      const convPath = join("output", "compare", `${name}@${version}.json`);
+      const convPath = join(OUTPUT_DIR, "compare", `${name}@${version}.json`);
       let aiDocument: import("../lib/ai/schema").HandoverDocument | null = null;
       if (!force && existsSync(convPath)) {
         const parsed = DocumentSchema.safeParse(JSON.parse(readFileSync(convPath, "utf-8")).document);
@@ -104,7 +106,8 @@ async function main(): Promise<void> {
         }
       }
       if (!aiDocument) {
-        const r = await structureTranscript(promptText, { promptVersion: version });
+        const s = await structureTranscript(promptText, { promptVersion: version });
+        const r = { ...s, document: maskDeep(s.document) };
         apiCalls++;
         writeFileSync(convPath, JSON.stringify({ document: r.document, meta: r.meta }, null, 2), "utf-8");
         aiDocument = r.document;
@@ -148,7 +151,7 @@ async function main(): Promise<void> {
     sections,
   ].join("\n");
 
-  const outPath = join("results", `compare-${versions.join("-vs-")}.md`);
+  const outPath = join(RESULTS_DIR, `compare-${versions.join("-vs-")}.md`);
   writeFileSync(outPath, md, "utf-8");
 
   console.log(`\n${table}\n`);
