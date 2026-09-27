@@ -99,6 +99,6 @@ export async function setKeyframeForStep(
     .update({ content: newContent, content_html: newHtml })
     .eq("id", documentId);
 
-  if (error) return { ok: false, error: `저장 실패: ${error.message}` };
+  if (error) return { ok: false, error: "이미지 변경을 저장하지 못했습니다. 잠시 후 다시 시도하세요." };
   return { ok: true, newHtml };
 }

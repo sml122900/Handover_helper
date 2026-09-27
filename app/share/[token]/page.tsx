@@ -50,7 +50,9 @@ export default async function SharePage(props: { params: Promise<{ token: string
     allowedSchemes: ["http", "https"],
     // /api/keyframes/* 경로 허용 (상대 경로 — 스킴 없음)
     allowedSchemesAppliedToAttributes: ["href"],
-  });
+  })
+    // 키프레임 이미지는 공유 토큰으로 접근 검증 (/api/keyframes/[id]?share=)
+    .replace(/src="\/api\/keyframes\/([0-9a-f-]{36})"/g, `src="/api/keyframes/$1?share=${token}"`);
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-10 print:py-0">

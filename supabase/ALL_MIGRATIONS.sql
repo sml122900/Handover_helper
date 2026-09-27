@@ -268,3 +268,66 @@ ALTER TABLE payments ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "payments_select_own" ON payments
   FOR SELECT TO authenticated
   USING (auth.uid() = user_id);
+
+-- ========== 0007_rate_limits.sql ==========
+
+-- Phase 3: AI 호출 사용자별 레이트리밋 (Upstash 없이 Postgres 카운터)
+-- 고정 윈도우: (user, action, window_start) 행의 count를 원자적으로 증가
+-- 접근: service_role(서버)만 — RLS on + 정책 없음, RPC는 service_role에만 실행 권한
+
+create table if not exists public.rate_limits (
+  user_id uuid not null references auth.users (id) on delete cascade,
+  action text not null,
+  window_start timestamptz not null,
+  count integer not null default 0,
+  primary key (user_id, action, window_start)
+);
+
+alter table public.rate_limits enable row level security;
+
+create or replace function public.increment_rate_limit(
+  p_user uuid,
+  p_action text,
+  p_window_seconds integer
+) returns integer
+language sql
+security definer
+set search_path = public
+as $$
+  insert into public.rate_limits (user_id, action, window_start, count)
+  values (
+    p_user,
+    p_action,
+    to_timestamp(floor(extract(epoch from now()) / p_window_seconds) * p_window_seconds),
+    1
+  )
+  on conflict (user_id, action, window_start)
+  do update set count = public.rate_limits.count + 1
+  returning count;
+$$;
+
+revoke execute on function public.increment_rate_limit(uuid, text, integer) from public, anon, authenticated;
+grant execute on function public.increment_rate_limit(uuid, text, integer) to service_role;
+
+-- ========== 0008_rls_hardening.sql ==========
+
+-- Phase 3 보안 감사: 행 단위 RLS는 "본인 것"만 보장하지 컬럼은 막지 않는다.
+-- anon key + 사용자 JWT로 PostgREST를 직접 호출하면 앱 UI를 거치지 않고 쓰기가 가능하므로
+-- 서버(service_role)만 써야 하는 컬럼·테이블의 쓰기 권한을 회수한다.
+
+-- projects.plan: 사용자가 직접 'paid'로 바꾸면 결제 우회 → 제목만 쓰기 허용
+revoke insert, update on public.projects from anon, authenticated;
+grant insert (owner_id, title) on public.projects to authenticated;
+grant update (title) on public.projects to authenticated;
+
+-- videos: storage_path를 남의 파일로 바꾸면 파이프라인(service_role)이 타인 영상을 처리 → 교차 유출
+-- status·duration_seconds 조작 → 비용 가드 우회. 생성·재시도는 서버 액션이 service_role로 수행
+revoke insert, update on public.videos from anon, authenticated;
+
+-- transcripts·keyframes: 파이프라인 전용. keyframes.image_path 조작 → 타인 이미지 서명 URL 발급 위험
+revoke insert, update on public.transcripts from anon, authenticated;
+revoke insert, update on public.keyframes from anon, authenticated;
+
+-- documents: 생성은 파이프라인 전용, 사용자는 편집 컬럼만
+revoke insert, update on public.documents from anon, authenticated;
+grant update (content, content_html, enrich_questions) on public.documents to authenticated;

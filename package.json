@@ -16,7 +16,8 @@
     "build": "next build",
     "start": "next start",
     "test": "vitest run",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test:rls": "node --env-file=.env node_modules/vitest/vitest.mjs run tests/rls.integration.test.ts"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.0",

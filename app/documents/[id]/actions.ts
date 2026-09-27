@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { reflectAnswer } from "@/lib/ai/enrich";
+import { checkRateLimit } from "@/lib/rate-limit";
 import type { EnrichQuestion } from "@/lib/ai/enrich";
 
 // 자동 저장: 편집된 HTML 저장 (RLS로 본인 문서만 가능)
@@ -48,6 +49,9 @@ export async function answerEnrichQuestion(args: {
   const questions = (doc.enrich_questions ?? []) as EnrichQuestion[];
   const q = questions[args.questionIndex];
   if (!q) return { ok: false, error: "질문을 찾을 수 없습니다." };
+
+  const limited = await checkRateLimit(user.id, "ai_edit");
+  if (limited) return { ok: false, error: limited };
 
   let text: string;
   try {

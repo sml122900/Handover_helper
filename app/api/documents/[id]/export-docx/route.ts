@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { keyframePathInProject } from "@/lib/keyframe-access";
 import { DocumentSchema } from "@/lib/ai/schema";
 import {
   Document,
@@ -55,13 +56,10 @@ export async function GET(
 
   for (const [stepStr, keyframeId] of Object.entries(keyframeIds)) {
     const step = Number(stepStr);
-    const { data: kf } = await admin
-      .from("keyframes")
-      .select("image_path")
-      .eq("id", keyframeId)
-      .single();
-    if (!kf?.image_path) continue;
-    const { data: file } = await admin.storage.from("keyframes").download(kf.image_path);
+    // 문서 content의 keyframeId는 사용자 편집 가능 → 같은 프로젝트 키프레임만 허용
+    const imagePath = await keyframePathInProject(admin, keyframeId, doc.project_id);
+    if (!imagePath) continue;
+    const { data: file } = await admin.storage.from("keyframes").download(imagePath);
     if (file) imageBuffers[step] = Buffer.from(await file.arrayBuffer());
   }
 

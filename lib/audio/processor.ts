@@ -142,3 +142,40 @@ export async function processAudio(
 
   return { segments: allSegments, language, source };
 }
+
+/** ffmpeg -i 출력(stderr)의 "Duration: hh:mm:ss.xx" → 초. 없거나 N/A면 null */
+export function parseFfmpegDuration(stderr: string): number | null {
+  const m = stderr.match(/Duration:\s*(\d+):(\d{2}):(\d{2}(?:\.\d+)?)/);
+  if (!m) return null;
+  return Number(m[1]) * 3600 + Number(m[2]) * 60 + Number(m[3]);
+}
+
+/**
+ * 영상/오디오 실측 길이(초) — 비용 가드는 클라이언트 신고값이 아닌 이 값으로 판정.
+ * 컨테이너 메타데이터가 없으면(예: MediaRecorder webm) 오디오 추출 결과로 재측정.
+ */
+export async function probeDurationSeconds(inputData: Buffer, inputExt: string): Promise<number> {
+  const fromContainer = await probeWithFfmpeg(inputData, inputExt);
+  if (fromContainer !== null) return fromContainer;
+  const fromAudio = await probeWithFfmpeg(await extractAudio(inputData, inputExt), "mp3");
+  if (fromAudio !== null) return fromAudio;
+  throw new Error("영상 길이를 측정할 수 없습니다.");
+}
+
+async function probeWithFfmpeg(data: Buffer, ext: string): Promise<number | null> {
+  const dir = await mkdtemp(join(tmpdir(), "handover-probe-"));
+  try {
+    const inputPath = join(dir, `input.${ext}`);
+    await writeFile(inputPath, data);
+    // 출력 파일 없이 -i만 주면 ffmpeg는 exit 1 — 정보는 stderr에 있음
+    const stderr = await execFileAsync(await ffmpegPath(), ["-hide_banner", "-i", inputPath], {
+      windowsHide: true,
+    }).then(
+      (r) => r.stderr,
+      (e: { stderr?: string }) => e.stderr ?? ""
+    );
+    return parseFfmpegDuration(stderr);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+}

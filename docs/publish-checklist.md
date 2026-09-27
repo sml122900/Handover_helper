@@ -24,7 +24,7 @@ tsconfig.tsbuildinfo   (빌드 산출물 — 해시 문자열이 검증 grep에 
 ```
 - `golden/sample-02.txt`, `golden/sample-03.txt`: 전 이력에서 **0바이트** 빈 파일 → 실데이터 없음, 유지
 - `results/`, `output/`(심판 근거 인용): 이력상 한 번도 추적된 적 없음 (gitignore) → 대상 없음
-- 문서 속 실데이터 값: `docs/daily/2026-06-12.md`, `docs/par-materials.md` 과거 버전 → `--replace-text`로 치환
+- 문서·테스트 속 실데이터 값: `docs/daily/2026-06-12.md`, `docs/par-materials.md`, `tests/mask.test.ts`(087a235) 과거 버전 → `--replace-text`로 치환
   (치환 목록은 값이 들어 있어 `private-data/history-redactions.txt`에만 보관)
 
 **시크릿 스캔 결과** (gitleaks 8.30.1, `--log-opts=--all`, 29 커밋): **이력 내 유출 0건**. `git log --all -- .env` 결과 없음 (.env는 커밋된 적 없음) → 키 로테이션 불필요.
