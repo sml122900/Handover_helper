@@ -6,6 +6,7 @@ import { structureTranscript } from "../ai/structure";
 import { generateEnrichQuestions } from "../ai/enrich";
 import { extractKeyframes } from "../keyframes/extract";
 import { matchKeyframesToSteps } from "../keyframes/match";
+import { maskDeep } from "../privacy/mask";
 import type { HandoverDocument } from "../ai/schema";
 import type { Transcript } from "../stt/types";
 
@@ -40,7 +41,8 @@ export async function processVideo(videoId: string): Promise<void> {
   try {
     // 1) STT
     await setStatus("transcribing");
-    const transcript = await getTranscript(supabase, video.storage_path);
+    // 마스킹 1차: STT 병합 직후, 저장 전 (주민번호·카드번호만)
+    const transcript = maskDeep(await getTranscript(supabase, video.storage_path));
 
     const { error: tErr } = await supabase.from("transcripts").insert({
       video_id: videoId,
@@ -51,7 +53,9 @@ export async function processVideo(videoId: string): Promise<void> {
 
     // 2) 구조화 (Phase 0 검증 프롬프트 재사용)
     await setStatus("structuring");
-    const result = await structureTranscript(transcriptToPromptText(transcript));
+    const structured = await structureTranscript(transcriptToPromptText(transcript));
+    // 마스킹 2차: 구조화 결과 전체 (LLM이 트랜스크립트 밖 형식으로 재구성한 번호 대비)
+    const result = { ...structured, document: maskDeep(structured.document) };
 
     const { data: doc, error: dErr } = await supabase
       .from("documents")
