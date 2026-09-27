@@ -1,0 +1,604 @@
+{
+  "document": {
+    "overview": {
+      "summary": "평일 저녁 6시~10시 30분 마감조(바 담당) 업무 인수인계. 에스프레소 머신 청소, 디저트 쇼케이스 정리, 포스 마감 정산, 쓰레기 분리수거, 시설 점검 및 보안 설정을 포함한 마감 전반 절차를 다룬다.",
+      "cycle": "평일 저녁 (18:00~22:30)",
+      "importance": null,
+      "sourceTimestamp": {
+        "start": 0,
+        "end": 25
+      },
+      "confidence": "high"
+    },
+    "procedures": [
+      {
+        "step": 1,
+        "title": "뒷문으로 출근",
+        "details": "뒷문 도어락 비밀번호는 점장님이 첫날 별도로 알려주신다. 들어오면 바로 오른쪽에 직원 사물함이 있고, 앞치마는 사물함 위 선반에 걸려 있다.",
+        "inferred": false,
+        "sourceTimestamp": {
+          "start": 50,
+          "end": 80
+        },
+        "confidence": "high"
+      },
+      {
+        "step": 2,
+        "title": "포스기 출근 처리",
+        "details": "포스 화면에서 '근무자 선택'을 누르고 본인 이름을 선택해 출근 처리한다. 이를 누락하면 급여 계산이 되지 않으므로 반드시 수행해야 한다.",
+        "inferred": false,
+        "sourceTimestamp": {
+          "start": 80,
+          "end": 110
+        },
+        "confidence": "high"
+      },
+      {
+        "step": 3,
+        "title": "단톡방 출근 보고",
+        "details": "매장 직원 단톡방에 '마감조 출근했습니다'를 입력한다. 점장님이 이를 통해 출근을 확인한다.",
+        "inferred": false,
+        "sourceTimestamp": {
+          "start": 110,
+          "end": 140
+        },
+        "confidence": "high"
+      },
+      {
+        "step": 4,
+        "title": "저녁 음료 제조 및 영업 운영 (18:00~20:00)",
+        "details": "저녁 8시 전까지는 비교적 바쁜 시간대다. 음료 레시피 북은 에스프레소 머신 옆 선반에 있다. 시럽 펌프 1회 = 10ml이며, 바닐라 라떼는 2펌프다.",
+        "inferred": false,
+        "sourceTimestamp": {
+          "start": 140,
+          "end": 200
+        },
+        "confidence": "high"
+      },
+      {
+        "step": 5,
+        "title": "디저트 쇼케이스 정리 (약 20:30~)",
+        "details": "당일 제조 케이크가 남으면 폐기 대장(쇼케이스 아래 서랍 첫 번째 칸의 파란색 파일)에 날짜·품목·개수·본인 이름을 기재하고 폐기한다. 쿠키 등 포장 제품은 유통기한을 확인해 다시 진열한다.",
+        "inferred": false,
+        "sourceTimestamp": {
+          "start": 200,
+          "end": 265
+        },
+        "confidence": "high"
+      },
+      {
+        "step": 6,
+        "title": "냉장고 정리 및 재고 확인",
+        "details": "우유는 유통기한이 짧은 것을 앞에 두는 선입선출 방식으로 정리한다. 우유가 1팩 이하로 남으면 냉장고 옆 클립보드(재고 노트)에 기재한다.",
+        "inferred": false,
+        "sourceTimestamp": {
+          "start": 580,
+          "end": 640
+        },
+        "confidence": "high"
+      },
+      {
+        "step": 7,
+        "title": "라스트 오더 (21:30)",
+        "details": "라스트 오더는 9시 30분이다. 라스트 오더 전에는 에스프레소 머신 청소를 절대 시작하지 않는다.",
+        "inferred": false,
+        "sourceTimestamp": {
+          "start": 280,
+          "end": 315
+        },
+        "confidence": "high"
+      },
+      {
+        "step": 8,
+        "title": "에스프레소 머신 청소 (라스트 오더 이후)",
+        "details": "① 포터필터를 전부 분리하고 바스켓을 탈거한다. ② 블라인드 필터로 교체한다. ③ 세척 약품(창고의 흰색 통 가루) 1스푼을 넣고 백플러싱: 버튼을 눌러 10초 추출 → 10초 정지를 5회 반복한다. ④ 블라인드 필터를 제거하고 물로만 동일 방식으로 5회 헹군다(약품 잔류 시 다음 날 첫 커피에서 약품 맛이 남).",
+        "inferred": false,
+        "sourceTimestamp": {
+          "start": 315,
+          "end": 430
+        },
+        "confidence": "high"
+      },
+      {
+        "step": 9,
+        "title": "포터필터·바스켓 담금 처리",
+        "details": "분리한 포터필터와 바스켓은 싱크대 왼쪽 스테인리스 통에 뜨거운 물과 약품을 조금 풀어서 담가둔다. 오픈조가 아침에 헹궈서 사용한다.",
+        "inferred": false,
+        "sourceTimestamp": {
+          "start": 430,
+          "end": 465
+        },
+        "confidence": "high"
+      },
+      {
+        "step": 10,
+        "title": "스팀 노즐 청소",
+        "details": "젖은 행주로 닦고 스팀을 한 번 빼준다. 우유 잔여물이 굳어 있으면 노즐 전용 솔(머신 오른쪽 옆에 걸려 있음)로 긁어낸다.",
+        "inferred": false,
+        "sourceTimestamp": {
+          "start": 465,
+          "end": 500
+        },
+        "confidence": "high"
+      },
+      {
+        "step": 11,
+        "title": "그라인더 정리",
+        "details": "호퍼에 남은 원두를 빼서 밀폐 용기에 담아둔다(매일 원칙). 그라인더 날 청소는 매주 금요일에만 실시한다.",
+        "inferred": false,
+        "sourceTimestamp": {
+          "start": 500,
+          "end": 545
+        },
+        "confidence": "high"
+      },
+      {
+        "step": 12,
+        "title": "홀 청소 보조",
+        "details": "홀 담당과 함께 의자를 테이블 위에 올리고, 빗자루로 바닥을 쓴 뒤 대걸레질을 1회 한다. 대걸레는 화장실 옆 청소 도구함에 있으며, 사용 후 짜서 도구함 안에 세워 보관한다(눕히면 냄새 발생).",
+        "inferred": false,
+        "sourceTimestamp": {
+          "start": 650,
+          "end": 750
+        },
+        "confidence": "high"
+      },
+      {
+        "step": 13,
+        "title": "쓰레기 분리수거",
+        "details": "일반·재활용·음식물 3종으로 분리. 음식물에는 원두 찌꺼기 포함. 건물 뒤편 분리수거장(뒷문 나가서 왼쪽)에 배출한다. 원두 찌꺼기가 많으면 봉투 2개로 나눠 담는다.",
+        "inferred": false,
+        "sourceTimestamp": {
+          "start": 725,
+          "end": 815
+        },
+        "confidence": "high"
+      },
+      {
+        "step": 14,
+        "title": "포스 마감 정산",
+        "details": "포스에서 '마감 정산'을 눌러 오늘 매출(카드·현금 구분)을 확인한다. 현금 시재를 직접 세어 포스의 현금 금액과 대조한다. 기본 시재 10만 원을 금고(카운터 아래)에 남기고, 나머지 현금은 날짜·금액을 적은 봉투에 넣어 금고 위 칸에 보관한다.",
+        "inferred": false,
+        "sourceTimestamp": {
+          "start": 805,
+          "end": 895
+        },
+        "confidence": "high"
+      },
+      {
+        "step": 15,
+        "title": "정산 영수증 처리",
+        "details": "영수증 2장 출력 후 1장은 현금 봉투에 동봉하고, 1장은 정산 파일(폐기 대장 옆 서랍)에 보관한다.",
+        "inferred": false,
+        "sourceTimestamp": {
+          "start": 895,
+          "end": 935
+        },
+        "confidence": "high"
+      },
+      {
+        "step": 16,
+        "title": "단톡방 매출 보고",
+        "details": "마감 정산 영수증을 사진 찍어 매장 직원 단톡방에 업로드한다. 점장님이 매일 아침 이를 확인한다.",
+        "inferred": false,
+        "sourceTimestamp": {
+          "start": 935,
+          "end": 970
+        },
+        "confidence": "high"
+      },
+      {
+        "step": 17,
+        "title": "전기·시설 점검 및 소등",
+        "details": "그라인더, 조명, 음악 스피커, 에어컨을 끈다. 에스프레소 머신은 24시간 켜둔다. 간판 조명은 22:30에 자동으로 꺼진다. 퇴장 전 창문이 모두 닫혔는지 확인한다.",
+        "inferred": false,
+        "sourceTimestamp": {
+          "start": 970,
+          "end": 1045
+        },
+        "confidence": "high"
+      },
+      {
+        "step": 18,
+        "title": "보안 설정 후 퇴장",
+        "details": "뒷문 옆 패널에서 보안 설정 후 나간다. 방법이 복잡하므로 첫날 점장님께 직접 안내를 요청한다.",
+        "inferred": false,
+        "sourceTimestamp": {
+          "start": 1037,
+          "end": 1070
+        },
+        "confidence": "high"
+      }
+    ],
+    "equipment": [
+      {
+        "name": "포스기",
+        "location": "카운터(바)",
+        "notes": "근무자 선택으로 출근 처리, 마감 정산에 사용. 항상 켜져 있는지 확인.",
+        "sourceTimestamp": {
+          "start": 80,
+          "end": 110
+        },
+        "confidence": "high"
+      },
+      {
+        "name": "에스프레소 머신",
+        "location": "바",
+        "notes": "24시간 켜두며 끄지 않는다. 스팀 노즐 전용 솔은 머신 오른쪽 옆에 걸려 있다.",
+        "sourceTimestamp": {
+          "start": 315,
+          "end": 500
+        },
+        "confidence": "high"
+      },
+      {
+        "name": "레시피 북",
+        "location": "에스프레소 머신 옆 선반",
+        "notes": "음료 제조 시 참고. 시럽 펌프 1회 = 10ml, 바닐라 라떼 2펌프.",
+        "sourceTimestamp": {
+          "start": 165,
+          "end": 200
+        },
+        "confidence": "high"
+      },
+      {
+        "name": "그라인더",
+        "location": "바",
+        "notes": "매일 마감 시 호퍼 원두를 빼서 밀폐 용기에 보관. 날 청소는 매주 금요일.",
+        "sourceTimestamp": {
+          "start": 500,
+          "end": 545
+        },
+        "confidence": "high"
+      },
+      {
+        "name": "세척 약품(백플러싱용)",
+        "location": "창고",
+        "notes": "흰색 통에 든 가루. 백플러싱 시 1스푼 사용. 과량 투입 시 거품 넘침.",
+        "sourceTimestamp": {
+          "start": 360,
+          "end": 395
+        },
+        "confidence": "high"
+      },
+      {
+        "name": "포터필터 담금용 스테인리스 통",
+        "location": "싱크대 왼쪽",
+        "notes": "마감 후 포터필터·바스켓을 뜨거운 물+약품에 담가둠.",
+        "sourceTimestamp": {
+          "start": 430,
+          "end": 465
+        },
+        "confidence": "high"
+      },
+      {
+        "name": "폐기 대장(파란색 파일)",
+        "location": "쇼케이스 아래 서랍 첫 번째 칸",
+        "notes": "당일 제조 케이크 폐기 시 날짜·품목·개수·이름 기재.",
+        "sourceTimestamp": {
+          "start": 245,
+          "end": 265
+        },
+        "confidence": "high"
+      },
+      {
+        "name": "정산 파일",
+        "location": "폐기 대장 옆 서랍",
+        "notes": "마감 정산 영수증 1장 보관.",
+        "sourceTimestamp": {
+          "start": 895,
+          "end": 935
+        },
+        "confidence": "high"
+      },
+      {
+        "name": "재고 노트(클립보드)",
+        "location": "냉장고 옆",
+        "notes": "우유 1팩 이하 남을 시 기재.",
+        "sourceTimestamp": {
+          "start": 615,
+          "end": 640
+        },
+        "confidence": "high"
+      },
+      {
+        "name": "금고",
+        "location": "카운터 아래",
+        "notes": "기본 시재 10만 원 상시 보관. 잉여 현금은 날짜·금액 기재 봉투에 담아 금고 위 칸에 보관.",
+        "sourceTimestamp": {
+          "start": 845,
+          "end": 895
+        },
+        "confidence": "high"
+      },
+      {
+        "name": "대걸레",
+        "location": "화장실 옆 청소 도구함",
+        "notes": "사용 후 짜서 도구함 안에 세워 보관. 눕히면 냄새 발생.",
+        "sourceTimestamp": {
+          "start": 720,
+          "end": 750
+        },
+        "confidence": "high"
+      },
+      {
+        "name": "직원 사물함 및 앞치마",
+        "location": "뒷문 입구 오른쪽 (앞치마는 사물함 위 선반)",
+        "notes": null,
+        "sourceTimestamp": {
+          "start": 50,
+          "end": 80
+        },
+        "confidence": "high"
+      },
+      {
+        "name": "제빙기",
+        "location": "바",
+        "notes": "마감 시 직접 청소하지 않음. 청소 업체가 월 1회 담당. 물 샐 경우 즉시 점장님에게 연락.",
+        "sourceTimestamp": {
+          "start": 545,
+          "end": 580
+        },
+        "confidence": "high"
+      },
+      {
+        "name": "보안 패널",
+        "location": "뒷문 옆",
+        "notes": "퇴근 시 보안 설정에 사용. 첫날 점장님께 사용법 안내 요청.",
+        "sourceTimestamp": {
+          "start": 1037,
+          "end": 1070
+        },
+        "confidence": "high"
+      },
+      {
+        "name": "디저트 쇼케이스",
+        "location": "바",
+        "notes": "약 20:30부터 정리 시작.",
+        "sourceTimestamp": {
+          "start": 200,
+          "end": 245
+        },
+        "confidence": "high"
+      }
+    ],
+    "routines": [
+      {
+        "title": "마감조 근무 시간",
+        "when": "평일 18:00~22:30",
+        "details": null,
+        "sourceTimestamp": {
+          "start": 0,
+          "end": 25
+        },
+        "confidence": "high"
+      },
+      {
+        "title": "마감 준비 시작",
+        "when": "20:00 이후 (한가해지면)",
+        "details": "8시가 넘어 한가해지면 마감 준비를 조금씩 시작한다.",
+        "sourceTimestamp": {
+          "start": 140,
+          "end": 165
+        },
+        "confidence": "high"
+      },
+      {
+        "title": "디저트 쇼케이스 정리",
+        "when": "약 20:30",
+        "details": null,
+        "sourceTimestamp": {
+          "start": 200,
+          "end": 245
+        },
+        "confidence": "high"
+      },
+      {
+        "title": "라스트 오더",
+        "when": "21:30",
+        "details": "라스트 오더 후 에스프레소 머신 청소 시작.",
+        "sourceTimestamp": {
+          "start": 280,
+          "end": 315
+        },
+        "confidence": "high"
+      },
+      {
+        "title": "에스프레소 머신 청소",
+        "when": "21:30 라스트 오더 이후",
+        "details": null,
+        "sourceTimestamp": {
+          "start": 280,
+          "end": 315
+        },
+        "confidence": "high"
+      },
+      {
+        "title": "그라인더 날 청소",
+        "when": "매주 금요일 마감 시",
+        "details": null,
+        "sourceTimestamp": {
+          "start": 500,
+          "end": 545
+        },
+        "confidence": "high"
+      },
+      {
+        "title": "제빙기 청소",
+        "when": "월 1회 (청소 업체 방문)",
+        "details": "직접 청소하지 않음.",
+        "sourceTimestamp": {
+          "start": 545,
+          "end": 580
+        },
+        "confidence": "high"
+      },
+      {
+        "title": "간판 조명 자동 소등",
+        "when": "22:30",
+        "details": "자동으로 꺼지므로 별도 조작 불필요.",
+        "sourceTimestamp": {
+          "start": 1003,
+          "end": 1037
+        },
+        "confidence": "high"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "점장님",
+        "role": "매장 관리자",
+        "contact": "단톡방 공지에 번호 기재",
+        "relationship": "비상 시 직접 전화, 출근 확인 및 매출 보고 수신",
+        "sourceTimestamp": {
+          "start": 1070,
+          "end": 1110
+        },
+        "confidence": "high"
+      },
+      {
+        "name": "매장 직원 단톡방",
+        "role": "직원 공용 소통 채널",
+        "contact": null,
+        "relationship": "출근 보고, 매출 영수증 사진 공유, 문의 및 문제 공유",
+        "sourceTimestamp": {
+          "start": 110,
+          "end": 140
+        },
+        "confidence": "high"
+      }
+    ],
+    "exceptions": [
+      {
+        "situation": "비 오는 날은 9시 이후 손님이 거의 없음",
+        "tip": "청소를 다소 일찍 시작해도 되나, 라스트 오더(21:30) 전에 머신 청소는 절대 금지.",
+        "sourceTimestamp": {
+          "start": 1100,
+          "end": 1130
+        },
+        "confidence": "high"
+      },
+      {
+        "situation": "마감 직전(라스트 오더 이후) 10잔 초과 단체 포장 주문이 들어오는 경우",
+        "tip": "점장님 지침에 따라 정중하게 거절 가능.",
+        "sourceTimestamp": {
+          "start": 1130,
+          "end": 1160
+        },
+        "confidence": "high"
+      },
+      {
+        "situation": "마감 중 문제 발생",
+        "tip": "먼저 단톡방에 상황을 올리고, 급한 경우 점장님에게 직접 전화한다.",
+        "sourceTimestamp": {
+          "start": 1070,
+          "end": 1100
+        },
+        "confidence": "high"
+      },
+      {
+        "situation": "제빙기에서 물이 새는 경우",
+        "tip": "즉시 점장님에게 연락한다.",
+        "sourceTimestamp": {
+          "start": 545,
+          "end": 580
+        },
+        "confidence": "high"
+      },
+      {
+        "situation": "원두 찌꺼기가 매우 많은 경우",
+        "tip": "음식물 봉투가 터질 수 있으므로 봉투 2개로 나눠 담아 배출한다.",
+        "sourceTimestamp": {
+          "start": 795,
+          "end": 815
+        },
+        "confidence": "high"
+      },
+      {
+        "situation": "백플러싱 시 세척 약품을 과량 투입한 경우",
+        "tip": "거품이 넘칠 수 있으므로 반드시 1스푼만 사용한다.",
+        "sourceTimestamp": {
+          "start": 360,
+          "end": 395
+        },
+        "confidence": "high"
+      },
+      {
+        "situation": "백플러싱 후 헹굼(물 전용 5회)을 소홀히 한 경우",
+        "tip": "다음 날 첫 커피에서 약품 맛이 날 수 있으므로 헹굼을 반드시 철저히 한다.",
+        "sourceTimestamp": {
+          "start": 395,
+          "end": 430
+        },
+        "confidence": "high"
+      }
+    ],
+    "cautions": [
+      {
+        "content": "라스트 오더(21:30) 전에 에스프레소 머신 청소를 절대 시작하지 않는다. 손님이 오면 다시 추출해야 하는 상황이 발생한다.",
+        "sourceTimestamp": {
+          "start": 280,
+          "end": 315
+        },
+        "confidence": "high"
+      },
+      {
+        "content": "포스기 출근 처리를 누락하면 급여 계산이 되지 않는다. 반드시 출근 시 수행한다.",
+        "sourceTimestamp": {
+          "start": 80,
+          "end": 110
+        },
+        "confidence": "high"
+      },
+      {
+        "content": "에스프레소 머신은 24시간 켜두며 마감 시에도 끄지 않는다.",
+        "sourceTimestamp": {
+          "start": 970,
+          "end": 1003
+        },
+        "confidence": "high"
+      },
+      {
+        "content": "대걸레는 사용 후 반드시 짜서 도구함 안에 세워 보관한다. 눕혀두면 냄새가 발생한다.",
+        "sourceTimestamp": {
+          "start": 735,
+          "end": 750
+        },
+        "confidence": "high"
+      },
+      {
+        "content": "우유 냉장 보관은 선입선출 원칙을 지킨다(유통기한 짧은 것을 앞에 배치).",
+        "sourceTimestamp": {
+          "start": 580,
+          "end": 615
+        },
+        "confidence": "high"
+      }
+    ],
+    "openItems": [
+      {
+        "content": "발주 업무: 원래 점장님이 담당하지만 가끔 마감 담당자에게 지시하기도 했다고 함. 구체적인 절차 및 담당 범위를 점장님께 별도 확인 필요.",
+        "sourceTimestamp": {
+          "start": 640,
+          "end": 665
+        },
+        "confidence": "needs_review"
+      },
+      {
+        "content": "뒷문 도어락 비밀번호 및 보안 패널 사용법: 점장님이 첫날 직접 안내 예정. 사전에 반드시 안내를 요청할 것.",
+        "sourceTimestamp": {
+          "start": 50,
+          "end": 80
+        },
+        "confidence": "high"
+      }
+    ]
+  },
+  "meta": {
+    "model": "claude-sonnet-4-6",
+    "promptVersion": "structure-v2",
+    "inputTokens": 7489,
+    "outputTokens": 5639,
+    "attempts": 1
+  }
+}

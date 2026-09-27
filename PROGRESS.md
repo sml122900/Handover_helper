@@ -556,3 +556,68 @@ npm run dev
 
 ### 남은 것
 - convert 성공 후 evaluate → 누락률·의도적 누락 실제 판정 기록
+
+---
+
+## 세션 3-A③: 스트리밍 전환 + sample-demo 골든셋 수정 + 채점 재현 ✅ (2026-09-28)
+
+> 지시: structure.ts 스트리밍 전환·재시도 정리, sample-demo 정답 수정, sample-01 동일 패턴 확인(수정 금지), checklist→convert→evaluate. API 한도 3회.
+
+### 완료한 것
+**1. 스트리밍 전환** (커밋 `ccecccb`)
+- `lib/ai/structure.ts`: `messages.parse()` → `messages.stream().finalMessage()` (SDK 0.103은 스트림 최종 메시지에 `parsed_output` 제공). zod 검증·`max_tokens` 잘림 검사·루프 재시도 1회 그대로
+- SDK 재시도 2 → **1** (`new Anthropic({ maxRetries: 1 })`): 최대 요청 6 → 4
+- convert·compare·운영 파이프라인(`processVideo`) 모두 `structureTranscript` 경유 확인 → 별도 수정 불필요
+- **지시 범위 밖 추가 (판단 1)**: `lib/ai/evaluate.ts`(심판)·`lib/ai/checklist.ts`도 같은 전환 + 요청 단위 `maxRetries: 1`
+- 무과금 스모크 테스트: 존재하지 않는 모델로 convert → 스트림 경로에서 404 정상 전파, 루프 재시도 1회 확인
+- typecheck 0 · lint 에러 0 · vitest 113 통과
+
+**2. `golden/sample-demo.md` 수정** (가상 데모 데이터만, 실데이터 무수정)
+- 삭제: `미해결`의 "시재 불일치 처리 방법 없음" (트랜스크립트 언급 0)
+- 유지: "발주 방법 — 나중에 따로 말씀드릴게요", "보안 설정 — 점장님께 첫날 요청" (트랜스크립트에 실제 언급)
+- 세척 약품: 위치 칸을 `창고 쪽`으로만, `미해결`의 "정확한 위치 불명확" 삭제 (추가 정보·메타 판단 없이 원문 표현만)
+- **판단 2**: 같은 파일의 `블라인드 필터`·`밀폐 용기` "⚠️ 위치 언급 없음"도 같은 패턴(부재를 사실처럼 기재) → `-`로 변경
+- 머리말·`golden/README.md` 설명을 새 원칙으로 갱신
+
+**3. 채점 재현**
+| 단계 | 결과 | 산출물 |
+|---|---|---|
+| `npm run checklist -- sample-demo --force` | ✅ 51초, **69개 (critical 35)**, in=4247 out=3068 | `golden/sample-demo-checklist.json` |
+| `npm run convert -- golden/sample-demo.txt` | ✅ **92초** (60초 초과 → 스트리밍 효과 확인), in=7489 out=5639, 시도 1회 | `output/sample-demo.json`, `.md` |
+| `npm run evaluate -- sample-demo` | ✅ **163초**, in=15507 out=10749 | `results/sample-demo-eval.md`, `.json` |
+
+- **누락률 0.0% (0/69), critical 누락 0, 환각 0, inferred 0** — ⚠️ 공개 가상 샘플 점수, 품질 지표 인용 금지 (Phase 3 규칙)
+- 남긴 항목 판정:
+  - 발주 방법 → ✅ AI 문서 `미해결`(needs_review)에 포함, 체크리스트 #67 present
+  - 보안 설정 → ✅ `미해결`(high)에 도어락 안내와 합쳐 포함, #57 present
+  - 세척 약품 "창고 쪽" → ✅ 장비 항목 present (#68). 단 AI 문서는 위치 `창고`·confidence `high` — "쪽"의 모호함이 사라지고 needs_review 표시도 없음 (관찰, 채점상 누락 아님)
+  - 시재 불일치 → AI 문서에 언급 없음 (환각 없음 ✓), 정답에서도 제거돼 벌점 없음
+- 관찰: 발주 항목을 AI 문서("점장님께 별도 확인 필요")와 체크리스트("점장님께 별도로 확인해야 한다") 둘 다 "점장님께 확인"으로 서술. 트랜스크립트는 "원래 점장님이 하시는데… 나중에 따로 말씀드릴게요"(말하는 사람이 추후 설명) — 확인 주체를 약간 재해석. 심판은 근거 있음으로 판정
+
+### sample-01(실데이터) 동일 패턴 확인 — 보고만, 수정 안 함
+- `private-data/golden/`의 `sample-01.md`·`-answer`·`-main`·`-merged` 4개는 바이트 동일, 체크리스트 3개도 동일
+- 정답 문서 ⚠️ 표시 10곳 중 **트랜스크립트(3개 전부)에 언급이 전혀 없는 공백을 사실처럼 기재**: 문제 발생 시 연락처/담당자, 현금 거스름돈 처리, 매장 오픈 절차, 재고 관리·부족 처리 (관련 키워드 검색 0건)
+- 이 중 체크리스트로 분해된 것 (43개 중):
+  - #40 **critical** "문제 발생 시 연락할 담당자 및 연락처가 인수인계 문서에 없다"
+  - #41 **critical** "현금 결제 시 거스름돈 처리 방법이 인수인계 문서에 없다"
+  - #42 (일반) "근무 중 착용하는 안경의 보관 위치가 불명확하다" — 착용은 언급, 위치는 미언급(모호함 메타 판단)
+- **영향**: 기록된 지표 "sample-01 합산 누락 7.0% (3/43), critical 2건"의 critical 2건이 바로 #40·#41 (2026-06-12 일지: "잔존: 거스름돈 처리, 담당자 연락처 (트랜스크립트에 내용 자체 없음)"). 이 패턴을 제외하면 대략 1/41 ≈ 2.4%, critical 0 (재채점 안 함 — 추정치)
+- README 지표로 쓰기 전에 사용자 판단 필요: 정답 수정 후 재채점할지, 현행 7.0%를 "보강 질문 대상 공백 포함 기준"으로 명시할지
+
+### API 사용 — 3/3회
+- checklist 1 · convert 1 (시도 1) · evaluate 1. 무과금: 가짜 모델 404 스모크 테스트 1
+
+### 스스로 내린 판단과 이유
+1. **evaluate·checklist도 스트리밍 전환** — 지시는 structure.ts만. 하지만 심판은 69개 사실 + AI 문서 주장 전부를 판정해야 해 60초를 확실히 넘음 (실측 163초). 전환 안 했으면 evaluate 호출이 같은 이유로 실패해 한도 1회를 날렸을 것. 채점 로직·`scripts/evaluate.ts`·`scripts/build-checklist.ts`는 무수정 (전송 방식만). checklist(이전 52초, 이번 51초)도 60초 경계라 함께 전환
+2. **SDK 재시도 1회 (0 아님)** — 스트리밍은 응답 헤더가 즉시 오므로 SDK 재시도는 헤더 전 실패(429·529·연결 실패)에만 걸림 = 생성 전이라 과금 없음. 생성 중 끊김은 SDK가 재시도하지 않고 structure.ts 루프(1회)만 재시도. 0으로 두면 일시적 529에서 백오프 없이 바로 루프 재시도 → 실패 확률만 오름
+3. **블라인드 필터·밀폐 용기 "위치 언급 없음" 정리** — 지시 4개 항목 밖이지만 같은 파일, 같은 결함("없음"을 정답 사실로 기재). 이번 체크리스트에 해당 사실은 생성되지 않았음
+4. **output/sample-demo.json·.md도 커밋** — 채점 입력(AI 문서)이라 결과 재현에 필요. 가상 데이터라 공개 무방. results/·output/은 gitignore 대상이라 해당 파일만 `-f`로 추가
+
+### 사용자가 할 일
+- [ ] sample-01 정답 문서 #40·#41(·#42) 처리 결정 → 수정 시 `GOLDEN_DIR=./private-data/golden npm run checklist -- sample-01-merged --force` 후 재채점 (API 3회 내외)
+- [ ] `golden/sample-demo-checklist.json` 69개 검토 (특히 #67 "점장님께 별도로 확인" 표현)
+- [ ] (이전 세션 이월) 0007·0008 마이그레이션 실행 + `npm run test:rls`, Console에서 9/27~28 실패 요청 과금 확인
+
+### 남은 것
+- `lib/ai/enrich.ts` 보강 질문 호출은 비스트리밍 유지 (max_tokens 2000·500, 60초 내 예상) — 운영에서 끊기면 같은 전환 필요
+- Phase 3 나머지 (Inngest, 샘플 체험 동선, 모바일·PWA, CI, 약관·계정 삭제, README)
