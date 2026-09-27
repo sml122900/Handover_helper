@@ -26,24 +26,27 @@ export async function runEvaluation(
 ): Promise<EvalRunResult> {
   const claims = flattenDocumentClaims(args.aiDocument);
 
-  const response = await client.messages.parse({
-    model: EVAL_MODEL,
-    max_tokens: 16000,
-    temperature: 0,
-    system: JUDGE_SYSTEM_PROMPT,
-    messages: [
-      {
-        role: "user",
-        content: buildJudgeUserPrompt({
-          facts: args.checklist.map((c, i) => ({ index: i, fact: c.fact })),
-          claims,
-          transcriptText: args.transcriptText,
-          goldenMarkdown: args.goldenMarkdown,
-        }),
-      },
-    ],
-    output_config: { format: zodOutputFormat(JudgeOutputSchema) },
-  });
+  // 스트리밍 + SDK 재시도 1회: 비스트리밍은 60초 유휴 연결 끊김으로 실패 (PROGRESS 3-A②)
+  const response = await client.messages
+    .stream({
+      model: EVAL_MODEL,
+      max_tokens: 16000,
+      temperature: 0,
+      system: JUDGE_SYSTEM_PROMPT,
+      messages: [
+        {
+          role: "user",
+          content: buildJudgeUserPrompt({
+            facts: args.checklist.map((c, i) => ({ index: i, fact: c.fact })),
+            claims,
+            transcriptText: args.transcriptText,
+            goldenMarkdown: args.goldenMarkdown,
+          }),
+        },
+      ],
+      output_config: { format: zodOutputFormat(JudgeOutputSchema) },
+    }, { maxRetries: 1 })
+    .finalMessage();
   if (!response.parsed_output) {
     throw new Error(`심판 출력 파싱 실패 (stop_reason=${response.stop_reason})`);
   }

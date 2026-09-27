@@ -15,14 +15,17 @@ export async function buildChecklist(
   client: Anthropic,
   goldenMarkdown: string
 ): Promise<{ items: ChecklistItem[]; meta: { model: string; inputTokens: number; outputTokens: number } }> {
-  const response = await client.messages.parse({
-    model: CHECKLIST_MODEL,
-    max_tokens: 8000,
-    temperature: 0,
-    system: CHECKLIST_SYSTEM_PROMPT,
-    messages: [{ role: "user", content: buildChecklistUserPrompt(goldenMarkdown) }],
-    output_config: { format: zodOutputFormat(ChecklistSchema) },
-  });
+  // 스트리밍 + SDK 재시도 1회: 비스트리밍은 60초 유휴 연결 끊김으로 실패 (PROGRESS 3-A②)
+  const response = await client.messages
+    .stream({
+      model: CHECKLIST_MODEL,
+      max_tokens: 8000,
+      temperature: 0,
+      system: CHECKLIST_SYSTEM_PROMPT,
+      messages: [{ role: "user", content: buildChecklistUserPrompt(goldenMarkdown) }],
+      output_config: { format: zodOutputFormat(ChecklistSchema) },
+    }, { maxRetries: 1 })
+    .finalMessage();
   if (!response.parsed_output) {
     throw new Error(`체크리스트 출력 파싱 실패 (stop_reason=${response.stop_reason})`);
   }

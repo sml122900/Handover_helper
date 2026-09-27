@@ -34,19 +34,24 @@ export async function structureTranscript(
     );
   }
 
-  const client = new Anthropic(); // ANTHROPIC_API_KEY 환경변수 사용
+  // SDK 재시도 1회 (429·5xx·응답 전 연결 실패 — 과금 전 오류) + 아래 루프 재시도 1회 = 최대 4요청
+  // (기본값 2회면 루프와 곱해져 최대 6요청 — 2026-09-28 과금 위험 확인)
+  const client = new Anthropic({ maxRetries: 1 }); // ANTHROPIC_API_KEY 환경변수 사용
 
   // LLM 출력은 zod 스키마로 검증 (structured outputs). 실패 시 1회 재시도 후 failed.
+  // 스트리밍: 비스트리밍은 생성 완료까지 응답 바이트가 0 → 60초 유휴 연결 끊김으로 실패 (PROGRESS 3-A②)
   let lastError: unknown;
   for (let attempt = 1; attempt <= 2; attempt++) {
     try {
-      const response = await client.messages.parse({
-        model: STRUCTURE_MODEL,
-        max_tokens: 16000,
-        system: prompt.system,
-        messages: [{ role: "user", content: prompt.buildUserPrompt(transcriptText) }],
-        output_config: { format: zodOutputFormat(DocumentSchema) },
-      });
+      const response = await client.messages
+        .stream({
+          model: STRUCTURE_MODEL,
+          max_tokens: 16000,
+          system: prompt.system,
+          messages: [{ role: "user", content: prompt.buildUserPrompt(transcriptText) }],
+          output_config: { format: zodOutputFormat(DocumentSchema) },
+        })
+        .finalMessage();
 
       if (response.stop_reason === "max_tokens") {
         throw new Error("출력이 max_tokens에서 잘렸습니다. 트랜스크립트를 분할하세요.");
