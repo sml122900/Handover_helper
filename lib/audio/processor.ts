@@ -127,6 +127,7 @@ export async function processAudio(
   const chunks = await splitAudio(audioData, CHUNK_DURATION_SECONDS);
   const allSegments: TranscriptSegment[] = [];
   let language = "ko";
+  let source: Transcript["source"] = "whisper";
 
   for (const chunk of chunks) {
     const result = await stt.transcribe({
@@ -136,7 +137,8 @@ export async function processAudio(
     const corrected = applyOffset(result.segments, chunk.offsetSeconds);
     allSegments.push(...corrected);
     language = result.language; // 마지막 청크 언어 사용
+    source = result.source; // 실제 provider 기록
   }
 
-  return { segments: allSegments, language, source: "whisper" };
+  return { segments: allSegments, language, source };
 }

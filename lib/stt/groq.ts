@@ -22,7 +22,7 @@ export function groqResponseToTranscript(res: GroqVerboseResponse): Transcript {
       : res.text?.trim()
         ? [{ start: null, end: null, text: res.text.trim() }]
         : [];
-  return { segments, language: res.language ?? "ko", source: "whisper" };
+  return { segments, language: res.language ?? "ko", source: "groq" };
 }
 
 export class GroqStt implements SttProvider {

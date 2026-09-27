@@ -102,15 +102,15 @@ MVP 범위 엄수: 팀 워크스페이스, 실시간 녹음, 다국어, 모바�
 
 기술 스택 (변경 시 반드시 사용자에게 확인)
 
-프론트/백엔드: Next.js 14+ (App Router), TypeScript strict
+프론트/백엔드: Next.js 16 (App Router, Turbopack), TypeScript strict
 DB/Auth/Storage: Supabase (Postgres, Auth, Storage)
 녹화: 브라우저 MediaRecorder API (화면+마이크), 설치형 앱 없음
-STT: OpenAI Whisper API (한국어) — 추후 국내 STT로 교체 가능하도록 인터페이스 분리
+STT: Groq Whisper(기본, GROQ_API_KEY) · OpenAI Whisper 폴백 (한국어) — `lib/stt` 인터페이스 분리, `HANDOVER_STT`로 전환
 구조화 AI: Anthropic Claude API (claude-sonnet-4-6), JSON 스키마 출력 — `HANDOVER_MODEL` env로 override 가능
 키프레임 추출: ffmpeg (장면 전환 감지), 서버리스 함수에서 실행
 에디터: Tiptap
 배포: Vercel + Supabase. 영상 처리 등 장시간 작업은 큐 기반 비동기 (Supabase Edge Functions 또는 Inngest)
-결제: 토스페이먼츠 (건당 결제 우선)
+결제: 토스페이먼츠 건당 결제 (구현 완료 65dcef4, `@tosspayments/payment-sdk`)
 
 도메인 모델 (핵심 엔티티)
 
@@ -124,7 +124,7 @@ Keyframe: 영상에서 추출된 화면 캡처 (타임스탬프, 이미지 URL)
 
 업무 개요 (요약, 주기, 중요도)
 절차 (단계별, 키프레임 이미지 연결 가능)
-장비·위치·물품 (포스기·재고·도구 등 실물. 비밀번호류는 자동 마스킹)
+장비·위치·물품 (포스기·재고·도구 등 실물. 업무용 비밀번호는 보존 — 마스킹은 주민번호·카드번호만)
 일정·루틴
 연락·보고 (이름, 역할, 연락 수단, 요청/보고 관계)
 예외 상황·꿀팁
@@ -153,11 +153,12 @@ UI 테스트는 MVP에서 생략
 보안·개인정보
 
 영상 원본은 업로드 30일 후 자동 삭제 (Supabase Storage lifecycle 또는 cron)
-트랜스크립트에서 비밀번호/주민번호 패턴 자동 마스킹 후 저장
+트랜스크립트·구조화 결과에서 주민·외국인등록번호, 카드번호만 코드로 자동 마스킹 후 저장 (`lib/privacy/mask.ts`). 업무용 비밀번호·PIN·전화번호는 보존
 공유 링크는 추측 불가능한 토큰 + 만료일 설정 가능
 
-현재 단계 (2026-06-13)
-Phase 0 + Phase 1 + Phase 2 일부(cron·랜딩·UI 다듬기) 완료.
+현재 단계 (2026-09-27)
+Phase 0 + Phase 1 + Phase 2(결제·cron·랜딩·UI 다듬기) 완료. Phase 3 진행 중.
+- Phase 2-1 결제(토스페이먼츠 건당) 완료 (65dcef4). 문서 내보내기: 인쇄용 PDF(print CSS) + docx
 - 스키마 v2 (직종 보편형) + structure-v2가 운영 기본. v1 대비: 누락 3.7%→0%, 환각 0 유지
 - 채점: 체크리스트 기반, 재현성 검증 완료. inferred는 환각 아님(별도 집계)
 - 마스킹 정책: 개인식별정보만 마스킹, 업무용 접근 정보(포스기PW·도어락)는 그대로
@@ -169,7 +170,7 @@ Phase 0 + Phase 1 + Phase 2 일부(cron·랜딩·UI 다듬기) 완료.
 - 배포 전 UI 다듬기: empty state·에러 한국어화·retry 버튼·로딩 애니·테마·모바일 완료
 - Phase 2-2: 영상 30일 자동 삭제 cron (vercel.json + /api/cron/cleanup-videos). CRON_SECRET 설정 필요
 - Phase 2-3: 랜딩 페이지 개선 (pain point·how it works·features·CTA)
-- 남은 것: ① Groq STT 실 영상 E2E 확인 ② Phase 0 본체 = 골든셋 10개 반복 ③ Phase 2-1 결제(토스페이먼츠) 미착수
+- 남은 것: ① Groq STT 실 영상 E2E 확인 ② Phase 0 본체 = 골든셋 10개 반복 ③ Phase 3 (포트폴리오·출시 완성)
 - 상세 이력: PROGRESS.md
 
 ## Phase 3 — 포트폴리오·출시 완성 (공통 규칙)

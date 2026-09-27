@@ -1,14 +1,14 @@
 "use client";
 
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
+
+const noopSubscribe = () => () => {};
 
 export function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  // 하이드레이션 불일치 방지
-  useEffect(() => setMounted(true), []);
+  // 하이드레이션 불일치 방지 (서버 false, 클라이언트 true)
+  const mounted = useSyncExternalStore(noopSubscribe, () => true, () => false);
   if (!mounted) return <div className="h-8 w-8" />;
 
   const isDark = resolvedTheme === "dark";

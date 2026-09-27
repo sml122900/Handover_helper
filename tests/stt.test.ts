@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { whisperResponseToTranscript, WhisperStt, WHISPER_MAX_BYTES } from "../lib/stt/whisper";
 import { MockStt } from "../lib/stt/mock";
+import { groqResponseToTranscript } from "../lib/stt/groq";
 import { getSttProvider } from "../lib/stt";
 
 describe("whisperResponseToTranscript", () => {
@@ -69,5 +70,12 @@ describe("getSttProvider (env 전환)", () => {
   });
   it("알 수 없는 값 → 에러", () => {
     expect(() => getSttProvider({ HANDOVER_STT: "papago" })).toThrow(/HANDOVER_STT/);
+  });
+});
+
+describe("groqResponseToTranscript", () => {
+  it("source를 groq로 기록한다", () => {
+    const t = groqResponseToTranscript({ segments: [{ start: 0, end: 1, text: "네" }] });
+    expect(t.source).toBe("groq");
   });
 });

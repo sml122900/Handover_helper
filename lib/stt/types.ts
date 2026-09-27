@@ -11,7 +11,7 @@ export interface TranscriptSegment {
 export interface Transcript {
   segments: TranscriptSegment[];
   language: string;
-  source: "whisper" | "text-file" | "mock";
+  source: "whisper" | "groq" | "text-file" | "mock";
 }
 
 export interface SttInput {
