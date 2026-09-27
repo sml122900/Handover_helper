@@ -170,6 +170,7 @@ Phase 0 + Phase 1 + Phase 2(결제·cron·랜딩·UI 다듬기) 완료. Phase 3 
 - 배포 전 UI 다듬기: empty state·에러 한국어화·retry 버튼·로딩 애니·테마·모바일 완료
 - Phase 2-2: 영상 30일 자동 삭제 cron (vercel.json + /api/cron/cleanup-videos). CRON_SECRET 설정 필요
 - Phase 2-3: 랜딩 페이지 개선 (pain point·how it works·features·CTA)
+- Phase 3-A①(2026-09-27): 기준선·ESLint·실데이터 분리(private-data/, GOLDEN_DIR)·마스킹 코드 계층·보안 감사(0007·0008 미적용 — 사용자 실행 필요)
 - 남은 것: ① Groq STT 실 영상 E2E 확인 ② Phase 0 본체 = 골든셋 10개 반복 ③ Phase 3 (포트폴리오·출시 완성)
 - 상세 이력: PROGRESS.md
 

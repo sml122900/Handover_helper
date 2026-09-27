@@ -428,3 +428,86 @@ npm run dev
 - vitest: **43/43 통과** (6 files)
 - typecheck: **에러 0**
 - next build (16.2.7 Turbopack): **성공**, 경고 1 — `middleware` 파일 규칙 deprecated (→ `proxy`)
+
+### 완료한 것
+**0. 기준선·정리**
+- ESLint 도입: `eslint.config.mjs` (eslint-config-next core-web-vitals + typescript, flat), `npm run lint` — 에러 1건(ThemeToggle setState-in-effect → `useSyncExternalStore`) 수정, **에러 0**
+- CLAUDE.md 사실 정정: Next.js 16, STT(Groq 기본·OpenAI 폴백), 결제 완료(65dcef4), 마스킹 정책 문구 2곳(스키마 설명·보안 절 — "비밀번호류 마스킹"이 실제 정책과 반대였음), 현재 단계·남은 것
+- `Transcript.source`에 `groq` 추가 — Groq 응답은 `groq`, `processAudio` 청크 병합도 실제 provider 기록 (vitest 1개)
+- `@tosspayments/tosspayments-sdk` 제거, `tsconfig.tsbuildinfo` 추적 해제 + `*.tsbuildinfo` gitignore
+- npm audit high/critical 5건 → 0: next 16.3.6, tiptap 전체 3.31.3, nanoid 5.1.16 (남은 것: moderate 3·low 1). `npm ci` 클린 설치 확인
+
+**1. 실데이터 분리**
+- `golden/sample-01*`(8) + `samples/sample-01*`(4) → `private-data/golden/` (gitignore, `private-data/README.md`)
+- 채점 스크립트 5종 경로를 `GOLDEN_DIR`(기본 `./golden`)로 — `lib/golden-paths.ts`. 비공개 경로면 output/results도 `private-data/` 하위로 자동 저장 (심판 근거 인용 격리). 트랜스크립트는 `{GOLDEN_DIR}/{name}.txt` → `samples/{name}.txt` 순. `README.md`는 샘플 목록에서 제외. 채점 로직 변경 0
+- 공개 가상 샘플: `golden/sample-demo.txt`(카페 평일 마감조 바 담당, 34세그먼트 ~19분) + `golden/sample-demo.md` — 의도적 누락 3개(발주 방법·시재 불일치 처리·보안 설정) + 위치 불명확 1개. **이 트랜스크립트는 3-B 데모 fixture로 재사용**
+- `golden/README.md` 파일 규칙 + 비공개 채점 방법, `.env.example`에 `GOLDEN_DIR`
+- 실데이터 고유 문자열 grep (현재 트리 + 전 이력, 값 미기록): `docs/daily/2026-06-12.md`(비밀번호 값 2개·매장 물품), `docs/par-materials.md`(매장 물품) 일반화. `tests/mask.test.ts`에 실데이터 일련번호가 들어갔던 것도 가상 값으로 교체
+- gitleaks 8.30.1(포터블, scratchpad) 전 이력 29커밋: **유출 0건**. `git log --all -- .env` 없음
+- `docs/publish-checklist.md` — 실제 URL로 완성된 filter-repo 절차, `--path` 13개 + `--replace-text`(값은 `private-data/history-redactions.txt`), 검증용 `private-data/history-strings.txt`
+- CLAUDE.md Phase 3 규칙: 지표는 비공개 골든셋 기준 명시, sample-demo 점수 인용 금지
+
+**2. 마스킹 코드 계층** — `lib/privacy/mask.ts`
+- 주민·외국인등록번호(하이픈/공백/없음, 생년월일 유효성 + 7번째 자리 1~8) → `[주민번호]`
+- 카드번호: 15·16자리, 연속/4-4-4-4/4-6-5(구분자 일관), 첫 자리 3·4·5·6·9 또는 2221~2720, Luhn → `[카드번호]`
+- 적용: STT 병합 직후(저장 전) 1차, 구조화 결과 2차 (`maskDeep` — 문자열 값만). 파이프라인·convert·compare 모두. 프롬프트 마스킹 지시 유지
+- vitest 43개: 양성 15 / 음성 27(전화·PIN·사업자·계좌 12~14자리·EAN-13 3개·일련번호·금액·타임스탬프·Luhn 실패 등) / maskDeep 1
+
+**3. 보안 감사** — 상세 `docs/security-checklist.md`
+- **실 DB에서 재현된 취약점 (수정 코드 완료, 0008 적용 필요)**: 사용자가 anon key로 `projects.plan='paid'` 변경(결제 우회), paid 프로젝트 직접 생성, `videos.storage_path` 조작(타인 영상 처리), keyframes 직접 insert
+- `0008_rls_hardening.sql` 컬럼 단위 권한 + 서버 액션 쓰기 service_role 이전 + 파이프라인 경로 소유권 검사
+- `/api/keyframes` 인증 추가(세션 또는 공유 토큰+프로젝트 소속), 공유 뷰 `?share=` 부착, docx 내보내기 키프레임 소속 검증
+- 업로드 서버 재검증(매직 넘버·용량), **비용 가드를 ffmpeg 실측 길이로 STT 전 판정** (`probeDurationSeconds`, 합성 mp4 7s·webm 5.01s 확인)
+- env zod 검증 (`lib/env.ts`, `instrumentation.ts` → `lib/env-check.ts`): prod 누락 시 `exit(1)`, build 단계 제외 — `next start`로 실패·성공 양쪽 확인
+- 레이트리밋 `0007_rate_limits.sql` + `lib/rate-limit.ts`, 파이프라인 실패 사유 사용자용 문구화, `app/error.tsx`·`app/not-found.tsx`
+- RLS 통합 테스트 `npm run test:rls` — 실 DB 1회: **10 통과 / 4 실패(0008 미적용 — 위 취약점 재현)**, 임시 유저·프로젝트 정리 확인(0건)
+- 클라이언트 번들 시크릿 값 검색 0건, 버킷 private 실 DB 확인
+
+**마무리**: lint 에러 0 · typecheck 0 · vitest **113 통과 / 14 skip(RLS 통합)** · next build 성공
+
+### 레이트리밋 기본값 (env로 조정)
+| action | env | 기본 | 대상 |
+|---|---|---|---|
+| pipeline | `RATE_LIMIT_PIPELINE_PER_HOUR` | 20회/시간 | 업로드 완료, 재시도 (STT+구조화+보강 질문) |
+| ai_edit | `RATE_LIMIT_AI_EDIT_PER_HOUR` | 60회/시간 | 보강 질문 답변 다듬기 |
+
+### ESLint 경고 (목록만, 미수정)
+- `app/documents/[id]/keyframe-actions.ts:7` 미사용 `HandoverDocument`
+- `app/projects/[id]/upgrade/success/page.tsx:1` 미사용 `notFound`
+- `lib/audio/processor.ts:3` 미사용 `stat`
+- `postcss.config.mjs:1` 익명 default export
+- `scripts/build-checklist.ts:14` 미사용 `CHECKLIST_MODEL` (수정 금지 파일)
+
+### 새 화면 문구 — 사용자 검토 필요
+- `app/error.tsx`: "일시적인 오류가 발생했습니다" / "다시 시도해도 같은 문제가 반복되면 잠시 후 다시 접속해 주세요." / "오류 코드:" / 버튼 "다시 시도"·"홈으로"
+- `app/not-found.tsx`: "페이지를 찾을 수 없습니다" / "주소가 잘못되었거나, 삭제되었거나, 접근 권한이 없는 페이지입니다."
+- 파이프라인 일반 실패: "문서 변환 중 오류가 발생했습니다. '다시 시도'를 눌러 주세요. 반복되면 파일을 다시 업로드하세요."
+- 실측 길이 초과: "실제 영상 길이 기준으로 {기존 한도 문구} 프로젝트 화면의 '업그레이드'에서 결제하면 영상 2시간까지 변환할 수 있습니다."
+- 영상 판독 불가: "영상 파일을 읽을 수 없습니다. 손상되지 않은 파일인지 확인하고 다시 업로드하세요."
+- 업로드 재검증: "지원하지 않는 형식입니다…" / "빈 파일입니다…" / "파일이 너무 큽니다 (최대 2GB|2MB). 나눠서 업로드하세요." / "파일 내용이 확장자와 맞지 않습니다…" / "업로드된 파일을 찾을 수 없습니다…" / "이미 처리 중인 영상입니다."
+- 레이트리밋: "짧은 시간에 변환 요청이 너무 많습니다. 1시간 뒤에 다시 시도하세요." / "짧은 시간에 AI 요청이 너무 많습니다. 잠시 후 다시 시도하세요."
+- 키프레임: "이미지를 불러오지 못했습니다. 잠시 후 다시 시도하세요." / "이미지 변경을 저장하지 못했습니다. 잠시 후 다시 시도하세요."
+
+### 사용자가 할 일
+- [ ] **⚠️ 최우선: `0007_rate_limits.sql` → `0008_rls_hardening.sql` SQL Editor 실행** (결제 우회 취약점이 현재 DB에 열려 있음) → `npm run test:rls` 14/14 확인
+- [ ] **sample-demo 채점 재현 (API 3회)**: `npm run convert -- golden/sample-demo.txt` → `npm run checklist -- sample-demo` → 체크리스트 검토 → `npm run evaluate -- sample-demo`. 이번 세션 convert 1차는 SDK `Connection error`(재시도 포함 2회, 서버 미도달 — 직후 models.list는 정상), 재실행은 사용자 거부로 중단
+- [ ] `.env`에 `CRON_SECRET`(16자+) 추가 — 없으면 production 부팅 실패 (의도). Vercel 환경변수에도 동일
+- [ ] `.env`의 `GROQ_API_KEY =`처럼 `=` 앞 공백이 있는 줄 정리 (파서별로 키 이름이 달라질 수 있음). 미사용 키(AUTH_*, TOSS_CLIENT_KEY) 정리 여부 판단
+- [ ] `private-data/`를 별도 private 리포로 이동 → `docs/publish-checklist.md` 절차로 이력 제거·공개 전환 (Python 미설치 → `winget install Python.Python.3.12`)
+
+### 스스로 내린 판단과 이유
+1. **sample-02·03 유지 (이전 보고 정정)** — 둘 다 전 이력에서 **0바이트 빈 파일**. 지난 보고에서 sample-03을 실매장 데이터라 한 것은 `head` 출력 순서를 잘못 읽은 오류(실제로는 samples/sample-01b.txt 내용). 옮길 데이터가 없어 유지하고 publish-checklist에 명시. 대신 이력 조사에서 **sample-01b**(실데이터)와 **docs 2개 문서**의 과거 버전을 추가로 찾아 대상에 포함
+2. **비공개 산출물 자동 격리** — `GOLDEN_DIR`만 받되, 기본값이 아니면 output/results를 그 상위로. env 추가 없이 "실데이터 인용이 공개 경로에 남지 않음"을 구조적으로 보장. 현재 results/output은 로컬·이력 모두 없음 → 이동할 파일 0
+3. **private-data 평탄화** — golden/·samples/ 이중 구조 대신 `private-data/golden/` 한 곳(`{name}.txt` 규칙). samples/sample-01.txt는 golden 사본과 바이트 동일 확인 후 1개만 유지
+4. **주민번호 구분자 없는 13자리 + EAN-13 충돌** — 테스트 중 발견: 국내 바코드 `880…`이 "88년 X월 X일"로 해석돼 마스킹됨. EAN 체크섬 통과 **그리고** 주민번호 체크섬 실패면 바코드로 보존. 한계: 2020-10 이후 발급 주민번호(체크섬 없음)가 구분자 없이 발화되고 우연히 EAN 체크섬까지 맞으면(~10%) 보존됨 — 오탐(인수인계 정보 손실)보다 낫다고 판단. 13자리 연속 계좌번호가 날짜·7번째 자리 조건을 우연히 만족하면 마스킹될 수 있음(테스트 값은 불충족)
+5. **RLS: 트리거 대신 컬럼 grant/revoke** — 선언적이고 PostgREST가 즉시 거부. videos insert를 사용자 세션 → service_role로 옮김 (소유권은 RLS select로 먼저 확인)
+6. **레이트리밋 fail-open** — 0007 미적용·DB 장애 시 서비스 전체 차단보다 허용 + 에러 로그. 비용 상한은 플랜 분 한도가 별도로 막음
+7. **env 검증에 CRON_SECRET·TOSS 키 포함** — production에서 없으면 cron·결제가 조용히 깨지므로 부팅 실패가 맞다고 판단. STT는 Groq/OpenAI 중 하나 또는 `HANDOVER_STT=mock`
+8. **process.exit(1)** — `throw`만으로는 `next start`가 "Failed to prepare server" 후에도 떠 있음(실측). Node 전용 모듈로 분리해 Edge 번들 경고 제거
+9. **lockfile 정렬** — 클론 직후 `npm ci`부터 실패(tiptap peer 불일치). 보안 패치와 함께 tiptap 전체를 3.31.3으로 통일
+10. **API 호출: 과금 0회** (convert 1회 시도 = 연결 실패). 한도 5회 중 미사용
+
+### 남은 것
+- 사용자 조치 후: test:rls 14/14, sample-demo 채점 재현 기록
+- 서버 액션 입력 zod 전면 적용, rate_limits 행 정리, middleware→proxy 전환
+- Phase 3 나머지: Inngest, 샘플 체험 동선, 모바일·PWA·Lighthouse, CI, 약관·계정 삭제, README
