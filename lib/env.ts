@@ -22,6 +22,8 @@ const EnvSchema = z
     INNGEST_SIGNING_KEY: z.string().optional(),
     SENTRY_DSN: z.url().optional(),
     NEXT_PUBLIC_SENTRY_DSN: z.url().optional(),
+    NODE_ENV: z.string().optional(),
+    INNGEST_DEV: z.string().optional(),
   })
   .refine((e) => e.HANDOVER_STT === "mock" || Boolean(e.GROQ_API_KEY || e.OPENAI_API_KEY), {
     message: "STT 키 필요: GROQ_API_KEY 또는 OPENAI_API_KEY (또는 HANDOVER_STT=mock)",
@@ -31,6 +33,11 @@ const EnvSchema = z
   .refine((e) => e.HANDOVER_QUEUE === "inline" || Boolean(e.INNGEST_EVENT_KEY && e.INNGEST_SIGNING_KEY), {
     message: "Inngest 키 필요: INNGEST_EVENT_KEY·INNGEST_SIGNING_KEY (Vercel Inngest Integration) 또는 HANDOVER_QUEUE=inline",
     path: ["INNGEST_EVENT_KEY"],
+  })
+  // INNGEST_DEV가 켜지면 /api/inngest 서명 검증이 꺼짐 → 운영에서 누구나 파이프라인 단계 호출 가능
+  .refine((e) => !(e.NODE_ENV === "production" && e.INNGEST_DEV), {
+    message: "운영에서 INNGEST_DEV를 설정하면 안 됩니다 (Inngest 요청 서명 검증 비활성화)",
+    path: ["INNGEST_DEV"],
   });
 
 /** 문제 목록 (키 이름 + 사유만 — 값은 절대 출력하지 않음). 빈 배열 = 정상 */

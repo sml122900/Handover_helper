@@ -37,6 +37,11 @@ describe("findEnvProblems", () => {
     expect(findEnvProblems({ ...VALID, HANDOVER_QUEUE: "sqs" }).length).toBe(1);
   });
 
+  it("운영에서 INNGEST_DEV 설정 금지 (서명 검증 우회 방지), 개발에서는 허용", () => {
+    expect(findEnvProblems({ ...VALID, NODE_ENV: "production", INNGEST_DEV: "1" }).some((p) => p.startsWith("INNGEST_DEV"))).toBe(true);
+    expect(findEnvProblems({ ...VALID, NODE_ENV: "development", INNGEST_DEV: "1" })).toEqual([]);
+  });
+
   it("잘못된 URL·짧은 CRON_SECRET", () => {
     expect(findEnvProblems({ ...VALID, NEXT_PUBLIC_SUPABASE_URL: "abc" }).length).toBe(1);
     expect(findEnvProblems({ ...VALID, CRON_SECRET: "short" }).length).toBe(1);
