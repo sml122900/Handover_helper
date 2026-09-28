@@ -70,6 +70,16 @@
 | 서버 액션 DB 에러 문구 | ❌→✅ | keyframe-actions의 `error.message` 노출 제거 |
 | 전역 error.tsx · not-found.tsx | ❌→✅ | digest만 표시, 스택 없음 |
 
+## 9. 작업 큐·새 경로 (세션 3-A②, 2026-09-29)
+
+| 항목 | 결과 | 내용 |
+|---|---|---|
+| `POST /api/pipeline/start` (신규) | ✅ | Bearer 사용자 토큰 → 그 사용자 RLS 클라이언트, 입력 zod(UUID). **completeUpload와 같은 `startPipeline`만 호출** — 소유권(RLS 조회), 저장 객체 매직 넘버·용량 재검증, 레이트리밋 포함, 라우트 자체 로직 없음. 통합 테스트: **다른 사용자의 videoId → "영상을 찾을 수 없습니다", 큐 전송 0건, 상태 불변** / 소유자 → 최초 실행 키로 이벤트 1건 (`tests/pipeline-start.integration.test.ts`, 실 DB 통과) |
+| `/api/inngest` (신규) | ✅ | Inngest SDK가 `INNGEST_SIGNING_KEY`로 요청 서명 검증 (cloud 모드). 운영 env 검증에 키 필수 + **운영에서 `INNGEST_DEV` 설정 시 부팅 실패** (dev 모드는 서명 검증을 끔 → 누구나 단계 호출 가능해지는 설정 사고 방지) |
+| `videos.stage` (0009) | ✅ | 쓰기 service_role 전용 (컬럼 단위 revoke, 0008과 같은 방식). RLS 통합 테스트 "A는 videos.stage를 수정할 수 없다" 추가 — **0009 적용 전에는 컬럼 없음으로 실패** |
+| 임시 오디오 청크 `{경로}.audio/` | ✅ | private `videos` 버킷의 소유자 폴더 안. 성공(트랜스크립트 저장 직후)·실패(onFailure·NonRetriable 기록 시)·inline 실패 모든 경로에서 삭제 + cron이 하루 지난 청크 정리. 로컬 검증: 실패 경로 후 잔여 0개, 성공 경로 후 잔여 0개 |
+| 실패 사유 노출 | ✅ | Inngest 경로도 사용자용 문구만 저장 (UserFacingError 문구 또는 일반 안내). 내부 오류는 서버 로그·Sentry |
+
 ## 미해결 / 후속
 - 0007·0008 마이그레이션 실행 후 `npm run test:rls` 14/14 확인 (사용자)
 - 서버 액션 입력 zod 검증은 부분적 (길이·범위 검사 수준) — CLAUDE.md "API 라우트 zod 검증" 전면 적용은 별도 세션

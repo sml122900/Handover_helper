@@ -766,3 +766,100 @@ npm run dev
 - 2회 중 차이는 경계 항목 1개(정답 문서의 해석 용어 "모델 번호")뿐. 정답·체크리스트 동결 상태
 - 조건: 변환 claude-sonnet-4-6·structure-v2(변환 결과 1회 고정) / 심판 judge-v1·근거→판정 순서·temperature 0
 - 인용 시 함께 밝힐 것: 표본 1개, 비공개 골든셋 기준, 채점 방법론 결함 3건 수정 후 수치(`docs/eval-methodology-notes.md`). 이전 7.0%·0.0%(단일)·2.4%(단일)는 대체됨. sample-demo·TTS 테스트 결과는 인용 금지
+
+---
+
+## 세션 3-A②: Inngest 전환 · 실패/진행 UX · 관측 ✅ (2026-09-29)
+
+> 지시: Inngest 전환(단계별 step), 실패·진행 UX, Sentry·Analytics, e2e 배포 URL 모드. API 한도 16회(0번 재채점 1 포함).
+> 0번(채점 확정·이력 점검)은 위 "세션 3-A⑥"에 선처리·기록.
+
+### 완료한 것
+**1. Inngest 작업 큐** (`5fbd876`)
+- `lib/pipeline/run.ts` 공용 오케스트레이터 + `steps.ts` 단계 구현 — inline(after 훅)·Inngest가 **같은 단계 함수·같은 상태머신** 사용
+- 단계: `prepare` → `extract-audio`(실측 길이 비용 가드 → mp3 → 10분 청크 → Storage 임시 저장) → `stt-N`(청크마다 step) → `save-transcript`(병합·마스킹·upsert·임시 청크 삭제) → `keyframes` → `structure`(스트리밍) → `match-keyframes` → `enrich` → `finish`
+- Inngest 설정: `retries: 3`, `concurrency { limit: 1, key: event.data.userId }`, `idempotency: event.data.runKey`(최초 `videoId:initial`, 재시도 `videoId:retry-<시각>`), `checkpointing: false`(요청 1회 = 단계 1개), `maxDuration = 300`
+- 사용자용 실패(플랜 한도·손상 파일 등)는 발생 지점에서 사유 기록 후 `NonRetriableError`(재시도 없음). 그 외는 단계 재시도 3회 후 `onFailure` → failed + 일반 안내 + Sentry. 실패 사유는 기존 `videos.error_message`에 저장(별도 failure_reason 컬럼 대신 — 이미 화면 표시 중인 사용자용 필드)
+- 임시 오디오 청크: 성공·onFailure·NonRetriable·inline 실패 모든 경로에서 삭제 + cron이 하루 지난 `.audio/` 청크와 30일 삭제 대상 영상의 청크 정리
+- 재시도: 트랜스크립트가 있으면 STT 건너뛰고 구조화부터(재과금 없음). 중복 클릭은 `status='failed'` 조건부 update로 1건만 통과
+- `HANDOVER_QUEUE=inline` 유지(기본 inngest). 운영 env 검증: Inngest 키 필수, **운영에서 `INNGEST_DEV` 설정 금지**(서명 검증 꺼짐 방지)
+- `supabase/migrations/0009_video_stage.sql` — `videos.stage`(세부 단계), 쓰기 service_role 전용, ALL_MIGRATIONS 합본 반영
+- `POST /api/pipeline/start` — completeUpload와 같은 `startPipeline`만 호출
+
+**2. 실패·진행 UX** (`bf5e0a5`)
+- 프로젝트 상세: 업로드 → 음성 인식(청크 진행률 "음성 인식 2/3") → 구조화 → 보강 질문, 남은 예상 시간, 실패 지점 빨간 표시 + 기존 사유·"재시도" 버튼
+- stage 컬럼이 없어도 화면이 깨지지 않게 조회 폴백(status만으로 단계 표시)
+- 폴링: 3초 → 1.5배 백오프 최대 15초, 상태·stage·사유 변화 시 리셋, 탭 숨김 시 중지·복귀 시 즉시 조회
+
+**3. 관측** (`cb9fe55`)
+- `@sentry/nextjs` 11: DSN 있을 때만 초기화(서버 `instrumentation.ts`, 브라우저 `instrumentation-client.ts` 동적 import), `onRequestError`, error.tsx capture, 파이프라인 최종 실패 전송(+flush)
+- `@vercel/analytics`: layout에 `<Analytics />`
+
+**4. e2e·검증 도구** (`8fa11c8`)
+- `E2E_BASE_URL`(로컬 dev·배포 공용): 테스트 유저 로그인 → 업로드 → `/api/pipeline/start` → 상태·단계 폴링 → done·트랜스크립트·문서 스키마·보강 질문·사용량 로그·**임시 청크 잔여 0** 검증. `E2E_FILE`·`E2E_PAID` 옵션
+- `scripts/make-tts-video.ps1`: 가상 sample-demo 대본 한국어 TTS(1회분 444.7초) 반복 → 1280×720 정지 화면 mp4. 산출물 `output/tts/`(gitignore)
+
+**테스트**: vitest **133 통과**(오케스트레이션 순서·STT 건너뛰기·실패 전파, runKey, 재시도 중복 클릭 경합, 진행 표시·백오프, env) / 통합(실 DB): startPipeline 타 사용자 거부·소유자 1건 전송 통과, RLS 16/17 (실패 1 = stage 케이스, 0009 미적용). **0007·0008은 적용 확인됨**(3-A① 결제 우회 등 4건 이제 통과)
+
+### 로컬 Inngest 검증 (inngest-cli dev + next dev)
+| 시나리오 | 결과 |
+|---|---|
+| B. 2분 영상 + `HANDOVER_STT=mock` | STT 단계 4회(1+재시도 3) 실패 → onFailure → failed + 일반 안내, 임시 청크 0개, 실측 길이 120초 기록 ✓ |
+| B'. 30분 영상 + 무료 플랜 | extract-audio 1회만 → 비용 가드 NonRetriable → 5초 만에 failed + "실제 영상 길이 기준 20분 초과 … 업그레이드" ✓ |
+| C1. 30분 영상 + 유료 + 실 Groq | **Groq 401 Invalid API Key** → STT 실패 → failed (키 무효, 과금 없음 — 아래 사용자 할 일) |
+| C 재시도 #1 (TTS 원문 트랜스크립트 주입 + 모델 404 강제) | prepare → **STT 단계 없음** → keyframes → structure 404×4 → failed ✓ |
+| C 재시도 #2 (정상 모델) | prepare → keyframes → structure → match → enrich → **done 122초** ✓ |
+| A. sample-demo.txt, 앱 경유(`/api/pipeline/start`) | done 112초, 문서 스키마 ✓, 보강 질문 7개, 사용량 로그 2종, 임시 청크 0개 ✓ |
+
+- C 재시도용 트랜스크립트: Groq 키가 무효라 STT 대신 **TTS가 읽은 원문 그대로**(1회분 34세그먼트 × 약 4.05회 = 139세그먼트·11,482자, 타임스탬프는 1회분 444.7초에 맞춰 환산)를 주입해 "STT 완료 후 구조화 실패" 상황을 재현. 재시도 트리거는 retryVideo와 같은 `claimAndEnqueueRetry` + 이벤트 전송(진단 스크립트, 커밋 안 함)
+
+### 단계별 실측 시간 — 300초(maxDuration) 대비
+> ⚠ **TTS 합성 영상 결과는 처리 시간·청크 분할·타임아웃 검증 전용. STT 정확도·문서 품질 지표로 PROGRESS.md·README에 인용 금지.**
+
+| 단계 | 실측 (로컬) | 300초 대비 사용 | 여유율 |
+|---|---|---|---|
+| prepare | 0.1~0.2초 | 0.1% | 99.9% |
+| **extract-audio** (30분 영상 → mp3 → 청크 3개 업로드) | **7.4초** | 2.5% | **97.5%** |
+| **stt-N (가장 긴 청크)** | **미실측** — Groq 키 무효(401) | — | — |
+| keyframes (30분 1280×720) | 5.0~6.9초 | 2.3% | 97.7% |
+| **structure** (30분 분량 11,482자 트랜스크립트) | **94.5초** (sample-demo txt: 92.6초) | **31.5%** | **68.5%** |
+| enrich | 14.6~17.5초 | 5.8% | 94.2% |
+| match-keyframes / finish / save-transcript | 0.03~0.3초 | ~0% | ~100% |
+
+- 가장 긴 단계는 구조화(94.5초) — **Vercel Hobby에서 Fluid Compute가 꺼져 있으면(60초 한도) 실패**. Fluid Compute(300초)면 여유 68.5%
+- 한계: 로컬 PC 측정(Vercel 함수 CPU·네트워크와 다름). 합성 영상이 15MB(정지 화면)라 실제 폰 영상(수백 MB~1GB+)의 다운로드·디코딩·메모리 부담은 반영 안 됨 — extract-audio·keyframes는 실제 파일에서 훨씬 길어질 수 있음. STT 미실측
+
+### API 사용 — 과금 5회 / 한도 16
+- 과금: 0번 재채점 1 · A 구조화+보강 2 · C 재시도 #2 구조화+보강 2
+- 과금 없음(요청 거부): Groq 401 × 4, 존재하지 않는 모델 404 × 8(단계 4회 × structure.ts 2회)
+
+### 스스로 내린 판단과 이유
+1. **Groq 키 무효 → STT 실측 대신 TTS 원문 주입으로 나머지 경로 검증** — 키가 트림해도 401(형식은 정상 `gsk_`)이라 코드·파싱 문제가 아님. 새 키 없이 STT를 잴 방법이 없어, 재시도·구조화·키프레임·타임아웃 검증을 우선하고 STT 실측은 사용자 할 일로
+2. **`checkpointing: false`** — Inngest v4 기본은 여러 단계를 한 HTTP 요청에 이어 실행(최대 10초 + 진행 중 단계). 끄면 요청 1회 = 단계 1개라 "단계 시간 ≤ maxDuration" 검증이 정확해짐. 대가: 짧은 단계도 요청이 따로 발생
+3. **오디오는 항상 10분 청크로 분할** — 기존은 25MB 이하면 통째로 STT 1회. 청크마다 step이어야 단계 시간이 영상 길이와 무관하게 상한을 가짐. Groq 과금은 초 단위라 비용 차이 미미, 청크 경계에서 단어가 잘릴 수 있는 점은 한계
+4. **운영 `INNGEST_DEV` 금지 검사 추가**(지시 외) — 문서화 중 발견: dev 모드는 서명 검증을 꺼서, 운영에 잘못 설정되면 누구나 `/api/inngest`로 단계 실행 가능
+5. **`failure_reason` 대신 기존 `error_message`** — 이미 사용자용 문구로 화면에 표시되는 필드. 새 컬럼은 마이그레이션·조회 폴백만 늘림
+6. **`next dev`가 CLAUDE.md에 "Next.js agent rules" 블록을 자동 추가하고 `next-env.d.ts`를 dev 경로로 변경** → 둘 다 원복(커밋 안 함). CLAUDE.md는 사용자 지시 파일이라 유지 여부는 사용자 결정
+7. **Sentry 소스맵 업로드(`withSentryConfig`) 생략** — auth token 필요·빌드 시간 증가. 스택은 압축 코드 기준으로 보임
+
+### 새 화면 문구 — 사용자 검토 필요
+- 단계: "업로드" · "음성 인식" · "구조화" · "보강 질문" / 세부: "변환 대기 중" · "오디오 추출 중" · "음성 인식 N/M" · "화면 캡처 추출 중" / 예상: "1분 안팎 남음" · "약 N분 남음" / 스크린리더: "완료" · "진행 중" · "실패" · "대기"
+- "변환 작업을 시작하지 못했습니다. '다시 시도'를 눌러 주세요." / "재시도할 수 있는 영상이 아닙니다." / "이미 재시도 중입니다." / "videoId(UUID)가 필요합니다."
+- env 안내(운영 로그): "Inngest 키 필요: …" · "운영에서 INNGEST_DEV를 설정하면 안 됩니다 …"
+
+### 사용자가 할 일
+- [ ] **순서 주의: Supabase SQL Editor에서 `0009_video_stage.sql` 실행 → 그 다음 push·배포** (코드는 컬럼이 없어도 status만으로 동작하지만, 세부 단계 표시·RLS 테스트는 0009 필요) → `npm run test:integration` 17/17 확인
+- [ ] **Groq API 키 재발급** (현재 키 401) → `.env`·Vercel 환경변수 갱신 → STT 실측: `npx inngest-cli@latest dev -u http://localhost:3010/api/inngest` + `INNGEST_DEV=1 npm run dev` 후 `E2E_BASE_URL=http://localhost:3010 E2E_FILE=output/tts/tts-30min.mp4 E2E_PAID=1 npm run e2e` (영상은 `powershell -File scripts/make-tts-video.ps1`로 생성)
+- [ ] **Vercel Inngest Integration 설치** → `INNGEST_EVENT_KEY`·`INNGEST_SIGNING_KEY` 자동 주입 → 배포 후 Inngest 대시보드에서 앱 sync(`https://<도메인>/api/inngest`)
+- [ ] **Vercel Hobby: Fluid Compute 활성 여부 확인** (Project Settings > Functions). 꺼져 있으면 60초 한도라 구조화(실측 94.5초) 단계 실패
+- [ ] **실결제 오픈 전 Vercel Pro 전환** — Hobby는 비상업용 약관
+- [ ] Sentry 프로젝트(Next.js) 생성 → `SENTRY_DSN`·`NEXT_PUBLIC_SENTRY_DSN` 설정 (소스맵까지 원하면 `withSentryConfig` + `SENTRY_AUTH_TOKEN` 요청)
+- [ ] Vercel 대시보드 Analytics 탭에서 Web Analytics 활성화
+- [ ] `next dev` 실행 시 CLAUDE.md에 자동 추가되는 Next.js agent-rules 블록을 커밋할지 결정 (안 하면 dev 실행 때마다 변경으로 남음)
+- [ ] 배포 후 확인: `E2E_BASE_URL=https://<도메인> npm run e2e`
+- [ ] (이월) private-data 로컬 커밋 push (`cd private-data && git push`)
+
+### 남은 것
+- 대용량 실영상 리스크: 영상 전체를 메모리로 받는 구조 → 1GB급 폰 영상은 Vercel 메모리·`/tmp`(512MB) 한도 위험 (스트리밍 다운로드·클라이언트 오디오 추출 검토)
+- STT 단계 실측·예상 시간 계수 보정, `enrich` 스트리밍 전환 여부(현재 15~18초라 불필요), `middleware`→`proxy` 전환
+- Phase 3 나머지: 샘플 체험 동선, 모바일·PWA·Lighthouse, CI, 약관·계정 삭제, README
