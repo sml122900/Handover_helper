@@ -4,7 +4,9 @@ import { createClient } from "@/lib/supabase/server";
 import { VideoUploader } from "./VideoUploader";
 import { ScreenRecorder } from "./ScreenRecorder";
 import { VideoStatusPoller } from "./VideoStatusPoller";
+import { VideoProgress } from "./VideoProgress";
 import { retryVideo } from "./upload-actions";
+import { selectVideoStatuses } from "@/lib/pipeline/video-status";
 
 export const dynamic = "force-dynamic";
 
@@ -34,12 +36,8 @@ export default async function ProjectDetailPage(props: { params: Promise<{ id: s
     .single();
   if (!project) notFound();
 
-  const [{ data: videos }, { data: documents }] = await Promise.all([
-    supabase
-      .from("videos")
-      .select("id, status, duration_seconds, error_message, created_at")
-      .eq("project_id", id)
-      .order("created_at", { ascending: false }),
+  const [videos, { data: documents }] = await Promise.all([
+    selectVideoStatuses(supabase, id), // stage 컬럼(0009) 없으면 status만
     supabase
       .from("documents")
       .select("id, prompt_version, created_at")
@@ -49,7 +47,11 @@ export default async function ProjectDetailPage(props: { params: Promise<{ id: s
 
   return (
     <main className="mx-auto max-w-2xl px-6 py-10">
-      <VideoStatusPoller projectId={id} statuses={(videos ?? []).map((v) => v.status)} />
+      <VideoStatusPoller
+        projectId={id}
+        snapshot={videos.map((v) => `${v.id}:${v.status}:${v.stage ?? ""}:${v.error_message ?? ""}`).join("|")}
+        hasPending={videos.some((v) => PROCESSING.has(v.status))}
+      />
       <Link href="/projects" className="text-sm text-[var(--text-sub)] hover:text-[var(--text)]">
         ← 프로젝트 목록
       </Link>
@@ -74,7 +76,7 @@ export default async function ProjectDetailPage(props: { params: Promise<{ id: s
           <VideoUploader projectId={id} />
         </div>
         <ul className="mt-3 flex flex-col gap-2">
-          {(videos ?? []).map((v) => (
+          {videos.map((v) => (
             <li
               key={v.id}
               className="rounded-lg border border-[var(--card-border)] bg-[var(--card)] px-4 py-3 text-sm"
@@ -90,6 +92,14 @@ export default async function ProjectDetailPage(props: { params: Promise<{ id: s
                   {STATUS_LABEL[v.status] ?? v.status}
                 </span>
               </div>
+              {v.status !== "done" && (
+                <VideoProgress
+                  status={v.status}
+                  stage={v.stage}
+                  durationSeconds={v.duration_seconds}
+                  isText={v.storage_path.endsWith(".txt") || v.storage_path.endsWith(".md")}
+                />
+              )}
               {v.status === "failed" && (
                 <div className="mt-2 flex flex-wrap items-center gap-3">
                   {v.error_message && (
