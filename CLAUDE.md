@@ -165,7 +165,7 @@ Phase 0 + Phase 1 + Phase 2(결제·cron·랜딩·UI 다듬기) 완료. Phase 3 
 - 보강 질문 (enrich-v2): 업무 유형 추론 기반 누락 감지. 5~7개
 - ffmpeg: serverExternalPackages로 번들 제외 완료. 33MB 영상 mp3 추출 확인
 - STT: GROQ_API_KEY + HANDOVER_STT=groq → Groq Whisper 자동 선택
-- sample-01 합산 **최종 (README 인용 수치, 2026-09-28 세션 3-A⑤)**: 누락 2.4% (1/42), critical 0, 환각 0. 이전 7.0%·0.0%는 채점 결함(정답 부재 서술·심판 스키마 순서) 포함 수치 → docs/eval-methodology-notes.md #2·#3
+- sample-01 합산 **최종 (README 인용 수치, 동결·재현 2회, 2026-09-29)**: 누락 0.0~2.4% (0~1/42), critical 0, 환각 0. 이전 7.0%·0.0%는 채점 결함(정답 부재 서술·심판 스키마 순서) 포함 수치 → docs/eval-methodology-notes.md #2·#3
 - structure-v2 nullable 필드 규칙 추가 → importance 환각 방지
 - 배포 전 UI 다듬기: empty state·에러 한국어화·retry 버튼·로딩 애니·테마·모바일 완료
 - Phase 2-2: 영상 30일 자동 삭제 cron (vercel.json + /api/cron/cleanup-videos). CRON_SECRET 설정 필요
