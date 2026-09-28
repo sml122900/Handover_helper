@@ -10,6 +10,8 @@ const VALID = {
   NEXT_PUBLIC_TOSS_CLIENT_KEY: "test_ck",
   TOSS_SECRET_KEY: "test_sk",
   GROQ_API_KEY: "gsk",
+  INNGEST_EVENT_KEY: "evt",
+  INNGEST_SIGNING_KEY: "signkey-prod-x",
 };
 
 describe("findEnvProblems", () => {
@@ -26,6 +28,13 @@ describe("findEnvProblems", () => {
     const noStt = { ...VALID, GROQ_API_KEY: undefined };
     expect(findEnvProblems(noStt).length).toBe(1);
     expect(findEnvProblems({ ...noStt, HANDOVER_STT: "mock" })).toEqual([]);
+  });
+
+  it("큐 기본값(inngest)은 Inngest 키 필요, HANDOVER_QUEUE=inline이면 불필요", () => {
+    const noInngest = { ...VALID, INNGEST_EVENT_KEY: undefined, INNGEST_SIGNING_KEY: undefined };
+    expect(findEnvProblems(noInngest).some((p) => p.startsWith("INNGEST_EVENT_KEY"))).toBe(true);
+    expect(findEnvProblems({ ...noInngest, HANDOVER_QUEUE: "inline" })).toEqual([]);
+    expect(findEnvProblems({ ...VALID, HANDOVER_QUEUE: "sqs" }).length).toBe(1);
   });
 
   it("잘못된 URL·짧은 CRON_SECRET", () => {

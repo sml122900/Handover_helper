@@ -117,6 +117,13 @@ describe.skipIf(!enabled)("RLS: 다른 사용자 데이터 접근 차단", () =>
     expect(data).toEqual({ storage_path: videoPath, status: "done" });
   });
 
+  it("A는 videos.stage를 수정할 수 없다 (0009 — 파이프라인 전용 컬럼)", async () => {
+    await a.from("videos").update({ stage: "enriching" }).eq("id", ids.video);
+    const { data, error } = await admin.from("videos").select("stage").eq("id", ids.video).single();
+    expect(error, "0009_video_stage.sql 적용 필요").toBeNull();
+    expect(data?.stage).toBeNull();
+  });
+
   it("A는 keyframes·transcripts·videos를 직접 insert할 수 없다", async () => {
     const kf = await a.from("keyframes").insert({ video_id: ids.video, timestamp_seconds: 2, image_path: "victim/x.jpg" });
     const tr = await a.from("transcripts").insert({ video_id: ids.video, segments: [] });

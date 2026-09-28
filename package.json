@@ -17,7 +17,8 @@
     "start": "next start",
     "test": "vitest run",
     "lint": "eslint .",
-    "test:rls": "node --env-file=.env node_modules/vitest/vitest.mjs run tests/rls.integration.test.ts"
+    "test:rls": "node --env-file=.env node_modules/vitest/vitest.mjs run tests/rls.integration.test.ts",
+    "test:integration": "node --env-file=.env node_modules/vitest/vitest.mjs run tests/rls.integration.test.ts tests/pipeline-start.integration.test.ts"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.0",
@@ -34,6 +35,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.103.0",
+    "@sentry/nextjs": "^11.1.0",
     "@supabase/ssr": "^0.12.0",
     "@supabase/supabase-js": "^2.108.1",
     "@tiptap/extension-highlight": "^3.31.3",
@@ -41,8 +43,10 @@
     "@tiptap/react": "^3.31.3",
     "@tiptap/starter-kit": "^3.31.3",
     "@tosspayments/payment-sdk": "^1.9.3",
+    "@vercel/analytics": "^2.0.1",
     "docx": "^9.7.1",
     "ffmpeg-static": "^5.3.0",
+    "inngest": "^4.21.0",
     "next": "^16.3.6",
     "next-themes": "^0.4.6",
     "react": "^19.2.7",

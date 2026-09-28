@@ -16,7 +16,7 @@ import { getSttProvider } from "../stt";
 
 const execFileAsync = promisify(execFile);
 
-const CHUNK_DURATION_SECONDS = 600; // 10분
+export const CHUNK_DURATION_SECONDS = 600; // 10분
 const STT_MAX_BYTES = 25 * 1024 * 1024; // 25MB (Whisper 한도)
 
 async function ffmpegPath(): Promise<string> {
@@ -28,7 +28,7 @@ async function ffmpegPath(): Promise<string> {
 }
 
 /** 영상/오디오 Buffer → mp3 Buffer (ffmpeg) */
-async function extractAudio(inputData: Buffer, inputExt: string): Promise<Buffer> {
+export async function extractAudio(inputData: Buffer, inputExt: string): Promise<Buffer> {
   const dir = await mkdtemp(join(tmpdir(), "handover-audio-"));
   try {
     const inputPath = join(dir, `input.${inputExt}`);
@@ -49,7 +49,7 @@ async function extractAudio(inputData: Buffer, inputExt: string): Promise<Buffer
 }
 
 /** mp3 Buffer를 N초 단위 청크로 분할. 각 청크의 시작 offset(초)도 반환 */
-async function splitAudio(
+export async function splitAudio(
   audioData: Buffer,
   chunkSeconds: number
 ): Promise<Array<{ data: Buffer; offsetSeconds: number }>> {
@@ -90,7 +90,7 @@ async function splitAudio(
 }
 
 /** STT 결과 세그먼트에 offset(초)를 더해 타임스탬프 보정 */
-function applyOffset(segments: TranscriptSegment[], offsetSeconds: number): TranscriptSegment[] {
+export function applyOffset(segments: TranscriptSegment[], offsetSeconds: number): TranscriptSegment[] {
   if (offsetSeconds === 0) return segments;
   return segments.map((s) => ({
     ...s,
