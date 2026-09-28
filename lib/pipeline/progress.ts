@@ -13,12 +13,14 @@ export const STEP_LABELS: Record<StepKey, string> = {
 
 const ORDER: StepKey[] = ["upload", "stt", "structure", "enrich"];
 
-// 단계별 예상 시간 (초) — 세션 3-A② 로컬 실측 기준 추정치 (PROGRESS.md 실측 표). 영상 길이 비례 + 고정분
+// 단계별 예상 시간 (초) — 세션 3-A② 로컬 실측(PROGRESS.md 표) 기준. 영상 길이 비례 + 고정분
+// 실측: 30분 영상 오디오 추출 7.4초·키프레임 6.9초, 구조화 93~95초, 보강 질문 15~18초
+// STT는 미실측(Groq 키 무효) — 영상 1초당 0.05초(30분 ≈ 90초)로 보수적 가정, 실측 후 조정
 export const ESTIMATE = {
-  sttPerVideoSecond: 0.06, // 오디오 추출 + 청크 STT + 키프레임
+  sttPerVideoSecond: 0.06, // 오디오 추출·키프레임(≈0.008) + STT 가정치(0.05)
   sttFixed: 20,
   structure: 100,
-  enrich: 25,
+  enrich: 20,
 };
 
 export interface ProgressInput {
