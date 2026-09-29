@@ -922,3 +922,4 @@ npm run dev
 - 테스트: `vitest.config.ts`에서 `TZ=UTC` 고정 + `tests/format-date.test.ts` (UTC 15:30→KST 다음날 00:30, 날짜 경계 등)
 - cron(30일 삭제) 확인: 기준 시각이 `Date.now() - 30일`(epoch ms)→`toISOString()`(UTC)이고 스토리지 파일도 epoch ms 비교 → 시간대 영향 없음. 수정 불필요. (vercel.json 스케줄은 UTC 기준 — "매일 자정"은 KST 09:00 실행. 무영향이나 참고)
 - 녹화 이탈 경고: `ScreenRecorder`에 업로드 중·녹화본 보존 중 `beforeunload` 경고 추가. 문구는 브라우저 기본(커스텀 불가). 녹화 중(recording)은 미포함 — 요청 범위 밖
+- 녹화 이탈 경고 확장: 녹화 중·일시정지 포함(`shouldGuardUnload` 순수 함수, vitest 5개). 이제 idle(보존 없음)만 경고 없음

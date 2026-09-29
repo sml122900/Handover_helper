@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { prepareUpload, completeUpload } from "./upload-actions";
 import { uploadWithProgress } from "@/lib/upload-client";
 import { oversizeMessage } from "@/lib/upload-validate";
-import { AUDIO_BITS_PER_SECOND, VIDEO_BITS_PER_SECOND, evaluateRecording } from "@/lib/recording-limits";
+import { AUDIO_BITS_PER_SECOND, VIDEO_BITS_PER_SECOND, evaluateRecording, shouldGuardUnload } from "@/lib/recording-limits";
 
 type Phase = "idle" | "recording" | "paused" | "uploading";
 
@@ -41,8 +41,8 @@ export function ScreenRecorder({ projectId }: { projectId: string }) {
     return () => clearInterval(timer);
   }, [phase]);
 
-  // 업로드 중이거나 녹화본이 보존 중일 때 탭 닫기·새로고침 경고 (메모리의 녹화본 유실 방지)
-  const guardUnload = phase === "uploading" || savedBlob !== null;
+  // 녹화 중·일시정지·업로드 중·녹화본 보존 중 탭 닫기·새로고침 경고 (메모리의 녹화본 유실 방지)
+  const guardUnload = shouldGuardUnload(phase, savedBlob !== null);
   useEffect(() => {
     if (!guardUnload) return;
     const handler = (e: BeforeUnloadEvent) => {

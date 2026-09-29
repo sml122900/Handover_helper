@@ -20,3 +20,8 @@ export function evaluateRecording(totalBytes: number, limit = MAX_UPLOAD_BYTES):
   if (totalBytes >= limit * WARN_RATIO) return "warn";
   return "ok";
 }
+
+/** 탭 닫기·새로고침 시 녹화본(메모리)이 사라지는 상태인지 — beforeunload 경고 대상 판단 */
+export function shouldGuardUnload(phase: "idle" | "recording" | "paused" | "uploading", hasSavedBlob: boolean): boolean {
+  return phase !== "idle" || hasSavedBlob;
+}

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { estimateBytes, evaluateRecording } from "../lib/recording-limits";
+import { estimateBytes, evaluateRecording, shouldGuardUnload } from "../lib/recording-limits";
 import { MAX_UPLOAD_BYTES } from "../lib/upload-validate";
 
 describe("estimateBytes", () => {
@@ -29,5 +29,17 @@ describe("evaluateRecording", () => {
     expect(evaluateRecording(MAX_UPLOAD_BYTES * 0.5)).toBe("ok");
     expect(evaluateRecording(MAX_UPLOAD_BYTES * 0.85)).toBe("warn");
     expect(evaluateRecording(MAX_UPLOAD_BYTES * 0.96)).toBe("stop");
+  });
+});
+
+describe("shouldGuardUnload", () => {
+  it.each([
+    ["recording", false, true],
+    ["paused", false, true],
+    ["uploading", false, true],
+    ["idle", true, true], // 업로드 실패 후 보존 중
+    ["idle", false, false],
+  ] as const)("phase=%s 보존=%s → %s", (phase, saved, expected) => {
+    expect(shouldGuardUnload(phase, saved)).toBe(expected);
   });
 });
