@@ -1,0 +1,281 @@
+{
+  "_note": "가상 데이터 — corpus-spec.md 일정표를 도구(get_current_tasks)용으로 변환. 모든 매장·인물은 가상.",
+  "stores": [
+    {
+      "store_id": "s1",
+      "store_name": "달빛커피 — 카페 마감조",
+      "virtual": true,
+      "timezone": "Asia/Seoul",
+      "work_start": "17:00",
+      "work_end": "22:30",
+      "overnight": false,
+      "close": "22:00",
+      "items": [
+        {
+          "time": "17:00",
+          "text": "출근",
+          "step_ids": []
+        },
+        {
+          "time": "21:30",
+          "text": "라스트오더·케이크 폐기·머신 청소 시작",
+          "step_ids": [
+            "s1.cake_waste",
+            "s1.machine_clean"
+          ]
+        },
+        {
+          "time": "22:00",
+          "text": "음악·간판 끄기·마감 정산",
+          "step_ids": [
+            "s1.lights_off",
+            "s1.closing_settle"
+          ]
+        },
+        {
+          "time": "22:25",
+          "text": "경비 설정 후 퇴근",
+          "step_ids": [
+            "s1.security_arm"
+          ]
+        },
+        {
+          "time": null,
+          "text": "마감 시 제빙기 세척",
+          "step_ids": [
+            "s1.ice_machine_clean"
+          ],
+          "weekdays": [
+            "mon"
+          ],
+          "when": "closing"
+        }
+      ]
+    },
+    {
+      "store_id": "s2",
+      "store_name": "보리밭제과 — 베이커리 마감",
+      "virtual": true,
+      "timezone": "Asia/Seoul",
+      "work_start": "15:00",
+      "work_end": "21:30",
+      "overnight": false,
+      "close": "21:00",
+      "items": [
+        {
+          "time": "20:30",
+          "text": "생크림 할인 스티커",
+          "step_ids": [
+            "s2.discount_sticker"
+          ]
+        },
+        {
+          "time": "21:00",
+          "text": "영업 종료·폐기 분류·폐기 등록",
+          "step_ids": [
+            "s2.waste_sort"
+          ]
+        },
+        {
+          "time": "21:00",
+          "text": "오븐 식히기 시작(20분)",
+          "step_ids": [
+            "s2.oven_cooldown"
+          ],
+          "duration_min": 20
+        },
+        {
+          "time": "21:10",
+          "text": "문 잠금·셔터",
+          "step_ids": [
+            "s2.lock_shutter"
+          ]
+        },
+        {
+          "time": "21:15",
+          "text": "트레이 세척·집게 소독",
+          "step_ids": [
+            "s2.tray_wash"
+          ]
+        },
+        {
+          "time": "21:25",
+          "text": "정산",
+          "step_ids": [
+            "s2.settle"
+          ]
+        }
+      ]
+    },
+    {
+      "store_id": "s3",
+      "store_name": "한빛마트24 — 편의점 야간",
+      "virtual": true,
+      "timezone": "Asia/Seoul",
+      "work_start": "22:00",
+      "work_end": "08:00",
+      "overnight": true,
+      "items": [
+        {
+          "time": "22:00",
+          "text": "교대 시재 점검",
+          "step_ids": [
+            "s3.shift_cash_check"
+          ]
+        },
+        {
+          "time": "00:00",
+          "text": "폐기 점검",
+          "step_ids": [
+            "s3.waste_check_00"
+          ]
+        },
+        {
+          "time": "02:00",
+          "text": "음료 입고·검수",
+          "step_ids": [
+            "s3.drink_stock"
+          ]
+        },
+        {
+          "time": "03:00",
+          "text": "폐기 점검",
+          "step_ids": [
+            "s3.waste_check_03"
+          ]
+        },
+        {
+          "time": "05:00",
+          "text": "청소·화장실",
+          "step_ids": [
+            "s3.cleaning"
+          ]
+        },
+        {
+          "time": "05:20",
+          "text": "택배 보관함 정리",
+          "step_ids": [
+            "s3.parcel_prep"
+          ]
+        },
+        {
+          "time": "06:00",
+          "text": "폐기 점검",
+          "step_ids": [
+            "s3.waste_check_06"
+          ]
+        },
+        {
+          "time": "07:50",
+          "text": "근무일지·교대 시재 점검",
+          "step_ids": [
+            "s3.work_log",
+            "s3.shift_cash_check"
+          ]
+        }
+      ]
+    },
+    {
+      "store_id": "s4",
+      "store_name": "오름피트니스 — 헬스장 오픈",
+      "virtual": true,
+      "timezone": "Asia/Seoul",
+      "work_start": "05:40",
+      "work_end": "12:00",
+      "overnight": false,
+      "open": "06:00",
+      "items": [
+        {
+          "time": "05:40",
+          "text": "출근·셔터·배전반",
+          "step_ids": [
+            "s4.open_power"
+          ]
+        },
+        {
+          "time": "05:50",
+          "text": "냉난방",
+          "step_ids": [
+            "s4.hvac"
+          ]
+        },
+        {
+          "time": "06:00",
+          "text": "오픈",
+          "step_ids": []
+        },
+        {
+          "time": "06:30",
+          "text": "음료 냉장고",
+          "step_ids": [
+            "s4.drink_fridge"
+          ]
+        },
+        {
+          "time": "07:00",
+          "text": "수건 입고·서명",
+          "step_ids": [
+            "s4.towel_receive"
+          ]
+        },
+        {
+          "time": "11:30",
+          "text": "분실물함 정리(7일 경과분 폐기)",
+          "step_ids": [
+            "s4.lost_found"
+          ]
+        }
+      ]
+    },
+    {
+      "store_id": "s5",
+      "store_name": "동남물류 3센터 — 상하차 야간",
+      "virtual": true,
+      "timezone": "Asia/Seoul",
+      "work_start": "20:00",
+      "work_end": "05:00",
+      "overnight": true,
+      "items": [
+        {
+          "time": "20:00",
+          "text": "출근·안전장비 확인",
+          "step_ids": [
+            "s5.safety_gear"
+          ]
+        },
+        {
+          "time": "20:10",
+          "text": "상차 시작",
+          "step_ids": []
+        },
+        {
+          "time": "23:30",
+          "text": "식사",
+          "step_ids": [
+            "s5.meal_break"
+          ]
+        },
+        {
+          "time": "00:00",
+          "text": "작업 재개",
+          "step_ids": []
+        },
+        {
+          "time": "03:00",
+          "text": "휴식 10분",
+          "step_ids": [
+            "s5.rest_break"
+          ],
+          "duration_min": 10
+        },
+        {
+          "time": "04:50",
+          "text": "스캐너 반납",
+          "step_ids": [
+            "s5.scanner_return"
+          ]
+        }
+      ]
+    }
+  ]
+}

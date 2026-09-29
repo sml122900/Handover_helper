@@ -1,0 +1,345 @@
+{
+  "virtual": true,
+  "store_id": "s1",
+  "store_name": "달빛커피 (카페 마감조)",
+  "document": {
+    "overview": {
+      "summary": "달빛커피 마감조 업무 인수인계. 오후 5시 출근, 밤 10시 30분 퇴근. 9시 30분 주문 마감 후 케이크 폐기·머신 청소·정산·경비 설정 순으로 마감을 진행한다.",
+      "cycle": "매일 (월요일 추가 업무 있음)",
+      "importance": null,
+      "sourceTimestamp": {
+        "start": 0,
+        "end": 32
+      },
+      "confidence": "high"
+    },
+    "procedures": [
+      {
+        "step": 1,
+        "title": "주문 마감 선언 (21:30)",
+        "details": "오후 9시 30분에 마지막 주문을 받는다. 이후 신규 주문은 받지 않고 정리 모드로 전환한다.",
+        "inferred": false,
+        "sourceTimestamp": {
+          "start": 70,
+          "end": 112
+        },
+        "confidence": "high"
+      },
+      {
+        "step": 2,
+        "title": "케이크 폐기 및 폐기 대장 기록",
+        "details": "쇼케이스에 남은 케이크를 전부 폐기한다(당일 미판매분 전량). 폐기 대장에 품목명과 수량을 기록한다.",
+        "inferred": false,
+        "sourceTimestamp": {
+          "start": 112,
+          "end": 215
+        },
+        "confidence": "high"
+      },
+      {
+        "step": 3,
+        "title": "에스프레소 머신 청소 (백플러시)",
+        "details": "머신 전용 세제를 한 스푼 넣고 백플러시를 5회 반복한다. 반드시 5회를 모두 완료해야 한다.",
+        "inferred": false,
+        "sourceTimestamp": {
+          "start": 195,
+          "end": 248
+        },
+        "confidence": "high"
+      },
+      {
+        "step": 4,
+        "title": "우유 유통기한 확인 및 폐기",
+        "details": "개봉된 우유 뚜껑에 적힌 개봉 시각을 확인하여, 개봉 후 24시간이 경과한 우유는 폐기한다.",
+        "inferred": false,
+        "sourceTimestamp": {
+          "start": 248,
+          "end": 292
+        },
+        "confidence": "high"
+      },
+      {
+        "step": 5,
+        "title": "음악·간판 소등 (22:00)",
+        "details": "열 시 정각에 매장 음악을 끄고 간판 불을 끈다. 이를 신호로 손님들이 퇴장한다.",
+        "inferred": false,
+        "sourceTimestamp": {
+          "start": 292,
+          "end": 335
+        },
+        "confidence": "high"
+      },
+      {
+        "step": 6,
+        "title": "마감 정산",
+        "details": "포스기의 '마감정산' 버튼을 누르고 화면 안내에 따라 진행한다. 현금은 금고 안의 흰 봉투에 넣는다. 계산 금액과 실제 현금의 차액이 1,000원 이상이면 매장 단톡방에 차액 금액을 숫자로 올린다.",
+        "inferred": false,
+        "sourceTimestamp": {
+          "start": 335,
+          "end": 388
+        },
+        "confidence": "high"
+      },
+      {
+        "step": 7,
+        "title": "쓰레기 분리 배출",
+        "details": "일반 쓰레기는 건물 뒤 수거함에 버린다. 커피 찌꺼기는 별도 봉투에 담아 입구 화분 옆 통에 놓는다. 두 가지를 반드시 분리한다.",
+        "inferred": false,
+        "sourceTimestamp": {
+          "start": 388,
+          "end": 430
+        },
+        "confidence": "high"
+      },
+      {
+        "step": 8,
+        "title": "제빙기 세척 (월요일 마감 한정)",
+        "details": "매주 월요일 마감 시에만 제빙기 안쪽을 세척한다. 다른 요일에는 시행하지 않는다.",
+        "inferred": false,
+        "sourceTimestamp": {
+          "start": 430,
+          "end": 468
+        },
+        "confidence": "high"
+      },
+      {
+        "step": 9,
+        "title": "보안 경비 설정 후 퇴근",
+        "details": "마지막으로 퇴근하는 사람이 출입구 옆 단말기에 카드키를 태그하여 보안 경비를 설정한다. 태그 후 30초 이내에 매장 밖으로 나가야 하므로 서두른다.",
+        "inferred": false,
+        "sourceTimestamp": {
+          "start": 468,
+          "end": 520
+        },
+        "confidence": "high"
+      }
+    ],
+    "equipment": [
+      {
+        "name": "에스프레소 머신 전용 세제",
+        "location": null,
+        "notes": "백플러시 시 한 스푼 사용",
+        "sourceTimestamp": {
+          "start": 195,
+          "end": 248
+        },
+        "confidence": "high"
+      },
+      {
+        "name": "폐기 대장",
+        "location": "매장 내 (카운터 인근 추정)",
+        "notes": "케이크 등 폐기 품목명과 수량 기록용",
+        "sourceTimestamp": {
+          "start": 155,
+          "end": 195
+        },
+        "confidence": "needs_review"
+      },
+      {
+        "name": "포스기",
+        "location": null,
+        "notes": "마감정산 버튼으로 정산 진행",
+        "sourceTimestamp": {
+          "start": 335,
+          "end": 388
+        },
+        "confidence": "high"
+      },
+      {
+        "name": "금고 (흰 봉투)",
+        "location": null,
+        "notes": "마감 현금 보관용 흰 봉투가 금고 안에 있음",
+        "sourceTimestamp": {
+          "start": 335,
+          "end": 388
+        },
+        "confidence": "high"
+      },
+      {
+        "name": "일반 쓰레기 수거함",
+        "location": "건물 뒤",
+        "notes": null,
+        "sourceTimestamp": {
+          "start": 388,
+          "end": 430
+        },
+        "confidence": "high"
+      },
+      {
+        "name": "커피 찌꺼기 전용 통",
+        "location": "매장 입구 화분 옆",
+        "notes": "별도 봉투에 담아 보관",
+        "sourceTimestamp": {
+          "start": 388,
+          "end": 430
+        },
+        "confidence": "high"
+      },
+      {
+        "name": "제빙기",
+        "location": null,
+        "notes": "월요일 마감 시 내부 세척",
+        "sourceTimestamp": {
+          "start": 430,
+          "end": 468
+        },
+        "confidence": "high"
+      },
+      {
+        "name": "보안 경비 단말기 (카드키 태그)",
+        "location": "출입구 옆",
+        "notes": "태그 후 30초 이내 퇴장 필요",
+        "sourceTimestamp": {
+          "start": 468,
+          "end": 520
+        },
+        "confidence": "high"
+      },
+      {
+        "name": "쇼케이스",
+        "location": null,
+        "notes": "케이크 진열 및 9시 30분 폐기 대상 확인 장소",
+        "sourceTimestamp": {
+          "start": 112,
+          "end": 155
+        },
+        "confidence": "high"
+      }
+    ],
+    "routines": [
+      {
+        "title": "마감조 근무 시간",
+        "when": "매일 17:00 출근 ~ 22:30 퇴근 (영업 종료 22:00)",
+        "details": null,
+        "sourceTimestamp": {
+          "start": 32,
+          "end": 70
+        },
+        "confidence": "high"
+      },
+      {
+        "title": "주문 마감",
+        "when": "매일 21:30",
+        "details": "이후 신규 주문 불가, 정리 모드 전환",
+        "sourceTimestamp": {
+          "start": 70,
+          "end": 112
+        },
+        "confidence": "high"
+      },
+      {
+        "title": "음악·간판 소등",
+        "when": "매일 22:00 정각",
+        "details": null,
+        "sourceTimestamp": {
+          "start": 292,
+          "end": 335
+        },
+        "confidence": "high"
+      },
+      {
+        "title": "제빙기 내부 세척",
+        "when": "매주 월요일 마감 시",
+        "details": "월요일 마감 때만 시행",
+        "sourceTimestamp": {
+          "start": 430,
+          "end": 468
+        },
+        "confidence": "high"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "(미확인)",
+        "role": "매장 단톡방 구성원 전체",
+        "contact": "매장 단톡방",
+        "relationship": "정산 차액 발생 시 보고 대상",
+        "sourceTimestamp": {
+          "start": 335,
+          "end": 388
+        },
+        "confidence": "high"
+      }
+    ],
+    "exceptions": [
+      {
+        "situation": "정산 시 계산 금액과 실제 현금 차액이 1,000원 이상일 때",
+        "tip": "매장 단톡방에 차액 금액을 숫자로 올린다.",
+        "sourceTimestamp": {
+          "start": 335,
+          "end": 388
+        },
+        "confidence": "high"
+      },
+      {
+        "situation": "개봉 후 24시간이 지난 우유가 있을 때",
+        "tip": "아깝더라도 반드시 폐기한다. 뚜껑에 적힌 개봉 시각으로 확인한다.",
+        "sourceTimestamp": {
+          "start": 248,
+          "end": 292
+        },
+        "confidence": "high"
+      },
+      {
+        "situation": "비 오는 날 마감",
+        "tip": "손님이 뜸해 마감 준비가 수월하다.",
+        "sourceTimestamp": {
+          "start": 112,
+          "end": 155
+        },
+        "confidence": "high"
+      },
+      {
+        "situation": "마감 순서가 헷갈릴 때",
+        "tip": "순서를 종이에 적어 카운터 옆에 붙여 두면 도움이 된다.",
+        "sourceTimestamp": {
+          "start": 555,
+          "end": 580
+        },
+        "confidence": "high"
+      }
+    ],
+    "cautions": [
+      {
+        "content": "케이크는 당일 입고분만 판매한다. 당일 미판매 케이크는 전량 폐기하며 절대 이월 판매하지 않는다.",
+        "sourceTimestamp": {
+          "start": 112,
+          "end": 155
+        },
+        "confidence": "high"
+      },
+      {
+        "content": "커피 찌꺼기를 일반 쓰레기와 혼합 배출하지 않는다. 반드시 별도 봉투에 담아 화분 옆 전용 통에 놓는다.",
+        "sourceTimestamp": {
+          "start": 388,
+          "end": 430
+        },
+        "confidence": "high"
+      },
+      {
+        "content": "보안 경비 설정 후 30초 이내에 퇴장해야 한다. 태그 전에 짐과 동선을 미리 준비한다.",
+        "sourceTimestamp": {
+          "start": 468,
+          "end": 520
+        },
+        "confidence": "high"
+      },
+      {
+        "content": "에스프레소 머신 백플러시는 반드시 5회 완료해야 한다. 도중에 끝내면 안 된다.",
+        "sourceTimestamp": {
+          "start": 195,
+          "end": 248
+        },
+        "confidence": "high"
+      }
+    ],
+    "openItems": []
+  },
+  "meta": {
+    "model": "claude-sonnet-4-6",
+    "promptVersion": "structure-v2",
+    "inputTokens": 6257,
+    "outputTokens": 2674,
+    "attempts": 1
+  }
+}

@@ -1,0 +1,3 @@
+# 가상 코퍼스: fact-spans의 char 오프셋이 줄바꿈에 흔들리지 않도록 LF 고정
+data/virtual/* text eol=lf
+eval/*.json text eol=lf

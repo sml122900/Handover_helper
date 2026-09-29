@@ -1,0 +1,237 @@
+{
+  "virtual": true,
+  "store_id": "s4",
+  "store_name": "오름피트니스 (헬스장 오픈)",
+  "document": {
+    "overview": {
+      "summary": "오름피트니스 오픈 근무(05:40~12:00) 담당자를 위한 인수인계 문서. 셔터 개방부터 냉난방 가동, 문 오픈, 음료 냉장고 보충, 수건 납품 확인, 분실물 정리 등 오전 루틴 전반을 다룬다.",
+      "cycle": "매일 반복",
+      "importance": null,
+      "sourceTimestamp": {
+        "start": 0,
+        "end": 35
+      },
+      "confidence": "high"
+    },
+    "procedures": [
+      {
+        "step": 1,
+        "title": "출근 및 셔터 개방",
+        "details": "05:40에 출근하여 제일 먼저 셔터를 올린다.",
+        "inferred": false,
+        "sourceTimestamp": {
+          "start": 35,
+          "end": 70
+        },
+        "confidence": "high"
+      },
+      {
+        "step": 2,
+        "title": "배전반 스위치 전체 가동",
+        "details": "셔터를 올리고 안으로 들어와 프런트 뒤 배전반에서 스위치 1번~6번을 모두 켠다.",
+        "inferred": false,
+        "sourceTimestamp": {
+          "start": 70,
+          "end": 118
+        },
+        "confidence": "high"
+      },
+      {
+        "step": 3,
+        "title": "냉난방 가동 (06:00 이전)",
+        "details": "회원 입장 전인 06:00 전에 냉난방을 켠다. 여름철 설정 온도는 24도.",
+        "inferred": false,
+        "sourceTimestamp": {
+          "start": 118,
+          "end": 155
+        },
+        "confidence": "high"
+      },
+      {
+        "step": 4,
+        "title": "06:00 오픈 — 문 개방",
+        "details": "06:00에 출입문을 열어 회원이 입장할 수 있도록 한다.",
+        "inferred": false,
+        "sourceTimestamp": {
+          "start": 155,
+          "end": 190
+        },
+        "confidence": "high"
+      },
+      {
+        "step": 5,
+        "title": "음료 냉장고 보충 및 유통기한 확인 (06:30경)",
+        "details": "오픈 후 음료 냉장고에 음료를 채워 넣는다. 유통기한이 지난 음료는 발견 즉시 폐기한다.",
+        "inferred": false,
+        "sourceTimestamp": {
+          "start": 190,
+          "end": 235
+        },
+        "confidence": "high"
+      },
+      {
+        "step": 6,
+        "title": "07:00 수건 납품 수령 및 서명",
+        "details": "07:00에 세탁업체가 수건을 납품한다. 수량을 직접 세어 확인한 후 납품서에 서명한다. 순서: 수량 확인 → 서명.",
+        "inferred": false,
+        "sourceTimestamp": {
+          "start": 235,
+          "end": 280
+        },
+        "confidence": "high"
+      },
+      {
+        "step": 7,
+        "title": "11:30경 분실물함 정리",
+        "details": "11:30경 분실물함을 열어 보관 날짜가 7일이 지난 물건을 폐기한다. 날짜가 기재되어 있으므로 이를 기준으로 판단한다.",
+        "inferred": false,
+        "sourceTimestamp": {
+          "start": 415,
+          "end": 455
+        },
+        "confidence": "high"
+      }
+    ],
+    "equipment": [
+      {
+        "name": "배전반",
+        "location": "프런트 뒤",
+        "notes": "스위치 1번~6번 전체 가동",
+        "sourceTimestamp": {
+          "start": 70,
+          "end": 118
+        },
+        "confidence": "high"
+      },
+      {
+        "name": "음료 냉장고",
+        "location": null,
+        "notes": "오픈 후 음료 보충, 유통기한 지난 음료 폐기",
+        "sourceTimestamp": {
+          "start": 190,
+          "end": 235
+        },
+        "confidence": "high"
+      },
+      {
+        "name": "분실물함",
+        "location": "프런트",
+        "notes": "락커에서 나온 분실물 보관. 보관 시 날짜 기재 필수, 7일 후 폐기",
+        "sourceTimestamp": {
+          "start": 370,
+          "end": 415
+        },
+        "confidence": "high"
+      },
+      {
+        "name": "점검중 팻말",
+        "location": null,
+        "notes": "기구 이상 발견 시 해당 기구에 걸어 두는 팻말",
+        "sourceTimestamp": {
+          "start": 280,
+          "end": 330
+        },
+        "confidence": "high"
+      }
+    ],
+    "routines": [
+      {
+        "title": "오픈 근무 전체 루틴",
+        "when": "매일 05:40~12:00",
+        "details": "05:40 출근 → 셔터 개방 → 배전반 1~6번 가동 → 05:50경 냉난방 가동(24도) → 06:00 문 오픈 → 06:30경 음료 냉장고 보충·유통기한 확인 → 07:00 수건 수량 확인 및 납품서 서명 → 11:30경 분실물함 정리(7일 경과 물건 폐기)",
+        "sourceTimestamp": {
+          "start": 455,
+          "end": 500
+        },
+        "confidence": "high"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "직원 단톡방",
+        "role": "기구 이상 보고 채널",
+        "contact": null,
+        "relationship": "기구 점검 사진 공유 대상",
+        "sourceTimestamp": {
+          "start": 280,
+          "end": 330
+        },
+        "confidence": "high"
+      },
+      {
+        "name": "세탁업체",
+        "role": "수건 납품업체",
+        "contact": null,
+        "relationship": "매일 07:00 수건 납품",
+        "sourceTimestamp": {
+          "start": 235,
+          "end": 280
+        },
+        "confidence": "high"
+      }
+    ],
+    "exceptions": [
+      {
+        "situation": "운동 기구에 이상이 발견된 경우",
+        "tip": "해당 기구에 '점검중' 팻말을 건다 → 사진을 찍는다 → 직원 단톡방에 사진을 올린다. 이 세 단계를 반드시 순서대로 진행한다.",
+        "sourceTimestamp": {
+          "start": 280,
+          "end": 330
+        },
+        "confidence": "high"
+      },
+      {
+        "situation": "회원 등록이 되지 않은 사람이 입장하려는 경우",
+        "tip": "1일 이용권(1만 원)을 안내하고 결제를 유도한다.",
+        "sourceTimestamp": {
+          "start": 330,
+          "end": 370
+        },
+        "confidence": "high"
+      },
+      {
+        "situation": "락커 정리 중 분실물이 발견된 경우",
+        "tip": "프런트 분실물함에 넣고 발견 날짜를 반드시 기재한다. 7일 보관 후 폐기한다.",
+        "sourceTimestamp": {
+          "start": 370,
+          "end": 415
+        },
+        "confidence": "high"
+      }
+    ],
+    "cautions": [
+      {
+        "content": "냉난방은 반드시 06:00 오픈 전에 켜서 회원 입장 전 실내 온도가 맞춰지도록 한다.",
+        "sourceTimestamp": {
+          "start": 118,
+          "end": 155
+        },
+        "confidence": "high"
+      },
+      {
+        "content": "수건 납품 시 수량을 직접 세어 확인한 후 납품서에 서명한다. 서명 전 수량 확인이 먼저다.",
+        "sourceTimestamp": {
+          "start": 235,
+          "end": 280
+        },
+        "confidence": "high"
+      },
+      {
+        "content": "분실물 보관 시 날짜 기재가 누락되면 7일 경과 여부를 판단할 수 없으므로 반드시 날짜를 적는다.",
+        "sourceTimestamp": {
+          "start": 370,
+          "end": 415
+        },
+        "confidence": "high"
+      }
+    ],
+    "openItems": []
+  },
+  "meta": {
+    "model": "claude-sonnet-4-6",
+    "promptVersion": "structure-v2",
+    "inputTokens": 5761,
+    "outputTokens": 1943,
+    "attempts": 1
+  }
+}

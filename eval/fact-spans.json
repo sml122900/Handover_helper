@@ -1,0 +1,1086 @@
+{
+  "virtual": true,
+  "_note": "가상 데이터. 사실 ID(corpus-spec.md) → 트랜스크립트(.txt)·문서(.md) 원문 위치. char_start/char_end는 UTF-16 코드 단위(LF 줄바꿈 기준), video_ts는 초. 문서의 위치는 가상 데이터 머리말을 포함한 .md 파일 기준. status=partial/missing이면 문서에서 사실(일부)이 빠진 것.",
+  "facts": {
+    "C01": {
+      "store_id": "s1",
+      "transcript": {
+        "file": "data/virtual/s1.txt",
+        "char_start": 101,
+        "char_end": 123,
+        "video_ts": {
+          "start": 32,
+          "end": 70
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "다섯 시에 출근해서 밤 열 시 반에 퇴근"
+      },
+      "document": {
+        "file": "data/virtual/s1.md",
+        "char_start": 120,
+        "char_end": 139,
+        "video_ts": {
+          "start": 0,
+          "end": 32
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "5시 출근, 밤 10시 30분 퇴근"
+      }
+    },
+    "C02": {
+      "store_id": "s1",
+      "transcript": {
+        "file": "data/virtual/s1.txt",
+        "char_start": 264,
+        "char_end": 278,
+        "video_ts": {
+          "start": 70,
+          "end": 112
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "아홉 시 반에 마지막 주문"
+      },
+      "document": {
+        "file": "data/virtual/s1.md",
+        "char_start": 141,
+        "char_end": 150,
+        "video_ts": {
+          "start": 0,
+          "end": 32
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "9시 30분 주문"
+      }
+    },
+    "C03": {
+      "store_id": "s1",
+      "transcript": {
+        "file": "data/virtual/s1.txt",
+        "char_start": 703,
+        "char_end": 790,
+        "video_ts": {
+          "start": 195,
+          "end": 248
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "머신 청소를 시작해요. 마지막 주문 직후에 바로 들어가는 거예요. 머신 전용 세제가 따로 있거든요. 그걸 한 스푼 넣고요, 백플러시를 돌려요. "
+      },
+      "document": {
+        "file": "data/virtual/s1.md",
+        "char_start": 503,
+        "char_end": 519,
+        "video_ts": {
+          "start": 195,
+          "end": 248
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "한 스푼 넣고 백플러시를 5회"
+      }
+    },
+    "C04": {
+      "store_id": "s1",
+      "transcript": {
+        "file": "data/virtual/s1.txt",
+        "char_start": 460,
+        "char_end": 594,
+        "video_ts": {
+          "start": 112,
+          "end": 160
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "그날 들어온 것만 팔아요. 어제 남은 걸 오늘 파는 일은 없고요. 그래서 아홉 시 반 딱 됐을 때 쇼케이스에 남아 있는 케이크는 전부 버려요. "
+      },
+      "document": {
+        "file": "data/virtual/s1.md",
+        "char_start": 1279,
+        "char_end": 2479,
+        "video_ts": {
+          "start": 155,
+          "end": 195
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "폐기 대장** — 위치: 매장 내 (카운터 인근 추정) ⚠️ [확인 필요] _(영상 2:35~3:15)_   - 케이크 등 폐기 품목명과 수량 "
+      }
+    },
+    "C05": {
+      "store_id": "s1",
+      "transcript": {
+        "file": "data/virtual/s1.txt",
+        "char_start": 880,
+        "char_end": 939,
+        "video_ts": {
+          "start": 248,
+          "end": 292
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "뚜껑에 개봉한 시각을 적어 놔요. 그래서 뚜껑에 적힌 시각을 보고, 열고 나서 하루, 그러니까 스물네 시간"
+      },
+      "document": {
+        "file": "data/virtual/s1.md",
+        "char_start": 603,
+        "char_end": 625,
+        "video_ts": {
+          "start": 248,
+          "end": 292
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "개봉 시각을 확인하여, 개봉 후 24시간"
+      }
+    },
+    "C06": {
+      "store_id": "s1",
+      "transcript": {
+        "file": "data/virtual/s1.txt",
+        "char_start": 1098,
+        "char_end": 1214,
+        "video_ts": {
+          "start": 335,
+          "end": 388
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "마감정산 버튼이 있어요. 그거 누르고 화면 따라가시면 돼요. 현금은 금고 안에 흰 봉투가 있거든요, 거기에 넣으세요. 그런데 가끔 계산이랑 실제"
+      },
+      "document": {
+        "file": "data/virtual/s1.md",
+        "char_start": 770,
+        "char_end": 857,
+        "video_ts": {
+          "start": 335,
+          "end": 388
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "마감정산' 버튼을 누르고 화면 안내에 따라 진행한다. 현금은 금고 안의 흰 봉투에 넣는다. 계산 금액과 실제 현금의 차액이 1,000원 이상이면"
+      }
+    },
+    "C07": {
+      "store_id": "s1",
+      "transcript": {
+        "file": "data/virtual/s1.txt",
+        "char_start": 1276,
+        "char_end": 1357,
+        "video_ts": {
+          "start": 388,
+          "end": 430
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "건물 뒤에 수거함이 있어요. 거기다 버리시면 되고요. 그런데 커피 찌꺼기는 일반 쓰레기랑 섞으면 안 돼요. 별도 봉투에 따로 모아서 입구 화분 "
+      },
+      "document": {
+        "file": "data/virtual/s1.md",
+        "char_start": 920,
+        "char_end": 960,
+        "video_ts": {
+          "start": 388,
+          "end": 430
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "건물 뒤 수거함에 버린다. 커피 찌꺼기는 별도 봉투에 담아 입구 화분 옆"
+      }
+    },
+    "C08": {
+      "store_id": "s1",
+      "transcript": {
+        "file": "data/virtual/s1.txt",
+        "char_start": 997,
+        "char_end": 1005,
+        "video_ts": {
+          "start": 292,
+          "end": 335
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "음악 끄고 간판"
+      },
+      "document": {
+        "file": "data/virtual/s1.md",
+        "char_start": 646,
+        "char_end": 651,
+        "video_ts": {
+          "start": 292,
+          "end": 335
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "음악·간판"
+      }
+    },
+    "C09": {
+      "store_id": "s1",
+      "transcript": {
+        "file": "data/virtual/s1.txt",
+        "char_start": 1450,
+        "char_end": 1467,
+        "video_ts": {
+          "start": 430,
+          "end": 468
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "제빙기 안쪽 세척은 매주 월요일"
+      },
+      "document": {
+        "file": "data/virtual/s1.md",
+        "char_start": 990,
+        "char_end": 1001,
+        "video_ts": {
+          "start": 430,
+          "end": 468
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "제빙기 세척 (월요일"
+      }
+    },
+    "C10": {
+      "store_id": "s1",
+      "transcript": {
+        "file": "data/virtual/s1.txt",
+        "char_start": 1545,
+        "char_end": 1632,
+        "video_ts": {
+          "start": 468,
+          "end": 520
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "보안 경비를 설정해요. 그러니까 제일 마지막에 문 나서는 사람이요. 출입구 옆에 단말기가 있거든요. 거기에 카드키를 태그하세요. 태그하고 나서 "
+      },
+      "document": {
+        "file": "data/virtual/s1.md",
+        "char_start": 1144,
+        "char_end": 1175,
+        "video_ts": {
+          "start": 468,
+          "end": 520
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "카드키를 태그하여 보안 경비를 설정한다. 태그 후 30초"
+      }
+    },
+    "B01": {
+      "store_id": "s2",
+      "transcript": {
+        "file": "data/virtual/s2.txt",
+        "char_start": 259,
+        "char_end": 356,
+        "video_ts": {
+          "start": 65,
+          "end": 112
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "크림 들어간 빵은요, 그날 남으면 전부 버려요. 크림빵, 생크림 롤 이런 거 다요. 그런데 식빵이랑 바게트는 안 버려요. 다음 날 오전에 어제빵"
+      },
+      "document": {
+        "file": "data/virtual/s2.md",
+        "char_start": 511,
+        "char_end": 570,
+        "video_ts": {
+          "start": 65,
+          "end": 175
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "크림 롤 등) → 당일 전량 폐기. ② 식빵·바게트 → 별도 보관(다음 날 오전 '어제빵 코너'에서 30%"
+      }
+    },
+    "B02": {
+      "store_id": "s2",
+      "transcript": {
+        "file": "data/virtual/s2.txt",
+        "char_start": 425,
+        "char_end": 462,
+        "video_ts": {
+          "start": 112,
+          "end": 158
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "홀케이크는 좀 달라요. 만든 날을 포함해서 이틀까지 팔아요. 사흘째"
+      },
+      "document": {
+        "file": "data/virtual/s2.md",
+        "char_start": 581,
+        "char_end": 617,
+        "video_ts": {
+          "start": 65,
+          "end": 175
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "홀케이크 → 제조일 포함 이틀까지 판매 가능, 제조일 포함 3일째"
+      }
+    },
+    "B03": {
+      "store_id": "s2",
+      "transcript": {
+        "file": "data/virtual/s2.txt",
+        "char_start": 562,
+        "char_end": 611,
+        "video_ts": {
+          "start": 158,
+          "end": 200
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "폐기 등록이라는 화면이 있어요. 거기에 뭘 버렸는지 품목 적고, 수량 넣고, 사유도 입력"
+      },
+      "document": {
+        "file": "data/virtual/s2.md",
+        "char_start": 1318,
+        "char_end": 1338,
+        "video_ts": {
+          "start": 158,
+          "end": 200
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "폐기 등록' 화면에서 품목·수량·사유"
+      }
+    },
+    "B04": {
+      "store_id": "s2",
+      "transcript": {
+        "file": "data/virtual/s2.txt",
+        "char_start": 675,
+        "char_end": 717,
+        "video_ts": {
+          "start": 200,
+          "end": 245
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "여덟 시 반부터요. 생크림 들어간 제품에 할인 스티커를 붙여요. 이십 퍼센트"
+      },
+      "document": {
+        "file": "data/virtual/s2.md",
+        "char_start": 342,
+        "char_end": 377,
+        "video_ts": {
+          "start": 200,
+          "end": 245
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "8시 30분부터 생크림이 들어간 제품 전체에 20% 할인 스티커"
+      }
+    },
+    "B05": {
+      "store_id": "s2",
+      "transcript": {
+        "file": "data/virtual/s2.txt",
+        "char_start": 1220,
+        "char_end": 1262,
+        "video_ts": {
+          "start": 375,
+          "end": 420
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "십만 원만 남겨요. 금고에는 십만 원만 두고, 나머지 현금은 전부 입금 봉투"
+      },
+      "document": {
+        "file": "data/virtual/s2.md",
+        "char_start": 1545,
+        "char_end": 1565,
+        "video_ts": {
+          "start": 410,
+          "end": 460
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "10만 원 보관, 나머지는 입금 봉투"
+      }
+    },
+    "B06": {
+      "store_id": "s2",
+      "transcript": {
+        "file": "data/virtual/s2.txt",
+        "char_start": 1044,
+        "char_end": 1135,
+        "video_ts": {
+          "start": 330,
+          "end": 375
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "진열 트레이는 전부 빼요. 하나도 남기지 말고 다 빼서 세척실로 가져가요. 세척실에서 닦아요. 그리고 빵 집게 있잖아요. 집게는 소독수에 담가 "
+      },
+      "document": {
+        "file": "data/virtual/s2.md",
+        "char_start": 953,
+        "char_end": 1046,
+        "video_ts": {
+          "start": 330,
+          "end": 375
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "트레이를 하나도 남기지 않고 전부 꺼내 세척실로 옮긴 뒤 모두 닦는다. 7. **빵 집게 소독수 침지** _(영상 6:15~6:50)_    빵"
+      }
+    },
+    "B07": {
+      "store_id": "s2",
+      "transcript": {
+        "file": "data/virtual/s2.txt",
+        "char_start": 819,
+        "char_end": 849,
+        "video_ts": {
+          "start": 245,
+          "end": 290
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "오븐은요 끄기 전에 문을 열어서 식혀요. 이십 분 동안"
+      },
+      "document": {
+        "file": "data/virtual/s2.md",
+        "char_start": 769,
+        "char_end": 781,
+        "video_ts": {
+          "start": 245,
+          "end": 290
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "오븐 문을 열어 20분"
+      }
+    },
+    "B08": {
+      "store_id": "s2",
+      "transcript": {
+        "file": "data/virtual/s2.txt",
+        "char_start": 960,
+        "char_end": 981,
+        "video_ts": {
+          "start": 290,
+          "end": 330
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "아홉 시 십 분에 출입문을 잠그고 셔터"
+      },
+      "document": {
+        "file": "data/virtual/s2.md",
+        "char_start": 882,
+        "char_end": 904,
+        "video_ts": {
+          "start": 290,
+          "end": 330
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "9시 10분이 되면 출입문을 잠그고 셔터"
+      }
+    },
+    "M01": {
+      "store_id": "s3",
+      "transcript": {
+        "file": "data/virtual/s3.txt",
+        "char_start": 465,
+        "char_end": 575,
+        "video_ts": {
+          "start": 110,
+          "end": 165
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "두 시간 전에 처리해요. 포스에서 폐기 등록이라는 메뉴가 있어요. 거기서 물건 바코드를 스캔하면 판매 불가로 바뀌거든요. 그러면 계산대에서 못 "
+      },
+      "document": {
+        "file": "data/virtual/s3.md",
+        "char_start": 450,
+        "char_end": 536,
+        "video_ts": {
+          "start": 110,
+          "end": 205
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "폐기 등록' 메뉴에서 도시락·삼각김밥·김밥 등 유통기한 2시간 전 도래 상품의 바코드를 스캔하여 판매 불가 처리합니다. 스캔 후 실물을 창고 내"
+      }
+    },
+    "M02": {
+      "store_id": "s3",
+      "transcript": {
+        "file": "data/virtual/s3.txt",
+        "char_start": 667,
+        "char_end": 701,
+        "video_ts": {
+          "start": 165,
+          "end": 205
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "자정에 한 번, 새벽 세 시에 한 번, 아침 여섯 시에 한 번"
+      },
+      "document": {
+        "file": "data/virtual/s3.md",
+        "char_start": 2836,
+        "char_end": 2850,
+        "video_ts": {
+          "start": 165,
+          "end": 205
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "자정·03:00·06:00"
+      }
+    },
+    "M03": {
+      "store_id": "s3",
+      "transcript": {
+        "file": "data/virtual/s3.txt",
+        "char_start": 229,
+        "char_end": 365,
+        "video_ts": {
+          "start": 65,
+          "end": 110
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "교대할 때 시재 점검을 해요. 돈 세는 거요. 앞 근무자랑 같이 서랍 안의 돈을 세는 건데, 액수가 안 맞을 때가 있잖아요. 그럼 교대하는 분이"
+      },
+      "document": {
+        "file": "data/virtual/s3.md",
+        "char_start": 2381,
+        "char_end": 2452,
+        "video_ts": {
+          "start": 65,
+          "end": 110
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "시재 점검 시 금액이 맞지 않을 때** → 혼자 다시 세지 말고 교대 근무자와 함께 다시 셉니다. 그래도 차이가 있으면 근무일지"
+      }
+    },
+    "M04": {
+      "store_id": "s3",
+      "transcript": {
+        "file": "data/virtual/s3.txt",
+        "char_start": 772,
+        "char_end": 851,
+        "video_ts": {
+          "start": 205,
+          "end": 255
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "새벽 두 시에는 음료가 들어와요. 입고되면 수량부터 세요. 검수예요. 수량을 확인하는 거죠. 검수가 끝나면 냉장고에 채우는데, 냉장고 뒤쪽부터"
+      },
+      "document": {
+        "file": "data/virtual/s3.md",
+        "char_start": 1919,
+        "char_end": 1978,
+        "video_ts": {
+          "start": 205,
+          "end": 255
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "02:00** — 음료 입고 검수 및 진열 _(영상 3:25~4:15)_   - 수량 검수 후 냉장고 뒤쪽"
+      }
+    },
+    "M05": {
+      "store_id": "s3",
+      "transcript": {
+        "file": "data/virtual/s3.txt",
+        "char_start": 1145,
+        "char_end": 1183,
+        "video_ts": {
+          "start": 345,
+          "end": 390
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "다섯 시 반에 수거하러 오세요. 그러니까 그 전에 택배 보관함을 정리"
+      },
+      "document": {
+        "file": "data/virtual/s3.md",
+        "char_start": 931,
+        "char_end": 947,
+        "video_ts": {
+          "start": 345,
+          "end": 390
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "택배 보관함 정리 (05:30"
+      }
+    },
+    "M06": {
+      "store_id": "s3",
+      "transcript": {
+        "file": "data/virtual/s3.txt",
+        "char_start": 967,
+        "char_end": 1036,
+        "video_ts": {
+          "start": 255,
+          "end": 300
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "나이가 어려 보이면 신분증 확인을 해요. 어려 보인다 싶으면 꼭 확인하고요. 신분증 확인이 안 되면 그 손님한테는 안 팔아요"
+      },
+      "document": {
+        "file": "data/virtual/s3.md",
+        "char_start": 2539,
+        "char_end": 2558,
+        "video_ts": {
+          "start": 255,
+          "end": 300
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "신분증 확인이 안 되면 판매하지 않"
+      }
+    },
+    "M07": {
+      "store_id": "s3",
+      "transcript": {
+        "file": "data/virtual/s3.txt",
+        "char_start": 1068,
+        "char_end": 1104,
+        "video_ts": {
+          "start": 300,
+          "end": 345
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "새벽 다섯 시가 되면 청소를 해요. 매장 바닥을 청소하고, 화장실"
+      },
+      "document": {
+        "file": "data/virtual/s3.md",
+        "char_start": 873,
+        "char_end": 917,
+        "video_ts": {
+          "start": 300,
+          "end": 345
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "05:00)** _(영상 5:00~5:45)_    매장 바닥을 청소하고 화장실"
+      }
+    },
+    "M08": {
+      "store_id": "s3",
+      "transcript": {
+        "file": "data/virtual/s3.txt",
+        "char_start": 1343,
+        "char_end": 1353,
+        "video_ts": {
+          "start": 425,
+          "end": 470
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "근무일지에 특이사항"
+      },
+      "document": {
+        "file": "data/virtual/s3.md",
+        "char_start": 1192,
+        "char_end": 1202,
+        "video_ts": {
+          "start": 425,
+          "end": 470
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "특이사항을 근무일지"
+      }
+    },
+    "G01": {
+      "store_id": "s4",
+      "transcript": {
+        "file": "data/virtual/s4.txt",
+        "char_start": 129,
+        "char_end": 288,
+        "video_ts": {
+          "start": 35,
+          "end": 70
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "다섯 시 사십 분에 출근해서 낮 열두 시까지예요. 헬스장은 여섯 시에 문을 열고요. 순서만 알면 어렵지 않아요. [01:10] 출근하면 제일 먼"
+      },
+      "document": {
+        "file": "data/virtual/s4.md",
+        "char_start": 1248,
+        "char_end": 1275,
+        "video_ts": {
+          "start": 455,
+          "end": 500
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "05:40 출근 → 셔터 개방 → 배전반 1~6번"
+      }
+    },
+    "G02": {
+      "store_id": "s4",
+      "transcript": {
+        "file": "data/virtual/s4.txt",
+        "char_start": 350,
+        "char_end": 406,
+        "video_ts": {
+          "start": 118,
+          "end": 155
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "냉난방이요. 여섯 시 되기 전에 켜 놔야 해요. 손님 오시기 전에 미리요. 여름에는 온도를 이십사 도"
+      },
+      "document": {
+        "file": "data/virtual/s4.md",
+        "char_start": 1288,
+        "char_end": 1298,
+        "video_ts": {
+          "start": 455,
+          "end": 500
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "냉난방 가동(24도"
+      }
+    },
+    "G03": {
+      "store_id": "s4",
+      "transcript": {
+        "file": "data/virtual/s4.txt",
+        "char_start": 1025,
+        "char_end": 1075,
+        "video_ts": {
+          "start": 370,
+          "end": 415
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "분실물함에 넣어요. 넣을 때 날짜를 적어요. 언제 나왔는지요. 그렇게 해 놓고 칠 일 보관"
+      },
+      "document": {
+        "file": "data/virtual/s4.md",
+        "char_start": 839,
+        "char_end": 857,
+        "video_ts": {
+          "start": 415,
+          "end": 455
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "분실물함을 열어 보관 날짜가 7일"
+      }
+    },
+    "G04": {
+      "store_id": "s4",
+      "transcript": {
+        "file": "data/virtual/s4.txt",
+        "char_start": 587,
+        "char_end": 665,
+        "video_ts": {
+          "start": 235,
+          "end": 280
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "일곱 시에는 수건이 들어와요. 세탁업체에서 수건을 가져다주거든요. 그때 수량을 확인하세요. 몇 장 왔는지 세어 보고요. 그리고 납품서에 서명"
+      },
+      "document": {
+        "file": "data/virtual/s4.md",
+        "char_start": 1342,
+        "char_end": 1365,
+        "video_ts": {
+          "start": 455,
+          "end": 500
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "07:00 수건 수량 확인 및 납품서 서명"
+      }
+    },
+    "G05": {
+      "store_id": "s4",
+      "transcript": {
+        "file": "data/virtual/s4.txt",
+        "char_start": 773,
+        "char_end": 808,
+        "video_ts": {
+          "start": 280,
+          "end": 330
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "점검중 팻말을 걸어요. 그러고 나서 사진을 찍고요, 직원 단톡방"
+      },
+      "document": {
+        "file": "data/virtual/s4.md",
+        "char_start": 1577,
+        "char_end": 1607,
+        "video_ts": {
+          "start": 280,
+          "end": 330
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "점검중' 팻말을 건다 → 사진을 찍는다 → 직원 단톡방"
+      }
+    },
+    "G06": {
+      "store_id": "s4",
+      "transcript": {
+        "file": "data/virtual/s4.txt",
+        "char_start": 897,
+        "char_end": 939,
+        "video_ts": {
+          "start": 330,
+          "end": 370
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "등록이 안 된 분이 들어오시면 일일 이용권을 안내해요. 일 일권이요, 만 원"
+      },
+      "document": {
+        "file": "data/virtual/s4.md",
+        "char_start": 1665,
+        "char_end": 1703,
+        "video_ts": {
+          "start": 330,
+          "end": 370
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "등록이 되지 않은 사람이 입장하려는 경우** → 1일 이용권(1만 원"
+      }
+    },
+    "G07": {
+      "store_id": "s4",
+      "transcript": {
+        "file": "data/virtual/s4.txt",
+        "char_start": 491,
+        "char_end": 550,
+        "video_ts": {
+          "start": 190,
+          "end": 235
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "음료 냉장고를 채워요. 음료수 냉장고 있죠? 거기 음료를 채워 넣는 거고요. 채우면서 유통기한이 지난 음료"
+      },
+      "document": {
+        "file": "data/virtual/s4.md",
+        "char_start": 635,
+        "char_end": 673,
+        "video_ts": {
+          "start": 190,
+          "end": 235
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "냉장고에 음료를 채워 넣는다. 유통기한이 지난 음료는 발견 즉시 폐기"
+      }
+    },
+    "L01": {
+      "store_id": "s5",
+      "transcript": {
+        "file": "data/virtual/s5.txt",
+        "char_start": 220,
+        "char_end": 260,
+        "video_ts": {
+          "start": 35,
+          "end": 85
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "안전화랑 안전조끼요. 이 두 개를 착용하지 않으면 작업에 투입이 안 돼요"
+      },
+      "document": {
+        "file": "data/virtual/s5.md",
+        "char_start": 2193,
+        "char_end": 2236,
+        "video_ts": {
+          "start": 35,
+          "end": 85
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "안전화와 안전조끼는 출근 시 반드시 착용해야 하며, 미착용 시 당일 작업 투입"
+      }
+    },
+    "L02": {
+      "store_id": "s5",
+      "transcript": {
+        "file": "data/virtual/s5.txt",
+        "char_start": 466,
+        "char_end": 522,
+        "video_ts": {
+          "start": 120,
+          "end": 170
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "도착지가 먼 짐을 먼저 실어요. 안쪽으로요. 그리고 가까운 데로 가는 짐은 나중에, 입구 쪽에 실어요"
+      },
+      "document": {
+        "file": "data/virtual/s5.md",
+        "char_start": 2299,
+        "char_end": 2320,
+        "video_ts": {
+          "start": 130,
+          "end": 170
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "먼 짐은 트럭 안쪽, 가까운 짐은 입구"
+      }
+    },
+    "L03": {
+      "store_id": "s5",
+      "transcript": {
+        "file": "data/virtual/s5.txt",
+        "char_start": 574,
+        "char_end": 689,
+        "video_ts": {
+          "start": 170,
+          "end": 220
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "바코드를 스캔해요. 하나도 빼놓지 말고 박스 하나하나 다 스캔이에요. 그런데 가끔 스캐너에서 이중 스캔이라는 경고가 떠요. 이중 스캔 경고가 뜨"
+      },
+      "document": {
+        "file": "data/virtual/s5.md",
+        "char_start": 610,
+        "char_end": 705,
+        "video_ts": {
+          "start": 170,
+          "end": 220
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "바코드를 스캔한다. 4. **이중 스캔 경고 발생 시 처리** _(영상 3:40~4:30)_    스캐너에서 이중 스캔 경고가 뜨면 해당 박스를"
+      }
+    },
+    "L04": {
+      "store_id": "s5",
+      "transcript": {
+        "file": "data/virtual/s5.txt",
+        "char_start": 729,
+        "char_end": 818,
+        "video_ts": {
+          "start": 220,
+          "end": 270
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "파손된 박스가 나올 때가 있어요. 그런 박스는 이상화물이라는 구역이 있어요. 그쪽으로 옮겨요. 옮기고 나서 사진을 찍어요. 사진 찍고, 스캐너에"
+      },
+      "document": {
+        "file": "data/virtual/s5.md",
+        "char_start": 2021,
+        "char_end": 2074,
+        "video_ts": {
+          "start": 270,
+          "end": 330
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "파손된 박스가 발견됐을 때** → 이상화물 구역으로 이동 → 사진 촬영 → 스캐너 '이상' 등록"
+      }
+    },
+    "L05": {
+      "store_id": "s5",
+      "transcript": {
+        "file": "data/virtual/s5.txt",
+        "char_start": 1021,
+        "char_end": 1103,
+        "video_ts": {
+          "start": 315,
+          "end": 365
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "열한 시 반부터 자정까지 있어요. 열한 시 반에 식사 시작해서 열두 시에 다시 일해요. 그리고 새벽 세 시에 잠깐 쉬는 시간이 있어요. 십 분 "
+      },
+      "document": {
+        "file": "data/virtual/s5.md",
+        "char_start": 951,
+        "char_end": 991,
+        "video_ts": {
+          "start": 375,
+          "end": 430
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "23:30~00:00 (30분) • 휴식: 03:00~03:10 (10분"
+      }
+    },
+    "L06": {
+      "store_id": "s5",
+      "transcript": {
+        "file": "data/virtual/s5.txt",
+        "char_start": 897,
+        "char_end": 935,
+        "video_ts": {
+          "start": 270,
+          "end": 315
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "이십오 킬로그램 이상 되는 중량물은요, 혼자 들지 말고 꼭 두 명이서"
+      },
+      "document": {
+        "file": "data/virtual/s5.md",
+        "char_start": 872,
+        "char_end": 904,
+        "video_ts": {
+          "start": 330,
+          "end": 375
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "25kg 이상의 중량물은 혼자 들지 않고 반드시 2인 1조"
+      }
+    },
+    "L07": {
+      "store_id": "s5",
+      "transcript": {
+        "file": "data/virtual/s5.txt",
+        "char_start": 1242,
+        "char_end": 1264,
+        "video_ts": {
+          "start": 410,
+          "end": 455
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "스캐너를 반납해요. 스캐너를 충전 거치대"
+      },
+      "document": {
+        "file": "data/virtual/s5.md",
+        "char_start": 216,
+        "char_end": 227,
+        "video_ts": {
+          "start": 0,
+          "end": 35
+        },
+        "status": "full",
+        "missing_anchors": [],
+        "preview": "스캐너를 충전 거치대"
+      }
+    }
+  }
+}
