@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { logout } from "@/app/login/actions";
 import { createProject } from "./actions";
+import { formatDate } from "@/lib/format-date";
 
 export const dynamic = "force-dynamic";
 
@@ -60,7 +61,7 @@ export default async function ProjectsPage(props: {
             >
               <span className="font-medium text-[var(--text)]">{p.title}</span>
               <span className="ml-3 text-xs text-[var(--text-sub)]">
-                {new Date(p.created_at).toLocaleDateString("ko-KR")}
+                {formatDate(p.created_at)}
               </span>
             </Link>
           </li>

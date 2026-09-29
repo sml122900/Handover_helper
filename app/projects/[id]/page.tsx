@@ -6,6 +6,7 @@ import { ScreenRecorder } from "./ScreenRecorder";
 import { VideoStatusPoller } from "./VideoStatusPoller";
 import { VideoProgress } from "./VideoProgress";
 import { retryVideo } from "./upload-actions";
+import { formatDateTime } from "@/lib/format-date";
 import { selectVideoStatuses } from "@/lib/pipeline/video-status";
 
 export const dynamic = "force-dynamic";
@@ -83,7 +84,7 @@ export default async function ProjectDetailPage(props: { params: Promise<{ id: s
             >
               <div className="flex items-center justify-between">
                 <span className="text-[var(--text-sub)]">
-                  {new Date(v.created_at).toLocaleString("ko-KR")}
+                  {formatDateTime(v.created_at)}
                   {v.duration_seconds != null && ` · ${Math.round(v.duration_seconds / 60)}분`}
                 </span>
                 <span
@@ -136,7 +137,7 @@ export default async function ProjectDetailPage(props: { params: Promise<{ id: s
                   href={`/documents/${d.id}`}
                   className="block rounded-lg border border-[var(--card-border)] bg-[var(--card)] px-4 py-3 text-sm text-[var(--text-sub)] hover:border-[var(--card-border-hover)]"
                 >
-                  📄 문서 열기 ({d.prompt_version}) — {new Date(d.created_at).toLocaleString("ko-KR")}
+                  📄 문서 열기 ({d.prompt_version}) — {formatDateTime(d.created_at)}
                 </Link>
               </li>
             ))}

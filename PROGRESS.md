@@ -913,3 +913,12 @@ npm run dev
 - 순수 함수 `estimateBytes`·`evaluateRecording` vitest 10개 추가 (경계 80%·95%, 20/30분 ≤ 한도)
 - 한계: 업로드 중 탭을 닫거나 새로고침하면 메모리의 녹화본은 사라짐(beforeunload 경고는 미구현)
 - 새 문구 — 사용자 검토 필요: "용량 한도(500MB) 직전이라 녹화를 자동 종료했습니다. 지금까지의 녹화를 업로드합니다." / "녹화 용량이 한도(500MB)의 80%에 도달했습니다. 곧 자동 종료되니 마무리하세요." / "녹화본은 삭제되지 않았습니다. 내려받아 보관한 뒤 파일 선택으로 업로드하거나 나눠서 다시 녹화하세요." / 버튼 "녹화본 내려받기"·"버리기"
+
+### 날짜 KST 표시 통일 · 녹화 이탈 경고 (2026-09-30, API 실호출 0회)
+- 원인: 서버(Vercel, UTC)에서 `toLocaleString("ko-KR")`를 timeZone 없이 사용 → 9시간 이르게 표시
+- 표시 지점(전수 grep, 6곳): 프로젝트 목록 생성일, 프로젝트 상세(영상·문서 생성 시각 2곳), 결제 내역, 공유 링크 만료일(ShareControls, 클라이언트). docx·PDF·공유 뷰·이메일에는 날짜 표시 코드 없음
+- 조치: `lib/format-date.ts` (`formatDate`·`formatDateTime`, Asia/Seoul) 로 6곳 통일. 저장은 UTC 유지
+- **표기 변경(사용자 검토 필요)**: 시각은 "2026. 9. 30. 15:05" (24시간제, 초 없음). 기존 `toLocaleString("ko-KR")`은 Node ICU에 따라 "AM/PM" 표기가 나오는 등 환경별로 달라서 `formatToParts`로 직접 조립
+- 테스트: `vitest.config.ts`에서 `TZ=UTC` 고정 + `tests/format-date.test.ts` (UTC 15:30→KST 다음날 00:30, 날짜 경계 등)
+- cron(30일 삭제) 확인: 기준 시각이 `Date.now() - 30일`(epoch ms)→`toISOString()`(UTC)이고 스토리지 파일도 epoch ms 비교 → 시간대 영향 없음. 수정 불필요. (vercel.json 스케줄은 UTC 기준 — "매일 자정"은 KST 09:00 실행. 무영향이나 참고)
+- 녹화 이탈 경고: `ScreenRecorder`에 업로드 중·녹화본 보존 중 `beforeunload` 경고 추가. 문구는 브라우저 기본(커스텀 불가). 녹화 중(recording)은 미포함 — 요청 범위 밖

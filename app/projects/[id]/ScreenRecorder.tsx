@@ -41,6 +41,18 @@ export function ScreenRecorder({ projectId }: { projectId: string }) {
     return () => clearInterval(timer);
   }, [phase]);
 
+  // 업로드 중이거나 녹화본이 보존 중일 때 탭 닫기·새로고침 경고 (메모리의 녹화본 유실 방지)
+  const guardUnload = phase === "uploading" || savedBlob !== null;
+  useEffect(() => {
+    if (!guardUnload) return;
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = ""; // 일부 브라우저는 값이 있어야 경고 표시 (문구는 브라우저 기본)
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [guardUnload]);
+
   function cleanupStreams() {
     for (const s of streamsRef.current) {
       for (const t of s.getTracks()) t.stop();

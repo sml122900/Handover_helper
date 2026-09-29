@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { formatDate } from "@/lib/format-date";
 import { createShareLink, revokeShareLink, type ShareLink } from "./share-actions";
 
 // 공유 링크 관리 (읽기 전용 뷰 + 만료일)
@@ -84,7 +85,7 @@ export function ShareControls({
                     {expired
                       ? "만료됨"
                       : l.expires_at
-                        ? `~${new Date(l.expires_at).toLocaleDateString("ko-KR")}`
+                        ? `~${formatDate(l.expires_at)}`
                         : "만료 없음"}
                   </span>
                   <div className="flex gap-2">

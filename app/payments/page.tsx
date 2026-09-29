@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { formatDate } from "@/lib/format-date";
 
 export const dynamic = "force-dynamic";
 
@@ -45,7 +46,7 @@ export default async function PaymentsPage() {
         <ul className="flex flex-col gap-3">
           {payments.map((p) => {
             const proj = (Array.isArray(p.projects) ? p.projects[0] : p.projects) as { title: string; id: string } | null;
-            const date = new Date(p.confirmed_at ?? p.created_at).toLocaleDateString("ko-KR");
+            const date = formatDate(p.confirmed_at ?? p.created_at);
             return (
               <li
                 key={p.id}
