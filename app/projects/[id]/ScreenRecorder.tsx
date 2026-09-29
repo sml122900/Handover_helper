@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { prepareUpload, completeUpload } from "./upload-actions";
 import { uploadWithProgress } from "@/lib/upload-client";
 import { oversizeMessage } from "@/lib/upload-validate";
+import { AUDIO_BITS_PER_SECOND, VIDEO_BITS_PER_SECOND, evaluateRecording } from "@/lib/recording-limits";
 
 type Phase = "idle" | "recording" | "paused" | "uploading";
 
@@ -21,11 +22,14 @@ export function ScreenRecorder({ projectId }: { projectId: string }) {
   const [elapsed, setElapsed] = useState(0);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null); // 용량 경고·자동 정지 안내
+  const [savedBlob, setSavedBlob] = useState<Blob | null>(null); // 업로드 실패 시 보존하는 녹화본
 
   const recorderRef = useRef<MediaRecorder | null>(null);
   const streamsRef = useRef<MediaStream[]>([]);
   const chunksRef = useRef<Blob[]>([]);
   const elapsedRef = useRef(0);
+  const totalBytesRef = useRef(0);
 
   // 경과 시간 타이머 (일시정지 중엔 멈춤)
   useEffect(() => {
@@ -46,6 +50,7 @@ export function ScreenRecorder({ projectId }: { projectId: string }) {
 
   async function start() {
     setError(null);
+    setNotice(null);
     if (!navigator.mediaDevices?.getDisplayMedia || typeof MediaRecorder === "undefined") {
       setError("이 브라우저는 화면 녹화를 지원하지 않습니다. 최신 Chrome 또는 Edge를 사용하세요.");
       return;
@@ -71,13 +76,28 @@ export function ScreenRecorder({ projectId }: { projectId: string }) {
       const mimeType = MediaRecorder.isTypeSupported("video/webm;codecs=vp9,opus")
         ? "video/webm;codecs=vp9,opus"
         : "video/webm";
-      const recorder = new MediaRecorder(combined, { mimeType });
+      const recorder = new MediaRecorder(combined, {
+        mimeType,
+        videoBitsPerSecond: VIDEO_BITS_PER_SECOND,
+        audioBitsPerSecond: AUDIO_BITS_PER_SECOND,
+      });
       chunksRef.current = [];
+      totalBytesRef.current = 0;
       elapsedRef.current = 0;
       setElapsed(0);
 
       recorder.ondataavailable = (e) => {
-        if (e.data.size > 0) chunksRef.current.push(e.data);
+        if (e.data.size === 0) return;
+        chunksRef.current.push(e.data);
+        totalBytesRef.current += e.data.size;
+        const level = evaluateRecording(totalBytesRef.current);
+        if (level === "stop") {
+          // 자동 정지 — 정상 종료와 같은 경로(onstop → 업로드)
+          setNotice("용량 한도(500MB) 직전이라 녹화를 자동 종료했습니다. 지금까지의 녹화를 업로드합니다.");
+          if (recorder.state !== "inactive") recorder.stop();
+        } else if (level === "warn") {
+          setNotice("녹화 용량이 한도(500MB)의 80%에 도달했습니다. 곧 자동 종료되니 마무리하세요.");
+        }
       };
       recorder.onstop = () => {
         void finishAndUpload();
@@ -114,9 +134,9 @@ export function ScreenRecorder({ projectId }: { projectId: string }) {
     cleanupStreams();
     setPhase("uploading");
     setProgress(0);
+    const blob = new Blob(chunksRef.current, { type: "video/webm" });
+    chunksRef.current = [];
     try {
-      const blob = new Blob(chunksRef.current, { type: "video/webm" });
-      chunksRef.current = [];
       if (blob.size === 0) throw new Error("녹화된 내용이 없습니다.");
       const oversize = oversizeMessage("webm", blob.size);
       if (oversize) throw new Error(oversize);
@@ -139,7 +159,19 @@ export function ScreenRecorder({ projectId }: { projectId: string }) {
     } catch (e) {
       setPhase("idle");
       setError(e instanceof Error ? e.message : "녹화 업로드에 실패했습니다.");
+      // 어떤 이유로든 실패하면 녹화본을 버리지 않고 내려받을 수 있게 보존
+      if (blob.size > 0) setSavedBlob(blob);
     }
+  }
+
+  function downloadSaved() {
+    if (!savedBlob) return;
+    const url = URL.createObjectURL(savedBlob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `recording-${Date.now()}.webm`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 10_000);
   }
 
   return (
@@ -153,7 +185,8 @@ export function ScreenRecorder({ projectId }: { projectId: string }) {
         {phase === "idle" && (
           <button
             onClick={start}
-            className="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-500"
+            disabled={savedBlob !== null}
+            className="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-500 disabled:opacity-40"
           >
             ● 녹화 시작
           </button>
@@ -192,7 +225,29 @@ export function ScreenRecorder({ projectId }: { projectId: string }) {
           <span className="text-sm text-[var(--text-sub)]">업로드 중… {progress}%</span>
         )}
       </div>
+      {notice && (phase === "recording" || phase === "paused" || phase === "uploading") && (
+        <p className="mt-3 text-sm text-amber-400">{notice}</p>
+      )}
       {error && <p className="mt-3 text-sm text-red-400">{error}</p>}
+      {savedBlob && (
+        <div className="mt-2 flex flex-wrap items-center gap-2">
+          <p className="text-xs text-[var(--text-sub)]">
+            녹화본은 삭제되지 않았습니다. 내려받아 보관한 뒤 파일 선택으로 업로드하거나 나눠서 다시 녹화하세요.
+          </p>
+          <button
+            onClick={downloadSaved}
+            className="rounded-md bg-[var(--text)] px-3 py-1.5 text-xs font-medium text-[var(--bg)] hover:opacity-80"
+          >
+            녹화본 내려받기
+          </button>
+          <button
+            onClick={() => setSavedBlob(null)}
+            className="rounded-md border border-[var(--card-border)] px-3 py-1.5 text-xs text-[var(--text-sub)] hover:border-[var(--card-border-hover)]"
+          >
+            버리기
+          </button>
+        </div>
+      )}
     </div>
   );
 }
