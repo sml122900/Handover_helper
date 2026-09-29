@@ -4,101 +4,112 @@
   "store_name": "동남물류 3센터 (상하차 야간)",
   "document": {
     "overview": {
-      "summary": "동남물류 삼센터 야간 상하차 업무 인수인계. 저녁 8시 출근~새벽 5시 퇴근으로 운영되며, 안전장비 착용 확인 후 상차 작업을 진행하고 바코드 스캔·이상화물 처리·중량물 안전 수칙을 준수하며 마무리 시 스캐너를 충전 거치대에 반납한다.",
+      "summary": "동남물류 삼센터 야간 상하차 업무 인수인계. 저녁 8시부터 새벽 5시까지 트럭 상차, 박스 스캔, 이상화물 처리 등을 담당하는 야간 근무.",
       "cycle": "야간 매일 (20:00~05:00)",
       "importance": null,
       "sourceTimestamp": {
         "start": 0,
-        "end": 35
+        "end": 56
       },
       "confidence": "high"
     },
     "procedures": [
       {
         "step": 1,
-        "title": "출근 및 안전장비 착용 확인",
-        "details": "저녁 8시에 출근하면 가장 먼저 안전화와 안전조끼를 착용했는지 확인한다. 두 가지 중 하나라도 미착용 시 당일 작업 투입이 불가하므로 출근 시 반드시 지참한다.",
+        "title": "안전장비 착용 확인",
+        "details": "출근 즉시 안전화와 안전조끼를 착용했는지 확인한다. 둘 중 하나라도 미착용 시 그날 작업에 투입될 수 없다. 반드시 출근 시 두 가지 모두 지참해야 한다.",
         "inferred": false,
         "sourceTimestamp": {
-          "start": 35,
-          "end": 85
+          "start": 56,
+          "end": 154
         },
         "confidence": "high"
       },
       {
         "step": 2,
-        "title": "상차 작업 시작 (20:10~)",
-        "details": "8시 10분부터 트럭에 짐을 싣는 상차 작업이 시작된다. 적재 순서는 도착지가 먼 짐을 트럭 안쪽에, 가까운 짐을 입구 쪽에 싣는다.",
+        "title": "상차 시작 (20:10)",
+        "details": "안전장비 확인이 끝나면 20:10부터 상차(트럭에 짐 싣기)가 시작된다.",
         "inferred": false,
         "sourceTimestamp": {
-          "start": 85,
-          "end": 170
+          "start": 120,
+          "end": 154
         },
         "confidence": "high"
       },
       {
         "step": 3,
-        "title": "박스 바코드 스캔",
-        "details": "박스를 트럭에 싣기 전에 박스 하나하나 빠짐없이 바코드를 스캔한다.",
+        "title": "짐 적재 순서 준수",
+        "details": "트럭에 짐을 실을 때는 도착지가 먼 짐을 먼저 안쪽에, 도착지가 가까운 짐은 나중에 입구 쪽에 싣는다.",
         "inferred": false,
         "sourceTimestamp": {
-          "start": 170,
-          "end": 220
+          "start": 188,
+          "end": 236
         },
         "confidence": "high"
       },
       {
         "step": 4,
-        "title": "이중 스캔 경고 발생 시 처리",
-        "details": "스캐너에서 이중 스캔 경고가 뜨면 해당 박스를 옆으로 빼 놓고 즉시 반장을 호출한다.",
+        "title": "박스 바코드 스캔",
+        "details": "박스 하나하나 빠짐없이 바코드를 스캔한다.",
         "inferred": false,
         "sourceTimestamp": {
-          "start": 220,
-          "end": 270
+          "start": 248,
+          "end": 298
         },
         "confidence": "high"
       },
       {
         "step": 5,
-        "title": "파손 박스(이상화물) 처리",
-        "details": "파손된 박스가 발견되면 ① 이상화물 구역으로 이동 → ② 사진 촬영 → ③ 스캐너 메뉴에서 '이상'으로 등록. 이 순서를 반드시 지킨다.",
+        "title": "이중 스캔 경고 처리",
+        "details": "스캐너에서 이중 스캔 경고가 뜨면 해당 박스를 옆으로 빼놓고 반장을 호출한다.",
         "inferred": false,
         "sourceTimestamp": {
-          "start": 270,
-          "end": 330
+          "start": 248,
+          "end": 279
         },
         "confidence": "high"
       },
       {
         "step": 6,
-        "title": "중량물 2인 1조 처리",
-        "details": "25kg 이상의 중량물은 혼자 들지 않고 반드시 2인 1조로 든다.",
+        "title": "파손 박스 처리",
+        "details": "파손된 박스가 발견되면 ① 이상화물 구역으로 옮기고 ② 사진을 찍은 뒤 ③ 스캐너 메뉴에서 '이상'으로 등록한다. 이 순서를 반드시 지킨다.",
         "inferred": false,
         "sourceTimestamp": {
-          "start": 330,
-          "end": 375
+          "start": 316,
+          "end": 345
         },
         "confidence": "high"
       },
       {
         "step": 7,
-        "title": "식사 및 휴식",
-        "details": "• 식사: 23:30~00:00 (30분)\n• 휴식: 03:00~03:10 (10분)\n자정에 작업을 재개하고 이후 새벽까지 계속 작업한다.",
+        "title": "중량물 2인 1조 운반",
+        "details": "25kg 이상 중량물은 혼자 들지 않고 반드시 2인 1조로 운반한다. 혼자 들 수 있을 것 같아도 25kg 이상이면 동일하게 적용한다.",
         "inferred": false,
         "sourceTimestamp": {
-          "start": 375,
-          "end": 430
+          "start": 370,
+          "end": 408
         },
         "confidence": "high"
       },
       {
         "step": 8,
-        "title": "스캐너 반납 및 퇴근 준비",
-        "details": "새벽 5시 약 10분 전(04:50경)에 스캐너를 충전 거치대에 올려놓아 반납한다. 아무 데나 두지 말고 반드시 거치대에 반납한다. 이후 퇴근 준비를 한다.",
+        "title": "식사 및 휴식",
+        "details": "23:30~24:00 식사, 03:00에 10분 휴식. 자정에 작업을 재개하고 새벽까지 이어간다.",
         "inferred": false,
         "sourceTimestamp": {
-          "start": 470,
-          "end": 535
+          "start": 434,
+          "end": 466
+        },
+        "confidence": "high"
+      },
+      {
+        "step": 9,
+        "title": "스캐너 반납 및 퇴근 준비",
+        "details": "새벽 5시 약 10분 전(04:50경)에 스캐너를 충전 거치대에 올려놓고 퇴근 준비를 한다. 스캐너를 아무 곳에나 두거나 가져가지 않는다.",
+        "inferred": false,
+        "sourceTimestamp": {
+          "start": 532,
+          "end": 572
         },
         "confidence": "high"
       }
@@ -107,92 +118,92 @@
       {
         "name": "안전화",
         "location": null,
-        "notes": "출근 시 반드시 착용. 미착용 시 당일 작업 투입 불가.",
+        "notes": "출근 시 반드시 지참 및 착용. 미착용 시 작업 투입 불가.",
         "sourceTimestamp": {
-          "start": 35,
-          "end": 85
+          "start": 56,
+          "end": 114
         },
         "confidence": "high"
       },
       {
         "name": "안전조끼",
         "location": null,
-        "notes": "출근 시 반드시 착용. 미착용 시 당일 작업 투입 불가.",
+        "notes": "출근 시 반드시 지참 및 착용. 미착용 시 작업 투입 불가.",
         "sourceTimestamp": {
-          "start": 35,
-          "end": 85
+          "start": 56,
+          "end": 114
         },
         "confidence": "high"
       },
       {
-        "name": "스캐너(바코드 스캐너)",
-        "location": "충전 거치대(퇴근 전 반납 장소)",
-        "notes": "박스 스캔 및 이상화물 등록에 사용. 퇴근 전 충전 거치대에 반납 필수.",
+        "name": "스캐너(바코드)",
+        "location": "충전 거치대(반납 장소)",
+        "notes": "박스 스캔 및 이상 등록에 사용. 퇴근 전 충전 거치대에 반납. 가져가지 않음.",
         "sourceTimestamp": {
-          "start": 170,
-          "end": 535
+          "start": 248,
+          "end": 572
         },
         "confidence": "high"
       },
       {
         "name": "이상화물 구역",
-        "location": "작업장 내 별도 구역",
-        "notes": "파손 박스를 이동시키는 지정 구역.",
+        "location": "센터 내 별도 구역",
+        "notes": "파손 박스를 옮기는 지정 구역.",
         "sourceTimestamp": {
-          "start": 270,
-          "end": 330
+          "start": 316,
+          "end": 345
         },
         "confidence": "high"
       }
     ],
     "routines": [
       {
-        "title": "야간 상하차 근무 시간",
-        "when": "매일 20:00~05:00",
-        "details": "저녁 8시 출근, 새벽 5시 퇴근.",
+        "title": "야간 근무 시간",
+        "when": "20:00~05:00 (매일)",
+        "details": null,
         "sourceTimestamp": {
-          "start": 35,
-          "end": 35
+          "start": 56,
+          "end": 96
         },
         "confidence": "high"
       },
       {
-        "title": "상차 작업 시작",
-        "when": "매일 20:10",
-        "details": "트럭 상차 작업 시작.",
+        "title": "상차 시작",
+        "when": "20:10",
+        "details": "안전장비 확인 완료 후 상차 시작.",
         "sourceTimestamp": {
-          "start": 85,
-          "end": 110
+          "start": 120,
+          "end": 154
         },
         "confidence": "high"
       },
       {
         "title": "식사 시간",
-        "when": "매일 23:30~00:00",
-        "details": "30분간 식사 후 자정에 작업 재개.",
+        "when": "23:30~24:00",
+        "details": "식사 후 자정에 작업 재개.",
         "sourceTimestamp": {
-          "start": 375,
-          "end": 410
+          "start": 434,
+          "end": 466
         },
         "confidence": "high"
       },
       {
         "title": "휴식 시간",
-        "when": "매일 03:00 (10분)",
-        "details": "새벽 3시에 10분 휴식.",
+        "when": "03:00 (10분)",
+        "details": "새벽 3시에 10분간 짧은 휴식.",
         "sourceTimestamp": {
-          "start": 410,
-          "end": 430
+          "start": 434,
+          "end": 466
         },
         "confidence": "high"
       },
       {
         "title": "스캐너 반납",
-        "when": "매일 04:50경 (퇴근 10분 전)",
+        "when": "04:50경 (퇴근 약 10분 전)",
         "details": "충전 거치대에 스캐너 반납 후 퇴근 준비.",
         "sourceTimestamp": {
-          "start": 470,
-          "end": 535
+          "start": 532,
+          "end": 572
         },
         "confidence": "high"
       }
@@ -204,8 +215,8 @@
         "contact": null,
         "relationship": "현장 관리자",
         "sourceTimestamp": {
-          "start": 220,
-          "end": 270
+          "start": 248,
+          "end": 279
         },
         "confidence": "high"
       }
@@ -213,62 +224,62 @@
     "exceptions": [
       {
         "situation": "스캐너에서 이중 스캔 경고가 뜰 때",
-        "tip": "해당 박스를 옆으로 빼 놓고 반장을 호출한다. 임의로 처리하지 않는다.",
+        "tip": "해당 박스를 옆으로 빼놓고 반장을 호출한다. 임의로 처리하지 않는다.",
         "sourceTimestamp": {
-          "start": 220,
-          "end": 270
+          "start": 248,
+          "end": 279
         },
         "confidence": "high"
       },
       {
-        "situation": "파손된 박스가 발견됐을 때",
-        "tip": "이상화물 구역으로 이동 → 사진 촬영 → 스캐너 '이상' 등록 순서로 처리한다.",
+        "situation": "파손된 박스가 발견될 때",
+        "tip": "이상화물 구역으로 옮긴 뒤 사진을 찍고, 스캐너 메뉴에서 '이상'으로 등록한다. 순서(옮기기 → 사진 → 이상 등록)를 지킨다.",
         "sourceTimestamp": {
-          "start": 270,
-          "end": 330
+          "start": 316,
+          "end": 345
         },
         "confidence": "high"
       },
       {
-        "situation": "25kg 이상 중량물을 들어야 할 때",
-        "tip": "혼자 들지 않고 반드시 옆 사람과 2인 1조로 든다.",
+        "situation": "혼자 들 수 있을 것 같은 무게의 박스가 25kg 이상일 때",
+        "tip": "느낌과 관계없이 25kg 이상이면 반드시 옆 사람과 2인 1조로 운반한다.",
         "sourceTimestamp": {
-          "start": 330,
-          "end": 375
+          "start": 390,
+          "end": 408
         },
         "confidence": "high"
       }
     ],
     "cautions": [
       {
-        "content": "안전화와 안전조끼는 출근 시 반드시 착용해야 하며, 미착용 시 당일 작업 투입이 불가하다. 두 가지 모두 직접 챙겨 와야 한다.",
+        "content": "안전화와 안전조끼는 둘 다 착용해야 한다. 하나라도 미착용 시 그날 작업에 투입될 수 없으므로 출근 시 반드시 지참한다.",
         "sourceTimestamp": {
-          "start": 35,
-          "end": 85
+          "start": 56,
+          "end": 114
         },
         "confidence": "high"
       },
       {
-        "content": "박스 적재 순서: 도착지가 먼 짐은 트럭 안쪽, 가까운 짐은 입구 쪽에 실어야 한다. 순서가 바뀌지 않도록 주의한다.",
+        "content": "박스 적재 순서: 도착지가 먼 짐은 트럭 안쪽, 가까운 짐은 입구 쪽. 순서를 반드시 지킨다.",
         "sourceTimestamp": {
-          "start": 130,
-          "end": 170
+          "start": 188,
+          "end": 236
         },
         "confidence": "high"
       },
       {
-        "content": "박스는 하나도 빠짐없이 전부 바코드 스캔해야 한다.",
+        "content": "박스 스캔은 한 개도 빠짐없이 전부 해야 한다.",
         "sourceTimestamp": {
-          "start": 170,
-          "end": 220
+          "start": 248,
+          "end": 298
         },
         "confidence": "high"
       },
       {
-        "content": "스캐너는 퇴근 시 아무 데나 두지 말고 반드시 충전 거치대에 반납해야 한다.",
+        "content": "스캐너는 퇴근 시 충전 거치대에 반납해야 한다. 아무 곳에나 두거나 가져가지 않는다.",
         "sourceTimestamp": {
-          "start": 470,
-          "end": 535
+          "start": 532,
+          "end": 572
         },
         "confidence": "high"
       }
@@ -278,8 +289,8 @@
   "meta": {
     "model": "claude-sonnet-4-6",
     "promptVersion": "structure-v2",
-    "inputTokens": 6031,
-    "outputTokens": 2409,
+    "inputTokens": 8363,
+    "outputTokens": 2399,
     "attempts": 1
   }
 }

@@ -4,109 +4,112 @@
   "store_name": "보리밭제과 (베이커리 마감)",
   "document": {
     "overview": {
-      "summary": "보리밭제과 마감 근무(오후 3시~오후 9시 30분) 인수인계 영상입니다. 영업 종료(오후 9시) 후 남은 빵 분류·폐기 등록, 오븐 냉각, 출입문 잠금·셔터 하강, 진열 트레이 세척, 집게 소독, 정산 및 시재 입금 봉투 처리까지의 마감 절차를 안내합니다.",
-      "cycle": "매일(마감 근무 시)",
+      "summary": "보리밭제과 마감 근무(오후 3시~9시 30분) 인수인계 영상. 영업 종료 후 남은 빵 분류·폐기 등록, 오븐 냉각, 출입문 잠금·셔터, 진열 트레이 세척, 집게 소독, 현금 정산 및 입금 봉투 처리까지의 절차를 안내한다.",
+      "cycle": "매일 마감 시",
       "importance": null,
       "sourceTimestamp": {
         "start": 0,
-        "end": 30
+        "end": 46
       },
       "confidence": "high"
     },
     "procedures": [
       {
         "step": 1,
-        "title": "생크림 제품 할인 스티커 부착",
-        "details": "오후 8시 30분부터 생크림이 들어간 제품 전체에 20% 할인 스티커를 붙인다. 영업 종료 전 마지막 판매 촉진 조치이므로 시간을 반드시 확인한다.",
+        "title": "생크림 제품에 할인 스티커 부착",
+        "details": "오후 8시 30분부터 생크림이 들어간 제품 전체에 20% 할인 스티커를 붙인다.",
         "inferred": false,
         "sourceTimestamp": {
-          "start": 200,
-          "end": 245
+          "start": 268,
+          "end": 308
         },
         "confidence": "high"
       },
       {
         "step": 2,
         "title": "영업 종료 후 남은 빵 분류",
-        "details": "오후 9시 영업 종료 후 남은 빵을 분류한다. ① 생크림·크림 함유 빵(크림빵, 생크림 롤 등) → 당일 전량 폐기. ② 식빵·바게트 → 별도 보관(다음 날 오전 '어제빵 코너'에서 30% 할인 판매). ③ 홀케이크 → 제조일 포함 이틀까지 판매 가능, 제조일 포함 3일째 오전 폐기.",
+        "details": "오후 9시 영업 종료 후 남은 빵을 분류한다. ① 크림·생크림 들어간 빵(크림빵, 생크림 롤 등)은 전량 폐기한다. ② 식빵·바게트는 버리지 않고 따로 보관하여 다음 날 아침 '어제빵 코너'에 30% 할인으로 내놓는다.",
         "inferred": false,
         "sourceTimestamp": {
-          "start": 65,
-          "end": 175
+          "start": 94,
+          "end": 157
         },
         "confidence": "high"
       },
       {
         "step": 3,
-        "title": "폐기 품목 태블릿 등록",
-        "details": "카운터에 있는 태블릿의 '폐기 등록' 화면에서 버린 품목명, 수량, 폐기 사유를 입력한다.",
+        "title": "홀케이크 유통 기한 확인 및 폐기",
+        "details": "홀케이크는 만든 날을 포함하여 이틀까지 판매한다. 사흘째 오전에 폐기한다. (예: 월요일 제조 → 화요일까지 판매 → 수요일 오전 폐기)",
         "inferred": false,
         "sourceTimestamp": {
-          "start": 158,
-          "end": 200
+          "start": 168,
+          "end": 219
         },
         "confidence": "high"
       },
       {
         "step": 4,
-        "title": "오븐 문 열어 냉각",
-        "details": "오후 9시 영업 종료 직후 오븐 문을 열어 20분간 그대로 두어 냉각시킨다. 바로 끄고 문을 닫으면 안 된다. 냉각 중 다른 정리 작업을 병행한다.",
+        "title": "태블릿에 폐기 등록",
+        "details": "카운터에 있는 태블릿의 '폐기 등록' 화면에서 품목, 수량, 사유를 입력한다.",
         "inferred": false,
         "sourceTimestamp": {
-          "start": 245,
-          "end": 290
+          "start": 231,
+          "end": 268
         },
         "confidence": "high"
       },
       {
         "step": 5,
-        "title": "출입문 잠금 및 셔터 하강",
-        "details": "오후 9시 10분이 되면 출입문을 잠그고 셔터를 내린다.",
+        "title": "오븐 문 열어 냉각",
+        "details": "오후 9시 영업 종료 직후 오븐 문을 열어 20분간 식힌다. 바로 끄고 닫지 않는다. 냉각이 진행되는 동안 다른 정리 작업을 병행한다.",
         "inferred": false,
         "sourceTimestamp": {
-          "start": 290,
-          "end": 330
+          "start": 325,
+          "end": 354
         },
         "confidence": "high"
       },
       {
         "step": 6,
-        "title": "진열 트레이 세척",
-        "details": "진열대의 트레이를 하나도 남기지 않고 전부 꺼내 세척실로 옮긴 뒤 모두 닦는다.",
+        "title": "출입문 잠금 및 셔터 내리기",
+        "details": "오후 9시 10분에 출입문을 잠그고 셔터를 내린다.",
         "inferred": false,
         "sourceTimestamp": {
-          "start": 330,
-          "end": 375
+          "start": 377,
+          "end": 414
         },
         "confidence": "high"
       },
       {
         "step": 7,
-        "title": "빵 집게 소독수 침지",
-        "details": "빵 집게를 소독수에 30분간 담가 둔다. 담근 후 다른 작업을 진행하고 30분 후 꺼낸다.",
+        "title": "진열 트레이 세척",
+        "details": "진열 트레이를 하나도 남기지 않고 전부 빼서 세척실로 가져가 닦는다.",
         "inferred": false,
         "sourceTimestamp": {
-          "start": 375,
-          "end": 410
+          "start": 412,
+          "end": 456
         },
         "confidence": "high"
       },
       {
         "step": 8,
-        "title": "집게 소독수에서 꺼내기",
-        "details": "소독수에 담근 지 30분이 지나면 집게를 꺼낸다.",
-        "inferred": true,
-        "sourceTimestamp": null,
-        "confidence": "needs_review"
+        "title": "빵 집게 소독수 담그기",
+        "details": "빵 집게를 소독수에 30분 동안 담가 놓는다.",
+        "inferred": false,
+        "sourceTimestamp": {
+          "start": 456,
+          "end": 476
+        },
+        "confidence": "high"
       },
       {
         "step": 9,
-        "title": "정산 및 시재 금고 정리",
-        "details": "정산을 완료한 후 금고에 시재 10만 원을 남기고, 나머지 현금은 전부 입금 봉투에 넣는다.",
+        "title": "현금 정산 및 입금 봉투 처리",
+        "details": "정산을 완료한 후 금고에 시재 10만 원만 남기고, 나머지 현금은 전부 입금 봉투에 넣는다.",
         "inferred": false,
         "sourceTimestamp": {
-          "start": 410,
-          "end": 460
+          "start": 463,
+          "end": 508
         },
         "confidence": "high"
       }
@@ -117,68 +120,78 @@
         "location": "카운터",
         "notes": "'폐기 등록' 화면에서 품목·수량·사유 입력",
         "sourceTimestamp": {
-          "start": 158,
-          "end": 200
+          "start": 231,
+          "end": 268
         },
         "confidence": "high"
       },
       {
         "name": "오븐",
         "location": null,
-        "notes": "영업 종료 후 문을 열어 20분 냉각 후 끔",
+        "notes": "영업 종료 후 문을 열어 20분간 냉각시킨 뒤 끈다",
         "sourceTimestamp": {
-          "start": 245,
-          "end": 290
+          "start": 325,
+          "end": 354
         },
         "confidence": "high"
       },
       {
         "name": "진열 트레이",
         "location": "진열대 → 세척실",
-        "notes": "마감 시 전량 세척실로 이동하여 세척",
+        "notes": "마감 시 전부 세척실로 이동하여 세척",
         "sourceTimestamp": {
-          "start": 330,
-          "end": 375
+          "start": 412,
+          "end": 456
         },
         "confidence": "high"
       },
       {
         "name": "빵 집게",
-        "location": null,
-        "notes": "소독수에 30분 침지",
+        "location": "세척실",
+        "notes": "소독수에 30분 담가 소독",
         "sourceTimestamp": {
-          "start": 375,
-          "end": 410
+          "start": 456,
+          "end": 476
         },
         "confidence": "high"
       },
       {
         "name": "금고",
         "location": null,
-        "notes": "시재 10만 원 보관, 나머지는 입금 봉투에 분리",
+        "notes": "마감 정산 후 시재 10만 원만 보관, 나머지는 입금 봉투에 넣음",
         "sourceTimestamp": {
-          "start": 410,
-          "end": 460
+          "start": 463,
+          "end": 508
         },
         "confidence": "high"
       },
       {
         "name": "입금 봉투",
         "location": null,
-        "notes": "정산 후 잉여 현금 전액 봉입",
+        "notes": "정산 후 시재 초과 현금 전액 담아 처리",
         "sourceTimestamp": {
-          "start": 410,
-          "end": 460
+          "start": 463,
+          "end": 508
         },
         "confidence": "high"
       },
       {
         "name": "20% 할인 스티커",
         "location": null,
-        "notes": "생크림 제품 마감 할인용, 오후 8시 30분에 부착",
+        "notes": "8시 30분에 생크림 제품에 부착",
         "sourceTimestamp": {
-          "start": 200,
-          "end": 245
+          "start": 268,
+          "end": 308
+        },
+        "confidence": "high"
+      },
+      {
+        "name": "출입문 및 셔터",
+        "location": "가게 입구",
+        "notes": "9시 10분에 잠금 및 셔터 하강",
+        "sourceTimestamp": {
+          "start": 377,
+          "end": 414
         },
         "confidence": "high"
       }
@@ -187,40 +200,60 @@
       {
         "title": "생크림 제품 할인 스티커 부착",
         "when": "매일 오후 8시 30분",
-        "details": "생크림 함유 제품에 20% 할인 스티커 부착. 이 시간을 놓치면 스티커 없이 판매하게 되므로 반드시 시계를 확인한다.",
+        "details": "생크림 들어간 제품 전체에 20% 할인 스티커 부착",
         "sourceTimestamp": {
-          "start": 200,
-          "end": 245
+          "start": 268,
+          "end": 308
         },
         "confidence": "high"
       },
       {
         "title": "영업 종료",
         "when": "매일 오후 9시",
-        "details": "영업 종료 후 남은 빵 분류·폐기 등록, 오븐 냉각 시작",
+        "details": "영업 종료 후 남은 빵 분류, 폐기 등록, 오븐 냉각 시작",
         "sourceTimestamp": {
-          "start": 30,
-          "end": 65
+          "start": 46,
+          "end": 66
         },
         "confidence": "high"
       },
       {
         "title": "출입문 잠금 및 셔터 하강",
         "when": "매일 오후 9시 10분",
-        "details": "출입문 잠금 후 셔터 내리기",
+        "details": "출입문 잠금 후 셔터를 내린다",
         "sourceTimestamp": {
-          "start": 290,
-          "end": 330
+          "start": 377,
+          "end": 414
+        },
+        "confidence": "high"
+      },
+      {
+        "title": "어제빵 코너 운영",
+        "when": "매일 오전 (전날 마감 이후)",
+        "details": "전날 마감 시 보관한 식빵·바게트를 30% 할인으로 판매",
+        "sourceTimestamp": {
+          "start": 94,
+          "end": 157
+        },
+        "confidence": "high"
+      },
+      {
+        "title": "홀케이크 폐기",
+        "when": "제조일 기준 사흘째 오전",
+        "details": "만든 날 포함 이틀 판매 후 사흘째 오전에 폐기",
+        "sourceTimestamp": {
+          "start": 168,
+          "end": 219
         },
         "confidence": "high"
       },
       {
         "title": "마감 근무 시간",
-        "when": "매일 오후 3시~오후 9시 30분",
-        "details": "오후 3시 출근, 오후 9시 30분 퇴근",
+        "when": "매일 오후 3시 ~ 오후 9시 30분",
+        "details": "영업은 오후 9시에 종료, 이후 마감 작업 진행",
         "sourceTimestamp": {
-          "start": 30,
-          "end": 65
+          "start": 46,
+          "end": 66
         },
         "confidence": "high"
       }
@@ -228,46 +261,72 @@
     "contacts": [],
     "exceptions": [
       {
-        "situation": "홀케이크 폐기 시점 계산이 헷갈릴 때",
-        "tip": "제조일(만든 날)을 1일로 포함하여 계산한다. 제조일 포함 이틀까지 판매, 사흘째 오전에 폐기한다.",
+        "situation": "크림·생크림이 들어간 빵이 마감 후 남았을 때",
+        "tip": "어제빵 코너에 내놓지 않고 전량 폐기한다. 크림빵을 어제빵으로 판매하면 안 된다.",
         "sourceTimestamp": {
-          "start": 112,
-          "end": 158
+          "start": 94,
+          "end": 157
         },
         "confidence": "high"
       },
       {
-        "situation": "오븐 냉각 중(약 20분) 할 일을 모를 때",
-        "tip": "진열 트레이 세척, 집게 소독수 침지 등 다른 마감 정리를 병행한다. 처음엔 어색하지만 금방 손에 익는다.",
+        "situation": "홀케이크 폐기 시점을 계산할 때 헷갈릴 경우",
+        "tip": "'만든 날'을 1일차로 포함하여 세어야 한다. 예) 월요일 제조 → 화요일까지 판매 → 수요일 오전 폐기",
         "sourceTimestamp": {
-          "start": 245,
-          "end": 465
+          "start": 168,
+          "end": 219
+        },
+        "confidence": "high"
+      },
+      {
+        "situation": "오븐을 끄기 전",
+        "tip": "반드시 문을 열어서 20분간 식힌 뒤 끈다. 바로 닫고 끄면 안 된다.",
+        "sourceTimestamp": {
+          "start": 325,
+          "end": 354
+        },
+        "confidence": "high"
+      },
+      {
+        "situation": "정산 후 시재가 10만 원보다 많을 때",
+        "tip": "초과분은 전부 입금 봉투에 넣어야 한다. 금고에는 정확히 10만 원만 남긴다.",
+        "sourceTimestamp": {
+          "start": 463,
+          "end": 508
         },
         "confidence": "high"
       }
     ],
     "cautions": [
       {
-        "content": "생크림·크림 함유 빵은 당일 판매 불가 시 반드시 전량 폐기한다. 다음 날로 이월하지 않는다.",
+        "content": "크림·생크림 들어간 빵은 당일 폐기 원칙이며, 어제빵 코너 대상이 아니다.",
         "sourceTimestamp": {
-          "start": 65,
-          "end": 112
+          "start": 94,
+          "end": 157
         },
         "confidence": "high"
       },
       {
-        "content": "오븐을 끄기 전 문을 열어 20분간 냉각해야 한다. 바로 문을 닫은 채 끄지 않는다.",
+        "content": "폐기 전 반드시 태블릿 '폐기 등록' 화면에 품목·수량·사유를 입력해야 한다.",
         "sourceTimestamp": {
-          "start": 245,
-          "end": 290
+          "start": 231,
+          "end": 268
         },
         "confidence": "high"
       },
       {
-        "content": "금고에는 반드시 시재 10만 원만 남기고, 나머지 현금은 전부 입금 봉투에 넣는다.",
+        "content": "금고에는 시재 10만 원만 남기고 나머지는 입금 봉투에 전액 넣는다.",
         "sourceTimestamp": {
-          "start": 410,
-          "end": 460
+          "start": 463,
+          "end": 508
+        },
+        "confidence": "high"
+      },
+      {
+        "content": "오븐은 반드시 문을 열어 20분 냉각 후 끈다.",
+        "sourceTimestamp": {
+          "start": 325,
+          "end": 354
         },
         "confidence": "high"
       }
@@ -277,8 +336,8 @@
   "meta": {
     "model": "claude-sonnet-4-6",
     "promptVersion": "structure-v2",
-    "inputTokens": 5951,
-    "outputTokens": 2451,
+    "inputTokens": 8101,
+    "outputTokens": 2765,
     "attempts": 1
   }
 }

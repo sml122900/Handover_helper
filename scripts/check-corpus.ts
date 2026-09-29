@@ -11,6 +11,7 @@ import {
   FACTS,
   GAP_KEYWORDS,
   GAP_PATTERNS,
+  K,
   STORES,
   STORE_NAMES,
   type StoreId,
@@ -137,6 +138,8 @@ type Side = {
   char_start: number | null;
   char_end: number | null;
   video_ts: { start: number | null; end: number | null };
+  reference_video_ts?: { start: number | null; end: number | null };
+  spans?: { char_start: number; char_end: number; video_ts: { start: number | null; end: number | null } }[];
   status: "full" | "partial" | "missing";
   missing_anchors: string[];
   preview: string | null;
@@ -145,19 +148,26 @@ type Side = {
 function locate(file: string, text: string, anchors: RegExp[], isDoc: boolean): Side {
   const { span, missing } = findWindow(text, anchors);
   if (!span) {
-    return { file, char_start: null, char_end: null, video_ts: { start: null, end: null }, status: "missing", missing_anchors: missing, preview: null };
+    return { file, char_start: null, char_end: null, video_ts: { start: null, end: null }, ...(isDoc ? { reference_video_ts: { start: null, end: null } } : {}), status: "missing", missing_anchors: missing, preview: null };
   }
   return {
     file,
     char_start: span.start,
     char_end: span.end,
-    video_ts: isDoc ? docTs(text, span.start) : transcriptTs(text, span.start),
+    video_ts: isDoc ? { start: null, end: null } : transcriptTs(text, span.start),
+    ...(isDoc ? { reference_video_ts: docTs(text, span.start) } : {}),
     status: missing.length === 0 ? "full" : "partial",
     missing_anchors: missing,
     preview: text.slice(span.start, Math.min(span.end, span.start + 80)).replace(/\n/g, " "),
   };
 }
 
+function paragraphs(txt: string): { start: number; end: number }[] {
+  const marks = [...txt.matchAll(/^\[\d{1,2}:\d{2}\]/gm)].map((m) => m.index!);
+  return marks.map((s, i) => ({ start: s, end: marks[i + 1] ?? txt.length }));
+}
+let tsMismatch = 0;
+const tsMismatchList: string[] = [];
 const spans: Record<string, unknown> = {};
 const report: string[] = [];
 let problems = 0;
@@ -174,7 +184,28 @@ for (const id of STORES) {
   for (const [fid, a] of Object.entries(FACTS[id])) {
     const t = locate(`${DIR}/${id}.txt`, txt, a.t, false);
     const d = locate(`${DIR}/${id}.md`, md, a.d, true);
-    spans[fid] = { store_id: id, transcript: t, document: d };
+    // 재언급 포함 전체 정답 구간: k 표현이 전부 들어 있는 문단 + 주 구간이 속한 문단
+    const ps = paragraphs(txt).filter((p) => {
+      const chunk = txt.slice(p.start, p.end);
+      const hit = (K[fid] ?? []).every((re) => re.test(chunk));
+      const primary = t.char_start !== null && t.char_start >= p.start && t.char_start < p.end;
+      return hit || primary;
+    });
+    t.spans = ps.map((p) => ({ char_start: p.start, char_end: p.end, video_ts: transcriptTs(txt, p.start) }));
+    // 문서 참고 타임스탬프가 어느 트랜스크립트 정답 문단과도 ±5초 내 겹치지 않으면 어긋남
+    const rd = d.reference_video_ts;
+    const okTs =
+      rd?.start != null &&
+      t.spans.some((sp) => {
+        const a = sp.video_ts.start ?? 0;
+        const b = sp.video_ts.end ?? a + 60;
+        return rd.start! <= b + 5 && (rd.end ?? rd.start!) >= a - 5;
+      });
+    if (!okTs) {
+      tsMismatch++;
+      tsMismatchList.push(fid);
+    }
+    spans[fid] = { store_id: id, video_ts: t.video_ts, transcript: t, document: d };
     if (t.status !== "full") flag(`${fid} 트랜스크립트 ${t.status}: ${t.missing_anchors.join(" | ")}`);
     if (d.status !== "full") flag(`${fid} 문서 ${d.status}: ${d.missing_anchors.join(" | ")}`);
   }
@@ -231,7 +262,7 @@ writeFileSync(
     {
       virtual: true,
       _note:
-        "가상 데이터. 사실 ID(corpus-spec.md) → 트랜스크립트(.txt)·문서(.md) 원문 위치. char_start/char_end는 UTF-16 코드 단위(LF 줄바꿈 기준), video_ts는 초. 문서의 위치는 가상 데이터 머리말을 포함한 .md 파일 기준. status=partial/missing이면 문서에서 사실(일부)이 빠진 것.",
+        "가상 데이터. 사실 ID(corpus-spec.md) → 트랜스크립트(.txt)·문서(.md) 원문 위치. char_start/char_end는 UTF-16 코드 단위(LF 줄바꿈 기준), video_ts(정답 위치의 영상 시각, 초)는 트랜스크립트 기준이며 문서의 ts는 document.reference_video_ts에 참고값으로만 보관. transcript.spans는 재언급 포함 전체 정답 문단. 문서의 위치는 가상 데이터 머리말을 포함한 .md 파일 기준. status=partial/missing이면 문서에서 사실(일부)이 빠진 것.",
       facts: spans,
     },
     null,
@@ -240,6 +271,8 @@ writeFileSync(
   "utf-8"
 );
 
+report.push(`
+## 문서 참고 타임스탬프 어긋남: ${tsMismatch}/${Object.keys(spans).length}  [${tsMismatchList.join(", ")}]`);
 console.log(report.join("\n"));
 console.log(`\n사실 ${Object.keys(spans).length}개 · 문제 ${problems}건 → eval/fact-spans.json`);
 process.exitCode = problems > 0 ? 1 : 0;
