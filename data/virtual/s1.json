@@ -128,7 +128,7 @@
       {
         "name": "머신 전용 세제",
         "location": "에스프레소 머신 주변 (정확한 위치 미언급)",
-        "notes": "백플러시 1회당 한 스푼 사용",
+        "notes": "전용 세제 1스푼을 넣고 백플러시 5회 반복",
         "sourceTimestamp": {
           "start": 249,
           "end": 264
@@ -342,5 +342,14 @@
     "inputTokens": 8272,
     "outputTokens": 3139,
     "attempts": 1
-  }
+  },
+  "manual_corrections": [
+    {
+      "note": "수동 정정: 파이프라인 수치 왜곡",
+      "location": "document.equipment[머신 전용 세제].notes",
+      "before": "백플러시 1회당 한 스푼 사용",
+      "after": "전용 세제 1스푼을 넣고 백플러시 5회 반복",
+      "reason": "평가 대상은 에이전트이므로 코퍼스 오류가 에이전트 점수에 섞이지 않게 함. 파이프라인 오류 사례는 PROGRESS.md 개선 후보에 유지"
+    }
+  ]
 }

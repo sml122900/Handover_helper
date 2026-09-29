@@ -33,10 +33,12 @@ const SPEC_STEP_IDS: Record<StoreId, string[]> = {
 function finalize(id: StoreId): { md: string; txt: string } {
   const outMd = `output/${id}.md`;
   const outJson = `output/${id}.json`;
-  if (existsSync(outMd)) {
+  const manual = existsSync(`${DIR}/${id}.md`) && readFileSync(`${DIR}/${id}.md`, "utf-8").includes("수동 정정");
+  if (manual) console.log(`  (${id}: 수동 정정 파일 — output/ 으로 덮어쓰지 않음)`);
+  if (!manual && existsSync(outMd)) {
     writeFileSync(`${DIR}/${id}.md`, BANNER(id) + readFileSync(outMd, "utf-8").replace(/\r\n/g, "\n"), "utf-8");
   }
-  if (existsSync(outJson)) {
+  if (!manual && existsSync(outJson)) {
     const j = JSON.parse(readFileSync(outJson, "utf-8"));
     writeFileSync(`${DIR}/${id}.json`, JSON.stringify({ virtual: true, store_id: id, store_name: STORE_NAMES[id], ...j }, null, 2), "utf-8");
   }
