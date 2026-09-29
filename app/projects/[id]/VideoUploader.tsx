@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { prepareUpload, completeUpload } from "./upload-actions";
+import { ALLOWED_EXTS, oversizeMessage } from "@/lib/upload-validate";
 import { probeDuration, uploadWithProgress } from "@/lib/upload-client";
 
 export function VideoUploader({ projectId }: { projectId: string }) {
@@ -84,7 +85,7 @@ export function VideoUploader({ projectId }: { projectId: string }) {
             </button>
           </div>
           <p className="mt-2 text-xs text-[var(--text-sub)]">
-            mp4 · mov · webm · m4a (영상/오디오) 또는 txt (트랜스크립트) — Free 플랜 총 20분
+            mp4 · mov · webm · m4a (영상/오디오) 또는 txt (트랜스크립트) — 파일당 최대 500MB · Free 플랜 총 20분
           </p>
         </>
       ) : (

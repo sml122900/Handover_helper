@@ -25,7 +25,7 @@ const TIMEOUT_MS = Number(process.env.E2E_TIMEOUT_MIN ?? 20) * 60_000;
 const CONTENT_TYPES: Record<string, string> = {
   ".txt": "text/plain",
   ".mp4": "video/mp4",
-  ".mov": "video/mp4",
+  ".mov": "video/quicktime",
   ".webm": "video/webm",
   ".m4a": "audio/mp4",
 };

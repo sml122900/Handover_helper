@@ -861,5 +861,45 @@ npm run dev
 
 ### 남은 것
 - 대용량 실영상 리스크: 영상 전체를 메모리로 받는 구조 → 1GB급 폰 영상은 Vercel 메모리·`/tmp`(512MB) 한도 위험 (스트리밍 다운로드·클라이언트 오디오 추출 검토)
+- **폰 영상 업로드 한도 (확인됨, 미착수)**: 폰 영상(수백 MB~1GB)은 Supabase 용량 한도·서버 메모리 한도에 걸림. 실측: 100MB 영상 업로드 시 HTTP 400. 해결 방향(기존 결정): 브라우저 ffmpeg.wasm으로 오디오 추출 + 프레임 캡처 후 그 결과만 전송(원본 영상 미전송). 착수 시점: 에이전트 확장(10/8) 이후. 코드 수정 없음(기록만)
 - STT 단계 실측·예상 시간 계수 보정, `enrich` 스트리밍 전환 여부(현재 15~18초라 불필요), `middleware`→`proxy` 전환
 - Phase 3 나머지: 샘플 체험 동선, 모바일·PWA·Lighthouse, CI, 약관·계정 삭제, README
+
+## Groq 401 진단 (2026-09-29, 진단 전용·코드 수정 없음)
+- 키 출처: 프로세스/사용자/시스템 환경변수 GROQ_API_KEY·HANDOVER_STT 모두 미설정. `.env`(26행)만 존재 (`.env.local`·`.env.development` 없음). Next(@next/env)는 `KEY = value` 공백 형식도 파싱 → 로드 정상. inngest-cli는 .env를 안 읽음(STT는 next dev 프로세스에서 실행)
+- 후보 간 불일치 없음(후보 1개): `gsk_Qw…` 길이 57 (공백·따옴표·BOM·비ASCII 없음). HANDOVER_STT=groq
+- getSttProvider → GroqStt 선택. 요청 호스트는 코드 하드코딩 `https://api.groq.com/openai/v1/audio/transcriptions` (다른 호스트 아님)
+- GET api.groq.com/openai/v1/models: **HTTP 401** (Groq 호출 2/3회 사용. 1회는 스크립트 정규식 오류로 빈 키 전송돼 무효 → 유효 진단은 2회차)
+- 결론: `.env`의 GROQ_API_KEY 자체를 Groq 서버가 거부(폐기·오타·불완전 복사). 코드·로딩·호스트 문제 아님. 길이 57은 Groq 통상 키(56자)보다 1자 많아 복사 오류 가능성
+- 사용자 할 일: console.groq.com/keys에서 새 키 발급 → `.env` 26행 `GROQ_API_KEY=gsk_…` 교체(공백 없이) → Vercel 환경변수 갱신 → dev 재시작
+## mov 업로드 400 수정 (2026-09-29)
+- 원인: videos 버킷 allowed_mime_types에 `video/quicktime` 없음 (0002). 사용자가 대시보드에서 수동 추가함
+- 조치: `0010_videos_mime_quicktime.sql` (update + array_append, 이미 있으면 무변경 → 재실행 안전) + ALL_MIGRATIONS.sql 반영. **사용자 할 일: 0010 실행(수동 추가분과 충돌 없음)**
+- 테스트: mov `ftyp qt  ` 브랜드 서버 매직바이트 통과 추가 (vitest 13 pass)
+- 허용 형식 대조 (버킷 / 클라이언트 / 서버):
+  - 확장자 mp4·mov·webm·m4a·txt: 클라이언트 accept, upload-actions 문구, `ALLOWED_EXTS`·안내 문구 모두 일치
+  - **불일치 1** `scripts/e2e-pipeline.ts:28` .mov를 `video/mp4`로 전송(우회) — 실제 브라우저는 `video/quicktime` 전송, e2e는 이 경로 미검증
+  - **불일치 2 (가능성)** m4a: 브라우저별 `file.type`이 `audio/x-m4a`·`audio/mp4` 외에 `audio/m4a`일 수 있음 → 버킷 목록에 없으면 400. 미확인, 실제 m4a 업로드로 확인 필요
+  - **불일치 3** 카메라 촬영 input `accept="video/*"`는 확장자 제한 없음 → 기기가 다른 컨테이너(예: 3gp) 촬영 시 서버 확장자 검사에서 거부(문구는 한국어 안내)
+  - 버킷 MIME에 `application/octet-stream` 포함이라 file.type이 빈 값이어도 통과
+- 폰 영상 서버 메모리 한도 → 위 "남은 것"에 기록됨 (ffmpeg.wasm 방향, 10/8 이후)
+
+### 갱신: 500MB 한도 반영 (2026-09-29, 위 mov 절 대체)
+- 사용자가 대시보드에서 videos 버킷 2GB → **500MB**, 전역 한도 500MB로 변경 (비용 상한 + 서버 메모리 보호)
+- `0010_videos_mime_quicktime.sql` 확장: MIME(`video/quicktime`) 추가 + `file_size_limit=524288000` update (재실행 안전). ALL_MIGRATIONS.sql 동기화. **사용자 할 일: 0010 실행**
+- 코드 일치화: `lib/upload-validate.ts` `MAX_UPLOAD_BYTES`(500MB) 단일 출처 + `oversizeMessage()` (서버 검사·클라이언트 공용). `VideoUploader`는 업로드 **전** 파일 크기 검사 → 초과 시 "파일이 너무 큽니다 (N MB, 최대 500MB). 영상을 짧게 나눠 촬영·업로드하거나 해상도를 낮춰 다시 저장하세요." 표시. `ScreenRecorder`도 녹화 blob 업로드 전 검사
+- 테스트: mov `ftyp qt  ` 통과, 500MB 경계(정확히 500MB 통과·+1 거부), oversizeMessage (vitest 전체 136 pass, tsc 0 오류)
+- 새 문구 — 사용자 검토 필요: 업로더 안내 "파일당 최대 500MB" 추가(기존 문구에 덧붙임), 용량 초과 안내 2종(영상/txt)
+- 남은 불일치(미수정): e2e-pipeline .mov를 video/mp4로 전송, m4a `audio/m4a` MIME 가능성, 카메라 input `video/*` 확장자 무제한
+- 화면 녹화(webm)는 500MB 초과 시 업로드 전 거부됨 — 장시간 녹화 시 결과 손실 가능(녹화 중 용량 경고는 미구현)
+
+### 남은 것 추가
+- **폰 영상(수백 MB~1GB) 대응**: 500MB 한도로 대용량 폰 영상은 거부됨. 해결 방향(기존 결정): 브라우저 ffmpeg.wasm 오디오 추출 + 프레임 캡처 후 그 결과만 전송(원본 미전송). 에이전트 확장(10/8) 이후 착수
+
+### 갱신: 0010 확장·e2e MIME·카메라 accept 결정 (2026-09-29, API 실호출 0회)
+- 0010에 `audio/m4a` 추가 (video/quicktime과 같은 방식: 이미 있으면 건너뜀) + 500MB 한도 유지. ALL_MIGRATIONS.sql 동기화
+- `scripts/e2e-pipeline.ts`: `.mov` → `video/quicktime` (실제 브라우저와 동일, m4a는 이미 `audio/mp4`)
+- 500MB 초과 테스트: mp4·mov·webm·m4a 모두 서버 검사(`validateUploadedObject`)·클라이언트 가드(`oversizeMessage`) 양쪽 거부 (클라이언트·서버가 같은 함수 공용)
+- **결정: 카메라 촬영 input `accept="video/*"` 유지** — 형식을 좁히면 일부 안드로이드에서 카메라가 열리지 않을 위험. 촬영 결과가 미허용 컨테이너(3gp 등)면 서버 확장자 검사에서 한국어 안내와 함께 거부됨
+- **사용자가 할 일: Supabase SQL Editor에서 `0010_videos_mime_quicktime.sql` 실행** (video/quicktime·audio/m4a·500MB 한도, 재실행 안전)
+- 새 문구 — 사용자 검토 필요 (위 500MB 절 목록과 동일): 업로더 "파일당 최대 500MB", 용량 초과 안내 2종

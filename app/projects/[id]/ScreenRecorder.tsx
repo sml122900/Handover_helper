@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { prepareUpload, completeUpload } from "./upload-actions";
 import { uploadWithProgress } from "@/lib/upload-client";
+import { oversizeMessage } from "@/lib/upload-validate";
 
 type Phase = "idle" | "recording" | "paused" | "uploading";
 
@@ -117,6 +118,8 @@ export function ScreenRecorder({ projectId }: { projectId: string }) {
       const blob = new Blob(chunksRef.current, { type: "video/webm" });
       chunksRef.current = [];
       if (blob.size === 0) throw new Error("녹화된 내용이 없습니다.");
+      const oversize = oversizeMessage("webm", blob.size);
+      if (oversize) throw new Error(oversize);
 
       // MediaRecorder webm은 duration 메타데이터가 없는 경우가 많아 측정된 경과 시간 사용
       const prep = await prepareUpload({

@@ -3,11 +3,14 @@
 
 export const ALLOWED_EXTS = new Set(["mp4", "webm", "m4a", "mov", "txt"]);
 
+/** videos 버킷 file_size_limit(0010)·Supabase 전역 한도와 동일 — 비용 상한 + 서버 메모리 보호 */
+export const MAX_UPLOAD_BYTES = 500 * 1024 ** 2;
+
 export const MAX_BYTES: Record<string, number> = {
-  mp4: 2 * 1024 ** 3, // videos 버킷 한도와 동일
-  mov: 2 * 1024 ** 3,
-  webm: 2 * 1024 ** 3,
-  m4a: 2 * 1024 ** 3,
+  mp4: MAX_UPLOAD_BYTES,
+  mov: MAX_UPLOAD_BYTES,
+  webm: MAX_UPLOAD_BYTES,
+  m4a: MAX_UPLOAD_BYTES,
   txt: 2 * 1024 ** 2, // 트랜스크립트 2MB (약 20시간 분량 한국어 발화)
 };
 
@@ -15,6 +18,15 @@ export const MAX_BYTES: Record<string, number> = {
 export const HEADER_BYTES = 16;
 
 export type UploadCheckResult = { ok: true } | { ok: false; reason: string };
+
+/** 용량 초과 시 사용자 안내 문구, 통과 시 null (클라이언트 업로드 전 가드·서버 검사 공용) */
+export function oversizeMessage(ext: string, sizeBytes: number): string | null {
+  if (sizeBytes <= MAX_BYTES[ext]) return null;
+  const mb = Math.round(sizeBytes / 1024 ** 2);
+  return ext === "txt"
+    ? `파일이 너무 큽니다 (${mb}MB, 최대 2MB). 트랜스크립트를 나눠서 업로드하세요.`
+    : `파일이 너무 큽니다 (${mb}MB, 최대 500MB). 영상을 짧게 나눠 촬영·업로드하거나 해상도를 낮춰 다시 저장하세요.`;
+}
 
 export function validateUploadedObject(args: {
   ext: string;
@@ -26,10 +38,8 @@ export function validateUploadedObject(args: {
     return { ok: false, reason: "지원하지 않는 형식입니다. mp4, mov, webm, m4a 또는 txt를 업로드하세요." };
   }
   if (sizeBytes <= 0) return { ok: false, reason: "빈 파일입니다. 파일을 확인하고 다시 업로드하세요." };
-  if (sizeBytes > MAX_BYTES[ext]) {
-    const limit = ext === "txt" ? "2MB" : "2GB";
-    return { ok: false, reason: `파일이 너무 큽니다 (최대 ${limit}). 나눠서 업로드하세요.` };
-  }
+  const oversize = oversizeMessage(ext, sizeBytes);
+  if (oversize) return { ok: false, reason: oversize };
   if (!matchesMagic(ext, head)) {
     return {
       ok: false,
