@@ -32,3 +32,4 @@ target-version = "py312"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501"] # 한글 문자열·표 행은 포매터 줄 길이에 맡긴다

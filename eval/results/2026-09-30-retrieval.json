@@ -1,0 +1,7836 @@
+{
+ "date": "2026-09-30",
+ "embedding": {
+  "provider": "voyage",
+  "model": "voyage-4"
+ },
+ "k": 5,
+ "questions": 25,
+ "chunk_counts_per_store_filter_on": {
+  "fixed150": {
+   "s1": 44,
+   "s2": 42,
+   "s3": 40,
+   "s4": 39,
+   "s5": 38
+  },
+  "procedure": {
+   "s1": 60,
+   "s2": 60,
+   "s3": 54,
+   "s4": 58,
+   "s5": 54
+  },
+  "procedure_heading": {
+   "s1": 60,
+   "s2": 60,
+   "s3": 54,
+   "s4": 58,
+   "s5": 54
+  }
+ },
+ "random_baseline_method": "해석적 계산(시드 없음): 문항별 검색 풀에서 상위 5개를 무작위 비복원 추출할 때, 사실별 적중 확률 = 1 - C(N-m,5)/C(N,5) (m=사실 구간과 겹치는 풀 내 청크 수), 문항 완전 적중 확률은 포함·배제로 정확 계산",
+ "conditions": [
+  {
+   "strategy": "fixed150",
+   "store_filter": true,
+   "questions": 25,
+   "facts": 33,
+   "recall_at_5_fact": 0.7576,
+   "hit_facts": 25,
+   "full_hit_rate": 0.84,
+   "full_hits": 21,
+   "random_recall_fact": 0.3915,
+   "random_full_hit_rate": 0.3445,
+   "mean_pool": 40.8,
+   "per_question": [
+    {
+     "id": "F01",
+     "facts": {
+      "C04": true
+     },
+     "full": true,
+     "pool": 44,
+     "top5": [
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 954,
+       "end": 1123,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.79736
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 768,
+       "end": 953,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.76555
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 2613,
+       "end": 2817,
+       "strategy": "fixed150",
+       "store": "s1",
+       "score": 0.66837
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 426,
+       "end": 631,
+       "strategy": "fixed150",
+       "store": "s1",
+       "score": 0.6253
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 1623,
+       "end": 1814,
+       "strategy": "fixed150",
+       "store": "s1",
+       "score": 0.593
+      }
+     ]
+    },
+    {
+     "id": "F02",
+     "facts": {
+      "B02": true
+     },
+     "full": true,
+     "pool": 42,
+     "top5": [
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 847,
+       "end": 1036,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.7301
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 396,
+       "end": 587,
+       "strategy": "fixed150",
+       "store": "s2",
+       "score": 0.67936
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 1037,
+       "end": 1174,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.67505
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 2163,
+       "end": 2375,
+       "strategy": "fixed150",
+       "store": "s2",
+       "score": 0.65601
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 696,
+       "end": 846,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.61536
+      }
+     ]
+    },
+    {
+     "id": "F03",
+     "facts": {
+      "M01": true
+     },
+     "full": true,
+     "pool": 40,
+     "top5": [
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 1288,
+       "end": 1476,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.37274
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 3586,
+       "end": 3732,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.36997
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 3733,
+       "end": 3834,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.36516
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 2816,
+       "end": 2946,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.3603
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 1477,
+       "end": 1667,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.35738
+      }
+     ]
+    },
+    {
+     "id": "F04",
+     "facts": {
+      "C02": false,
+      "C03": true
+     },
+     "full": false,
+     "pool": 44,
+     "top5": [
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 1336,
+       "end": 1517,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.64274
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 1420,
+       "end": 1623,
+       "strategy": "fixed150",
+       "store": "s1",
+       "score": 0.61768
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 1518,
+       "end": 1626,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.58917
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 631,
+       "end": 823,
+       "strategy": "fixed150",
+       "store": "s1",
+       "score": 0.55301
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 3013,
+       "end": 3206,
+       "strategy": "fixed150",
+       "store": "s1",
+       "score": 0.54705
+      }
+     ]
+    },
+    {
+     "id": "F05",
+     "facts": {
+      "C05": true
+     },
+     "full": true,
+     "pool": 44,
+     "top5": [
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 1841,
+       "end": 1945,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.64504
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 1717,
+       "end": 1840,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.62643
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 2613,
+       "end": 2817,
+       "strategy": "fixed150",
+       "store": "s1",
+       "score": 0.52933
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 954,
+       "end": 1123,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.45275
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 768,
+       "end": 953,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.41938
+      }
+     ]
+    },
+    {
+     "id": "F06",
+     "facts": {
+      "B01": true
+     },
+     "full": true,
+     "pool": 42,
+     "top5": [
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 696,
+       "end": 846,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.75619
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 508,
+       "end": 695,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.70458
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 396,
+       "end": 587,
+       "strategy": "fixed150",
+       "store": "s2",
+       "score": 0.64123
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 2576,
+       "end": 2771,
+       "strategy": "fixed150",
+       "store": "s2",
+       "score": 0.6177
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 2163,
+       "end": 2375,
+       "strategy": "fixed150",
+       "store": "s2",
+       "score": 0.57181
+      }
+     ]
+    },
+    {
+     "id": "F07",
+     "facts": {
+      "B06": true
+     },
+     "full": true,
+     "pool": 42,
+     "top5": [
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 2244,
+       "end": 2374,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.46538
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 982,
+       "end": 1171,
+       "strategy": "fixed150",
+       "store": "s2",
+       "score": 0.37276
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 2971,
+       "end": 3082,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.371
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 2375,
+       "end": 2528,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.34534
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 1371,
+       "end": 1571,
+       "strategy": "fixed150",
+       "store": "s2",
+       "score": 0.32591
+      }
+     ]
+    },
+    {
+     "id": "F08",
+     "facts": {
+      "M04": true
+     },
+     "full": true,
+     "pool": 40,
+     "top5": [
+      {
+       "file": "data/virtual/s3.md",
+       "start": 2668,
+       "end": 2876,
+       "strategy": "fixed150",
+       "store": "s3",
+       "score": 0.65699
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 1668,
+       "end": 1834,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.65299
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 1835,
+       "end": 1985,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.6511
+      },
+      {
+       "file": "data/virtual/s3.md",
+       "start": 1424,
+       "end": 1637,
+       "strategy": "fixed150",
+       "store": "s3",
+       "score": 0.58848
+      },
+      {
+       "file": "data/virtual/s3.md",
+       "start": 601,
+       "end": 811,
+       "strategy": "fixed150",
+       "store": "s3",
+       "score": 0.5356
+      }
+     ]
+    },
+    {
+     "id": "F09",
+     "facts": {
+      "M03": true
+     },
+     "full": true,
+     "pool": 40,
+     "top5": [
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 619,
+       "end": 797,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.52553
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 798,
+       "end": 992,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.47397
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 993,
+       "end": 1039,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.42113
+      },
+      {
+       "file": "data/virtual/s3.md",
+       "start": 202,
+       "end": 401,
+       "strategy": "fixed150",
+       "store": "s3",
+       "score": 0.42083
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 288,
+       "end": 476,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.40636
+      }
+     ]
+    },
+    {
+     "id": "F10",
+     "facts": {
+      "C06": true
+     },
+     "full": true,
+     "pool": 44,
+     "top5": [
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 2194,
+       "end": 2369,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.68358
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 2370,
+       "end": 2547,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.64654
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 2404,
+       "end": 2613,
+       "strategy": "fixed150",
+       "store": "s1",
+       "score": 0.59899
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 1028,
+       "end": 1211,
+       "strategy": "fixed150",
+       "store": "s1",
+       "score": 0.48858
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 1814,
+       "end": 2016,
+       "strategy": "fixed150",
+       "store": "s1",
+       "score": 0.43436
+      }
+     ]
+    },
+    {
+     "id": "F11",
+     "facts": {
+      "B05": true
+     },
+     "full": true,
+     "pool": 42,
+     "top5": [
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 2529,
+       "end": 2663,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.67153
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 2664,
+       "end": 2826,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.58389
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 982,
+       "end": 1171,
+       "strategy": "fixed150",
+       "store": "s2",
+       "score": 0.54708
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 1371,
+       "end": 1571,
+       "strategy": "fixed150",
+       "store": "s2",
+       "score": 0.5304
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 2576,
+       "end": 2771,
+       "strategy": "fixed150",
+       "store": "s2",
+       "score": 0.47278
+      }
+     ]
+    },
+    {
+     "id": "F12",
+     "facts": {
+      "G03": true
+     },
+     "full": true,
+     "pool": 39,
+     "top5": [
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2784,
+       "end": 2924,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.44779
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2925,
+       "end": 3076,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.39965
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2647,
+       "end": 2783,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.38674
+      },
+      {
+       "file": "data/virtual/s4.md",
+       "start": 1159,
+       "end": 1366,
+       "strategy": "fixed150",
+       "store": "s4",
+       "score": 0.3848
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 3077,
+       "end": 3254,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.34531
+      }
+     ]
+    },
+    {
+     "id": "F13",
+     "facts": {
+      "G05": true
+     },
+     "full": true,
+     "pool": 39,
+     "top5": [
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2158,
+       "end": 2326,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.53954
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2019,
+       "end": 2157,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.49926
+      },
+      {
+       "file": "data/virtual/s4.md",
+       "start": 1955,
+       "end": 2161,
+       "strategy": "fixed150",
+       "store": "s4",
+       "score": 0.39805
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 3077,
+       "end": 3254,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.33668
+      },
+      {
+       "file": "data/virtual/s4.md",
+       "start": 2161,
+       "end": 2362,
+       "strategy": "fixed150",
+       "store": "s4",
+       "score": 0.32756
+      }
+     ]
+    },
+    {
+     "id": "F14",
+     "facts": {
+      "G06": true
+     },
+     "full": true,
+     "pool": 39,
+     "top5": [
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2327,
+       "end": 2523,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.5373
+      },
+      {
+       "file": "data/virtual/s4.md",
+       "start": 2161,
+       "end": 2362,
+       "strategy": "fixed150",
+       "store": "s4",
+       "score": 0.48194
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2158,
+       "end": 2326,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.47398
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 195,
+       "end": 335,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.45577
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 3571,
+       "end": 3741,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.45185
+      }
+     ]
+    },
+    {
+     "id": "F15",
+     "facts": {
+      "L02": true
+     },
+     "full": true,
+     "pool": 38,
+     "top5": [
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1044,
+       "end": 1166,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.42605
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 416,
+       "end": 613,
+       "strategy": "fixed150",
+       "store": "s5",
+       "score": 0.38088
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1167,
+       "end": 1305,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.36991
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 2269,
+       "end": 2476,
+       "strategy": "fixed150",
+       "store": "s5",
+       "score": 0.34236
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1306,
+       "end": 1375,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.30729
+      }
+     ]
+    },
+    {
+     "id": "F16",
+     "facts": {
+      "L03": true
+     },
+     "full": true,
+     "pool": 38,
+     "top5": [
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1538,
+       "end": 1694,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.63524
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1376,
+       "end": 1537,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.56243
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 1842,
+       "end": 2054,
+       "strategy": "fixed150",
+       "store": "s5",
+       "score": 0.55209
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1907,
+       "end": 2049,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.51004
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 613,
+       "end": 817,
+       "strategy": "fixed150",
+       "store": "s5",
+       "score": 0.50592
+      }
+     ]
+    },
+    {
+     "id": "F17",
+     "facts": {
+      "L04": true
+     },
+     "full": true,
+     "pool": 38,
+     "top5": [
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1907,
+       "end": 2049,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.54375
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1753,
+       "end": 1906,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.51937
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1538,
+       "end": 1694,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.49549
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 1842,
+       "end": 2054,
+       "strategy": "fixed150",
+       "store": "s5",
+       "score": 0.49493
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1376,
+       "end": 1537,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.46612
+      }
+     ]
+    },
+    {
+     "id": "F18",
+     "facts": {
+      "L06": true
+     },
+     "full": true,
+     "pool": 38,
+     "top5": [
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 2050,
+       "end": 2256,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.55224
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 2257,
+       "end": 2401,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.53842
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1306,
+       "end": 1375,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.39374
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 2054,
+       "end": 2269,
+       "strategy": "fixed150",
+       "store": "s5",
+       "score": 0.38758
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 128,
+       "end": 314,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.37046
+      }
+     ]
+    },
+    {
+     "id": "F19",
+     "facts": {
+      "C10": true,
+      "C08": true
+     },
+     "full": true,
+     "pool": 44,
+     "top5": [
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 1946,
+       "end": 2045,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.50258
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 3009,
+       "end": 3175,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.46038
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 823,
+       "end": 1029,
+       "strategy": "fixed150",
+       "store": "s1",
+       "score": 0.45217
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 1211,
+       "end": 1420,
+       "strategy": "fixed150",
+       "store": "s1",
+       "score": 0.43744
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 2046,
+       "end": 2193,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.4312
+      }
+     ]
+    },
+    {
+     "id": "F20",
+     "facts": {
+      "M06": true
+     },
+     "full": true,
+     "pool": 40,
+     "top5": [
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 1986,
+       "end": 2114,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.60605
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 2115,
+       "end": 2210,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.55386
+      },
+      {
+       "file": "data/virtual/s3.md",
+       "start": 2439,
+       "end": 2668,
+       "strategy": "fixed150",
+       "store": "s3",
+       "score": 0.54392
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 1040,
+       "end": 1287,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.37793
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 3452,
+       "end": 3585,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.3469
+      }
+     ]
+    },
+    {
+     "id": "T01",
+     "facts": {
+      "C04": true,
+      "C03": false,
+      "C08": true,
+      "C06": false
+     },
+     "full": false,
+     "pool": 44,
+     "top5": [
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 508,
+       "end": 654,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.43605
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 3440,
+       "end": 3591,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.40321
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 426,
+       "end": 631,
+       "strategy": "fixed150",
+       "store": "s1",
+       "score": 0.39666
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 768,
+       "end": 953,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.39225
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 3297,
+       "end": 3439,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.3912
+      }
+     ]
+    },
+    {
+     "id": "T02",
+     "facts": {
+      "B04": false,
+      "B01": false,
+      "B03": false,
+      "B07": false
+     },
+     "full": false,
+     "pool": 42,
+     "top5": [
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 244,
+       "end": 440,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.43323
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 441,
+       "end": 507,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.41691
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 0,
+       "end": 106,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.39031
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 3410,
+       "end": 3529,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.38796
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 3248,
+       "end": 3409,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.38508
+      }
+     ]
+    },
+    {
+     "id": "T03",
+     "facts": {
+      "M04": false
+     },
+     "full": false,
+     "pool": 40,
+     "top5": [
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 288,
+       "end": 476,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.4021
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 477,
+       "end": 618,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.3216
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 2947,
+       "end": 3123,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.31923
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 2211,
+       "end": 2387,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.31723
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 3733,
+       "end": 3834,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.30947
+      }
+     ]
+    },
+    {
+     "id": "T04",
+     "facts": {
+      "G04": true
+     },
+     "full": true,
+     "pool": 39,
+     "top5": [
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 3077,
+       "end": 3254,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.32278
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 3423,
+       "end": 3570,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.29028
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 1333,
+       "end": 1508,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.26266
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2647,
+       "end": 2783,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.24538
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 1860,
+       "end": 2018,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.2431
+      }
+     ]
+    },
+    {
+     "id": "T05",
+     "facts": {
+      "L05": true
+     },
+     "full": true,
+     "pool": 38,
+     "top5": [
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 2572,
+       "end": 2723,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.47181
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 2402,
+       "end": 2571,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.4467
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 3518,
+       "end": 3678,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.42111
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 2724,
+       "end": 2903,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.3705
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 2904,
+       "end": 2956,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.29413
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "strategy": "fixed150",
+   "store_filter": false,
+   "questions": 25,
+   "facts": 33,
+   "recall_at_5_fact": 0.6667,
+   "hit_facts": 22,
+   "full_hit_rate": 0.72,
+   "full_hits": 18,
+   "random_recall_fact": 0.0899,
+   "random_full_hit_rate": 0.0752,
+   "mean_pool": 203.0,
+   "other_store_chunks_in_top5": 43,
+   "questions_with_other_store": 19,
+   "questions_with_confusable_in_top5": 10,
+   "per_question": [
+    {
+     "id": "F01",
+     "facts": {
+      "C04": true
+     },
+     "full": true,
+     "pool": 203,
+     "top5": [
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 954,
+       "end": 1123,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.79736
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 768,
+       "end": 953,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.76555
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 847,
+       "end": 1036,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.70855
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 696,
+       "end": 846,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.67144
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 2613,
+       "end": 2817,
+       "strategy": "fixed150",
+       "store": "s1",
+       "score": 0.66837
+      }
+     ],
+     "other_store_chunks": 2,
+     "confusable_in_top5": true
+    },
+    {
+     "id": "F02",
+     "facts": {
+      "B02": true
+     },
+     "full": true,
+     "pool": 203,
+     "top5": [
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 847,
+       "end": 1036,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.7301
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 396,
+       "end": 587,
+       "strategy": "fixed150",
+       "store": "s2",
+       "score": 0.67936
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 1037,
+       "end": 1174,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.67505
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 2163,
+       "end": 2375,
+       "strategy": "fixed150",
+       "store": "s2",
+       "score": 0.65601
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 768,
+       "end": 953,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.64836
+      }
+     ],
+     "other_store_chunks": 1,
+     "confusable_in_top5": true
+    },
+    {
+     "id": "F03",
+     "facts": {
+      "M01": false
+     },
+     "full": false,
+     "pool": 203,
+     "top5": [
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 1761,
+       "end": 1914,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.49728
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 954,
+       "end": 1123,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.473
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 1915,
+       "end": 2047,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.46592
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 768,
+       "end": 953,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.45286
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 3518,
+       "end": 3678,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.45019
+      }
+     ],
+     "other_store_chunks": 5,
+     "confusable_in_top5": true
+    },
+    {
+     "id": "F04",
+     "facts": {
+      "C02": false,
+      "C03": true
+     },
+     "full": false,
+     "pool": 203,
+     "top5": [
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 1336,
+       "end": 1517,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.64274
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 1420,
+       "end": 1623,
+       "strategy": "fixed150",
+       "store": "s1",
+       "score": 0.61768
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 1518,
+       "end": 1626,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.58917
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 631,
+       "end": 823,
+       "strategy": "fixed150",
+       "store": "s1",
+       "score": 0.55301
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 3013,
+       "end": 3206,
+       "strategy": "fixed150",
+       "store": "s1",
+       "score": 0.54705
+      }
+     ],
+     "other_store_chunks": 0,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "F05",
+     "facts": {
+      "C05": true
+     },
+     "full": true,
+     "pool": 203,
+     "top5": [
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 1841,
+       "end": 1945,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.64504
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 1717,
+       "end": 1840,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.62643
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 2613,
+       "end": 2817,
+       "strategy": "fixed150",
+       "store": "s1",
+       "score": 0.52933
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 696,
+       "end": 846,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.49189
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 954,
+       "end": 1123,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.45275
+      }
+     ],
+     "other_store_chunks": 1,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "F06",
+     "facts": {
+      "B01": true
+     },
+     "full": true,
+     "pool": 203,
+     "top5": [
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 696,
+       "end": 846,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.75619
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 508,
+       "end": 695,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.70458
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 396,
+       "end": 587,
+       "strategy": "fixed150",
+       "store": "s2",
+       "score": 0.64123
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 2576,
+       "end": 2771,
+       "strategy": "fixed150",
+       "store": "s2",
+       "score": 0.6177
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 2163,
+       "end": 2375,
+       "strategy": "fixed150",
+       "store": "s2",
+       "score": 0.57181
+      }
+     ],
+     "other_store_chunks": 0,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "F07",
+     "facts": {
+      "B06": true
+     },
+     "full": true,
+     "pool": 203,
+     "top5": [
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 2244,
+       "end": 2374,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.46538
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 982,
+       "end": 1171,
+       "strategy": "fixed150",
+       "store": "s2",
+       "score": 0.37276
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 2971,
+       "end": 3082,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.371
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 1124,
+       "end": 1224,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.35594
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 1040,
+       "end": 1287,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.34583
+      }
+     ],
+     "other_store_chunks": 2,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "F08",
+     "facts": {
+      "M04": true
+     },
+     "full": true,
+     "pool": 203,
+     "top5": [
+      {
+       "file": "data/virtual/s3.md",
+       "start": 2668,
+       "end": 2876,
+       "strategy": "fixed150",
+       "store": "s3",
+       "score": 0.65699
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 1668,
+       "end": 1834,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.65299
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 1835,
+       "end": 1985,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.6511
+      },
+      {
+       "file": "data/virtual/s3.md",
+       "start": 1424,
+       "end": 1637,
+       "strategy": "fixed150",
+       "store": "s3",
+       "score": 0.58848
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 1333,
+       "end": 1508,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.58077
+      }
+     ],
+     "other_store_chunks": 1,
+     "confusable_in_top5": true
+    },
+    {
+     "id": "F09",
+     "facts": {
+      "M03": true
+     },
+     "full": true,
+     "pool": 203,
+     "top5": [
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 619,
+       "end": 797,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.52553
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 798,
+       "end": 992,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.47397
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 993,
+       "end": 1039,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.42113
+      },
+      {
+       "file": "data/virtual/s3.md",
+       "start": 202,
+       "end": 401,
+       "strategy": "fixed150",
+       "store": "s3",
+       "score": 0.42083
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 2370,
+       "end": 2547,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.41231
+      }
+     ],
+     "other_store_chunks": 1,
+     "confusable_in_top5": true
+    },
+    {
+     "id": "F10",
+     "facts": {
+      "C06": true
+     },
+     "full": true,
+     "pool": 203,
+     "top5": [
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 2194,
+       "end": 2369,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.68358
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 2370,
+       "end": 2547,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.64654
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 2404,
+       "end": 2613,
+       "strategy": "fixed150",
+       "store": "s1",
+       "score": 0.59899
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 619,
+       "end": 797,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.51014
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 2529,
+       "end": 2663,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.50642
+      }
+     ],
+     "other_store_chunks": 2,
+     "confusable_in_top5": true
+    },
+    {
+     "id": "F11",
+     "facts": {
+      "B05": true
+     },
+     "full": true,
+     "pool": 203,
+     "top5": [
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 2529,
+       "end": 2663,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.67153
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 2664,
+       "end": 2826,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.58389
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 2370,
+       "end": 2547,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.56034
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 2194,
+       "end": 2369,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.54736
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 982,
+       "end": 1171,
+       "strategy": "fixed150",
+       "store": "s2",
+       "score": 0.54708
+      }
+     ],
+     "other_store_chunks": 2,
+     "confusable_in_top5": true
+    },
+    {
+     "id": "F12",
+     "facts": {
+      "G03": true
+     },
+     "full": true,
+     "pool": 203,
+     "top5": [
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2784,
+       "end": 2924,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.44779
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 993,
+       "end": 1039,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.41
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2925,
+       "end": 3076,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.39965
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 2664,
+       "end": 2826,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.38748
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2647,
+       "end": 2783,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.38674
+      }
+     ],
+     "other_store_chunks": 2,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "F13",
+     "facts": {
+      "G05": true
+     },
+     "full": true,
+     "pool": 203,
+     "top5": [
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2158,
+       "end": 2326,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.53954
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2019,
+       "end": 2157,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.49926
+      },
+      {
+       "file": "data/virtual/s4.md",
+       "start": 1955,
+       "end": 2161,
+       "strategy": "fixed150",
+       "store": "s4",
+       "score": 0.39805
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 3077,
+       "end": 3254,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.33668
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 3206,
+       "end": 3366,
+       "strategy": "fixed150",
+       "store": "s1",
+       "score": 0.33554
+      }
+     ],
+     "other_store_chunks": 1,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "F14",
+     "facts": {
+      "G06": true
+     },
+     "full": true,
+     "pool": 203,
+     "top5": [
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2327,
+       "end": 2523,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.5373
+      },
+      {
+       "file": "data/virtual/s4.md",
+       "start": 2161,
+       "end": 2362,
+       "strategy": "fixed150",
+       "store": "s4",
+       "score": 0.48194
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2158,
+       "end": 2326,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.47398
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 195,
+       "end": 335,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.45577
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 3571,
+       "end": 3741,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.45185
+      }
+     ],
+     "other_store_chunks": 0,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "F15",
+     "facts": {
+      "L02": true
+     },
+     "full": true,
+     "pool": 203,
+     "top5": [
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1044,
+       "end": 1166,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.42605
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 1668,
+       "end": 1834,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.38122
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 416,
+       "end": 613,
+       "strategy": "fixed150",
+       "store": "s5",
+       "score": 0.38088
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 2971,
+       "end": 3082,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.37308
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1167,
+       "end": 1305,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.36991
+      }
+     ],
+     "other_store_chunks": 2,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "F16",
+     "facts": {
+      "L03": true
+     },
+     "full": true,
+     "pool": 203,
+     "top5": [
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1538,
+       "end": 1694,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.63524
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1376,
+       "end": 1537,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.56243
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 1842,
+       "end": 2054,
+       "strategy": "fixed150",
+       "store": "s5",
+       "score": 0.55209
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1907,
+       "end": 2049,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.51004
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 613,
+       "end": 817,
+       "strategy": "fixed150",
+       "store": "s5",
+       "score": 0.50592
+      }
+     ],
+     "other_store_chunks": 0,
+     "confusable_in_top5": true
+    },
+    {
+     "id": "F17",
+     "facts": {
+      "L04": true
+     },
+     "full": true,
+     "pool": 203,
+     "top5": [
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1907,
+       "end": 2049,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.54375
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1753,
+       "end": 1906,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.51937
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1538,
+       "end": 1694,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.49549
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 1842,
+       "end": 2054,
+       "strategy": "fixed150",
+       "store": "s5",
+       "score": 0.49493
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1376,
+       "end": 1537,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.46612
+      }
+     ],
+     "other_store_chunks": 0,
+     "confusable_in_top5": true
+    },
+    {
+     "id": "F18",
+     "facts": {
+      "L06": true
+     },
+     "full": true,
+     "pool": 203,
+     "top5": [
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 2050,
+       "end": 2256,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.55224
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 2257,
+       "end": 2401,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.53842
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1306,
+       "end": 1375,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.39374
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 82,
+       "end": 229,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.3899
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 2054,
+       "end": 2269,
+       "strategy": "fixed150",
+       "store": "s5",
+       "score": 0.38758
+      }
+     ],
+     "other_store_chunks": 1,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "F19",
+     "facts": {
+      "C10": false,
+      "C08": true
+     },
+     "full": false,
+     "pool": 203,
+     "top5": [
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 1761,
+       "end": 1914,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.52498
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 1946,
+       "end": 2045,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.50258
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 2143,
+       "end": 2243,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.48284
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 2048,
+       "end": 2142,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.47974
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 787,
+       "end": 982,
+       "strategy": "fixed150",
+       "store": "s2",
+       "score": 0.46376
+      }
+     ],
+     "other_store_chunks": 4,
+     "confusable_in_top5": true
+    },
+    {
+     "id": "F20",
+     "facts": {
+      "M06": true
+     },
+     "full": true,
+     "pool": 203,
+     "top5": [
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 1986,
+       "end": 2114,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.60605
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 2115,
+       "end": 2210,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.55386
+      },
+      {
+       "file": "data/virtual/s3.md",
+       "start": 2439,
+       "end": 2668,
+       "strategy": "fixed150",
+       "store": "s3",
+       "score": 0.54392
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 954,
+       "end": 1123,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.39752
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 768,
+       "end": 953,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.39295
+      }
+     ],
+     "other_store_chunks": 2,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "T01",
+     "facts": {
+      "C04": true,
+      "C03": false,
+      "C08": true,
+      "C06": false
+     },
+     "full": false,
+     "pool": 203,
+     "top5": [
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 508,
+       "end": 654,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.43605
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 3440,
+       "end": 3591,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.40321
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 426,
+       "end": 631,
+       "strategy": "fixed150",
+       "store": "s1",
+       "score": 0.39666
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 768,
+       "end": 953,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.39225
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 3297,
+       "end": 3439,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.3912
+      }
+     ],
+     "other_store_chunks": 0,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "T02",
+     "facts": {
+      "B04": false,
+      "B01": false,
+      "B03": false,
+      "B07": false
+     },
+     "full": false,
+     "pool": 203,
+     "top5": [
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 2046,
+       "end": 2193,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.50037
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 288,
+       "end": 476,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.49381
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 655,
+       "end": 767,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.48238
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 244,
+       "end": 440,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.43323
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 1946,
+       "end": 2045,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.41778
+      }
+     ],
+     "other_store_chunks": 4,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "T03",
+     "facts": {
+      "M04": false
+     },
+     "full": false,
+     "pool": 203,
+     "top5": [
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 2046,
+       "end": 2193,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.41746
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 288,
+       "end": 476,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.4021
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 768,
+       "end": 953,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.38381
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 655,
+       "end": 767,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.37318
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 1946,
+       "end": 2045,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.36284
+      }
+     ],
+     "other_store_chunks": 4,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "T04",
+     "facts": {
+      "G04": false
+     },
+     "full": false,
+     "pool": 203,
+     "top5": [
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 0,
+       "end": 106,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.39209
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 441,
+       "end": 507,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.36863
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 768,
+       "end": 953,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.35637
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 954,
+       "end": 1123,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.34867
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 3077,
+       "end": 3254,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.32278
+      }
+     ],
+     "other_store_chunks": 4,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "T05",
+     "facts": {
+      "L05": true
+     },
+     "full": true,
+     "pool": 203,
+     "top5": [
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 2572,
+       "end": 2723,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.47181
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 2402,
+       "end": 2571,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.4467
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 3518,
+       "end": 3678,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.42111
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 107,
+       "end": 243,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.39697
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 441,
+       "end": 507,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.39443
+      }
+     ],
+     "other_store_chunks": 2,
+     "confusable_in_top5": false
+    }
+   ]
+  },
+  {
+   "strategy": "procedure",
+   "store_filter": true,
+   "questions": 25,
+   "facts": 33,
+   "recall_at_5_fact": 0.7273,
+   "hit_facts": 24,
+   "full_hit_rate": 0.8,
+   "full_hits": 20,
+   "random_recall_fact": 0.2785,
+   "random_full_hit_rate": 0.2432,
+   "mean_pool": 57.3,
+   "per_question": [
+    {
+     "id": "F01",
+     "facts": {
+      "C04": true
+     },
+     "full": true,
+     "pool": 60,
+     "top5": [
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 954,
+       "end": 1123,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.79736
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 768,
+       "end": 953,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.76555
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 2673,
+       "end": 2763,
+       "strategy": "procedure",
+       "store": "s1",
+       "score": 0.71675
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 3057,
+       "end": 3173,
+       "strategy": "procedure",
+       "store": "s1",
+       "score": 0.6838
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 515,
+       "end": 666,
+       "strategy": "procedure",
+       "store": "s1",
+       "score": 0.66971
+      }
+     ]
+    },
+    {
+     "id": "F02",
+     "facts": {
+      "B02": true
+     },
+     "full": true,
+     "pool": 60,
+     "top5": [
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 847,
+       "end": 1036,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.7301
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 2023,
+       "end": 2100,
+       "strategy": "procedure",
+       "store": "s2",
+       "score": 0.70411
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 527,
+       "end": 649,
+       "strategy": "procedure",
+       "store": "s2",
+       "score": 0.68001
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 1037,
+       "end": 1174,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.67505
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 2323,
+       "end": 2431,
+       "strategy": "procedure",
+       "store": "s2",
+       "score": 0.63961
+      }
+     ]
+    },
+    {
+     "id": "F03",
+     "facts": {
+      "M01": true
+     },
+     "full": true,
+     "pool": 54,
+     "top5": [
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 1288,
+       "end": 1476,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.37274
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 3586,
+       "end": 3732,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.36997
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 3733,
+       "end": 3834,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.36516
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 2816,
+       "end": 2946,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.3603
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 1477,
+       "end": 1667,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.35738
+      }
+     ]
+    },
+    {
+     "id": "F04",
+     "facts": {
+      "C02": false,
+      "C03": true
+     },
+     "full": false,
+     "pool": 60,
+     "top5": [
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 1336,
+       "end": 1517,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.64274
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 667,
+       "end": 761,
+       "strategy": "procedure",
+       "store": "s1",
+       "score": 0.62977
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 1522,
+       "end": 1647,
+       "strategy": "procedure",
+       "store": "s1",
+       "score": 0.61996
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 1518,
+       "end": 1626,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.58917
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 1449,
+       "end": 1521,
+       "strategy": "procedure",
+       "store": "s1",
+       "score": 0.58268
+      }
+     ]
+    },
+    {
+     "id": "F05",
+     "facts": {
+      "C05": true
+     },
+     "full": true,
+     "pool": 60,
+     "top5": [
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 1841,
+       "end": 1945,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.64504
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 1717,
+       "end": 1840,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.62643
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 2764,
+       "end": 2852,
+       "strategy": "procedure",
+       "store": "s1",
+       "score": 0.59655
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 762,
+       "end": 855,
+       "strategy": "procedure",
+       "store": "s1",
+       "score": 0.55423
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 954,
+       "end": 1123,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.45275
+      }
+     ]
+    },
+    {
+     "id": "F06",
+     "facts": {
+      "B01": true
+     },
+     "full": true,
+     "pool": 60,
+     "top5": [
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 696,
+       "end": 846,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.75619
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 508,
+       "end": 695,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.70458
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 2226,
+       "end": 2322,
+       "strategy": "procedure",
+       "store": "s2",
+       "score": 0.66889
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 361,
+       "end": 526,
+       "strategy": "procedure",
+       "store": "s2",
+       "score": 0.66549
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 2610,
+       "end": 2670,
+       "strategy": "procedure",
+       "store": "s2",
+       "score": 0.62228
+      }
+     ]
+    },
+    {
+     "id": "F07",
+     "facts": {
+      "B06": true
+     },
+     "full": true,
+     "pool": 60,
+     "top5": [
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 2244,
+       "end": 2374,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.46538
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 994,
+       "end": 1059,
+       "strategy": "procedure",
+       "store": "s2",
+       "score": 0.39752
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 2971,
+       "end": 3082,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.371
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 1378,
+       "end": 1434,
+       "strategy": "procedure",
+       "store": "s2",
+       "score": 0.36829
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 1307,
+       "end": 1377,
+       "strategy": "procedure",
+       "store": "s2",
+       "score": 0.36072
+      }
+     ]
+    },
+    {
+     "id": "F08",
+     "facts": {
+      "M04": true
+     },
+     "full": true,
+     "pool": 54,
+     "top5": [
+      {
+       "file": "data/virtual/s3.md",
+       "start": 2732,
+       "end": 2830,
+       "strategy": "procedure",
+       "store": "s3",
+       "score": 0.68408
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 1668,
+       "end": 1834,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.65299
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 1835,
+       "end": 1985,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.6511
+      },
+      {
+       "file": "data/virtual/s3.md",
+       "start": 1547,
+       "end": 1618,
+       "strategy": "procedure",
+       "store": "s3",
+       "score": 0.63896
+      },
+      {
+       "file": "data/virtual/s3.md",
+       "start": 555,
+       "end": 721,
+       "strategy": "procedure",
+       "store": "s3",
+       "score": 0.59327
+      }
+     ]
+    },
+    {
+     "id": "F09",
+     "facts": {
+      "M03": true
+     },
+     "full": true,
+     "pool": 54,
+     "top5": [
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 619,
+       "end": 797,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.52553
+      },
+      {
+       "file": "data/virtual/s3.md",
+       "start": 257,
+       "end": 390,
+       "strategy": "procedure",
+       "store": "s3",
+       "score": 0.48739
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 798,
+       "end": 992,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.47397
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 993,
+       "end": 1039,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.42113
+      },
+      {
+       "file": "data/virtual/s3.md",
+       "start": 2421,
+       "end": 2527,
+       "strategy": "procedure",
+       "store": "s3",
+       "score": 0.40999
+      }
+     ]
+    },
+    {
+     "id": "F10",
+     "facts": {
+      "C06": true
+     },
+     "full": true,
+     "pool": 60,
+     "top5": [
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 2194,
+       "end": 2369,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.68358
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 2582,
+       "end": 2672,
+       "strategy": "procedure",
+       "store": "s1",
+       "score": 0.64771
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 2474,
+       "end": 2564,
+       "strategy": "procedure",
+       "store": "s1",
+       "score": 0.64674
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 2370,
+       "end": 2547,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.64654
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 953,
+       "end": 1096,
+       "strategy": "procedure",
+       "store": "s1",
+       "score": 0.60339
+      }
+     ]
+    },
+    {
+     "id": "F11",
+     "facts": {
+      "B05": true
+     },
+     "full": true,
+     "pool": 60,
+     "top5": [
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 2529,
+       "end": 2663,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.67153
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 1060,
+       "end": 1155,
+       "strategy": "procedure",
+       "store": "s2",
+       "score": 0.65161
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 1435,
+       "end": 1501,
+       "strategy": "procedure",
+       "store": "s2",
+       "score": 0.62839
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 1502,
+       "end": 1557,
+       "strategy": "procedure",
+       "store": "s2",
+       "score": 0.61565
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 2734,
+       "end": 2791,
+       "strategy": "procedure",
+       "store": "s2",
+       "score": 0.60406
+      }
+     ]
+    },
+    {
+     "id": "F12",
+     "facts": {
+      "G03": true
+     },
+     "full": true,
+     "pool": 58,
+     "top5": [
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2784,
+       "end": 2924,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.44779
+      },
+      {
+       "file": "data/virtual/s4.md",
+       "start": 1219,
+       "end": 1301,
+       "strategy": "procedure",
+       "store": "s4",
+       "score": 0.43453
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2925,
+       "end": 3076,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.39965
+      },
+      {
+       "file": "data/virtual/s4.md",
+       "start": 2267,
+       "end": 2346,
+       "strategy": "procedure",
+       "store": "s4",
+       "score": 0.38865
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2647,
+       "end": 2783,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.38674
+      }
+     ]
+    },
+    {
+     "id": "F13",
+     "facts": {
+      "G05": true
+     },
+     "full": true,
+     "pool": 58,
+     "top5": [
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2158,
+       "end": 2326,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.53954
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2019,
+       "end": 2157,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.49926
+      },
+      {
+       "file": "data/virtual/s4.md",
+       "start": 1135,
+       "end": 1218,
+       "strategy": "procedure",
+       "store": "s4",
+       "score": 0.44772
+      },
+      {
+       "file": "data/virtual/s4.md",
+       "start": 2072,
+       "end": 2182,
+       "strategy": "procedure",
+       "store": "s4",
+       "score": 0.41681
+      },
+      {
+       "file": "data/virtual/s4.md",
+       "start": 1302,
+       "end": 1353,
+       "strategy": "procedure",
+       "store": "s4",
+       "score": 0.36977
+      }
+     ]
+    },
+    {
+     "id": "F14",
+     "facts": {
+      "G06": true
+     },
+     "full": true,
+     "pool": 58,
+     "top5": [
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2327,
+       "end": 2523,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.5373
+      },
+      {
+       "file": "data/virtual/s4.md",
+       "start": 2183,
+       "end": 2266,
+       "strategy": "procedure",
+       "store": "s4",
+       "score": 0.52261
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2158,
+       "end": 2326,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.47398
+      },
+      {
+       "file": "data/virtual/s4.md",
+       "start": 540,
+       "end": 607,
+       "strategy": "procedure",
+       "store": "s4",
+       "score": 0.45884
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 195,
+       "end": 335,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.45577
+      }
+     ]
+    },
+    {
+     "id": "F15",
+     "facts": {
+      "L02": true
+     },
+     "full": true,
+     "pool": 54,
+     "top5": [
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1044,
+       "end": 1166,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.42605
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 446,
+       "end": 541,
+       "strategy": "procedure",
+       "store": "s5",
+       "score": 0.41952
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 2265,
+       "end": 2336,
+       "strategy": "procedure",
+       "store": "s5",
+       "score": 0.38551
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1167,
+       "end": 1305,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.36991
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1306,
+       "end": 1375,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.30729
+      }
+     ]
+    },
+    {
+     "id": "F16",
+     "facts": {
+      "L03": true
+     },
+     "full": true,
+     "pool": 54,
+     "top5": [
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1538,
+       "end": 1694,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.63524
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 1869,
+       "end": 1952,
+       "strategy": "procedure",
+       "store": "s5",
+       "score": 0.60509
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 603,
+       "end": 685,
+       "strategy": "procedure",
+       "store": "s5",
+       "score": 0.59753
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1376,
+       "end": 1537,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.56243
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1907,
+       "end": 2049,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.51004
+      }
+     ]
+    },
+    {
+     "id": "F17",
+     "facts": {
+      "L04": true
+     },
+     "full": true,
+     "pool": 54,
+     "top5": [
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1907,
+       "end": 2049,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.54375
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1753,
+       "end": 1906,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.51937
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1538,
+       "end": 1694,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.49549
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 1869,
+       "end": 1952,
+       "strategy": "procedure",
+       "store": "s5",
+       "score": 0.49281
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 1953,
+       "end": 2063,
+       "strategy": "procedure",
+       "store": "s5",
+       "score": 0.49237
+      }
+     ]
+    },
+    {
+     "id": "F18",
+     "facts": {
+      "L06": true
+     },
+     "full": true,
+     "pool": 54,
+     "top5": [
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 2050,
+       "end": 2256,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.55224
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 2257,
+       "end": 2401,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.53842
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 801,
+       "end": 916,
+       "strategy": "procedure",
+       "store": "s5",
+       "score": 0.43016
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 2064,
+       "end": 2164,
+       "strategy": "procedure",
+       "store": "s5",
+       "score": 0.40411
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1306,
+       "end": 1375,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.39374
+      }
+     ]
+    },
+    {
+     "id": "F19",
+     "facts": {
+      "C10": true,
+      "C08": true
+     },
+     "full": true,
+     "pool": 60,
+     "top5": [
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 1946,
+       "end": 2045,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.50258
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 3009,
+       "end": 3175,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.46038
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 856,
+       "end": 952,
+       "strategy": "procedure",
+       "store": "s1",
+       "score": 0.43296
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 2046,
+       "end": 2193,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.4312
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 3240,
+       "end": 3339,
+       "strategy": "procedure",
+       "store": "s1",
+       "score": 0.42435
+      }
+     ]
+    },
+    {
+     "id": "F20",
+     "facts": {
+      "M06": true
+     },
+     "full": true,
+     "pool": 54,
+     "top5": [
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 1986,
+       "end": 2114,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.60605
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 2115,
+       "end": 2210,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.55386
+      },
+      {
+       "file": "data/virtual/s3.md",
+       "start": 2528,
+       "end": 2614,
+       "strategy": "procedure",
+       "store": "s3",
+       "score": 0.55011
+      },
+      {
+       "file": "data/virtual/s3.md",
+       "start": 1366,
+       "end": 1458,
+       "strategy": "procedure",
+       "store": "s3",
+       "score": 0.37899
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 1040,
+       "end": 1287,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.37793
+      }
+     ]
+    },
+    {
+     "id": "T01",
+     "facts": {
+      "C04": true,
+      "C03": false,
+      "C08": true,
+      "C06": false
+     },
+     "full": false,
+     "pool": 60,
+     "top5": [
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 508,
+       "end": 654,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.43605
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 418,
+       "end": 514,
+       "strategy": "procedure",
+       "store": "s1",
+       "score": 0.42244
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 3440,
+       "end": 3591,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.40321
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 768,
+       "end": 953,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.39225
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 3297,
+       "end": 3439,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.3912
+      }
+     ]
+    },
+    {
+     "id": "T02",
+     "facts": {
+      "B04": false,
+      "B01": false,
+      "B03": false,
+      "B07": false
+     },
+     "full": false,
+     "pool": 60,
+     "top5": [
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 244,
+       "end": 440,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.43323
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 441,
+       "end": 507,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.41691
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 0,
+       "end": 106,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.39031
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 3410,
+       "end": 3529,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.38796
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 3248,
+       "end": 3409,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.38508
+      }
+     ]
+    },
+    {
+     "id": "T03",
+     "facts": {
+      "M04": false
+     },
+     "full": false,
+     "pool": 54,
+     "top5": [
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 288,
+       "end": 476,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.4021
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 477,
+       "end": 618,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.3216
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 2947,
+       "end": 3123,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.31923
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 2211,
+       "end": 2387,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.31723
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 3733,
+       "end": 3834,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.30947
+      }
+     ]
+    },
+    {
+     "id": "T04",
+     "facts": {
+      "G04": false
+     },
+     "full": false,
+     "pool": 58,
+     "top5": [
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 3077,
+       "end": 3254,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.32278
+      },
+      {
+       "file": "data/virtual/s4.md",
+       "start": 1798,
+       "end": 1869,
+       "strategy": "procedure",
+       "store": "s4",
+       "score": 0.30702
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 3423,
+       "end": 3570,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.29028
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 1333,
+       "end": 1508,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.26266
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2647,
+       "end": 2783,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.24538
+      }
+     ]
+    },
+    {
+     "id": "T05",
+     "facts": {
+      "L05": true
+     },
+     "full": true,
+     "pool": 54,
+     "top5": [
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 2572,
+       "end": 2723,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.47181
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 2402,
+       "end": 2571,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.4467
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 3518,
+       "end": 3678,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.42111
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 2724,
+       "end": 2903,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.3705
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 1572,
+       "end": 1634,
+       "strategy": "procedure",
+       "store": "s5",
+       "score": 0.35427
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "strategy": "procedure",
+   "store_filter": false,
+   "questions": 25,
+   "facts": 33,
+   "recall_at_5_fact": 0.6667,
+   "hit_facts": 22,
+   "full_hit_rate": 0.72,
+   "full_hits": 18,
+   "random_recall_fact": 0.0608,
+   "random_full_hit_rate": 0.0511,
+   "mean_pool": 286.0,
+   "other_store_chunks_in_top5": 35,
+   "questions_with_other_store": 15,
+   "questions_with_confusable_in_top5": 7,
+   "per_question": [
+    {
+     "id": "F01",
+     "facts": {
+      "C04": true
+     },
+     "full": true,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 954,
+       "end": 1123,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.79736
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 768,
+       "end": 953,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.76555
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 2673,
+       "end": 2763,
+       "strategy": "procedure",
+       "store": "s1",
+       "score": 0.71675
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 847,
+       "end": 1036,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.70855
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 3057,
+       "end": 3173,
+       "strategy": "procedure",
+       "store": "s1",
+       "score": 0.6838
+      }
+     ],
+     "other_store_chunks": 1,
+     "confusable_in_top5": true
+    },
+    {
+     "id": "F02",
+     "facts": {
+      "B02": true
+     },
+     "full": true,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 847,
+       "end": 1036,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.7301
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 2023,
+       "end": 2100,
+       "strategy": "procedure",
+       "store": "s2",
+       "score": 0.70411
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 527,
+       "end": 649,
+       "strategy": "procedure",
+       "store": "s2",
+       "score": 0.68001
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 1037,
+       "end": 1174,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.67505
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 768,
+       "end": 953,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.64836
+      }
+     ],
+     "other_store_chunks": 1,
+     "confusable_in_top5": true
+    },
+    {
+     "id": "F03",
+     "facts": {
+      "M01": false
+     },
+     "full": false,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 1761,
+       "end": 1914,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.49728
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 954,
+       "end": 1123,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.473
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 1915,
+       "end": 2047,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.46592
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 768,
+       "end": 953,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.45286
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 3518,
+       "end": 3678,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.45019
+      }
+     ],
+     "other_store_chunks": 5,
+     "confusable_in_top5": true
+    },
+    {
+     "id": "F04",
+     "facts": {
+      "C02": false,
+      "C03": true
+     },
+     "full": false,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 1336,
+       "end": 1517,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.64274
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 667,
+       "end": 761,
+       "strategy": "procedure",
+       "store": "s1",
+       "score": 0.62977
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 1522,
+       "end": 1647,
+       "strategy": "procedure",
+       "store": "s1",
+       "score": 0.61996
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 1518,
+       "end": 1626,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.58917
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 1449,
+       "end": 1521,
+       "strategy": "procedure",
+       "store": "s1",
+       "score": 0.58268
+      }
+     ],
+     "other_store_chunks": 0,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "F05",
+     "facts": {
+      "C05": true
+     },
+     "full": true,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 1841,
+       "end": 1945,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.64504
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 1717,
+       "end": 1840,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.62643
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 2764,
+       "end": 2852,
+       "strategy": "procedure",
+       "store": "s1",
+       "score": 0.59655
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 762,
+       "end": 855,
+       "strategy": "procedure",
+       "store": "s1",
+       "score": 0.55423
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 696,
+       "end": 846,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.49189
+      }
+     ],
+     "other_store_chunks": 1,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "F06",
+     "facts": {
+      "B01": true
+     },
+     "full": true,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 696,
+       "end": 846,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.75619
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 508,
+       "end": 695,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.70458
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 2226,
+       "end": 2322,
+       "strategy": "procedure",
+       "store": "s2",
+       "score": 0.66889
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 361,
+       "end": 526,
+       "strategy": "procedure",
+       "store": "s2",
+       "score": 0.66549
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 2610,
+       "end": 2670,
+       "strategy": "procedure",
+       "store": "s2",
+       "score": 0.62228
+      }
+     ],
+     "other_store_chunks": 0,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "F07",
+     "facts": {
+      "B06": true
+     },
+     "full": true,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 2244,
+       "end": 2374,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.46538
+      },
+      {
+       "file": "data/virtual/s3.md",
+       "start": 2615,
+       "end": 2718,
+       "strategy": "procedure",
+       "store": "s3",
+       "score": 0.39956
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 994,
+       "end": 1059,
+       "strategy": "procedure",
+       "store": "s2",
+       "score": 0.39752
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 2971,
+       "end": 3082,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.371
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 1378,
+       "end": 1434,
+       "strategy": "procedure",
+       "store": "s2",
+       "score": 0.36829
+      }
+     ],
+     "other_store_chunks": 1,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "F08",
+     "facts": {
+      "M04": true
+     },
+     "full": true,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s3.md",
+       "start": 2732,
+       "end": 2830,
+       "strategy": "procedure",
+       "store": "s3",
+       "score": 0.68408
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 1668,
+       "end": 1834,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.65299
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 1835,
+       "end": 1985,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.6511
+      },
+      {
+       "file": "data/virtual/s3.md",
+       "start": 1547,
+       "end": 1618,
+       "strategy": "procedure",
+       "store": "s3",
+       "score": 0.63896
+      },
+      {
+       "file": "data/virtual/s3.md",
+       "start": 555,
+       "end": 721,
+       "strategy": "procedure",
+       "store": "s3",
+       "score": 0.59327
+      }
+     ],
+     "other_store_chunks": 0,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "F09",
+     "facts": {
+      "M03": true
+     },
+     "full": true,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 619,
+       "end": 797,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.52553
+      },
+      {
+       "file": "data/virtual/s3.md",
+       "start": 257,
+       "end": 390,
+       "strategy": "procedure",
+       "store": "s3",
+       "score": 0.48739
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 798,
+       "end": 992,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.47397
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 993,
+       "end": 1039,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.42113
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 2370,
+       "end": 2547,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.41231
+      }
+     ],
+     "other_store_chunks": 1,
+     "confusable_in_top5": true
+    },
+    {
+     "id": "F10",
+     "facts": {
+      "C06": true
+     },
+     "full": true,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 2194,
+       "end": 2369,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.68358
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 2582,
+       "end": 2672,
+       "strategy": "procedure",
+       "store": "s1",
+       "score": 0.64771
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 2474,
+       "end": 2564,
+       "strategy": "procedure",
+       "store": "s1",
+       "score": 0.64674
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 2370,
+       "end": 2547,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.64654
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 953,
+       "end": 1096,
+       "strategy": "procedure",
+       "store": "s1",
+       "score": 0.60339
+      }
+     ],
+     "other_store_chunks": 0,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "F11",
+     "facts": {
+      "B05": true
+     },
+     "full": true,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 2529,
+       "end": 2663,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.67153
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 1060,
+       "end": 1155,
+       "strategy": "procedure",
+       "store": "s2",
+       "score": 0.65161
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 1435,
+       "end": 1501,
+       "strategy": "procedure",
+       "store": "s2",
+       "score": 0.62839
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 1846,
+       "end": 1907,
+       "strategy": "procedure",
+       "store": "s1",
+       "score": 0.6212
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 1502,
+       "end": 1557,
+       "strategy": "procedure",
+       "store": "s2",
+       "score": 0.61565
+      }
+     ],
+     "other_store_chunks": 1,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "F12",
+     "facts": {
+      "G03": true
+     },
+     "full": true,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2784,
+       "end": 2924,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.44779
+      },
+      {
+       "file": "data/virtual/s4.md",
+       "start": 1219,
+       "end": 1301,
+       "strategy": "procedure",
+       "store": "s4",
+       "score": 0.43453
+      },
+      {
+       "file": "data/virtual/s3.md",
+       "start": 1286,
+       "end": 1365,
+       "strategy": "procedure",
+       "store": "s3",
+       "score": 0.4332
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 993,
+       "end": 1039,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.41
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2925,
+       "end": 3076,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.39965
+      }
+     ],
+     "other_store_chunks": 2,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "F13",
+     "facts": {
+      "G05": true
+     },
+     "full": true,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2158,
+       "end": 2326,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.53954
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2019,
+       "end": 2157,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.49926
+      },
+      {
+       "file": "data/virtual/s4.md",
+       "start": 1135,
+       "end": 1218,
+       "strategy": "procedure",
+       "store": "s4",
+       "score": 0.44772
+      },
+      {
+       "file": "data/virtual/s4.md",
+       "start": 2072,
+       "end": 2182,
+       "strategy": "procedure",
+       "store": "s4",
+       "score": 0.41681
+      },
+      {
+       "file": "data/virtual/s4.md",
+       "start": 1302,
+       "end": 1353,
+       "strategy": "procedure",
+       "store": "s4",
+       "score": 0.36977
+      }
+     ],
+     "other_store_chunks": 0,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "F14",
+     "facts": {
+      "G06": true
+     },
+     "full": true,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2327,
+       "end": 2523,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.5373
+      },
+      {
+       "file": "data/virtual/s4.md",
+       "start": 2183,
+       "end": 2266,
+       "strategy": "procedure",
+       "store": "s4",
+       "score": 0.52261
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2158,
+       "end": 2326,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.47398
+      },
+      {
+       "file": "data/virtual/s4.md",
+       "start": 540,
+       "end": 607,
+       "strategy": "procedure",
+       "store": "s4",
+       "score": 0.45884
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 195,
+       "end": 335,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.45577
+      }
+     ],
+     "other_store_chunks": 0,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "F15",
+     "facts": {
+      "L02": true
+     },
+     "full": true,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1044,
+       "end": 1166,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.42605
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 446,
+       "end": 541,
+       "strategy": "procedure",
+       "store": "s5",
+       "score": 0.41952
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 2265,
+       "end": 2336,
+       "strategy": "procedure",
+       "store": "s5",
+       "score": 0.38551
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 1668,
+       "end": 1834,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.38122
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 2971,
+       "end": 3082,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.37308
+      }
+     ],
+     "other_store_chunks": 2,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "F16",
+     "facts": {
+      "L03": true
+     },
+     "full": true,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1538,
+       "end": 1694,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.63524
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 1869,
+       "end": 1952,
+       "strategy": "procedure",
+       "store": "s5",
+       "score": 0.60509
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 603,
+       "end": 685,
+       "strategy": "procedure",
+       "store": "s5",
+       "score": 0.59753
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1376,
+       "end": 1537,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.56243
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1907,
+       "end": 2049,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.51004
+      }
+     ],
+     "other_store_chunks": 0,
+     "confusable_in_top5": true
+    },
+    {
+     "id": "F17",
+     "facts": {
+      "L04": true
+     },
+     "full": true,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1907,
+       "end": 2049,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.54375
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1753,
+       "end": 1906,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.51937
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1538,
+       "end": 1694,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.49549
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 1869,
+       "end": 1952,
+       "strategy": "procedure",
+       "store": "s5",
+       "score": 0.49281
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 1953,
+       "end": 2063,
+       "strategy": "procedure",
+       "store": "s5",
+       "score": 0.49237
+      }
+     ],
+     "other_store_chunks": 0,
+     "confusable_in_top5": true
+    },
+    {
+     "id": "F18",
+     "facts": {
+      "L06": true
+     },
+     "full": true,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 2050,
+       "end": 2256,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.55224
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 2257,
+       "end": 2401,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.53842
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 801,
+       "end": 916,
+       "strategy": "procedure",
+       "store": "s5",
+       "score": 0.43016
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 2064,
+       "end": 2164,
+       "strategy": "procedure",
+       "store": "s5",
+       "score": 0.40411
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1306,
+       "end": 1375,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.39374
+      }
+     ],
+     "other_store_chunks": 0,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "F19",
+     "facts": {
+      "C10": false,
+      "C08": true
+     },
+     "full": false,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 1761,
+       "end": 1914,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.52498
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 846,
+       "end": 917,
+       "strategy": "procedure",
+       "store": "s2",
+       "score": 0.5059
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 1946,
+       "end": 2045,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.50258
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 2143,
+       "end": 2243,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.48284
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 2048,
+       "end": 2142,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.47974
+      }
+     ],
+     "other_store_chunks": 4,
+     "confusable_in_top5": true
+    },
+    {
+     "id": "F20",
+     "facts": {
+      "M06": true
+     },
+     "full": true,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 1986,
+       "end": 2114,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.60605
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 2115,
+       "end": 2210,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.55386
+      },
+      {
+       "file": "data/virtual/s3.md",
+       "start": 2528,
+       "end": 2614,
+       "strategy": "procedure",
+       "store": "s3",
+       "score": 0.55011
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 954,
+       "end": 1123,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.39752
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 768,
+       "end": 953,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.39295
+      }
+     ],
+     "other_store_chunks": 2,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "T01",
+     "facts": {
+      "C04": true,
+      "C03": false,
+      "C08": true,
+      "C06": false
+     },
+     "full": false,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 508,
+       "end": 654,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.43605
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 418,
+       "end": 514,
+       "strategy": "procedure",
+       "store": "s1",
+       "score": 0.42244
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 3440,
+       "end": 3591,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.40321
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 768,
+       "end": 953,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.39225
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 3297,
+       "end": 3439,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.3912
+      }
+     ],
+     "other_store_chunks": 0,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "T02",
+     "facts": {
+      "B04": false,
+      "B01": false,
+      "B03": false,
+      "B07": false
+     },
+     "full": false,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 2046,
+       "end": 2193,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.50037
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 288,
+       "end": 476,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.49381
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 655,
+       "end": 767,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.48238
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 244,
+       "end": 440,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.43323
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 1946,
+       "end": 2045,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.41778
+      }
+     ],
+     "other_store_chunks": 4,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "T03",
+     "facts": {
+      "M04": false
+     },
+     "full": false,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 2046,
+       "end": 2193,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.41746
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 288,
+       "end": 476,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.4021
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 768,
+       "end": 953,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.38381
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 655,
+       "end": 767,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.37318
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 1946,
+       "end": 2045,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.36284
+      }
+     ],
+     "other_store_chunks": 4,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "T04",
+     "facts": {
+      "G04": false
+     },
+     "full": false,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 0,
+       "end": 106,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.39209
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 441,
+       "end": 507,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.36863
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 768,
+       "end": 953,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.35637
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 954,
+       "end": 1123,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.34867
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 3077,
+       "end": 3254,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.32278
+      }
+     ],
+     "other_store_chunks": 4,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "T05",
+     "facts": {
+      "L05": true
+     },
+     "full": true,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 2572,
+       "end": 2723,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.47181
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 2402,
+       "end": 2571,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.4467
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 3518,
+       "end": 3678,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.42111
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 107,
+       "end": 243,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.39697
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 441,
+       "end": 507,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.39443
+      }
+     ],
+     "other_store_chunks": 2,
+     "confusable_in_top5": false
+    }
+   ]
+  },
+  {
+   "strategy": "procedure_heading",
+   "store_filter": true,
+   "questions": 25,
+   "facts": 33,
+   "recall_at_5_fact": 0.7273,
+   "hit_facts": 24,
+   "full_hit_rate": 0.8,
+   "full_hits": 20,
+   "random_recall_fact": 0.2785,
+   "random_full_hit_rate": 0.2432,
+   "mean_pool": 57.3,
+   "per_question": [
+    {
+     "id": "F01",
+     "facts": {
+      "C04": true
+     },
+     "full": true,
+     "pool": 60,
+     "top5": [
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 954,
+       "end": 1123,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.79736
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 768,
+       "end": 953,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.76555
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 2673,
+       "end": 2763,
+       "strategy": "procedure_heading",
+       "store": "s1",
+       "score": 0.73764
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 3057,
+       "end": 3173,
+       "strategy": "procedure_heading",
+       "store": "s1",
+       "score": 0.67478
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 515,
+       "end": 666,
+       "strategy": "procedure_heading",
+       "store": "s1",
+       "score": 0.65596
+      }
+     ]
+    },
+    {
+     "id": "F02",
+     "facts": {
+      "B02": true
+     },
+     "full": true,
+     "pool": 60,
+     "top5": [
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 847,
+       "end": 1036,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.7301
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 2023,
+       "end": 2100,
+       "strategy": "procedure_heading",
+       "store": "s2",
+       "score": 0.70549
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 527,
+       "end": 649,
+       "strategy": "procedure_heading",
+       "store": "s2",
+       "score": 0.68156
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 1037,
+       "end": 1174,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.67505
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 2323,
+       "end": 2431,
+       "strategy": "procedure_heading",
+       "store": "s2",
+       "score": 0.64664
+      }
+     ]
+    },
+    {
+     "id": "F03",
+     "facts": {
+      "M01": true
+     },
+     "full": true,
+     "pool": 54,
+     "top5": [
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 1288,
+       "end": 1476,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.37274
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 3586,
+       "end": 3732,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.36997
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 3733,
+       "end": 3834,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.36516
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 2816,
+       "end": 2946,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.3603
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 1477,
+       "end": 1667,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.35738
+      }
+     ]
+    },
+    {
+     "id": "F04",
+     "facts": {
+      "C02": false,
+      "C03": true
+     },
+     "full": false,
+     "pool": 60,
+     "top5": [
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 1336,
+       "end": 1517,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.64274
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 667,
+       "end": 761,
+       "strategy": "procedure_heading",
+       "store": "s1",
+       "score": 0.62188
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 1522,
+       "end": 1647,
+       "strategy": "procedure_heading",
+       "store": "s1",
+       "score": 0.62073
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 1518,
+       "end": 1626,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.58917
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 1449,
+       "end": 1521,
+       "strategy": "procedure_heading",
+       "store": "s1",
+       "score": 0.5724
+      }
+     ]
+    },
+    {
+     "id": "F05",
+     "facts": {
+      "C05": true
+     },
+     "full": true,
+     "pool": 60,
+     "top5": [
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 1841,
+       "end": 1945,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.64504
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 1717,
+       "end": 1840,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.62643
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 2764,
+       "end": 2852,
+       "strategy": "procedure_heading",
+       "store": "s1",
+       "score": 0.60904
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 762,
+       "end": 855,
+       "strategy": "procedure_heading",
+       "store": "s1",
+       "score": 0.5513
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 954,
+       "end": 1123,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.45275
+      }
+     ]
+    },
+    {
+     "id": "F06",
+     "facts": {
+      "B01": true
+     },
+     "full": true,
+     "pool": 60,
+     "top5": [
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 696,
+       "end": 846,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.75619
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 508,
+       "end": 695,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.70458
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 2226,
+       "end": 2322,
+       "strategy": "procedure_heading",
+       "store": "s2",
+       "score": 0.67219
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 361,
+       "end": 526,
+       "strategy": "procedure_heading",
+       "store": "s2",
+       "score": 0.66315
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 2610,
+       "end": 2670,
+       "strategy": "procedure_heading",
+       "store": "s2",
+       "score": 0.62223
+      }
+     ]
+    },
+    {
+     "id": "F07",
+     "facts": {
+      "B06": true
+     },
+     "full": true,
+     "pool": 60,
+     "top5": [
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 2244,
+       "end": 2374,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.46538
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 994,
+       "end": 1059,
+       "strategy": "procedure_heading",
+       "store": "s2",
+       "score": 0.38325
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 2971,
+       "end": 3082,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.371
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 1378,
+       "end": 1434,
+       "strategy": "procedure_heading",
+       "store": "s2",
+       "score": 0.35482
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 1307,
+       "end": 1377,
+       "strategy": "procedure_heading",
+       "store": "s2",
+       "score": 0.34727
+      }
+     ]
+    },
+    {
+     "id": "F08",
+     "facts": {
+      "M04": true
+     },
+     "full": true,
+     "pool": 54,
+     "top5": [
+      {
+       "file": "data/virtual/s3.md",
+       "start": 2732,
+       "end": 2830,
+       "strategy": "procedure_heading",
+       "store": "s3",
+       "score": 0.70182
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 1668,
+       "end": 1834,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.65299
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 1835,
+       "end": 1985,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.6511
+      },
+      {
+       "file": "data/virtual/s3.md",
+       "start": 1547,
+       "end": 1618,
+       "strategy": "procedure_heading",
+       "store": "s3",
+       "score": 0.61727
+      },
+      {
+       "file": "data/virtual/s3.md",
+       "start": 555,
+       "end": 721,
+       "strategy": "procedure_heading",
+       "store": "s3",
+       "score": 0.5887
+      }
+     ]
+    },
+    {
+     "id": "F09",
+     "facts": {
+      "M03": true
+     },
+     "full": true,
+     "pool": 54,
+     "top5": [
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 619,
+       "end": 797,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.52553
+      },
+      {
+       "file": "data/virtual/s3.md",
+       "start": 257,
+       "end": 390,
+       "strategy": "procedure_heading",
+       "store": "s3",
+       "score": 0.47803
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 798,
+       "end": 992,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.47397
+      },
+      {
+       "file": "data/virtual/s3.md",
+       "start": 2421,
+       "end": 2527,
+       "strategy": "procedure_heading",
+       "store": "s3",
+       "score": 0.42749
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 993,
+       "end": 1039,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.42113
+      }
+     ]
+    },
+    {
+     "id": "F10",
+     "facts": {
+      "C06": true
+     },
+     "full": true,
+     "pool": 60,
+     "top5": [
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 2194,
+       "end": 2369,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.68358
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 2474,
+       "end": 2564,
+       "strategy": "procedure_heading",
+       "store": "s1",
+       "score": 0.66211
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 2582,
+       "end": 2672,
+       "strategy": "procedure_heading",
+       "store": "s1",
+       "score": 0.64982
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 2370,
+       "end": 2547,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.64654
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 953,
+       "end": 1096,
+       "strategy": "procedure_heading",
+       "store": "s1",
+       "score": 0.5974
+      }
+     ]
+    },
+    {
+     "id": "F11",
+     "facts": {
+      "B05": true
+     },
+     "full": true,
+     "pool": 60,
+     "top5": [
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 2529,
+       "end": 2663,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.67153
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 1060,
+       "end": 1155,
+       "strategy": "procedure_heading",
+       "store": "s2",
+       "score": 0.64418
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 1502,
+       "end": 1557,
+       "strategy": "procedure_heading",
+       "store": "s2",
+       "score": 0.6138
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 1435,
+       "end": 1501,
+       "strategy": "procedure_heading",
+       "store": "s2",
+       "score": 0.59789
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 2664,
+       "end": 2826,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.58389
+      }
+     ]
+    },
+    {
+     "id": "F12",
+     "facts": {
+      "G03": true
+     },
+     "full": true,
+     "pool": 58,
+     "top5": [
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2784,
+       "end": 2924,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.44779
+      },
+      {
+       "file": "data/virtual/s4.md",
+       "start": 1219,
+       "end": 1301,
+       "strategy": "procedure_heading",
+       "store": "s4",
+       "score": 0.43432
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2925,
+       "end": 3076,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.39965
+      },
+      {
+       "file": "data/virtual/s4.md",
+       "start": 2267,
+       "end": 2346,
+       "strategy": "procedure_heading",
+       "store": "s4",
+       "score": 0.38725
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2647,
+       "end": 2783,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.38674
+      }
+     ]
+    },
+    {
+     "id": "F13",
+     "facts": {
+      "G05": true
+     },
+     "full": true,
+     "pool": 58,
+     "top5": [
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2158,
+       "end": 2326,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.53954
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2019,
+       "end": 2157,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.49926
+      },
+      {
+       "file": "data/virtual/s4.md",
+       "start": 2072,
+       "end": 2182,
+       "strategy": "procedure_heading",
+       "store": "s4",
+       "score": 0.4527
+      },
+      {
+       "file": "data/virtual/s4.md",
+       "start": 1135,
+       "end": 1218,
+       "strategy": "procedure_heading",
+       "store": "s4",
+       "score": 0.43387
+      },
+      {
+       "file": "data/virtual/s4.md",
+       "start": 1302,
+       "end": 1353,
+       "strategy": "procedure_heading",
+       "store": "s4",
+       "score": 0.34902
+      }
+     ]
+    },
+    {
+     "id": "F14",
+     "facts": {
+      "G06": true
+     },
+     "full": true,
+     "pool": 58,
+     "top5": [
+      {
+       "file": "data/virtual/s4.md",
+       "start": 2183,
+       "end": 2266,
+       "strategy": "procedure_heading",
+       "store": "s4",
+       "score": 0.54643
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2327,
+       "end": 2523,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.5373
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2158,
+       "end": 2326,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.47398
+      },
+      {
+       "file": "data/virtual/s4.md",
+       "start": 540,
+       "end": 607,
+       "strategy": "procedure_heading",
+       "store": "s4",
+       "score": 0.46535
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 195,
+       "end": 335,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.45577
+      }
+     ]
+    },
+    {
+     "id": "F15",
+     "facts": {
+      "L02": true
+     },
+     "full": true,
+     "pool": 54,
+     "top5": [
+      {
+       "file": "data/virtual/s5.md",
+       "start": 446,
+       "end": 541,
+       "strategy": "procedure_heading",
+       "store": "s5",
+       "score": 0.42859
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1044,
+       "end": 1166,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.42605
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 2265,
+       "end": 2336,
+       "strategy": "procedure_heading",
+       "store": "s5",
+       "score": 0.38673
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1167,
+       "end": 1305,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.36991
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1306,
+       "end": 1375,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.30729
+      }
+     ]
+    },
+    {
+     "id": "F16",
+     "facts": {
+      "L03": true
+     },
+     "full": true,
+     "pool": 54,
+     "top5": [
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1538,
+       "end": 1694,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.63524
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 1869,
+       "end": 1952,
+       "strategy": "procedure_heading",
+       "store": "s5",
+       "score": 0.60467
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 603,
+       "end": 685,
+       "strategy": "procedure_heading",
+       "store": "s5",
+       "score": 0.58222
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1376,
+       "end": 1537,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.56243
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1907,
+       "end": 2049,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.51004
+      }
+     ]
+    },
+    {
+     "id": "F17",
+     "facts": {
+      "L04": true
+     },
+     "full": true,
+     "pool": 54,
+     "top5": [
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1907,
+       "end": 2049,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.54375
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1753,
+       "end": 1906,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.51937
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 1953,
+       "end": 2063,
+       "strategy": "procedure_heading",
+       "store": "s5",
+       "score": 0.50004
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1538,
+       "end": 1694,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.49549
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 1869,
+       "end": 1952,
+       "strategy": "procedure_heading",
+       "store": "s5",
+       "score": 0.48832
+      }
+     ]
+    },
+    {
+     "id": "F18",
+     "facts": {
+      "L06": true
+     },
+     "full": true,
+     "pool": 54,
+     "top5": [
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 2050,
+       "end": 2256,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.55224
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 2257,
+       "end": 2401,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.53842
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 801,
+       "end": 916,
+       "strategy": "procedure_heading",
+       "store": "s5",
+       "score": 0.44703
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 2064,
+       "end": 2164,
+       "strategy": "procedure_heading",
+       "store": "s5",
+       "score": 0.40868
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1306,
+       "end": 1375,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.39374
+      }
+     ]
+    },
+    {
+     "id": "F19",
+     "facts": {
+      "C10": true,
+      "C08": true
+     },
+     "full": true,
+     "pool": 60,
+     "top5": [
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 1946,
+       "end": 2045,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.50258
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 3009,
+       "end": 3175,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.46038
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 856,
+       "end": 952,
+       "strategy": "procedure_heading",
+       "store": "s1",
+       "score": 0.43355
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 2046,
+       "end": 2193,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.4312
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 3240,
+       "end": 3339,
+       "strategy": "procedure_heading",
+       "store": "s1",
+       "score": 0.41863
+      }
+     ]
+    },
+    {
+     "id": "F20",
+     "facts": {
+      "M06": true
+     },
+     "full": true,
+     "pool": 54,
+     "top5": [
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 1986,
+       "end": 2114,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.60605
+      },
+      {
+       "file": "data/virtual/s3.md",
+       "start": 2528,
+       "end": 2614,
+       "strategy": "procedure_heading",
+       "store": "s3",
+       "score": 0.57264
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 2115,
+       "end": 2210,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.55386
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 1040,
+       "end": 1287,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.37793
+      },
+      {
+       "file": "data/virtual/s3.md",
+       "start": 1366,
+       "end": 1458,
+       "strategy": "procedure_heading",
+       "store": "s3",
+       "score": 0.37489
+      }
+     ]
+    },
+    {
+     "id": "T01",
+     "facts": {
+      "C04": true,
+      "C03": false,
+      "C08": true,
+      "C06": false
+     },
+     "full": false,
+     "pool": 60,
+     "top5": [
+      {
+       "file": "data/virtual/s1.md",
+       "start": 418,
+       "end": 514,
+       "strategy": "procedure_heading",
+       "store": "s1",
+       "score": 0.44343
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 508,
+       "end": 654,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.43605
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 3440,
+       "end": 3591,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.40321
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 768,
+       "end": 953,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.39225
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 3297,
+       "end": 3439,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.3912
+      }
+     ]
+    },
+    {
+     "id": "T02",
+     "facts": {
+      "B04": false,
+      "B01": false,
+      "B03": false,
+      "B07": false
+     },
+     "full": false,
+     "pool": 60,
+     "top5": [
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 244,
+       "end": 440,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.43323
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 441,
+       "end": 507,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.41691
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 0,
+       "end": 106,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.39031
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 3410,
+       "end": 3529,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.38796
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 3248,
+       "end": 3409,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.38508
+      }
+     ]
+    },
+    {
+     "id": "T03",
+     "facts": {
+      "M04": false
+     },
+     "full": false,
+     "pool": 54,
+     "top5": [
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 288,
+       "end": 476,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.4021
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 477,
+       "end": 618,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.3216
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 2947,
+       "end": 3123,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.31923
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 2211,
+       "end": 2387,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.31723
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 3733,
+       "end": 3834,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.30947
+      }
+     ]
+    },
+    {
+     "id": "T04",
+     "facts": {
+      "G04": false
+     },
+     "full": false,
+     "pool": 58,
+     "top5": [
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 3077,
+       "end": 3254,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.32278
+      },
+      {
+       "file": "data/virtual/s4.md",
+       "start": 1798,
+       "end": 1869,
+       "strategy": "procedure_heading",
+       "store": "s4",
+       "score": 0.29249
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 3423,
+       "end": 3570,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.29028
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 1333,
+       "end": 1508,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.26266
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2647,
+       "end": 2783,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.24538
+      }
+     ]
+    },
+    {
+     "id": "T05",
+     "facts": {
+      "L05": true
+     },
+     "full": true,
+     "pool": 54,
+     "top5": [
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 2572,
+       "end": 2723,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.47181
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 2402,
+       "end": 2571,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.4467
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 3518,
+       "end": 3678,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.42111
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 1572,
+       "end": 1634,
+       "strategy": "procedure_heading",
+       "store": "s5",
+       "score": 0.37726
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 2724,
+       "end": 2903,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.3705
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "strategy": "procedure_heading",
+   "store_filter": false,
+   "questions": 25,
+   "facts": 33,
+   "recall_at_5_fact": 0.6667,
+   "hit_facts": 22,
+   "full_hit_rate": 0.72,
+   "full_hits": 18,
+   "random_recall_fact": 0.0608,
+   "random_full_hit_rate": 0.0511,
+   "mean_pool": 286.0,
+   "other_store_chunks_in_top5": 35,
+   "questions_with_other_store": 14,
+   "questions_with_confusable_in_top5": 5,
+   "per_question": [
+    {
+     "id": "F01",
+     "facts": {
+      "C04": true
+     },
+     "full": true,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 954,
+       "end": 1123,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.79736
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 768,
+       "end": 953,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.76555
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 2673,
+       "end": 2763,
+       "strategy": "procedure_heading",
+       "store": "s1",
+       "score": 0.73764
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 847,
+       "end": 1036,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.70855
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 3057,
+       "end": 3173,
+       "strategy": "procedure_heading",
+       "store": "s1",
+       "score": 0.67478
+      }
+     ],
+     "other_store_chunks": 1,
+     "confusable_in_top5": true
+    },
+    {
+     "id": "F02",
+     "facts": {
+      "B02": true
+     },
+     "full": true,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 847,
+       "end": 1036,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.7301
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 2023,
+       "end": 2100,
+       "strategy": "procedure_heading",
+       "store": "s2",
+       "score": 0.70549
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 527,
+       "end": 649,
+       "strategy": "procedure_heading",
+       "store": "s2",
+       "score": 0.68156
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 1037,
+       "end": 1174,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.67505
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 2673,
+       "end": 2763,
+       "strategy": "procedure_heading",
+       "store": "s1",
+       "score": 0.65547
+      }
+     ],
+     "other_store_chunks": 1,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "F03",
+     "facts": {
+      "M01": false
+     },
+     "full": false,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 1761,
+       "end": 1914,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.49728
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 954,
+       "end": 1123,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.473
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 1915,
+       "end": 2047,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.46592
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 768,
+       "end": 953,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.45286
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 3518,
+       "end": 3678,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.45019
+      }
+     ],
+     "other_store_chunks": 5,
+     "confusable_in_top5": true
+    },
+    {
+     "id": "F04",
+     "facts": {
+      "C02": false,
+      "C03": true
+     },
+     "full": false,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 1336,
+       "end": 1517,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.64274
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 667,
+       "end": 761,
+       "strategy": "procedure_heading",
+       "store": "s1",
+       "score": 0.62188
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 1522,
+       "end": 1647,
+       "strategy": "procedure_heading",
+       "store": "s1",
+       "score": 0.62073
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 1518,
+       "end": 1626,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.58917
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 1449,
+       "end": 1521,
+       "strategy": "procedure_heading",
+       "store": "s1",
+       "score": 0.5724
+      }
+     ],
+     "other_store_chunks": 0,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "F05",
+     "facts": {
+      "C05": true
+     },
+     "full": true,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 1841,
+       "end": 1945,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.64504
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 1717,
+       "end": 1840,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.62643
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 2764,
+       "end": 2852,
+       "strategy": "procedure_heading",
+       "store": "s1",
+       "score": 0.60904
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 762,
+       "end": 855,
+       "strategy": "procedure_heading",
+       "store": "s1",
+       "score": 0.5513
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 696,
+       "end": 846,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.49189
+      }
+     ],
+     "other_store_chunks": 1,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "F06",
+     "facts": {
+      "B01": true
+     },
+     "full": true,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 696,
+       "end": 846,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.75619
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 508,
+       "end": 695,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.70458
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 2226,
+       "end": 2322,
+       "strategy": "procedure_heading",
+       "store": "s2",
+       "score": 0.67219
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 361,
+       "end": 526,
+       "strategy": "procedure_heading",
+       "store": "s2",
+       "score": 0.66315
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 2610,
+       "end": 2670,
+       "strategy": "procedure_heading",
+       "store": "s2",
+       "score": 0.62223
+      }
+     ],
+     "other_store_chunks": 0,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "F07",
+     "facts": {
+      "B06": true
+     },
+     "full": true,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 2244,
+       "end": 2374,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.46538
+      },
+      {
+       "file": "data/virtual/s3.md",
+       "start": 2615,
+       "end": 2718,
+       "strategy": "procedure_heading",
+       "store": "s3",
+       "score": 0.41035
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 994,
+       "end": 1059,
+       "strategy": "procedure_heading",
+       "store": "s2",
+       "score": 0.38325
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 2971,
+       "end": 3082,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.371
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 1124,
+       "end": 1224,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.35594
+      }
+     ],
+     "other_store_chunks": 2,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "F08",
+     "facts": {
+      "M04": true
+     },
+     "full": true,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s3.md",
+       "start": 2732,
+       "end": 2830,
+       "strategy": "procedure_heading",
+       "store": "s3",
+       "score": 0.70182
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 1668,
+       "end": 1834,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.65299
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 1835,
+       "end": 1985,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.6511
+      },
+      {
+       "file": "data/virtual/s3.md",
+       "start": 1547,
+       "end": 1618,
+       "strategy": "procedure_heading",
+       "store": "s3",
+       "score": 0.61727
+      },
+      {
+       "file": "data/virtual/s3.md",
+       "start": 555,
+       "end": 721,
+       "strategy": "procedure_heading",
+       "store": "s3",
+       "score": 0.5887
+      }
+     ],
+     "other_store_chunks": 0,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "F09",
+     "facts": {
+      "M03": true
+     },
+     "full": true,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 619,
+       "end": 797,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.52553
+      },
+      {
+       "file": "data/virtual/s3.md",
+       "start": 257,
+       "end": 390,
+       "strategy": "procedure_heading",
+       "store": "s3",
+       "score": 0.47803
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 798,
+       "end": 992,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.47397
+      },
+      {
+       "file": "data/virtual/s3.md",
+       "start": 2421,
+       "end": 2527,
+       "strategy": "procedure_heading",
+       "store": "s3",
+       "score": 0.42749
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 993,
+       "end": 1039,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.42113
+      }
+     ],
+     "other_store_chunks": 0,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "F10",
+     "facts": {
+      "C06": true
+     },
+     "full": true,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 2194,
+       "end": 2369,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.68358
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 2474,
+       "end": 2564,
+       "strategy": "procedure_heading",
+       "store": "s1",
+       "score": 0.66211
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 2582,
+       "end": 2672,
+       "strategy": "procedure_heading",
+       "store": "s1",
+       "score": 0.64982
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 2370,
+       "end": 2547,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.64654
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 953,
+       "end": 1096,
+       "strategy": "procedure_heading",
+       "store": "s1",
+       "score": 0.5974
+      }
+     ],
+     "other_store_chunks": 0,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "F11",
+     "facts": {
+      "B05": true
+     },
+     "full": true,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 2529,
+       "end": 2663,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.67153
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 1060,
+       "end": 1155,
+       "strategy": "procedure_heading",
+       "store": "s2",
+       "score": 0.64418
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 1502,
+       "end": 1557,
+       "strategy": "procedure_heading",
+       "store": "s2",
+       "score": 0.6138
+      },
+      {
+       "file": "data/virtual/s1.md",
+       "start": 1846,
+       "end": 1907,
+       "strategy": "procedure_heading",
+       "store": "s1",
+       "score": 0.59823
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 1435,
+       "end": 1501,
+       "strategy": "procedure_heading",
+       "store": "s2",
+       "score": 0.59789
+      }
+     ],
+     "other_store_chunks": 1,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "F12",
+     "facts": {
+      "G03": true
+     },
+     "full": true,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2784,
+       "end": 2924,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.44779
+      },
+      {
+       "file": "data/virtual/s4.md",
+       "start": 1219,
+       "end": 1301,
+       "strategy": "procedure_heading",
+       "store": "s4",
+       "score": 0.43432
+      },
+      {
+       "file": "data/virtual/s3.md",
+       "start": 1286,
+       "end": 1365,
+       "strategy": "procedure_heading",
+       "store": "s3",
+       "score": 0.42469
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 993,
+       "end": 1039,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.41
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2925,
+       "end": 3076,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.39965
+      }
+     ],
+     "other_store_chunks": 2,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "F13",
+     "facts": {
+      "G05": true
+     },
+     "full": true,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2158,
+       "end": 2326,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.53954
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2019,
+       "end": 2157,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.49926
+      },
+      {
+       "file": "data/virtual/s4.md",
+       "start": 2072,
+       "end": 2182,
+       "strategy": "procedure_heading",
+       "store": "s4",
+       "score": 0.4527
+      },
+      {
+       "file": "data/virtual/s4.md",
+       "start": 1135,
+       "end": 1218,
+       "strategy": "procedure_heading",
+       "store": "s4",
+       "score": 0.43387
+      },
+      {
+       "file": "data/virtual/s4.md",
+       "start": 1302,
+       "end": 1353,
+       "strategy": "procedure_heading",
+       "store": "s4",
+       "score": 0.34902
+      }
+     ],
+     "other_store_chunks": 0,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "F14",
+     "facts": {
+      "G06": true
+     },
+     "full": true,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s4.md",
+       "start": 2183,
+       "end": 2266,
+       "strategy": "procedure_heading",
+       "store": "s4",
+       "score": 0.54643
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2327,
+       "end": 2523,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.5373
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 2158,
+       "end": 2326,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.47398
+      },
+      {
+       "file": "data/virtual/s4.md",
+       "start": 540,
+       "end": 607,
+       "strategy": "procedure_heading",
+       "store": "s4",
+       "score": 0.46535
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 195,
+       "end": 335,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.45577
+      }
+     ],
+     "other_store_chunks": 0,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "F15",
+     "facts": {
+      "L02": true
+     },
+     "full": true,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s5.md",
+       "start": 446,
+       "end": 541,
+       "strategy": "procedure_heading",
+       "store": "s5",
+       "score": 0.42859
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1044,
+       "end": 1166,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.42605
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 2265,
+       "end": 2336,
+       "strategy": "procedure_heading",
+       "store": "s5",
+       "score": 0.38673
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 1668,
+       "end": 1834,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.38122
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 2971,
+       "end": 3082,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.37308
+      }
+     ],
+     "other_store_chunks": 2,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "F16",
+     "facts": {
+      "L03": true
+     },
+     "full": true,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1538,
+       "end": 1694,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.63524
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 1869,
+       "end": 1952,
+       "strategy": "procedure_heading",
+       "store": "s5",
+       "score": 0.60467
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 603,
+       "end": 685,
+       "strategy": "procedure_heading",
+       "store": "s5",
+       "score": 0.58222
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1376,
+       "end": 1537,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.56243
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1907,
+       "end": 2049,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.51004
+      }
+     ],
+     "other_store_chunks": 0,
+     "confusable_in_top5": true
+    },
+    {
+     "id": "F17",
+     "facts": {
+      "L04": true
+     },
+     "full": true,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1907,
+       "end": 2049,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.54375
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1753,
+       "end": 1906,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.51937
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 1953,
+       "end": 2063,
+       "strategy": "procedure_heading",
+       "store": "s5",
+       "score": 0.50004
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1538,
+       "end": 1694,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.49549
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 1869,
+       "end": 1952,
+       "strategy": "procedure_heading",
+       "store": "s5",
+       "score": 0.48832
+      }
+     ],
+     "other_store_chunks": 0,
+     "confusable_in_top5": true
+    },
+    {
+     "id": "F18",
+     "facts": {
+      "L06": true
+     },
+     "full": true,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 2050,
+       "end": 2256,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.55224
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 2257,
+       "end": 2401,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.53842
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 801,
+       "end": 916,
+       "strategy": "procedure_heading",
+       "store": "s5",
+       "score": 0.44703
+      },
+      {
+       "file": "data/virtual/s5.md",
+       "start": 2064,
+       "end": 2164,
+       "strategy": "procedure_heading",
+       "store": "s5",
+       "score": 0.40868
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 1306,
+       "end": 1375,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.39374
+      }
+     ],
+     "other_store_chunks": 0,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "F19",
+     "facts": {
+      "C10": false,
+      "C08": true
+     },
+     "full": false,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 1761,
+       "end": 1914,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.52498
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 1946,
+       "end": 2045,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.50258
+      },
+      {
+       "file": "data/virtual/s2.md",
+       "start": 846,
+       "end": 917,
+       "strategy": "procedure_heading",
+       "store": "s2",
+       "score": 0.49987
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 2143,
+       "end": 2243,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.48284
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 2048,
+       "end": 2142,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.47974
+      }
+     ],
+     "other_store_chunks": 4,
+     "confusable_in_top5": true
+    },
+    {
+     "id": "F20",
+     "facts": {
+      "M06": true
+     },
+     "full": true,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 1986,
+       "end": 2114,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.60605
+      },
+      {
+       "file": "data/virtual/s3.md",
+       "start": 2528,
+       "end": 2614,
+       "strategy": "procedure_heading",
+       "store": "s3",
+       "score": 0.57264
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 2115,
+       "end": 2210,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.55386
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 954,
+       "end": 1123,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.39752
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 768,
+       "end": 953,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.39295
+      }
+     ],
+     "other_store_chunks": 2,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "T01",
+     "facts": {
+      "C04": true,
+      "C03": false,
+      "C08": true,
+      "C06": false
+     },
+     "full": false,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s1.md",
+       "start": 418,
+       "end": 514,
+       "strategy": "procedure_heading",
+       "store": "s1",
+       "score": 0.44343
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 508,
+       "end": 654,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.43605
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 3440,
+       "end": 3591,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.40321
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 768,
+       "end": 953,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.39225
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 3297,
+       "end": 3439,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.3912
+      }
+     ],
+     "other_store_chunks": 0,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "T02",
+     "facts": {
+      "B04": false,
+      "B01": false,
+      "B03": false,
+      "B07": false
+     },
+     "full": false,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 2046,
+       "end": 2193,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.50037
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 288,
+       "end": 476,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.49381
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 655,
+       "end": 767,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.48238
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 244,
+       "end": 440,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.43323
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 1946,
+       "end": 2045,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.41778
+      }
+     ],
+     "other_store_chunks": 4,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "T03",
+     "facts": {
+      "M04": false
+     },
+     "full": false,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 2046,
+       "end": 2193,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.41746
+      },
+      {
+       "file": "data/virtual/s3.txt",
+       "start": 288,
+       "end": 476,
+       "strategy": "transcript_fixed150",
+       "store": "s3",
+       "score": 0.4021
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 768,
+       "end": 953,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.38381
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 655,
+       "end": 767,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.37318
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 1946,
+       "end": 2045,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.36284
+      }
+     ],
+     "other_store_chunks": 4,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "T04",
+     "facts": {
+      "G04": false
+     },
+     "full": false,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 0,
+       "end": 106,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.39209
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 441,
+       "end": 507,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.36863
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 768,
+       "end": 953,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.35637
+      },
+      {
+       "file": "data/virtual/s1.txt",
+       "start": 954,
+       "end": 1123,
+       "strategy": "transcript_fixed150",
+       "store": "s1",
+       "score": 0.34867
+      },
+      {
+       "file": "data/virtual/s4.txt",
+       "start": 3077,
+       "end": 3254,
+       "strategy": "transcript_fixed150",
+       "store": "s4",
+       "score": 0.32278
+      }
+     ],
+     "other_store_chunks": 4,
+     "confusable_in_top5": false
+    },
+    {
+     "id": "T05",
+     "facts": {
+      "L05": true
+     },
+     "full": true,
+     "pool": 286,
+     "top5": [
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 2572,
+       "end": 2723,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.47181
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 2402,
+       "end": 2571,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.4467
+      },
+      {
+       "file": "data/virtual/s5.txt",
+       "start": 3518,
+       "end": 3678,
+       "strategy": "transcript_fixed150",
+       "store": "s5",
+       "score": 0.42111
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 107,
+       "end": 243,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.39697
+      },
+      {
+       "file": "data/virtual/s2.txt",
+       "start": 441,
+       "end": 507,
+       "strategy": "transcript_fixed150",
+       "store": "s2",
+       "score": 0.39443
+      }
+     ],
+     "other_store_chunks": 2,
+     "confusable_in_top5": false
+    }
+   ]
+  }
+ ],
+ "run": {
+  "api_batches": 13,
+  "embedding_tokens_total_used": 51475
+ }
+}
