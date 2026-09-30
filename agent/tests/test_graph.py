@@ -4,7 +4,7 @@ from collections.abc import Sequence
 import numpy as np
 
 from embedding.base import Embedder
-from graph.agent import RECORD_REPLY, AgentDeps, build_agent, run_question
+from graph.agent import AgentDeps, build_agent, run_question
 from graph.schemas import Classification, Rewrite, Sufficiency
 from indexing.store import MemoryStore
 from indexing.types import RawChunk
@@ -171,14 +171,12 @@ def test_non_safety_escalation_has_no_emergency_text(tmp_path):
     assert "119" not in run_question(app, "와이파이 비번", "s1")["answer"]
 
 
-def test_record_and_out_of_scope_skip_retrieval(tmp_path):
-    llm = ScriptedLLM({"classify": [cls("record_request"), cls("out_of_scope")]})
+def test_out_of_scope_skips_retrieval(tmp_path):
+    llm = ScriptedLLM({"classify": [cls("out_of_scope")]})
     app, _ = make_app(tmp_path, llm)
-    r1 = run_question(app, "티라미수 2개 폐기 기록해주세요", "s1")
-    assert r1["outcome"] == "record_request" and r1["answer"] == RECORD_REPLY and not r1["retrieval_log"]
     r2 = run_question(app, "오늘 날씨", "s1")
     assert r2["outcome"] == "out_of_scope" and not r2["retrieval_log"]
-    assert llm.calls == ["classify", "classify"]  # 답변 LLM 호출 없음
+    assert llm.calls == ["classify"]  # 답변 LLM 호출 없음
 
 
 def test_now_tasks_uses_tool_and_attaches_evidence(tmp_path):

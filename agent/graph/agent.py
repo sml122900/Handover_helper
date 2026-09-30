@@ -2,18 +2,24 @@
 
 분류 → (질문) 검색 → 충분성 판단 → [부족 시 질의 재작성 → 재검색 1회] → 답변 | 에스컬레이션 제안
       → (지금 할 일) get_current_tasks → 답변
-      → (기록 요청) "D3에서 지원" 응답  → (범위 밖) 거절 안내
+      → (기록 요청) 도구 계획 → 되물음 | 조회 | 중복 안내 | 확인 대기(interrupt) → 승인 시 실행 / 거절 시 "기록하지 않았어요"
+      → (범위 밖) 거절 안내
 
-노드마다 입력·출력·지연·토큰·비용을 trace에 남긴다 (실행 기록 JSON). 쓰기 도구·확인 단계는 D3.
+노드마다 입력·출력·지연·토큰·비용을 trace에 남긴다 (실행 기록 JSON). 쓰기 도구는 사용자 확인 없이 실행하지 않는다 (설계 6-2).
 """
 
 import operator
 import re
 import time
+import uuid
+from collections.abc import Callable
 from dataclasses import dataclass, field
+from datetime import datetime
 from typing import Annotated, Any, TypedDict
 
+from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, START, StateGraph
+from langgraph.types import Command, interrupt
 
 from embedding.base import Embedder
 from graph import prompts
@@ -22,13 +28,13 @@ from graph.tools import get_current_tasks, load_schedules
 from indexing.store import Hit, VectorStore
 from llm.client import LLM
 from privacy.mask import mask_text
+from tools import service as tsvc
+from tools.plan import TOOL_PLAN_SYSTEM, ToolPlan
+from tools.store import MemoryToolStore, ToolStore
+from tools.timeutil import now_kst, with_time, work_date
 
 K = 5
 DEFAULT_STRATEGY = "fixed150"  # 실험 A 결과(차이 없음)에 따른 기본 청킹 — 결정 로그 2026-09-30
-RECORD_REPLY = (
-    "기록·조회 요청은 아직 지원하지 않아요. 다음 버전(D3)에서 지원할 예정이에요. "
-    "지금은 폐기 대장·체크리스트에 직접 적거나 점장님께 직접 전달해 주세요."
-)
 OUT_OF_SCOPE_REPLY = "이 질문은 인수인계 문서로 답할 수 있는 범위 밖이에요. 필요하면 점장님이나 공식 기관에 직접 확인해 주세요."
 NO_TASKS_REPLY = (
     "지금 시작한 일정도, 30분 안에 다가오는 일정도 문서에 없어요. "
@@ -61,6 +67,9 @@ class State(TypedDict, total=False):
     answer: str
     citations: list[dict]
     rewrite_failed: bool
+    tool_plan: dict
+    pending: dict
+    options: list[str]
     outcome: str  # answered | escalated | record_request | out_of_scope | no_tasks
     retrieval_log: Annotated[list[dict], operator.add]
     trace: Annotated[list[dict], operator.add]
@@ -75,6 +84,8 @@ class AgentDeps:
     integrated: bool = False  # 실험 G: 충분성 판단을 답변 노드에 통합
     answer_prompt: str = "v1"  # v1(기준선) | v2(실험 D' 개선안)
     schedules: dict = field(default_factory=load_schedules)
+    tool_store: ToolStore = field(default_factory=MemoryToolStore)  # 쓰기 도구 저장소 (0013 적용 전 메모리)
+    clock: Callable[[], datetime] | None = None  # 테스트·평가용 고정 시계 (기본 KST 현재)
 
 
 def fmt_ts(start: float | None, end: float | None) -> str:
@@ -315,7 +326,10 @@ def build_agent(deps: AgentDeps):
         return {"answer": text, "citations": [], "outcome": "escalated", "_trace": {"output": text}}
 
     def tasks(state: State) -> dict:
-        result = get_current_tasks(state["store_id"], state.get("current_time"), deps.schedules)
+        now = _now(state)
+        store_cfg = deps.schedules[state["store_id"]]
+        done = deps.tool_store.checklist_done(state["store_id"], work_date(store_cfg, now))
+        result = get_current_tasks(state["store_id"], now.strftime("%H:%M"), deps.schedules, done)
         items = result["now"] + result["upcoming"]
         if not items:
             return {
@@ -373,12 +387,60 @@ def build_agent(deps: AgentDeps):
         extra = f"[일정] 현재 시각 {t['current_time']}\n지금 시작한 일(최근 30분):\n{lines(t['now'])}\n곧 있을 일(30분 이내):\n{lines(t['upcoming'])}\n\n"
         return write_answer(state, prompts.tasks_answer_system(deps.answer_prompt), extra)
 
-    def record_reply(state: State) -> dict:
-        return {
-            "answer": RECORD_REPLY,
+    def _now(state: State) -> datetime:
+        base = deps.clock() if deps.clock else now_kst()
+        return with_time(base, state.get("current_time"))
+
+    def tool_plan(state: State) -> dict:
+        store = deps.schedules[state["store_id"]]
+        user = f"[체크리스트 후보]\n{tsvc.catalog_prompt(store)}\n\n[요청]\n{state['question']}"
+        plan, info = llm.structured(
+            system=TOOL_PLAN_SYSTEM,
+            user=user,
+            schema=ToolPlan,
+            tool_name="submit_tool_plan",
+            max_tokens=700,
+            tag="tool_plan",
+        )
+        action = tsvc.plan_action(plan, state["store_id"], store, _now(state), deps.tool_store)
+        out: dict = {
+            "tool_plan": plan.model_dump(),
             "citations": [],
-            "outcome": "record_request",
-            "_trace": {"output": RECORD_REPLY},
+            "_trace": _llm_trace(info, input=state["question"], output=plan.model_dump()),
+        }
+        if isinstance(action, tsvc.Clarify):
+            out |= {"answer": action.text, "outcome": "clarify", "options": action.options}
+        elif isinstance(action, tsvc.Done):
+            out |= {
+                "answer": action.text,
+                "outcome": "tool_result" if action.kind == "query" else "duplicate",
+            }
+        else:
+            out |= {"pending": {"tool": action.tool, "args": action.args, "text": action.text}}
+        return out
+
+    def confirm(state: State) -> dict:
+        """쓰기 전 확인 (설계 6-2): interrupt로 멈추고, 승인일 때만 실행한다. 재개 시 이 노드가 처음부터 다시 돌지만
+        interrupt 이전에는 부작용이 없다."""
+        pend = state["pending"]
+        decision = interrupt(
+            {"kind": "confirm", "tool": pend["tool"], "args": pend["args"], "text": pend["text"]}
+        )
+        if decision.get("approve"):
+            text = tsvc.execute(
+                tsvc.Pending(pend["tool"], pend["args"], pend["text"]),
+                state["store_id"],
+                deps.schedules[state["store_id"]],
+                _now(state),
+                deps.tool_store,
+                reason=decision.get("reason"),
+            )
+            return {"answer": text, "outcome": "tool_done", "citations": [], "_trace": {"output": text}}
+        return {
+            "answer": tsvc.REJECT_TEXT,
+            "outcome": "tool_rejected",
+            "citations": [],
+            "_trace": {"output": tsvc.REJECT_TEXT},
         }
 
     def out_of_scope_reply(state: State) -> dict:
@@ -393,7 +455,7 @@ def build_agent(deps: AgentDeps):
         return {
             "question": "retrieve",
             "now_tasks": "tasks",
-            "record_request": "record_reply",
+            "record_request": "tool_plan",
             "out_of_scope": "out_of_scope_reply",
         }[state["category"]]
 
@@ -418,7 +480,8 @@ def build_agent(deps: AgentDeps):
         ("escalate", escalate),
         ("tasks", tasks),
         ("tasks_answer", tasks_answer),
-        ("record_reply", record_reply),
+        ("tool_plan", tool_plan),
+        ("confirm", confirm),
         ("out_of_scope_reply", out_of_scope_reply),
     ]
     nodes += (
@@ -433,49 +496,20 @@ def build_agent(deps: AgentDeps):
     if deps.integrated:  # 실험 G: retrieve → answer(충분성 판정 통합) → 답변 / 재작성 / 에스컬레이션
         g.add_edge("retrieve", "answer")
         g.add_conditional_edges("answer", after_integrated)
-        end_nodes = ("escalate", "tasks_answer", "record_reply", "out_of_scope_reply")
+        end_nodes = ("escalate", "tasks_answer", "confirm", "out_of_scope_reply")
     else:
         g.add_edge("retrieve", "sufficiency")
         g.add_conditional_edges("sufficiency", after_sufficiency)
-        end_nodes = ("answer", "escalate", "tasks_answer", "record_reply", "out_of_scope_reply")
+        end_nodes = ("answer", "escalate", "tasks_answer", "confirm", "out_of_scope_reply")
     g.add_conditional_edges("rewrite", lambda st: "escalate" if st.get("rewrite_failed") else "retrieve")
     g.add_conditional_edges("tasks", after_tasks)
+    g.add_conditional_edges("tool_plan", lambda st: "confirm" if st.get("pending") else END)
     for end_node in end_nodes:
         g.add_edge(end_node, END)
-    return g.compile()
+    return g.compile(checkpointer=MemorySaver())
 
 
-def run_question(app, question: str, store_id: str, current_time: str | None = None) -> dict:
-    """한 질문을 흐름에 통과시키고 실행 기록(JSON 직렬화 가능)을 돌려준다.
-
-    구조화 출력이 재시도 후에도 실패하는 등 노드가 실패하면 outcome="failed"로 기록한다 (CLAUDE.md: 1회 재시도 후 failed 처리).
-    """
-    started = time.monotonic()
-    base = {"question": question, "store_id": store_id.lower(), "current_time": current_time}
-    try:
-        final = app.invoke({**base, "trace": [], "retrieval_log": []})
-    except RuntimeError as e:
-        return {
-            **base,
-            "category": None,
-            "safety": False,
-            "outcome": "failed",
-            "error": str(e),
-            "answer": "",
-            "citations": [],
-            "evidence": [],
-            "tasks": None,
-            "sufficiency": None,
-            "rewritten": False,
-            "final_query": None,
-            "retrieval_log": [],
-            "latency_ms": int((time.monotonic() - started) * 1000),
-            "cost_usd": 0.0,
-            "input_tokens": 0,
-            "output_tokens": 0,
-            "embedding_tokens": 0,
-            "trace": [],
-        }
+def _record(final: dict, base: dict, started: float) -> dict:
     trace = final["trace"]
     return {
         **base,
@@ -486,6 +520,8 @@ def run_question(app, question: str, store_id: str, current_time: str | None = N
         "citations": final.get("citations", []),
         "evidence": final.get("evidence", []),
         "tasks": final.get("tasks"),
+        "tool_plan": final.get("tool_plan"),
+        "options": final.get("options", []),
         "sufficiency": final.get("sufficiency"),
         "rewritten": final.get("attempt", 0) > 0,
         "final_query": final.get("query"),
@@ -497,3 +533,100 @@ def run_question(app, question: str, store_id: str, current_time: str | None = N
         "embedding_tokens": sum(t.get("embedding_tokens", 0) for t in trace),
         "trace": trace,
     }
+
+
+def _failed(base: dict, started: float, err: Exception) -> dict:
+    return {
+        **base,
+        "category": None,
+        "safety": False,
+        "outcome": "failed",
+        "error": str(err),
+        "answer": "",
+        "citations": [],
+        "evidence": [],
+        "tasks": None,
+        "tool_plan": None,
+        "options": [],
+        "sufficiency": None,
+        "rewritten": False,
+        "final_query": None,
+        "retrieval_log": [],
+        "latency_ms": int((time.monotonic() - started) * 1000),
+        "cost_usd": 0.0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "embedding_tokens": 0,
+        "trace": [],
+    }
+
+
+def run_question(
+    app,
+    question: str,
+    store_id: str,
+    current_time: str | None = None,
+    auto_confirm: str | None = None,
+    decision_reason: str | None = None,
+    thread_id: str | None = None,
+) -> dict:
+    """한 질문을 흐름에 통과시키고 실행 기록(JSON 직렬화 가능)을 돌려준다.
+
+    쓰기 도구는 확인 대기(outcome="needs_confirmation", confirmation·thread_id 포함)에서 멈춘다.
+    auto_confirm="approve"|"reject"이면 평가용으로 같은 호출에서 바로 재개한다.
+    구조화 출력이 재시도 후에도 실패하는 등 노드가 실패하면 outcome="failed"로 기록한다 (CLAUDE.md: 1회 재시도 후 failed 처리).
+    """
+    started = time.monotonic()
+    tid = thread_id or uuid.uuid4().hex
+    config = {"configurable": {"thread_id": tid}}
+    base = {
+        "question": question,
+        "store_id": store_id.lower(),
+        "current_time": current_time,
+        "thread_id": tid,
+    }
+    try:
+        final = app.invoke({**base, "trace": [], "retrieval_log": []}, config)
+        confirmation = None
+        if final.get("__interrupt__"):
+            confirmation = final["__interrupt__"][0].value
+            if auto_confirm not in ("approve", "reject"):
+                rec = _record(final, base, started)
+                return {
+                    **rec,
+                    "outcome": "needs_confirmation",
+                    "answer": confirmation["text"],
+                    "confirmation": confirmation,
+                }
+            final = app.invoke(
+                Command(resume={"approve": auto_confirm == "approve", "reason": decision_reason}), config
+            )
+    except RuntimeError as e:
+        return _failed(base, started, e)
+    rec = _record(final, base, started)
+    if confirmation:
+        rec["confirmation"] = confirmation
+    return rec
+
+
+def resume_question(app, thread_id: str, approve: bool, reason: str | None = None) -> dict:
+    """확인 대기 중인 요청을 승인·거절로 재개한다 (API /confirm)."""
+    started = time.monotonic()
+    config = {"configurable": {"thread_id": thread_id}}
+    snap = app.get_state(config)
+    base = {
+        "question": snap.values.get("question"),
+        "store_id": snap.values.get("store_id"),
+        "thread_id": thread_id,
+    }
+    final = app.invoke(Command(resume={"approve": approve, "reason": reason}), config)
+    return _record(final, base, started)
+
+
+def pending_confirmation(app, thread_id: str) -> dict | None:
+    """스레드가 확인 대기 중이면 그 확인 정보, 아니면 None."""
+    snap = app.get_state({"configurable": {"thread_id": thread_id}})
+    for task in snap.tasks:
+        for it in task.interrupts:
+            return it.value
+    return None

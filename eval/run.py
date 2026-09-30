@@ -30,7 +30,6 @@ from graph.agent import (  # noqa: E402  # noqa: E402
     DEFAULT_STRATEGY,
     NO_TASKS_REPLY,
     OUT_OF_SCOPE_REPLY,
-    RECORD_REPLY,
     AgentDeps,
     build_agent,
     escalation_text,
@@ -127,7 +126,6 @@ def template_kind(q: dict, rec: dict) -> str | None:
     if rec["outcome"] == "escalated" and a == escalation_text(q["question"], rec.get("safety", False)):
         return "escalation"
     for name, text in (
-        ("record_request", RECORD_REPLY),
         ("out_of_scope", OUT_OF_SCOPE_REPLY),
         ("no_tasks", NO_TASKS_REPLY),
     ):

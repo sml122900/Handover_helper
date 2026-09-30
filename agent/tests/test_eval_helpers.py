@@ -9,7 +9,7 @@ run = importlib.util.module_from_spec(_spec)
 sys.modules["eval_run"] = run
 _spec.loader.exec_module(run)
 
-from graph.agent import NO_TASKS_REPLY, RECORD_REPLY, escalation_text  # noqa: E402
+from graph.agent import NO_TASKS_REPLY, OUT_OF_SCOPE_REPLY, escalation_text  # noqa: E402
 
 
 def rec(outcome, answer, **kw):
@@ -30,10 +30,10 @@ def test_template_kind_requires_exact_match():
         run.template_kind(q, rec("escalated", exact + " 그리고 추측이지만 보통 3일 걸려요.", safety=False))
         is None
     )
-    assert run.template_kind(q, rec("record_request", RECORD_REPLY)) == "record_request"
+    assert run.template_kind(q, rec("out_of_scope", OUT_OF_SCOPE_REPLY)) == "out_of_scope"
     assert run.template_kind(q, rec("no_tasks", NO_TASKS_REPLY)) == "no_tasks"
     assert (
-        run.template_kind(q, rec("answered", RECORD_REPLY)) is None
+        run.template_kind(q, rec("answered", OUT_OF_SCOPE_REPLY)) is None
     )  # 답변 경로에서 나온 문구는 건너뛰지 않음
 
 

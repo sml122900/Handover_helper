@@ -5,6 +5,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 
 from settings import ROOT
+from tools.timeutil import repeated_steps
 
 SEOUL = ZoneInfo("Asia/Seoul")
 # 지금 = 최근 30분 이내 시작한 일, 곧 = 30분 이내 시작할 일 (대칭). 폐기한 15분 창은 골든셋을 본 뒤 정한 값이라 평가셋 과적합 — 결정 로그 2026-10-01
@@ -27,8 +28,16 @@ def load_schedules() -> dict[str, dict]:
     return {s["store_id"]: s for s in data["stores"]}
 
 
-def get_current_tasks(store_id: str, current_time: str | None = None, schedules: dict | None = None) -> dict:
-    """요청에 명시된 current_time(HH:MM)이 우선이고, 없으면 Asia/Seoul 현재 시각."""
+def get_current_tasks(
+    store_id: str,
+    current_time: str | None = None,
+    schedules: dict | None = None,
+    done: set[tuple[str, str]] | None = None,
+) -> dict:
+    """요청에 명시된 current_time(HH:MM)이 우선이고, 없으면 Asia/Seoul 현재 시각.
+
+    done = 오늘(근무일) 완료 기록된 (step_id, 슬롯). 모든 step이 완료된 일정은 지금·곧에서 제외한다 (설계 결정 이행).
+    """
     schedules = schedules or load_schedules()
     if current_time is None:
         now_dt = datetime.now(SEOUL)
@@ -38,11 +47,24 @@ def get_current_tasks(store_id: str, current_time: str | None = None, schedules:
     if store is None:
         return {"store_id": store_id, "current_time": current_time, "found": False, "now": [], "upcoming": []}
     now_items, upcoming = [], []
+    done = done or set()
+    repeated = repeated_steps(store)
+    excluded: list[str] = []
     for item in store["items"]:
         if not item.get("time"):  # 요일·상황 조건 일정(예: 월요일 마감 시)은 시각이 없어 제외
             continue
         d = _delta(item["time"], now)
-        entry = {"time": item["time"], "text": item["text"], "step_ids": item["step_ids"]}
+        remaining = [
+            sid for sid in item["step_ids"] if (sid, item["time"] if sid in repeated else "") not in done
+        ]
+        if item["step_ids"] and not remaining:  # 이 일정의 step이 전부 완료 기록됨
+            excluded += item["step_ids"]
+            continue
+        entry = {
+            "time": item["time"],
+            "text": item["text"],
+            "step_ids": remaining if item["step_ids"] else [],
+        }
         if -WINDOW_MINUTES <= d <= 0:
             now_items.append(entry)
         elif 0 < d <= WINDOW_MINUTES:
@@ -53,4 +75,5 @@ def get_current_tasks(store_id: str, current_time: str | None = None, schedules:
         "found": True,
         "now": now_items,
         "upcoming": upcoming,
+        "done_excluded": excluded,
     }
