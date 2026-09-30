@@ -31,7 +31,7 @@ class ToolPlan(BaseModel):
     )
     urgency: Literal["normal", "urgent"] | None = Field(
         default=None,
-        description="notify_manager: 부상·안전·화재 등 즉시 대응이 필요하면 urgent, 아니면 normal",
+        description="notify_manager: 이미 다쳤거나 다칠 위험이 임박한 부상·화재·응급이면 urgent, 설비·물품 이상 신고 등은 normal",
     )
     missing: str | None = Field(default=None, description="필수 인자가 빠졌으면 무엇이 빠졌는지, 아니면 null")
 
@@ -48,6 +48,7 @@ TOOL_PLAN_SYSTEM = """너는 매장 도우미의 도구 선택기다. 신입 직
 규칙 (반드시 지킨다):
 1. 질문에 없는 값은 지어내지 않는다. 특히 **사유(reason)는 질문에 명시되지 않았으면 null**이다. 상식이나 문서 규칙으로 추정하지 않는다.
 2. 필수 인자가 빠지면 값을 넣지 말고 missing에 무엇이 빠졌는지 적는다 (예: 폐기 기록에 수량이 없으면 qty=null).
-3. log_checklist는 후보 step_id 중 질문이 가리키는 것 하나만 step_id에 넣는다. 둘 이상이 그럴듯하면 step_id는 null, step_candidates에 후보 최대 3개를 넣는다.
+3. log_checklist는 [체크리스트 후보] 중 질문이 가리키는 것 하나를 step_id에 넣는다. 질문의 표현과 이름·설명이 직접 일치하는 후보가 있으면 그것을 고른다. 더 구체적인 이름의 다른 후보(특정 기구·장소가 붙은 후보)는 질문에 그 말이 있을 때만 해당한다. 정말로 둘 이상이 똑같이 그럴듯할 때만 step_id를 null로 두고 step_candidates에 후보 최대 3개를 넣는다.
 4. notify_manager의 message는 질문에 있는 사실만 짧게 정리한다. 새로운 원인·조치를 덧붙이지 않는다.
+   urgency: urgent는 사람이 이미 다쳤거나 즉시 대응하지 않으면 다칠 위험이 임박한 상황(부상·화재·응급)일 때만 쓴다. 설비·물품의 고장·이상 신고는 normal이다.
 5. reasoning을 먼저 쓰고 도구와 인자를 정한다."""

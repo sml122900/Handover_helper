@@ -174,3 +174,23 @@ def fact_covered_relevant(fc: FactCheck) -> bool:
 
 def refusal_correct(r: RefusalResult) -> bool:
     return r.states_not_in_doc and r.suggests_manager_check and not r.gives_guess_answer
+
+
+# ---- 5. 도구 인자 의미 일치 (알림 메시지처럼 자유 문구 인자) ----
+class MessageMatchResult(_Strict):
+    expected_gist: str = Field(description="기대 문구의 핵심 내용(대상·상황)을 한 문장으로")
+    actual_quote: str = Field(description="실제 문구에서 그 핵심에 해당하는 부분 인용. 없으면 빈 문자열")
+    equivalent: bool = Field(description="실제 문구가 기대 문구와 같은 대상·상황을 말하고, 새로운 사실을 덧붙이지 않았으면 true")
+
+
+MESSAGE_MATCH_SYSTEM = """너는 채점자다. 도구 인자로 만든 [실제 문구]가 [기대 문구]와 의미가 같은지 판정한다.
+- 표현이 달라도 같은 대상(예: 몇 번 기구)과 같은 상황(예: 무엇이 어떻다)을 말하면 같다.
+- 실제 문구에 기대 문구에 없는 새로운 사실·원인·조치가 더해졌거나 핵심(대상·상황)이 빠지면 다르다.
+expected_gist → actual_quote → equivalent 순서로 쓴다."""
+
+
+def run_message_match(judge: GroqJudge, expected: str, actual: str):
+    user = f"[기대 문구]\n{expected}\n\n[실제 문구]\n{actual}"
+    return judge.structured(
+        system=MESSAGE_MATCH_SYSTEM, user=user, schema=MessageMatchResult, name="message_match", tag="judge:message"
+    )

@@ -1,0 +1,510 @@
+{
+ "date": "2026-09-30",
+ "agent_model": "claude-sonnet-4-6",
+ "judge_model": "openai/gpt-oss-120b",
+ "summary": {
+  "approve": {
+   "tool_accuracy": "5/5",
+   "tool_ok": "5/5",
+   "args_ok": "5/5",
+   "confirmation_before_write": "4/4",
+   "executed_ok": "5/5"
+  },
+  "reject": {
+   "tool_accuracy": "5/5",
+   "tool_ok": "5/5",
+   "args_ok": "5/5",
+   "confirmation_before_write": "4/4",
+   "executed_ok": "5/5"
+  }
+ },
+ "idempotency_recheck_U03": {
+  "outcome": "duplicate",
+  "answer": "오늘 21:40에 이미 기록돼 있어요.",
+  "records": 1
+ },
+ "cases": [
+  {
+   "id": "U01",
+   "path": "approve",
+   "category": "record_request",
+   "outcome_first": "needs_confirmation",
+   "plan": {
+    "reasoning": "사용자가 티라미수 2개 폐기를 기록해달라고 요청했다. 품목(티라미수)과 수량(2)이 모두 명시되어 있으므로 waste_log_record를 사용한다. 사유는 질문에 언급되지 않았으므로 null로 둔다.",
+    "tool": "waste_log_record",
+    "item": "티라미수",
+    "qty": 2,
+    "reason": null,
+    "date_ref": null,
+    "date": null,
+    "step_id": null,
+    "step_candidates": [],
+    "note": null,
+    "message": null,
+    "urgency": null,
+    "missing": null
+   },
+   "confirmation": {
+    "kind": "confirm",
+    "tool": "waste_log",
+    "args": {
+     "item": "티라미수",
+     "qty": 2,
+     "reason": null,
+     "same_item_today": 0
+    },
+    "text": "티라미수 2개를 폐기 대장에 기록할까요?\n사유: 미기재 — 추가할 내용이 있으면 말씀해 주세요\n(오늘 같은 품목 기록 0건 있음)"
+   },
+   "answer_first": "티라미수 2개를 폐기 대장에 기록할까요?\n사유: 미기재 — 추가할 내용이 있으면 말씀해 주세요\n(오늘 같은 품목 기록 0건 있음)",
+   "store_unchanged_at_pause": true,
+   "tool_ok": true,
+   "args_ok": true,
+   "detail": {
+    "item": true,
+    "qty": true,
+    "reason_recorded_for_reference": null
+   },
+   "confirmation_shown": true,
+   "outcome_final": "tool_done",
+   "answer_final": "폐기 대장에 기록했어요. (기록 ID mem-8c25e296, 사유: 사유 미기재)",
+   "after": {
+    "waste": 1,
+    "checklist": 0,
+    "notifications": 0
+   },
+   "executed_ok": true,
+   "tool_accuracy_ok": true
+  },
+  {
+   "id": "U01",
+   "path": "reject",
+   "category": "record_request",
+   "outcome_first": "needs_confirmation",
+   "plan": {
+    "reasoning": "사용자가 티라미수 2개 폐기를 기록해달라고 요청했다. 품목(티라미수)과 수량(2)이 모두 명시되어 있으므로 waste_log_record를 사용한다. 사유는 질문에 언급되지 않았으므로 null로 둔다.",
+    "tool": "waste_log_record",
+    "item": "티라미수",
+    "qty": 2,
+    "reason": null,
+    "date_ref": null,
+    "date": null,
+    "step_id": null,
+    "step_candidates": [],
+    "note": null,
+    "message": null,
+    "urgency": null,
+    "missing": null
+   },
+   "confirmation": {
+    "kind": "confirm",
+    "tool": "waste_log",
+    "args": {
+     "item": "티라미수",
+     "qty": 2,
+     "reason": null,
+     "same_item_today": 0
+    },
+    "text": "티라미수 2개를 폐기 대장에 기록할까요?\n사유: 미기재 — 추가할 내용이 있으면 말씀해 주세요\n(오늘 같은 품목 기록 0건 있음)"
+   },
+   "answer_first": "티라미수 2개를 폐기 대장에 기록할까요?\n사유: 미기재 — 추가할 내용이 있으면 말씀해 주세요\n(오늘 같은 품목 기록 0건 있음)",
+   "store_unchanged_at_pause": true,
+   "tool_ok": true,
+   "args_ok": true,
+   "detail": {
+    "item": true,
+    "qty": true,
+    "reason_recorded_for_reference": null
+   },
+   "confirmation_shown": true,
+   "outcome_final": "tool_rejected",
+   "answer_final": "기록하지 않았어요. 수정할 내용이 있으면 말씀해 주세요.",
+   "after": {
+    "waste": 0,
+    "checklist": 0,
+    "notifications": 0
+   },
+   "executed_ok": true,
+   "tool_accuracy_ok": true
+  },
+  {
+   "id": "U02",
+   "path": "approve",
+   "category": "record_request",
+   "outcome_first": "tool_result",
+   "plan": {
+    "reasoning": "사용자가 어제의 폐기 내역을 조회하고 싶어하므로 waste_log_query를 사용하고, date_ref를 \"yesterday\"로 설정한다.",
+    "tool": "waste_log_query",
+    "item": null,
+    "qty": null,
+    "reason": null,
+    "date_ref": "yesterday",
+    "date": null,
+    "step_id": null,
+    "step_candidates": [],
+    "note": null,
+    "message": null,
+    "urgency": null,
+    "missing": null
+   },
+   "confirmation": null,
+   "answer_first": "2026-09-30 폐기 대장 (2건)\n- 김밥 2개 (사유: 사유 미기재)\n- 도시락 1개 (사유: 유통기한 경과)",
+   "store_unchanged_at_pause": true,
+   "tool_ok": true,
+   "args_ok": true,
+   "detail": {
+    "date": true
+   },
+   "confirmation_shown": false,
+   "outcome_final": "tool_result",
+   "answer_final": "2026-09-30 폐기 대장 (2건)\n- 김밥 2개 (사유: 사유 미기재)\n- 도시락 1개 (사유: 유통기한 경과)",
+   "after": {
+    "waste": 2,
+    "checklist": 0,
+    "notifications": 0
+   },
+   "executed_ok": true,
+   "tool_accuracy_ok": true
+  },
+  {
+   "id": "U02",
+   "path": "reject",
+   "category": "record_request",
+   "outcome_first": "tool_result",
+   "plan": {
+    "reasoning": "사용자가 어제의 폐기 내역을 조회하고 싶어하므로 waste_log_query를 사용하고, date_ref를 \"yesterday\"로 설정한다.",
+    "tool": "waste_log_query",
+    "item": null,
+    "qty": null,
+    "reason": null,
+    "date_ref": "yesterday",
+    "date": null,
+    "step_id": null,
+    "step_candidates": [],
+    "note": null,
+    "message": null,
+    "urgency": null,
+    "missing": null
+   },
+   "confirmation": null,
+   "answer_first": "2026-09-30 폐기 대장 (2건)\n- 김밥 2개 (사유: 사유 미기재)\n- 도시락 1개 (사유: 유통기한 경과)",
+   "store_unchanged_at_pause": true,
+   "tool_ok": true,
+   "args_ok": true,
+   "detail": {
+    "date": true
+   },
+   "confirmation_shown": false,
+   "outcome_final": "tool_result",
+   "answer_final": "2026-09-30 폐기 대장 (2건)\n- 김밥 2개 (사유: 사유 미기재)\n- 도시락 1개 (사유: 유통기한 경과)",
+   "after": {
+    "waste": 2,
+    "checklist": 0,
+    "notifications": 0
+   },
+   "executed_ok": true,
+   "tool_accuracy_ok": true
+  },
+  {
+   "id": "U03",
+   "path": "approve",
+   "category": "record_request",
+   "outcome_first": "needs_confirmation",
+   "plan": {
+    "reasoning": "사용자가 \"머신 청소\"가 끝났다고 체크 요청. 체크리스트 후보 중 s1.machine_clean이 \"머신 청소 시작\"을 포함하며 가장 직접적으로 일치. s1.ice_machine_clean은 \"제빙기 세척\"으로 질문에 제빙기 언급이 없으므로 해당 안 됨.",
+    "tool": "log_checklist",
+    "item": null,
+    "qty": null,
+    "reason": null,
+    "date_ref": null,
+    "date": null,
+    "step_id": "s1.machine_clean",
+    "step_candidates": [],
+    "note": null,
+    "message": null,
+    "urgency": null,
+    "missing": null
+   },
+   "confirmation": {
+    "kind": "confirm",
+    "tool": "log_checklist",
+    "args": {
+     "step_id": "s1.machine_clean",
+     "slot": "",
+     "note": null
+    },
+    "text": "'라스트오더·케이크 폐기·머신 청소 시작'(s1.machine_clean) 완료를 체크리스트에 기록할까요?"
+   },
+   "answer_first": "'라스트오더·케이크 폐기·머신 청소 시작'(s1.machine_clean) 완료를 체크리스트에 기록할까요?",
+   "store_unchanged_at_pause": true,
+   "tool_ok": true,
+   "args_ok": true,
+   "detail": {
+    "step_id": true
+   },
+   "confirmation_shown": true,
+   "outcome_final": "tool_done",
+   "answer_final": "체크리스트에 기록했어요. (기록 ID mem-c299da8d)",
+   "after": {
+    "waste": 0,
+    "checklist": 1,
+    "notifications": 0
+   },
+   "executed_ok": true,
+   "tool_accuracy_ok": true
+  },
+  {
+   "id": "U03",
+   "path": "reject",
+   "category": "record_request",
+   "outcome_first": "needs_confirmation",
+   "plan": {
+    "reasoning": "사용자가 \"머신 청소\"가 끝났다고 체크를 요청하고 있다. 체크리스트 후보 중 s1.machine_clean이 \"라스트오더·케이크 폐기·머신 청소 시작\"으로 머신 청소와 직접 일치한다. s1.ice_machine_clean은 \"제빙기 세척\"으로 특정 기구(제빙기)가 명시된 후보인데, 질문에 제빙기라는 말이 없으므로 해당하지 않는다.",
+    "tool": "log_checklist",
+    "item": null,
+    "qty": null,
+    "reason": null,
+    "date_ref": null,
+    "date": null,
+    "step_id": "s1.machine_clean",
+    "step_candidates": [],
+    "note": null,
+    "message": null,
+    "urgency": null,
+    "missing": null
+   },
+   "confirmation": {
+    "kind": "confirm",
+    "tool": "log_checklist",
+    "args": {
+     "step_id": "s1.machine_clean",
+     "slot": "",
+     "note": null
+    },
+    "text": "'라스트오더·케이크 폐기·머신 청소 시작'(s1.machine_clean) 완료를 체크리스트에 기록할까요?"
+   },
+   "answer_first": "'라스트오더·케이크 폐기·머신 청소 시작'(s1.machine_clean) 완료를 체크리스트에 기록할까요?",
+   "store_unchanged_at_pause": true,
+   "tool_ok": true,
+   "args_ok": true,
+   "detail": {
+    "step_id": true
+   },
+   "confirmation_shown": true,
+   "outcome_final": "tool_rejected",
+   "answer_final": "기록하지 않았어요. 수정할 내용이 있으면 말씀해 주세요.",
+   "after": {
+    "waste": 0,
+    "checklist": 0,
+    "notifications": 0
+   },
+   "executed_ok": true,
+   "tool_accuracy_ok": true
+  },
+  {
+   "id": "U04",
+   "path": "approve",
+   "category": "record_request",
+   "outcome_first": "needs_confirmation",
+   "plan": {
+    "reasoning": "러닝머신 벨트 미끄러짐은 설비 이상 신고로, notify_manager가 적합하다. 사람이 다쳤다는 언급은 없으므로 urgency는 normal. 체크리스트와 무관하다.",
+    "tool": "notify_manager",
+    "item": null,
+    "qty": null,
+    "reason": null,
+    "date_ref": null,
+    "date": null,
+    "step_id": null,
+    "step_candidates": [],
+    "note": null,
+    "message": "3번 러닝머신 벨트가 미끄러지는 이상이 발생했습니다.",
+    "urgency": "normal",
+    "missing": null
+   },
+   "confirmation": {
+    "kind": "confirm",
+    "tool": "notify_manager",
+    "args": {
+     "message": "3번 러닝머신 벨트가 미끄러지는 이상이 발생했습니다.",
+     "urgency": "normal"
+    },
+    "text": "점장님께 알림을 보낼까요?\n내용: 3번 러닝머신 벨트가 미끄러지는 이상이 발생했습니다.\n긴급도: 보통\n(모의 발송 — 실제로 전송되지 않고 기록만 남아요)"
+   },
+   "answer_first": "점장님께 알림을 보낼까요?\n내용: 3번 러닝머신 벨트가 미끄러지는 이상이 발생했습니다.\n긴급도: 보통\n(모의 발송 — 실제로 전송되지 않고 기록만 남아요)",
+   "store_unchanged_at_pause": true,
+   "tool_ok": true,
+   "args_ok": true,
+   "detail": {
+    "urgency": true,
+    "message": true,
+    "message_actual": "3번 러닝머신 벨트가 미끄러지는 이상이 발생했습니다.",
+    "message_judge_calls": 2
+   },
+   "confirmation_shown": true,
+   "outcome_final": "tool_done",
+   "answer_final": "점장님께 알림을 남겼어요. (모의 발송, 기록 ID mem-e233e1e6)",
+   "after": {
+    "waste": 0,
+    "checklist": 0,
+    "notifications": 1
+   },
+   "executed_ok": true,
+   "tool_accuracy_ok": true
+  },
+  {
+   "id": "U04",
+   "path": "reject",
+   "category": "record_request",
+   "outcome_first": "needs_confirmation",
+   "plan": {
+    "reasoning": "러닝머신 벨트 미끄러짐은 설비 이상 신고로, notify_manager가 적합하다. 사람이 다쳤다는 언급은 없으므로 urgency는 normal. 체크리스트와 무관하다.",
+    "tool": "notify_manager",
+    "item": null,
+    "qty": null,
+    "reason": null,
+    "date_ref": null,
+    "date": null,
+    "step_id": null,
+    "step_candidates": [],
+    "note": null,
+    "message": "3번 러닝머신 벨트가 미끄러지는 이상이 발생했습니다.",
+    "urgency": "normal",
+    "missing": null
+   },
+   "confirmation": {
+    "kind": "confirm",
+    "tool": "notify_manager",
+    "args": {
+     "message": "3번 러닝머신 벨트가 미끄러지는 이상이 발생했습니다.",
+     "urgency": "normal"
+    },
+    "text": "점장님께 알림을 보낼까요?\n내용: 3번 러닝머신 벨트가 미끄러지는 이상이 발생했습니다.\n긴급도: 보통\n(모의 발송 — 실제로 전송되지 않고 기록만 남아요)"
+   },
+   "answer_first": "점장님께 알림을 보낼까요?\n내용: 3번 러닝머신 벨트가 미끄러지는 이상이 발생했습니다.\n긴급도: 보통\n(모의 발송 — 실제로 전송되지 않고 기록만 남아요)",
+   "store_unchanged_at_pause": true,
+   "tool_ok": true,
+   "args_ok": true,
+   "detail": {
+    "urgency": true,
+    "message": true,
+    "message_actual": "3번 러닝머신 벨트가 미끄러지는 이상이 발생했습니다.",
+    "message_judge_calls": 2
+   },
+   "confirmation_shown": true,
+   "outcome_final": "tool_rejected",
+   "answer_final": "기록하지 않았어요. 수정할 내용이 있으면 말씀해 주세요.",
+   "after": {
+    "waste": 0,
+    "checklist": 0,
+    "notifications": 0
+   },
+   "executed_ok": true,
+   "tool_accuracy_ok": true
+  },
+  {
+   "id": "U05",
+   "path": "approve",
+   "category": "record_request",
+   "outcome_first": "needs_confirmation",
+   "plan": {
+    "reasoning": "사용자가 김밥 3개 폐기를 등록하고 대장에 기록해달라고 요청했다. 품목은 \"김밥\", 수량은 3으로 명확하다. 사유는 질문에 명시되지 않았으므로 null. waste_log_record를 사용한다.",
+    "tool": "waste_log_record",
+    "item": "김밥",
+    "qty": 3,
+    "reason": null,
+    "date_ref": null,
+    "date": null,
+    "step_id": null,
+    "step_candidates": [],
+    "note": null,
+    "message": null,
+    "urgency": null,
+    "missing": null
+   },
+   "confirmation": {
+    "kind": "confirm",
+    "tool": "waste_log",
+    "args": {
+     "item": "김밥",
+     "qty": 3,
+     "reason": null,
+     "same_item_today": 0
+    },
+    "text": "김밥 3개를 폐기 대장에 기록할까요?\n사유: 미기재 — 추가할 내용이 있으면 말씀해 주세요\n(오늘 같은 품목 기록 0건 있음)"
+   },
+   "answer_first": "김밥 3개를 폐기 대장에 기록할까요?\n사유: 미기재 — 추가할 내용이 있으면 말씀해 주세요\n(오늘 같은 품목 기록 0건 있음)",
+   "store_unchanged_at_pause": true,
+   "tool_ok": true,
+   "args_ok": true,
+   "detail": {
+    "item": true,
+    "qty": true,
+    "reason_recorded_for_reference": null
+   },
+   "confirmation_shown": true,
+   "outcome_final": "tool_done",
+   "answer_final": "폐기 대장에 기록했어요. (기록 ID mem-18083d54, 사유: 사유 미기재)",
+   "after": {
+    "waste": 1,
+    "checklist": 0,
+    "notifications": 0
+   },
+   "executed_ok": true,
+   "tool_accuracy_ok": true
+  },
+  {
+   "id": "U05",
+   "path": "reject",
+   "category": "record_request",
+   "outcome_first": "needs_confirmation",
+   "plan": {
+    "reasoning": "사용자가 김밥 3개 폐기를 기록해달라고 요청했다. 품목(김밥)과 수량(3)이 명시되어 있고, 사유는 언급되지 않았으므로 null. waste_log_record 도구를 사용한다.",
+    "tool": "waste_log_record",
+    "item": "김밥",
+    "qty": 3,
+    "reason": null,
+    "date_ref": null,
+    "date": null,
+    "step_id": null,
+    "step_candidates": [],
+    "note": null,
+    "message": null,
+    "urgency": null,
+    "missing": null
+   },
+   "confirmation": {
+    "kind": "confirm",
+    "tool": "waste_log",
+    "args": {
+     "item": "김밥",
+     "qty": 3,
+     "reason": null,
+     "same_item_today": 0
+    },
+    "text": "김밥 3개를 폐기 대장에 기록할까요?\n사유: 미기재 — 추가할 내용이 있으면 말씀해 주세요\n(오늘 같은 품목 기록 0건 있음)"
+   },
+   "answer_first": "김밥 3개를 폐기 대장에 기록할까요?\n사유: 미기재 — 추가할 내용이 있으면 말씀해 주세요\n(오늘 같은 품목 기록 0건 있음)",
+   "store_unchanged_at_pause": true,
+   "tool_ok": true,
+   "args_ok": true,
+   "detail": {
+    "item": true,
+    "qty": true,
+    "reason_recorded_for_reference": null
+   },
+   "confirmation_shown": true,
+   "outcome_final": "tool_rejected",
+   "answer_final": "기록하지 않았어요. 수정할 내용이 있으면 말씀해 주세요.",
+   "after": {
+    "waste": 0,
+    "checklist": 0,
+    "notifications": 0
+   },
+   "executed_ok": true,
+   "tool_accuracy_ok": true
+  }
+ ],
+ "cost": {
+  "anthropic_usd": 0.1996,
+  "groq_usd": 0.0006
+ }
+}
