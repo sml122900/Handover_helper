@@ -7,10 +7,8 @@ from zoneinfo import ZoneInfo
 from settings import ROOT
 
 SEOUL = ZoneInfo("Asia/Seoul")
-UPCOMING_MINUTES = 30  # 설계: 30분 내 다가오는 일
-STARTED_MINUTES = (
-    15  # '지금 해야 할 일' = 최근 15분 안에 시작한 일정 (설계에 정의가 없어 정한 값 — 결정 로그 참조)
-)
+# 지금 = 최근 30분 이내 시작한 일, 곧 = 30분 이내 시작할 일 (대칭). 폐기한 15분 창은 골든셋을 본 뒤 정한 값이라 평가셋 과적합 — 결정 로그 2026-10-01
+WINDOW_MINUTES = 30
 
 
 def _minutes(hhmm: str) -> int:
@@ -45,9 +43,9 @@ def get_current_tasks(store_id: str, current_time: str | None = None, schedules:
             continue
         d = _delta(item["time"], now)
         entry = {"time": item["time"], "text": item["text"], "step_ids": item["step_ids"]}
-        if -STARTED_MINUTES <= d <= 0:
+        if -WINDOW_MINUTES <= d <= 0:
             now_items.append(entry)
-        elif 0 < d <= UPCOMING_MINUTES:
+        elif 0 < d <= WINDOW_MINUTES:
             upcoming.append(entry)
     return {
         "store_id": store_id,

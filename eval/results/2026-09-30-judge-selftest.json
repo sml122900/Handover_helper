@@ -6,11 +6,11 @@
  },
  "cases": {
   "A_정답": {
-   "expect": "정답 그대로 → 누락 없음·환각 없음이어야 함",
+   "expect": "정답 그대로 → 누락 없음·위반 없음이어야 함",
    "answer": "마감 정산은 포스의 '마감정산' 버튼으로 해요. 현금은 금고의 흰 봉투에 넣어요. 정산 금액과 실제 현금이 1,000원 이상 차이 나면 매장 단톡방에 차액을 올려요.",
    "fact_covered": true,
    "uncovered_parts": [],
-   "hallucination": false,
+   "unfaithful": false,
    "unsupported_claims": [],
    "detail": {
     "accuracy": {
@@ -40,7 +40,7 @@
       }
      ]
     },
-    "hallucination": {
+    "unfaithful": {
      "claims": [
       {
        "claim": "마감 정산은 포스의 '마감정산' 버튼으로 해요.",
@@ -62,11 +62,11 @@
    }
   },
   "B_가짜사실_추가": {
-   "expect": "정답 + 원문에 없는 사실 1개 → 환각으로 잡혀야 함 (누락은 없음)",
+   "expect": "정답 + 원문에 없는 사실 1개 → 근거 충실도 위반으로 잡혀야 함 (누락은 없음)",
    "answer": "마감 정산은 포스의 '마감정산' 버튼으로 해요. 현금은 금고의 흰 봉투에 넣어요. 정산 금액과 실제 현금이 1,000원 이상 차이 나면 매장 단톡방에 차액을 올려요. 차액이 5,000원 이상이면 점장님께 전화로 바로 보고해야 해요.",
    "fact_covered": true,
    "uncovered_parts": [],
-   "hallucination": true,
+   "unfaithful": true,
    "unsupported_claims": [
     "차액이 5,000원 이상이면 점장님께 전화로 바로 보고해야 해요."
    ],
@@ -98,7 +98,7 @@
       }
      ]
     },
-    "hallucination": {
+    "unfaithful": {
      "claims": [
       {
        "claim": "마감 정산은 포스의 '마감정산' 버튼으로 해요.",
@@ -125,13 +125,13 @@
    }
   },
   "C_정답사실_누락": {
-   "expect": "'현금은 금고의 흰 봉투' 조각을 뺌 → 누락으로 잡혀야 함 (환각은 없음)",
+   "expect": "'현금은 금고의 흰 봉투' 조각을 뺌 → 누락으로 잡혀야 함 (위반 없음)",
    "answer": "마감 정산은 포스의 '마감정산' 버튼으로 해요. 정산 금액과 실제 현금이 1,000원 이상 차이 나면 매장 단톡방에 차액을 올려요.",
    "fact_covered": false,
    "uncovered_parts": [
     "현금은 금고의 흰 봉투에 넣는다."
    ],
-   "hallucination": false,
+   "unfaithful": false,
    "unsupported_claims": [],
    "detail": {
     "accuracy": {
@@ -161,7 +161,7 @@
       }
      ]
     },
-    "hallucination": {
+    "unfaithful": {
      "claims": [
       {
        "claim": "마감 정산은 포스의 '마감정산' 버튼으로 해요.",
@@ -184,9 +184,9 @@
    "uncovered_parts": [
     "차액이 1,000원 이상이면 매장 단톡방에 금액을 올린다."
    ],
-   "hallucination": true,
+   "unfaithful": true,
    "unsupported_claims": [
-    "정산 금액과 실제 현금이 3,000원 이상 차이 나면 매장 단톡방에 차액을 올린다."
+    "정산 금액과 실제 현금이 3,000원 이상 차이 나면 매장 단톡방에 차액을 올려요."
    ],
    "detail": {
     "accuracy": {
@@ -216,20 +216,20 @@
       }
      ]
     },
-    "hallucination": {
+    "unfaithful": {
      "claims": [
       {
-       "claim": "마감 정산은 포스의 '마감정산' 버튼으로 한다.",
-       "source_quote": "마감 정산은 포스기에서 '마감정산' 버튼을 누르고 화면의 안내에 따라 진행한다.",
+       "claim": "마감 정산은 포스의 '마감정산' 버튼으로 해요.",
+       "source_quote": "포스기에서 '마감정산' 버튼을 누르고 화면의 안내에 따라 진행한다.",
        "supported": true
       },
       {
-       "claim": "현금은 금고의 흰 봉투에 넣는다.",
+       "claim": "현금은 금고의 흰 봉투에 넣어요.",
        "source_quote": "현금은 금고 안의 흰 봉투에 넣는다.",
        "supported": true
       },
       {
-       "claim": "정산 금액과 실제 현금이 3,000원 이상 차이 나면 매장 단톡방에 차액을 올린다.",
+       "claim": "정산 금액과 실제 현금이 3,000원 이상 차이 나면 매장 단톡방에 차액을 올려요.",
        "source_quote": "정산 금액과 실제 현금이 1,000원 이상 차이 날 경우 매장 단톡방에 차액 금액을 올린다.",
        "supported": false
       }
@@ -244,5 +244,5 @@
   "C_정답사실_누락": true,
   "D_수치변조": true
  },
- "cost_usd": 0.005592
+ "cost_usd": 0.003009
 }

@@ -13,7 +13,12 @@ def steps(items):
         ("s1", "21:35", {"s1.cake_waste", "s1.machine_clean"}, {"s1.lights_off", "s1.closing_settle"}),
         ("s2", "20:35", {"s2.discount_sticker"}, {"s2.waste_sort", "s2.oven_cooldown"}),
         ("s3", "02:05", {"s3.drink_stock"}, set()),  # 03:00 폐기 점검은 55분 뒤 = 30분 밖
-        ("s4", "06:50", set(), {"s4.towel_receive"}),  # 06:30 일정은 20분 전 = '지금 시작한 일' 15분 밖
+        (
+            "s4",
+            "06:50",
+            {"s4.drink_fridge"},
+            {"s4.towel_receive"},
+        ),  # 06:30 일정은 20분 전 = 최근 30분 이내라 '지금'
         ("s5", "23:20", set(), {"s5.meal_break"}),
     ],
 )

@@ -5,7 +5,7 @@
   기준선(전체 40문항, 2회):  uv run --directory agent python ../eval/run.py --runs 2 --label baseline
 결과: eval/results/YYYY-MM-DD-{label}.json + .md (설정은 머리말에 기록)
 
-지표: 사실 20/시각 5 분리 Recall@5, 답변 정확도, 출처 일치율, 환각률, 거절 정확도(없음 10), 지연 p50/p95, 질문당 비용.
+지표: 사실 20/시각 5 분리 Recall@5, 답변 정확도, 출처 일치율, 근거 충실도, 거절 정확도(없음 10), 지연 p50/p95, 질문당 비용.
 도구 문항 5개는 쓰기 도구(D3)라 지표에서 제외하고 분류 정확도만 기록한다.
 """
 
@@ -26,7 +26,16 @@ sys.path.insert(0, str(ROOT / "eval"))
 import retrieval  # noqa: E402  (overlaps 대신 dict 위치 비교를 쓰지만 load_spans를 재사용)
 
 from embedding import get_embedder  # noqa: E402
-from graph.agent import DEFAULT_STRATEGY, AgentDeps, build_agent, run_question  # noqa: E402
+from graph.agent import (  # noqa: E402  # noqa: E402
+    DEFAULT_STRATEGY,
+    NO_TASKS_REPLY,
+    OUT_OF_SCOPE_REPLY,
+    RECORD_REPLY,
+    AgentDeps,
+    build_agent,
+    escalation_text,
+    run_question,
+)
 from graph.prompts import PROMPT_VERSION  # noqa: E402
 from indexing.corpus import build_masked_index  # noqa: E402
 from indexing.factory import make_store  # noqa: E402
@@ -37,7 +46,7 @@ from judge.tasks import (  # noqa: E402
     refusal_correct,
     run_accuracy,
     run_citations,
-    run_hallucination,
+    run_faithfulness,
     run_refusal,
 )
 from llm.client import ClaudeClient, CostBudgetExceeded, CostTracker, ledger_totals  # noqa: E402
@@ -55,13 +64,6 @@ def load_golden() -> list[dict]:
 def load_fact_texts() -> dict[str, str]:
     spec = (ROOT / "data" / "virtual" / "corpus-spec.md").read_text(encoding="utf-8")
     return {m.group(1): m.group(2) for m in re.finditer(r"^\| ([CBMGL]\d{2}) \| (.+?) \|", spec, re.M)}
-
-
-def store_source(store_id: str) -> str:
-    """환각 판정용 원문: 해당 매장의 문서와 트랜스크립트 전문."""
-    return "\n\n".join(
-        (ROOT / "data" / "virtual" / f"{store_id}.{e}").read_text(encoding="utf-8") for e in ("md", "txt")
-    )
 
 
 def hit_dict(entries: list[dict], spans: list[tuple[str, int, int]]) -> bool:
@@ -88,8 +90,40 @@ def base_eval(q: dict, rec: dict, spans) -> dict:
     return ev
 
 
+def utf16_slice(text: str, start: int, end: int) -> str:
+    b = text.encode("utf-16-le")
+    return b[start * 2 : end * 2].decode("utf-16-le")
+
+
+def received_chunks(rec: dict) -> list[str]:
+    """이 답변을 쓰는 동안 에이전트가 실제로 받은 청크: 답변 근거(evidence) + 재검색 전 검색 결과(위치로 복원)."""
+    seen: dict[tuple, str] = {(e["source_file"], e["char_start"]): e["text"] for e in rec["evidence"]}
+    for attempt in rec["retrieval_log"]:
+        for t in attempt["top5"]:
+            key = (t["file"], t["start"])
+            if key not in seen:
+                text = (ROOT / t["file"]).read_bytes().decode("utf-8")
+                seen[key] = utf16_slice(text, t["start"], t["end"])
+    return list(seen.values())
+
+
+def template_kind(q: dict, rec: dict) -> str | None:
+    """답변이 고정 문구와 완전히 일치하면 그 종류 (그 외에는 None)."""
+    a = rec["answer"]
+    if rec["outcome"] == "escalated" and a == escalation_text(q["question"], rec.get("safety", False)):
+        return "escalation"
+    for name, text in (
+        ("record_request", RECORD_REPLY),
+        ("out_of_scope", OUT_OF_SCOPE_REPLY),
+        ("no_tasks", NO_TASKS_REPLY),
+    ):
+        if rec["outcome"] == name and a == text:
+            return name
+    return None
+
+
 def judge_eval(q: dict, rec: dict, judge: GroqJudge, fact_texts) -> dict:
-    """채점 모델(Groq) 호출 부분: 답변 정확도·환각·출처 일치·거절. 집계는 코드가 한다."""
+    """채점 모델(Groq) 호출 부분: 답변 정확도·근거 충실도·출처 일치·거절. 집계는 코드가 한다."""
     ev: dict = {}
     answer = rec["answer"]
     judge_cost = 0.0
@@ -112,13 +146,22 @@ def judge_eval(q: dict, rec: dict, judge: GroqJudge, fact_texts) -> dict:
         ev["accuracy_full_relevant"] = all(ev["fact_covered_relevant"].values())
         ev["accuracy_detail"] = acc.model_dump()
 
-    hal, info = run_hallucination(judge, answer, store_source(q["store"].lower()))
-    judge_cost += info.cost_usd
-    ev["hallucination"] = any(not c.supported for c in hal.claims)
-    ev["unsupported_claims"] = [c.claim for c in hal.claims if not c.supported]
-    ev["hallucination_detail"] = hal.model_dump()
+    template = template_kind(q, rec)
+    if template:  # 고정 문구는 검색 근거에서 온 사실 주장이 없다 → 호출을 건너뛰고 "사실 주장 없음"으로 집계
+        ev["unfaithful"] = False
+        ev["unsupported_claims"] = []
+        ev["faithfulness_skipped"] = template
+    else:
+        chunks = received_chunks(rec)
+        evidence_text = "\n\n".join(f"[청크 {i}]\n{t}" for i, t in enumerate(chunks, start=1))
+        fai, info = run_faithfulness(judge, answer, evidence_text)
+        judge_cost += info.cost_usd
+        ev["unfaithful"] = any(not c.supported for c in fai.claims)
+        ev["unsupported_claims"] = [c.claim for c in fai.claims if not c.supported]
+        ev["faithfulness_detail"] = fai.model_dump()
+        ev["faithfulness_chunks"] = len(chunks)
 
-    if rec["citations"] or re.search(r"[근거 d+]", answer):
+    if rec["citations"] or re.search(r"\[근거 \d+\]", answer):
         evidence_text = "\n\n".join(f"[근거 {e['n']}]\n{e['text']}" for e in rec["evidence"])
         cit, info = run_citations(judge, answer, evidence_text)
         judge_cost += info.cost_usd
@@ -177,7 +220,7 @@ def summarize(rows: list[dict]) -> dict:
     ft = fq + tq
     graded = ft + ids("absent")
     out["judged"] = judged = all(
-        "hallucination" in ev[i] for i in graded
+        "unfaithful" in ev[i] for i in graded
     )  # 채점 결과가 모두 있어야 채점 지표를 계산
     if judged:
         out["answer_accuracy"] = {
@@ -206,10 +249,11 @@ def summarize(rows: list[dict]) -> dict:
                 "questions": len(tq),
             },
         }
-        out["hallucination"] = {
-            "answers_with_unsupported": sum(ev[i]["hallucination"] for i in graded),
+        out["faithfulness"] = {
+            "answers_with_unsupported": sum(ev[i]["unfaithful"] for i in graded),
+            "skipped_templates": sum(1 for i in graded if ev[i].get("faithfulness_skipped")),
             "answers": len(graded),
-            "ids": [i for i in graded if ev[i]["hallucination"]],
+            "ids": [i for i in graded if ev[i]["unfaithful"]],
         }
         pairs = sum(ev[i].get("citation_pairs", 0) for i in graded)
         out["citation_match"] = {
@@ -258,7 +302,7 @@ def summarize(rows: list[dict]) -> dict:
 
 def flip_report(runs: list[list[dict]]) -> dict:
     """같은 문항이 실행마다 판정이 바뀌는 정도 (문항 단위)."""
-    keys = ["category_ok", "accuracy_full", "hallucination", "refusal_correct"]
+    keys = ["category_ok", "accuracy_full", "accuracy_full_relevant", "unfaithful", "refusal_correct"]
     by_id: dict[str, list[dict]] = {}
     for rows in runs:
         for r in rows:
@@ -287,13 +331,13 @@ def flip_report(runs: list[list[dict]]) -> dict:
 
 
 def judge_rows(s: dict) -> list[str]:
-    aa, h, c, rf = s["answer_accuracy"], s["hallucination"], s["citation_match"], s["refusal_accuracy"]
+    aa, h, c, rf = s["answer_accuracy"], s["faithfulness"], s["citation_match"], s["refusal_accuracy"]
     ro = aa["relevant_only"]
     return [
         f"| 답변 정확도 (사실+시각) | 사실 {aa['facts_covered']}/{aa['facts']}, 문항 완전 {aa['questions_full']}/{aa['questions']} (사실20 {aa['fact20']['covered']}/{aa['fact20']['facts']}, 시각5 {aa['time5']['covered']}/{aa['time5']['facts']}). 정의: 정답 사실 내용을 모두 포함(시각 문항은 일 단위) |",
         f"| 답변 정확도 — 보조(질문이 묻는 조각만) | 사실 {ro['facts_covered']}/{ro['facts']}, 문항 완전 {ro['questions_full']}/{ro['questions']} (사실20 {ro['fact20_covered']}/{ro['fact20_facts']}) |",
         f"| 출처 일치율 | {c['supported']}/{c['pairs']} = {rate(c['supported'], c['pairs'])} |",
-        f"| 환각률 (사실주장 근거 없음 1개 이상) | {h['answers_with_unsupported']}/{h['answers']} {h['ids']} |",
+        f"| 근거 충실도 (검색 근거 기준) — 근거 밖 사실 주장이 1개 이상인 답변 | {h['answers_with_unsupported']}/{h['answers']} {h['ids']} (고정 문구라 호출 생략 {h['skipped_templates']}건, 사실 주장 없음으로 집계) |",
         f"| 거절 정확도 (없음 10) | {rf['correct']}/{rf['total']} 오답 {rf['wrong']} |",
         f"| 안전★ 긴급 안내에 '문서 근거 아님' 표시 | {len(rf['safety_with_emergency_marked'])}/{len(rf['safety_ids'])} |",
     ]
@@ -317,9 +361,7 @@ def to_markdown(res: dict) -> str:
             *(
                 judge_rows(s)
                 if judged
-                else [
-                    "| 채점 지표 (답변 정확도·출처 일치·환각·거절) | **채점 대기** — Groq 일일 토큰 한도로 미완료 |"
-                ]
+                else ["| 채점 지표 (답변 정확도·출처 일치·환각·거절) | **채점 대기** |"]
             ),
             f"| 분류 정확도 (도구 문항 포함) | {s['classification']['correct']}/{s['classification']['total']} {s['classification']['mismatches']} |",
             f"| 지연 p50 / p95 (채점 제외) | {s['latency_ms']['p50']} ms / {s['latency_ms']['p95']} ms |",
@@ -349,6 +391,9 @@ def main() -> None:
     ap.add_argument("--subset", default=None, help="쉼표로 구분한 문항 ID (예: F04,T01)")
     ap.add_argument("--n5", action="store_true", help=f"개발용 5문항 {DEV_SUBSET}")
     ap.add_argument("--runs", type=int, default=1)
+    ap.add_argument(
+        "--regen", default=None, help="쉼표로 구분한 문항 ID의 캐시를 보존용으로 옮기고 다시 생성"
+    )
     ap.add_argument("--no-judge", action="store_true", help="질문 응답만 생성·캐시하고 채점은 나중에")
     ap.add_argument("--label", default="baseline")
     args = ap.parse_args()
@@ -388,6 +433,18 @@ def main() -> None:
         with path.open("a", encoding="utf-8") as f:
             f.write(json.dumps({"run": run, "id": qid, "data": data}, ensure_ascii=False) + "\n")
 
+    if args.regen:  # 지정한 문항의 캐시된 응답·채점을 보존용 파일로 옮기고 다시 생성한다 (다른 문항의 응답은 건드리지 않음)
+        regen_ids = set(args.regen.split(","))
+        for path in (rec_cache, ev_cache):
+            if not path.exists():
+                continue
+            lines = [x for x in path.read_text(encoding="utf-8").splitlines() if x]
+            keep = [x for x in lines if json.loads(x)["id"] not in regen_ids]
+            gone = [x for x in lines if json.loads(x)["id"] in regen_ids]
+            if gone:
+                with path.with_name(path.stem + "-archive.jsonl").open("a", encoding="utf-8") as f:
+                    f.write("\n".join(gone) + "\n")
+                path.write_text("\n".join(keep) + ("\n" if keep else ""), encoding="utf-8")
     recs, evs = load(rec_cache), load(ev_cache)
     runs: list[list[dict]] = []
     judge_stopped = False
@@ -445,6 +502,8 @@ def main() -> None:
             "questions": [q["id"] for q in golden],
             "runs": args.runs,
             "note": "도구 문항(U01~U05)은 쓰기 도구(D3)라 지표에서 제외, 분류 정확도만 기록",
+            "faithfulness_definition": "근거 충실도(faithfulness, 검색 근거 기준): 답변의 사실 주장(부재 진술·점장 확인 안내·응급 일반 안내 제외)이 그 답변이 실제로 받은 청크(최초 검색 상위 5개 + 재검색분, 시각 문항은 도구 근거 청크)에 뒷받침되는지. 원문에는 있어도 받은 청크에 없으면 근거 밖. 답변이 고정 문구(에스컬레이션·기록 요청·범위 밖·일정 없음)와 완전히 일치하면 호출을 건너뛰고 사실 주장 없음으로 집계",
+            "accuracy_definition": "주 지표: 골든셋 정의(정답 사실 내용 전체 포함, 시각 문항은 일 단위). 보조 지표: 질문이 묻는 조각만 — 채점 모델 판단 포함",
         },
         "summaries": [summarize(rows) for rows in runs],
         "stability": flip_report(runs) if len(runs) > 1 else None,

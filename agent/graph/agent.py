@@ -345,7 +345,7 @@ def build_agent(deps: AgentDeps):
                 or "- (없음)"
             )
 
-        extra = f"[일정] 현재 시각 {t['current_time']}\n지금 시작한 일(최근 15분):\n{lines(t['now'])}\n곧 있을 일(30분 이내):\n{lines(t['upcoming'])}\n\n"
+        extra = f"[일정] 현재 시각 {t['current_time']}\n지금 시작한 일(최근 30분):\n{lines(t['now'])}\n곧 있을 일(30분 이내):\n{lines(t['upcoming'])}\n\n"
         return write_answer(state, prompts.TASKS_ANSWER_SYSTEM, extra)
 
     def record_reply(state: State) -> dict:

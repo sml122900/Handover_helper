@@ -48,23 +48,23 @@ ACCURACY_TASK_SYSTEM = """너는 채점자다. 시각 기반 질문의 [정답 �
 답변이 "문서에 없어요"라고 회피하면 false. 답변에 없는 내용을 네가 보충해서 true로 만들지 않는다."""
 
 
-# ---- 2. 환각: 답변의 사실 주장을 원문 전체와 대조 ----
 class ClaimCheck(_Strict):
     claim: str = Field(description="답변에 든 사실 주장 하나")
     source_quote: str = Field(
-        description="[원문]에서 그 주장을 뒷받침하는 문장 인용. 뒷받침이 없으면 빈 문자열"
+        description="[검색 근거]에서 그 주장을 뒷받침하는 문장 인용. 뒷받침이 없으면 빈 문자열"
     )
     supported: bool = Field(
-        description="인용이 주장(수치·시각·조건 포함)과 일치하면 true. 원문에 없거나 다르면 false"
+        description="인용이 주장(수치·시각·조건 포함)과 일치하면 true. 검색 근거에 없거나 다르면 false"
     )
 
 
-class HallucinationResult(_Strict):
+class FaithfulnessResult(_Strict):
     claims: list[ClaimCheck]
 
 
-HALLUCINATION_SYSTEM = """너는 사실 검증자다. [답변]에 든 사실 주장(업무 절차·수치·시각·규칙·장소·조건)을 하나씩 뽑아 [원문](해당 매장의 인수인계 문서와 영상 발언 전문)과 대조한다.
-- 각 주장마다 원문에서 뒷받침 문장을 그대로 인용한 뒤(source_quote) supported를 정한다. 원문에 없거나 수치·시각이 다르면 false.
+# ---- 2. 근거 충실도: 답변의 사실 주장을 "그 답변이 실제로 받은 청크"와 대조 (검색 근거 기준) ----
+FAITHFULNESS_SYSTEM = """너는 근거 충실도 검증자다. [답변]에 든 사실 주장(업무 절차·수치·시각·규칙·장소·조건)을 하나씩 뽑아 [검색 근거](에이전트가 이 답변을 쓰면서 실제로 받은 청크)와 대조한다.
+- 각 주장마다 검색 근거에서 뒷받침 문장을 그대로 인용한 뒤(source_quote) supported를 정한다. 검색 근거에 없거나 수치·시각이 다르면 false. 다른 곳에 사실일 수 있는 내용이라도 검색 근거에 없으면 false다.
 - 사실 주장이 아닌 것은 뽑지 않는다: "문서에 없어요"·"~는 나와 있지 않아요" 같은 부재 진술, 점장님께 확인·요청하라는 안내, 인사, [확인 필요] 표시, 답변 형식 문구.
 - 긴급 신고(119·112) 일반 안내가 "문서 근거 아님"이라고 표시돼 있으면 뽑지 않는다.
 - 답변에 사실 주장이 하나도 없으면 claims는 빈 배열."""
@@ -126,14 +126,14 @@ def run_accuracy(
     )
 
 
-def run_hallucination(judge: GroqJudge, answer: str, source_text: str):
-    user = f"[원문]\n{source_text}\n\n[답변]\n{answer}"
+def run_faithfulness(judge: GroqJudge, answer: str, evidence_text: str):
+    user = f"[검색 근거]\n{evidence_text}\n\n[답변]\n{answer}"
     return judge.structured(
-        system=HALLUCINATION_SYSTEM,
+        system=FAITHFULNESS_SYSTEM,
         user=user,
-        schema=HallucinationResult,
-        name="hallucination",
-        tag="judge:hallucination",
+        schema=FaithfulnessResult,
+        name="faithfulness",
+        tag="judge:faithfulness",
     )
 
 

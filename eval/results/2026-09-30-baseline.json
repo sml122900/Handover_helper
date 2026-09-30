@@ -64,18 +64,13 @@
     "absent": 10
    },
    "classification": {
-    "correct": 38,
+    "correct": 39,
     "total": 40,
     "mismatches": [
      {
       "id": "F03",
       "got": "now_tasks",
       "expected": "question"
-     },
-     {
-      "id": "T05",
-      "got": "out_of_scope",
-      "expected": "now_tasks"
      }
     ]
    },
@@ -87,7 +82,7 @@
     "questions": 20
    },
    "time5_tool_evidence": {
-    "facts_hit": 7,
+    "facts_hit": 8,
     "facts": 11
    },
    "judged": false,
@@ -218,19 +213,18 @@
     ]
    },
    "latency_ms": {
-    "p50": 13343,
-    "p95": 22358,
+    "p50": 13233,
+    "p95": 21475,
     "n": 40
    },
    "cost_per_question_usd": {
-    "mean": 0.02469,
+    "mean": 0.02483,
     "max": 0.03979,
-    "claude_total": 0.9878
+    "claude_total": 0.993
    },
    "outcomes": {
-    "answered": 23,
+    "answered": 24,
     "no_tasks": 1,
-    "out_of_scope": 1,
     "record_request": 5,
     "escalated": 10
    }
@@ -402,9 +396,9 @@
     "n": 40
    },
    "cost_per_question_usd": {
-    "mean": 0.02463,
+    "mean": 0.02471,
     "max": 0.03873,
-    "claude_total": 0.985
+    "claude_total": 0.9885
    },
    "outcomes": {
     "answered": 23,
@@ -417,21 +411,35 @@
  ],
  "stability": {
   "questions": 40,
-  "questions_with_any_flip": 0,
-  "flips": []
+  "questions_with_any_flip": 1,
+  "flips": [
+   {
+    "id": "T05",
+    "diff": {
+     "category_ok": [
+      true,
+      false
+     ],
+     "outcome": [
+      "answered",
+      "out_of_scope"
+     ]
+    }
+   }
+  ]
  },
  "costs": {
-  "anthropic(이 실행)": "$0.0000 / 0회",
+  "anthropic(이 실행)": "$0.1492 / 19회",
   "groq(이 실행)": "$0.0000 / 0회",
-  "voyage(이 실행) 임베딩 토큰": 0,
+  "voyage(이 실행) 임베딩 토큰": 9,
   "누적(전 세션 기록)": {
    "groq": {
     "calls": 66,
     "usd": 0.0489
    },
    "anthropic": {
-    "calls": 283,
-    "usd": 2.5076
+    "calls": 302,
+    "usd": 2.6567
    }
   }
  },
@@ -5345,7 +5353,7 @@
      "category": "now_tasks",
      "safety": false,
      "outcome": "answered",
-     "answer": "지금(21:30~) 해야 할 일부터 알려드릴게요!\n\n---\n\n**🕤 지금 시작한 일 (21:30~)**\n\n- **케이크 폐기**: 쇼케이스에 남아 있는 케이크는 하나도 안 남기고 전부 버려요. [근거 2]\n- **에스프레소 머신 백플러시 청소**: 전용 세제 1스푼 넣고 백플러시 5회 진행해요. 청소 중 소리가 크고 증기가 나오니 놀라지 마세요. [근거 3]\n  - 전용 세제 위치는 머신 주변이라고 하는데 정확한 위치는 문서에 없어요. [근거 3] [확인 필요]\n  - 👉 점장님께 세제 정확한 위치를 확인해 보세요.\n\n---\n\n**🕙 곧 있을 일 (22:00)**\n\n- **음악·간판 끄기**: 오후 10시 정각에 매장 음악과 간판 불을 동시에 꺼요. [근거 4]\n- **마감 정산**: 포스기에서 '마감정산' 버튼 누르고 화면 안내에 따라 진행해요. [근거 4]\n\n---\n\n순서대로 차근차근 하시면 돼요! 😊",
+     "answer": "지금(21:35) 해야 할 일부터 알려드릴게요!\n\n---\n\n**🕤 21:30 ~ 지금 해야 할 일**\n\n1. **케이크 폐기** — 쇼케이스에 남아 있는 케이크는 하나도 남기지 않고 전부 버려요. [근거 2]\n\n2. **에스프레소 머신 백플러시 청소** — 전용 세제 1스푼 넣고 백플러시 5회 반복해요. 청소 중 소리가 크고 증기가 나오니 놀라지 마세요. [근거 3]\n   - 전용 세제 위치는 에스프레소 머신 주변인데 정확한 위치는 문서에 없어요. [근거 3] [확인 필요]\n   - 👉 점장님께 세제 정확한 위치를 확인해 보세요!\n\n---\n\n**🕙 22:00 곧 있을 일**\n\n3. **음악·간판 끄기** — 오후 10시 정각에 매장 음악과 간판 불, 두 가지를 동시에 꺼요. [근거 4]\n\n4. **마감 정산** — 포스기에서 '마감정산' 버튼 누르고 화면 안내에 따라 진행해요. [근거 4]",
      "citations": [
       {
        "n": 2,
@@ -5482,23 +5490,23 @@
      "rewritten": false,
      "final_query": "이제 주문 안 받는데 뭐부터 하면 돼요?",
      "retrieval_log": [],
-     "latency_ms": 11811,
-     "cost_usd": 0.018711,
+     "latency_ms": 10202,
+     "cost_usd": 0.018561,
      "input_tokens": 3377,
-     "output_tokens": 572,
+     "output_tokens": 562,
      "embedding_tokens": 0,
      "trace": [
       {
        "input_tokens": 1710,
-       "output_tokens": 144,
-       "cost_usd": 0.00729,
+       "output_tokens": 143,
+       "cost_usd": 0.007275,
        "input": "이제 주문 안 받는데 뭐부터 하면 돼요?",
        "output": {
         "category": "now_tasks",
         "safety": false,
-        "reasoning": "현재 주문 마감 시점을 기준으로 지금 당장 무엇을 해야 하는지 묻고 있으므로, 지금 시각 기반의 할 일을 묻는 now_tasks에 해당한다."
+        "reasoning": "현재 주문이 마감된 시점을 기준으로 지금 무엇을 해야 하는지 묻고 있으므로, 현재 시각 기반의 할 일을 묻는 now_tasks에 해당한다."
        },
-       "latency_ms": 3422,
+       "latency_ms": 3405,
        "node": "classify"
       },
       {
@@ -5540,16 +5548,16 @@
         ]
        },
        "embedding_tokens": 0,
-       "latency_ms": 14,
+       "latency_ms": 32,
        "node": "tasks"
       },
       {
        "input_tokens": 1667,
-       "output_tokens": 428,
-       "cost_usd": 0.011421,
+       "output_tokens": 419,
+       "cost_usd": 0.011286,
        "input": "이제 주문 안 받는데 뭐부터 하면 돼요?",
-       "output": "지금(21:30~) 해야 할 일부터 알려드릴게요!\n\n---\n\n**🕤 지금 시작한 일 (21:30~)**\n\n- **케이크 폐기**: 쇼케이스에 남아 있는 케이크는 하나도 안 남기고 전부 버려요. [근거 2]\n- **에스프레소 머신 백플러시 청소**: 전용 세제 1스푼 넣고 백플러시 5회 진행해요. 청소 중 소리가 크고 증기가 나오니 놀라지 마세요. [근거 3]\n  - 전용 세제 위치는 머신 주변이라고 하는데 정확한 위치는 문서에 없어요. [근거 3] [확인 필요]\n  - 👉 점장님께 세제 정확한 위치를 확인해 보세요.\n\n---\n\n**🕙 곧 있을 일 (22:00)**\n\n- **음악·간판 끄기**: 오후 10시 정각에 매장 음악과 간판 불을 동시에 꺼요. [근거 4]\n- **마감 정산**: 포스기에서 '마감정산' 버튼 누르고 화면 안내에 따라 진행해요. [근거 4]\n\n---\n\n순서대로 차근차근 하시면 돼요! 😊",
-       "latency_ms": 8375,
+       "output": "지금(21:35) 해야 할 일부터 알려드릴게요!\n\n---\n\n**🕤 21:30 ~ 지금 해야 할 일**\n\n1. **케이크 폐기** — 쇼케이스에 남아 있는 케이크는 하나도 남기지 않고 전부 버려요. [근거 2]\n\n2. **에스프레소 머신 백플러시 청소** — 전용 세제 1스푼 넣고 백플러시 5회 반복해요. 청소 중 소리가 크고 증기가 나오니 놀라지 마세요. [근거 3]\n   - 전용 세제 위치는 에스프레소 머신 주변인데 정확한 위치는 문서에 없어요. [근거 3] [확인 필요]\n   - 👉 점장님께 세제 정확한 위치를 확인해 보세요!\n\n---\n\n**🕙 22:00 곧 있을 일**\n\n3. **음악·간판 끄기** — 오후 10시 정각에 매장 음악과 간판 불, 두 가지를 동시에 꺼요. [근거 4]\n\n4. **마감 정산** — 포스기에서 '마감정산' 버튼 누르고 화면 안내에 따라 진행해요. [근거 4]",
+       "latency_ms": 6765,
        "node": "tasks_answer"
       }
      ]
@@ -5576,7 +5584,7 @@
      "category": "now_tasks",
      "safety": false,
      "outcome": "answered",
-     "answer": "지금 해야 할 일이에요!\n\n**지금 (20:30~)**\n생크림 들어간 제품 전체에 **20% 할인 스티커** 붙이고 계세요. [근거 1]\n\n---\n\n**곧 (21:00)**\n세 가지가 한꺼번에 시작돼요.\n\n1. **영업 종료 후 빵 분류·폐기** – 크림·생크림 빵은 어제빵 코너에 내놓지 않고 전량 폐기예요. [근거 2]\n2. **태블릿에 폐기 등록** – 카운터 태블릿 '폐기 등록' 화면에서 품목, 수량, 사유 입력하면 돼요. [근거 3][근거 4]\n3. **오븐 문 열어 냉각 시작** – 문 열고 20분 식힌 뒤 꺼야 해요. [근거 5]",
+     "answer": "지금 하셔야 할 일이 있어요!\n\n**지금 (20:30~):**\n생크림 들어간 제품 전체에 **20% 할인 스티커** 붙이고 계세요. [근거 1]\n\n---\n\n**곧 (21:00):**\n세 가지가 한꺼번에 시작돼요.\n\n1. **영업 종료 후 빵 분류·폐기** – 크림·생크림 빵은 어제빵 코너에 내놓지 않고 전량 폐기해요. [근거 2]\n2. **태블릿에 폐기 등록** – 카운터 태블릿 '폐기 등록' 화면에서 품목, 수량, 사유 입력하면 돼요. [근거 3][근거 4]\n3. **오븐 문 열어 냉각 시작** – 문 열어두고 20분 식힌 뒤 꺼요. [근거 5]\n\n25분 남았으니 지금은 스티커 작업 마저 끝내 두세요! 😊",
      "citations": [
       {
        "n": 1,
@@ -5756,23 +5764,23 @@
      "rewritten": false,
      "final_query": "손님 거의 없는데 지금 뭐 하고 있으면 돼요?",
      "retrieval_log": [],
-     "latency_ms": 27047,
-     "cost_usd": 0.017688,
+     "latency_ms": 10234,
+     "cost_usd": 0.018318,
      "input_tokens": 3446,
-     "output_tokens": 490,
-     "embedding_tokens": 31,
+     "output_tokens": 532,
+     "embedding_tokens": 0,
      "trace": [
       {
        "input_tokens": 1713,
-       "output_tokens": 195,
-       "cost_usd": 0.008064,
+       "output_tokens": 198,
+       "cost_usd": 0.008109,
        "input": "손님 거의 없는데 지금 뭐 하고 있으면 돼요?",
        "output": {
         "category": "now_tasks",
         "safety": false,
-        "reasoning": "현재 시각을 기준으로 지금 무엇을 해야 하는지 묻는 입력으로, 시각 기반의 할 일을 묻는 now_tasks에 해당한다. 손님이 없는 상황이라는 맥락을 덧붙였지만 핵심은 \"지금 뭐 하면 되냐\"는 현재 시점 기준 질문이다."
+        "reasoning": "현재 시각을 기준으로 지금 무엇을 해야 하는지 묻는 입력으로, 시각 기반의 현재 할 일을 묻는 now_tasks에 해당한다. 손님이 없는 상황이라는 맥락을 덧붙였지만 핵심은 \"지금 뭐 하면 되냐\"는 현재 시점 기준 질문이다."
        },
-       "latency_ms": 3750,
+       "latency_ms": 3891,
        "node": "classify"
       },
       {
@@ -5821,17 +5829,17 @@
          }
         ]
        },
-       "embedding_tokens": 31,
-       "latency_ms": 17922,
+       "embedding_tokens": 0,
+       "latency_ms": 61,
        "node": "tasks"
       },
       {
        "input_tokens": 1733,
-       "output_tokens": 295,
-       "cost_usd": 0.009624,
+       "output_tokens": 334,
+       "cost_usd": 0.010209,
        "input": "손님 거의 없는데 지금 뭐 하고 있으면 돼요?",
-       "output": "지금 해야 할 일이에요!\n\n**지금 (20:30~)**\n생크림 들어간 제품 전체에 **20% 할인 스티커** 붙이고 계세요. [근거 1]\n\n---\n\n**곧 (21:00)**\n세 가지가 한꺼번에 시작돼요.\n\n1. **영업 종료 후 빵 분류·폐기** – 크림·생크림 빵은 어제빵 코너에 내놓지 않고 전량 폐기예요. [근거 2]\n2. **태블릿에 폐기 등록** – 카운터 태블릿 '폐기 등록' 화면에서 품목, 수량, 사유 입력하면 돼요. [근거 3][근거 4]\n3. **오븐 문 열어 냉각 시작** – 문 열고 20분 식힌 뒤 꺼야 해요. [근거 5]",
-       "latency_ms": 5375,
+       "output": "지금 하셔야 할 일이 있어요!\n\n**지금 (20:30~):**\n생크림 들어간 제품 전체에 **20% 할인 스티커** 붙이고 계세요. [근거 1]\n\n---\n\n**곧 (21:00):**\n세 가지가 한꺼번에 시작돼요.\n\n1. **영업 종료 후 빵 분류·폐기** – 크림·생크림 빵은 어제빵 코너에 내놓지 않고 전량 폐기해요. [근거 2]\n2. **태블릿에 폐기 등록** – 카운터 태블릿 '폐기 등록' 화면에서 품목, 수량, 사유 입력하면 돼요. [근거 3][근거 4]\n3. **오븐 문 열어 냉각 시작** – 문 열어두고 20분 식힌 뒤 꺼요. [근거 5]\n\n25분 남았으니 지금은 스티커 작업 마저 끝내 두세요! 😊",
+       "latency_ms": 6282,
        "node": "tasks_answer"
       }
      ]
@@ -5858,7 +5866,7 @@
      "category": "now_tasks",
      "safety": false,
      "outcome": "answered",
-     "answer": "지금 해야 할 일 있어요! 📦\n\n**02:00 음료 입고·검수** 가 막 시작됐어요.\n\n- 먼저 입고된 음료 **수량을 확인(검수)** 하세요. [근거 1]\n- 검수 후 냉장고에 채울 때는 **뒤쪽부터** 넣어야 해요. 새 음료를 앞에 두면 안 되고, 먼저 들어온 게 앞으로 나오도록 **선입선출** 해주세요. [근거 1] [확인 필요]\n  - 👉 점장님께 이 절차가 맞는지 한 번 확인해 보세요!\n\n곧 있을 일(30분 이내)은 없어요.",
+     "answer": "지금 해야 할 일 있어요! 📦\n\n**02:00 음료 입고·검수** 가 막 시작됐어요.\n\n- 먼저 수량을 확인(검수)해요. [근거 1]\n- 검수 후 냉장고를 채울 때는 **뒤쪽부터** 채워야 해요. 새로 들어온 음료가 뒤로, 기존 음료가 앞으로 오게요(선입선출). [근거 1] [확인 필요]\n  - 점장님께 이 절차가 맞는지 한 번 확인해 보세요!\n\n30분 안에 따로 예정된 일은 없어요.",
      "citations": [
       {
        "n": 1,
@@ -5929,23 +5937,23 @@
      "rewritten": false,
      "final_query": "손님도 없고 심심한데 지금 뭐 해야 되는 거 있어요?",
      "retrieval_log": [],
-     "latency_ms": 21266,
-     "cost_usd": 0.014196,
+     "latency_ms": 7422,
+     "cost_usd": 0.013866,
      "input_tokens": 2762,
-     "output_tokens": 394,
-     "embedding_tokens": 5,
+     "output_tokens": 372,
+     "embedding_tokens": 0,
      "trace": [
       {
        "input_tokens": 1716,
-       "output_tokens": 149,
-       "cost_usd": 0.007383,
+       "output_tokens": 155,
+       "cost_usd": 0.007473,
        "input": "손님도 없고 심심한데 지금 뭐 해야 되는 거 있어요?",
        "output": {
         "category": "now_tasks",
         "safety": false,
-        "reasoning": "지금 이 시각을 기준으로 해야 할 업무가 있는지 묻는 입력으로, 현재 시각 기반의 할 일을 묻는 now_tasks에 해당한다. 신체 안전과는 무관하다."
+        "reasoning": "지금 시각을 기준으로 현재 해야 할 업무가 무엇인지 묻는 입력으로, now_tasks에 해당한다. 손님이 없는 상황에서 할 일을 묻는 것이므로 안전과는 무관하다."
        },
-       "latency_ms": 3125,
+       "latency_ms": 2875,
        "node": "classify"
       },
       {
@@ -5972,17 +5980,17 @@
         ],
         "upcoming": []
        },
-       "embedding_tokens": 5,
-       "latency_ms": 13343,
+       "embedding_tokens": 0,
+       "latency_ms": 47,
        "node": "tasks"
       },
       {
        "input_tokens": 1046,
-       "output_tokens": 245,
-       "cost_usd": 0.006813,
+       "output_tokens": 217,
+       "cost_usd": 0.006393,
        "input": "손님도 없고 심심한데 지금 뭐 해야 되는 거 있어요?",
-       "output": "지금 해야 할 일 있어요! 📦\n\n**02:00 음료 입고·검수** 가 막 시작됐어요.\n\n- 먼저 입고된 음료 **수량을 확인(검수)** 하세요. [근거 1]\n- 검수 후 냉장고에 채울 때는 **뒤쪽부터** 넣어야 해요. 새 음료를 앞에 두면 안 되고, 먼저 들어온 게 앞으로 나오도록 **선입선출** 해주세요. [근거 1] [확인 필요]\n  - 👉 점장님께 이 절차가 맞는지 한 번 확인해 보세요!\n\n곧 있을 일(30분 이내)은 없어요.",
-       "latency_ms": 4797,
+       "output": "지금 해야 할 일 있어요! 📦\n\n**02:00 음료 입고·검수** 가 막 시작됐어요.\n\n- 먼저 수량을 확인(검수)해요. [근거 1]\n- 검수 후 냉장고를 채울 때는 **뒤쪽부터** 채워야 해요. 새로 들어온 음료가 뒤로, 기존 음료가 앞으로 오게요(선입선출). [근거 1] [확인 필요]\n  - 점장님께 이 절차가 맞는지 한 번 확인해 보세요!\n\n30분 안에 따로 예정된 일은 없어요.",
+       "latency_ms": 4500,
        "node": "tasks_answer"
       }
      ]
@@ -6006,10 +6014,10 @@
      "category": "now_tasks",
      "safety": false,
      "outcome": "answered",
-     "answer": "07:00에 수건 입고가 있어요!\n\n업체가 수건을 가져오면 **장수를 직접 센 다음**, 납품서에 서명하세요 [근거 1][근거 2]. 수량 확인 전에 먼저 서명하면 안 돼요 [근거 2].",
+     "answer": "07:00에 수건 입고가 있어요!\n\n순서는 이렇게 하시면 돼요.\n1. 납품된 수건 수량을 직접 세서 확인해요 [근거 2][근거 3]\n2. 확인이 끝난 후 납품서에 서명해요 [근거 2][근거 3]\n\n⚠️ 수량 확인 전에 먼저 서명하면 안 돼요! [근거 3]",
      "citations": [
       {
-       "n": 1,
+       "n": 2,
        "label": "S4 · 2. 절차 · 영상 8:47~9:24",
        "source_type": "document",
        "source_file": "data/virtual/s4.md",
@@ -6018,7 +6026,7 @@
        "needs_check": false
       },
       {
-       "n": 2,
+       "n": 3,
        "label": "S4 · 7. 주의사항 · 영상 5:01~8:37",
        "source_type": "document",
        "source_file": "data/virtual/s4.md",
@@ -6030,6 +6038,23 @@
      "evidence": [
       {
        "n": 1,
+       "source_type": "document",
+       "store_id": "s4",
+       "section": "3. 장비·위치·물품",
+       "item_id": "w5",
+       "video_ts_start": 155,
+       "video_ts_end": 278,
+       "needs_check": false,
+       "confidence": "high",
+       "inferred": false,
+       "source_file": "data/virtual/s4.md",
+       "char_start": 967,
+       "char_end": 1159,
+       "text": "영상 1:41~2:08)_\n  - 스위치 1번~6번, 오픈 시 전부 ON\n- **냉난방기** _(영상 2:35~3:10)_\n  - 여름 설정 온도 24도. 06:00 오픈 전에 가동 완료\n- **음료 냉장고** _(영상 4:03~4:38)_\n  - 06:30쯤 재고 보충 및 유통기한 초과 음료 폐기\n- **운동 기구(러닝머신 등)** _(영상",
+       "score": 0.52672
+      },
+      {
+       "n": 2,
        "source_type": "document",
        "store_id": "s4",
        "section": "2. 절차",
@@ -6046,7 +6071,7 @@
        "score": 0.48581
       },
       {
-       "n": 2,
+       "n": 3,
        "source_type": "document",
        "store_id": "s4",
        "section": "7. 주의사항",
@@ -6067,7 +6092,18 @@
       "store_id": "s4",
       "current_time": "06:50",
       "found": true,
-      "now": [],
+      "now": [
+       {
+        "time": "06:30",
+        "text": "음료 냉장고",
+        "step_ids": [
+         "s4.drink_fridge"
+        ],
+        "evidence_ns": [
+         1
+        ]
+       }
+      ],
       "upcoming": [
        {
         "time": "07:00",
@@ -6076,8 +6112,8 @@
          "s4.towel_receive"
         ],
         "evidence_ns": [
-         1,
-         2
+         2,
+         3
         ]
        }
       ]
@@ -6086,23 +6122,23 @@
      "rewritten": false,
      "final_query": "지금 딱히 할 거 없는데 곧 뭐 있어요?",
      "retrieval_log": [],
-     "latency_ms": 12827,
-     "cost_usd": 0.012024,
-     "input_tokens": 2843,
-     "output_tokens": 233,
-     "embedding_tokens": 4,
+     "latency_ms": 6390,
+     "cost_usd": 0.013275,
+     "input_tokens": 3070,
+     "output_tokens": 271,
+     "embedding_tokens": 7,
      "trace": [
       {
        "input_tokens": 1711,
-       "output_tokens": 132,
-       "cost_usd": 0.007113,
+       "output_tokens": 124,
+       "cost_usd": 0.006993,
        "input": "지금 딱히 할 거 없는데 곧 뭐 있어요?",
        "output": {
         "category": "now_tasks",
         "safety": false,
-        "reasoning": "현재 시각을 기준으로 곧 해야 할 일이나 예정된 업무가 있는지 묻는 입력으로, 시각 기반의 now_tasks에 해당한다."
+        "reasoning": "현재 시각을 기준으로 곧 해야 할 일이 있는지 묻는 입력으로, 시각 기반의 업무 확인 요청이다."
        },
-       "latency_ms": 2561,
+       "latency_ms": 2467,
        "node": "classify"
       },
       {
@@ -6114,7 +6150,18 @@
         "store_id": "s4",
         "current_time": "06:50",
         "found": true,
-        "now": [],
+        "now": [
+         {
+          "time": "06:30",
+          "text": "음료 냉장고",
+          "step_ids": [
+           "s4.drink_fridge"
+          ],
+          "evidence_ns": [
+           1
+          ]
+         }
+        ],
         "upcoming": [
          {
           "time": "07:00",
@@ -6123,23 +6170,23 @@
            "s4.towel_receive"
           ],
           "evidence_ns": [
-           1,
-           2
+           2,
+           3
           ]
          }
         ]
        },
-       "embedding_tokens": 4,
-       "latency_ms": 7563,
+       "embedding_tokens": 7,
+       "latency_ms": 516,
        "node": "tasks"
       },
       {
-       "input_tokens": 1132,
-       "output_tokens": 101,
-       "cost_usd": 0.004911,
+       "input_tokens": 1359,
+       "output_tokens": 147,
+       "cost_usd": 0.006282,
        "input": "지금 딱히 할 거 없는데 곧 뭐 있어요?",
-       "output": "07:00에 수건 입고가 있어요!\n\n업체가 수건을 가져오면 **장수를 직접 센 다음**, 납품서에 서명하세요 [근거 1][근거 2]. 수량 확인 전에 먼저 서명하면 안 돼요 [근거 2].",
-       "latency_ms": 2702,
+       "output": "07:00에 수건 입고가 있어요!\n\n순서는 이렇게 하시면 돼요.\n1. 납품된 수건 수량을 직접 세서 확인해요 [근거 2][근거 3]\n2. 확인이 끝난 후 납품서에 서명해요 [근거 2][근거 3]\n\n⚠️ 수량 확인 전에 먼저 서명하면 안 돼요! [근거 3]",
+       "latency_ms": 3406,
        "node": "tasks_answer"
       }
      ]
@@ -6160,40 +6207,116 @@
      "question": "배고픈데 지금 밥 먹으러 가도 돼요?",
      "store_id": "s5",
      "current_time": "23:20",
-     "category": "out_of_scope",
+     "category": "now_tasks",
      "safety": false,
-     "outcome": "out_of_scope",
-     "answer": "이 질문은 인수인계 문서로 답할 수 있는 범위 밖이에요. 필요하면 점장님이나 공식 기관에 직접 확인해 주세요.",
-     "citations": [],
-     "evidence": [],
-     "tasks": null,
+     "outcome": "answered",
+     "answer": "10분만 기다리시면 돼요! 식사 시간은 **23:30~24:00**입니다. [근거 1]\n\n지금 바로 가시기보다는 23:30에 맞춰 가시는 걸 추천드려요 😊",
+     "citations": [
+      {
+       "n": 1,
+       "label": "S5 · 영상 발언 · 영상 7:46~8:13",
+       "source_type": "transcript",
+       "source_file": "data/virtual/s5.txt",
+       "char_start": 2572,
+       "char_end": 2723,
+       "needs_check": false
+      }
+     ],
+     "evidence": [
+      {
+       "n": 1,
+       "source_type": "transcript",
+       "store_id": "s5",
+       "section": null,
+       "item_id": "t17",
+       "video_ts_start": 466,
+       "video_ts_end": 493,
+       "needs_check": false,
+       "confidence": "high",
+       "inferred": false,
+       "source_file": "data/virtual/s5.txt",
+       "char_start": 2572,
+       "char_end": 2723,
+       "text": "[07:46] 밥 먹는 시간이 되면 다들 표정이 밝아져요. 새벽 밥이라 그런지 유난히 맛있더라고요. 식사는 열한 시 반에서 자정까지, 세 시에는 십 분 쉬어요.\n[08:02] 식사 시간에는 센터 안이 갑자기 조용해져요. 사람들 웃음소리만 들려요. 저는 그 순간이 좋아요.",
+       "score": 0.57872
+      }
+     ],
+     "tasks": {
+      "store_id": "s5",
+      "current_time": "23:20",
+      "found": true,
+      "now": [],
+      "upcoming": [
+       {
+        "time": "23:30",
+        "text": "식사",
+        "step_ids": [
+         "s5.meal_break"
+        ],
+        "evidence_ns": [
+         1
+        ]
+       }
+      ]
+     },
      "sufficiency": null,
      "rewritten": false,
      "final_query": "배고픈데 지금 밥 먹으러 가도 돼요?",
      "retrieval_log": [],
-     "latency_ms": 3906,
-     "cost_usd": 0.008067,
-     "input_tokens": 1709,
-     "output_tokens": 196,
-     "embedding_tokens": 0,
+     "latency_ms": 6921,
+     "cost_usd": 0.011934,
+     "input_tokens": 2603,
+     "output_tokens": 275,
+     "embedding_tokens": 2,
      "trace": [
       {
        "input_tokens": 1709,
-       "output_tokens": 196,
-       "cost_usd": 0.008067,
+       "output_tokens": 191,
+       "cost_usd": 0.007992,
        "input": "배고픈데 지금 밥 먹으러 가도 돼요?",
        "output": {
-        "category": "out_of_scope",
+        "category": "now_tasks",
         "safety": false,
-        "reasoning": "밥을 먹으러 가도 되는지 묻는 것은 업무 시간 중 식사 가능 여부를 묻는 것으로 볼 수 있으나, 이는 매장 운영 문서로 답할 수 없는 개인적인 질문이며 업무 절차·규칙과 직접적인 관련이 없다. out_of_scope로 분류한다."
+        "reasoning": "밥을 먹으러 가도 되는지 묻는 것은 업무 중 식사 가능 시간/규정과 관련될 수 있으나, 실질적으로는 '지금 이 시각에 자리를 비워도 되는가'를 묻는 시각 기반 질문으로 now_tasks에 해당한다. 신체 안전과는 무관하다."
        },
-       "latency_ms": 3906,
+       "latency_ms": 4125,
        "node": "classify"
       },
       {
-       "output": "이 질문은 인수인계 문서로 답할 수 있는 범위 밖이에요. 필요하면 점장님이나 공식 기관에 직접 확인해 주세요.",
-       "latency_ms": 0,
-       "node": "out_of_scope_reply"
+       "input": {
+        "store": "s5",
+        "current_time": "23:20"
+       },
+       "output": {
+        "store_id": "s5",
+        "current_time": "23:20",
+        "found": true,
+        "now": [],
+        "upcoming": [
+         {
+          "time": "23:30",
+          "text": "식사",
+          "step_ids": [
+           "s5.meal_break"
+          ],
+          "evidence_ns": [
+           1
+          ]
+         }
+        ]
+       },
+       "embedding_tokens": 2,
+       "latency_ms": 437,
+       "node": "tasks"
+      },
+      {
+       "input_tokens": 894,
+       "output_tokens": 84,
+       "cost_usd": 0.003942,
+       "input": "배고픈데 지금 밥 먹으러 가도 돼요?",
+       "output": "10분만 기다리시면 돼요! 식사 시간은 **23:30~24:00**입니다. [근거 1]\n\n지금 바로 가시기보다는 23:30에 맞춰 가시는 걸 추천드려요 😊",
+       "latency_ms": 2358,
+       "node": "tasks_answer"
       }
      ]
     },
@@ -6201,9 +6324,9 @@
      "id": "T05",
      "type": "time",
      "excluded": false,
-     "category_ok": false,
+     "category_ok": true,
      "tool_evidence_hit": {
-      "L05": false
+      "L05": true
      }
     }
    },
@@ -14328,7 +14451,7 @@
      "category": "now_tasks",
      "safety": false,
      "outcome": "answered",
-     "answer": "지금(21:30~) 해야 할 일부터 알려드릴게요!\n\n---\n\n**🕤 지금 시작한 일 (21:30~)**\n\n- **케이크 폐기**: 쇼케이스에 남아 있는 케이크는 하나도 안 남기고 전부 버려요. [근거 2]\n- **에스프레소 머신 백플러시 청소**: 전용 세제 1스푼 넣고 백플러시 5회 진행해요. 청소 중 소리가 크고 증기가 나오니 놀라지 마세요. [근거 3]\n  - 전용 세제 위치는 머신 주변이라고 하는데 정확한 위치는 문서에 없어요. [근거 3] [확인 필요]\n  - 👉 점장님께 세제 정확한 위치를 확인해 보세요.\n\n---\n\n**🕙 곧 있을 일 (22:00)**\n\n- **음악·간판 끄기**: 오후 10시 정각에 매장 음악과 간판 불을 동시에 꺼요. [근거 4]\n- **마감 정산**: 포스기에서 '마감정산' 버튼 누르고 화면 안내에 따라 진행해요. [근거 4]\n\n---\n\n순서대로 차근차근 하시면 돼요! 😊",
+     "answer": "지금(21:35) 해야 할 일부터 알려드릴게요!\n\n---\n\n**🕤 21:30 ~ 지금 해야 할 일**\n\n1. **케이크 폐기** — 쇼케이스에 남아 있는 케이크를 하나도 남기지 않고 전부 버려요. [근거 2]\n\n2. **에스프레소 머신 백플러시 청소** — 전용 세제 1스푼 넣고 백플러시 5회 반복해요. 청소 중 소리가 크고 증기가 나오니 놀라지 마세요! [근거 3]\n   - 전용 세제 위치는 에스프레소 머신 주변인데 정확한 위치는 문서에 없어요. [근거 3] [확인 필요]\n   - 👉 점장님께 세제 정확한 위치를 미리 확인해 두세요!\n\n---\n\n**🕙 22:00 곧 있을 일**\n\n3. **음악·간판 끄기** — 오후 10시 정각에 매장 음악과 간판 불, 두 가지를 동시에 꺼요. [근거 4]\n\n4. **마감 정산** — 포스기에서 '마감정산' 버튼을 누르고 화면 안내에 따라 진행해요. [근거 4]\n\n---\n\n라스트오더 관련 세부 절차는 문서에 없어요.",
      "citations": [
       {
        "n": 2,
@@ -14465,23 +14588,23 @@
      "rewritten": false,
      "final_query": "이제 주문 안 받는데 뭐부터 하면 돼요?",
      "retrieval_log": [],
-     "latency_ms": 9375,
-     "cost_usd": 0.018711,
+     "latency_ms": 10094,
+     "cost_usd": 0.019026,
      "input_tokens": 3377,
-     "output_tokens": 572,
+     "output_tokens": 593,
      "embedding_tokens": 0,
      "trace": [
       {
        "input_tokens": 1710,
-       "output_tokens": 144,
-       "cost_usd": 0.00729,
+       "output_tokens": 143,
+       "cost_usd": 0.007275,
        "input": "이제 주문 안 받는데 뭐부터 하면 돼요?",
        "output": {
         "category": "now_tasks",
         "safety": false,
-        "reasoning": "현재 주문 마감 시점을 기준으로 지금 당장 무엇을 해야 하는지 묻고 있으므로, 현재 시각 기반의 할 일을 묻는 now_tasks에 해당한다."
+        "reasoning": "현재 주문이 마감된 시점을 기준으로 지금 무엇을 해야 하는지 묻고 있으므로, 현재 시각 기반의 할 일을 묻는 now_tasks에 해당한다."
        },
-       "latency_ms": 2672,
+       "latency_ms": 2719,
        "node": "classify"
       },
       {
@@ -14528,11 +14651,11 @@
       },
       {
        "input_tokens": 1667,
-       "output_tokens": 428,
-       "cost_usd": 0.011421,
+       "output_tokens": 450,
+       "cost_usd": 0.011751,
        "input": "이제 주문 안 받는데 뭐부터 하면 돼요?",
-       "output": "지금(21:30~) 해야 할 일부터 알려드릴게요!\n\n---\n\n**🕤 지금 시작한 일 (21:30~)**\n\n- **케이크 폐기**: 쇼케이스에 남아 있는 케이크는 하나도 안 남기고 전부 버려요. [근거 2]\n- **에스프레소 머신 백플러시 청소**: 전용 세제 1스푼 넣고 백플러시 5회 진행해요. 청소 중 소리가 크고 증기가 나오니 놀라지 마세요. [근거 3]\n  - 전용 세제 위치는 머신 주변이라고 하는데 정확한 위치는 문서에 없어요. [근거 3] [확인 필요]\n  - 👉 점장님께 세제 정확한 위치를 확인해 보세요.\n\n---\n\n**🕙 곧 있을 일 (22:00)**\n\n- **음악·간판 끄기**: 오후 10시 정각에 매장 음악과 간판 불을 동시에 꺼요. [근거 4]\n- **마감 정산**: 포스기에서 '마감정산' 버튼 누르고 화면 안내에 따라 진행해요. [근거 4]\n\n---\n\n순서대로 차근차근 하시면 돼요! 😊",
-       "latency_ms": 6702,
+       "output": "지금(21:35) 해야 할 일부터 알려드릴게요!\n\n---\n\n**🕤 21:30 ~ 지금 해야 할 일**\n\n1. **케이크 폐기** — 쇼케이스에 남아 있는 케이크를 하나도 남기지 않고 전부 버려요. [근거 2]\n\n2. **에스프레소 머신 백플러시 청소** — 전용 세제 1스푼 넣고 백플러시 5회 반복해요. 청소 중 소리가 크고 증기가 나오니 놀라지 마세요! [근거 3]\n   - 전용 세제 위치는 에스프레소 머신 주변인데 정확한 위치는 문서에 없어요. [근거 3] [확인 필요]\n   - 👉 점장님께 세제 정확한 위치를 미리 확인해 두세요!\n\n---\n\n**🕙 22:00 곧 있을 일**\n\n3. **음악·간판 끄기** — 오후 10시 정각에 매장 음악과 간판 불, 두 가지를 동시에 꺼요. [근거 4]\n\n4. **마감 정산** — 포스기에서 '마감정산' 버튼을 누르고 화면 안내에 따라 진행해요. [근거 4]\n\n---\n\n라스트오더 관련 세부 절차는 문서에 없어요.",
+       "latency_ms": 7375,
        "node": "tasks_answer"
       }
      ]
@@ -14559,7 +14682,7 @@
      "category": "now_tasks",
      "safety": false,
      "outcome": "answered",
-     "answer": "지금 해야 할 일이 있어요!\n\n**지금 (20:30~)** 생크림 들어간 제품 전체에 20% 할인 스티커 붙이는 중이에요. 아직 못 하셨으면 지금 바로 하세요! [근거 1]\n\n---\n\n**곧 있을 일 (21:00)**\n\n- 영업 종료 후 남은 빵 폐기 분류하고, 카운터 태블릿 '폐기 등록' 화면에서 품목·수량·사유 입력해요. [근거 2][근거 3][근거 4]\n- 영업 종료 직후 오븐 문 열어서 20분 냉각 시작해요. [근거 5]\n\n21시 되면 바로 움직여야 하니까 미리 마음의 준비 해두세요! 😊",
+     "answer": "지금은 **생크림 제품에 20% 할인 스티커 붙이는 중**이에요! [근거 1]\n\n---\n\n25분 뒤 **21:00**에 한꺼번에 할 일이 많으니 미리 알아두세요.\n\n- **영업 종료 후 빵 분류·폐기** 진행해요. 크림·생크림 빵은 어제빵 코너에 내놓지 않고 전량 폐기해야 해요. [근거 2]\n- **태블릿 폐기 등록** — 카운터 태블릿의 '폐기 등록' 화면에서 품목, 수량, 사유를 입력하면 돼요. [근거 3][근거 4]\n- **오븐 문 열어서 냉각 시작** — 영업 종료 직후 오븐 문을 열어 20분 식혀야 해요. [근거 5]",
      "citations": [
       {
        "n": 1,
@@ -14739,23 +14862,23 @@
      "rewritten": false,
      "final_query": "손님 거의 없는데 지금 뭐 하고 있으면 돼요?",
      "retrieval_log": [],
-     "latency_ms": 8141,
-     "cost_usd": 0.016398,
+     "latency_ms": 8561,
+     "cost_usd": 0.017418,
      "input_tokens": 3446,
-     "output_tokens": 404,
+     "output_tokens": 472,
      "embedding_tokens": 0,
      "trace": [
       {
        "input_tokens": 1713,
-       "output_tokens": 135,
-       "cost_usd": 0.007164,
+       "output_tokens": 181,
+       "cost_usd": 0.007854,
        "input": "손님 거의 없는데 지금 뭐 하고 있으면 돼요?",
        "output": {
         "category": "now_tasks",
         "safety": false,
-        "reasoning": "현재 시각을 기준으로 지금 무엇을 해야 하는지 묻는 입력으로, 시각 기반의 현재 할 일을 묻는 now_tasks에 해당한다."
+        "reasoning": "현재 시각을 기준으로 지금 무엇을 해야 하는지 묻는 입력으로, 시각 기반의 현재 할 일을 묻는 now_tasks에 해당한다. 손님이 없는 상황이라는 맥락이 있지만 핵심은 \"지금 뭐 하면 되는지\"이다."
        },
-       "latency_ms": 2733,
+       "latency_ms": 3436,
        "node": "classify"
       },
       {
@@ -14810,11 +14933,11 @@
       },
       {
        "input_tokens": 1733,
-       "output_tokens": 269,
-       "cost_usd": 0.009234,
+       "output_tokens": 291,
+       "cost_usd": 0.009564,
        "input": "손님 거의 없는데 지금 뭐 하고 있으면 돼요?",
-       "output": "지금 해야 할 일이 있어요!\n\n**지금 (20:30~)** 생크림 들어간 제품 전체에 20% 할인 스티커 붙이는 중이에요. 아직 못 하셨으면 지금 바로 하세요! [근거 1]\n\n---\n\n**곧 있을 일 (21:00)**\n\n- 영업 종료 후 남은 빵 폐기 분류하고, 카운터 태블릿 '폐기 등록' 화면에서 품목·수량·사유 입력해요. [근거 2][근거 3][근거 4]\n- 영업 종료 직후 오븐 문 열어서 20분 냉각 시작해요. [근거 5]\n\n21시 되면 바로 움직여야 하니까 미리 마음의 준비 해두세요! 😊",
-       "latency_ms": 5407,
+       "output": "지금은 **생크림 제품에 20% 할인 스티커 붙이는 중**이에요! [근거 1]\n\n---\n\n25분 뒤 **21:00**에 한꺼번에 할 일이 많으니 미리 알아두세요.\n\n- **영업 종료 후 빵 분류·폐기** 진행해요. 크림·생크림 빵은 어제빵 코너에 내놓지 않고 전량 폐기해야 해요. [근거 2]\n- **태블릿 폐기 등록** — 카운터 태블릿의 '폐기 등록' 화면에서 품목, 수량, 사유를 입력하면 돼요. [근거 3][근거 4]\n- **오븐 문 열어서 냉각 시작** — 영업 종료 직후 오븐 문을 열어 20분 식혀야 해요. [근거 5]",
+       "latency_ms": 5125,
        "node": "tasks_answer"
       }
      ]
@@ -14841,7 +14964,7 @@
      "category": "now_tasks",
      "safety": false,
      "outcome": "answered",
-     "answer": "지금 해야 할 일 있어요! 📦\n\n**02:00 음료 입고·검수** 가 막 시작됐어요.\n\n- 먼저 입고된 음료 **수량을 확인(검수)** 하세요. [근거 1]\n- 검수 후 냉장고에 채울 때는 **뒤쪽부터** 넣어야 해요. 새 음료를 앞에 두면 안 되고, 먼저 들어온 게 앞으로 나오게 **선입선출** 로 정리하세요. [근거 1] [확인 필요]\n  → 이 절차는 확인이 필요한 내용이에요. 점장님께 한 번 확인해 보세요!\n\n30분 안에 따로 예정된 일은 없어요.",
+     "answer": "지금 해야 할 일 있어요! 📦\n\n**02:00 음료 입고·검수** 가 막 시작됐어요.\n\n1. 먼저 수량 확인(검수)을 해요. [근거 1] [확인 필요]\n2. 냉장고 채울 때는 **뒤쪽부터** 채워요. 새로 들어온 음료가 뒤로, 기존 음료가 앞으로 오게요(선입선출). [근거 1] [확인 필요]\n3. 새 음료를 앞쪽에 두면 안 돼요! [근거 1] [확인 필요]\n\n> ⚠️ 이 내용은 점장님께 한 번 확인해 보세요.\n\n30분 이내에 따로 예정된 일은 없어요!",
      "citations": [
       {
        "n": 1,
@@ -14912,23 +15035,23 @@
      "rewritten": false,
      "final_query": "손님도 없고 심심한데 지금 뭐 해야 되는 거 있어요?",
      "retrieval_log": [],
-     "latency_ms": 8092,
-     "cost_usd": 0.014421,
+     "latency_ms": 7766,
+     "cost_usd": 0.014346,
      "input_tokens": 2762,
-     "output_tokens": 409,
+     "output_tokens": 404,
      "embedding_tokens": 0,
      "trace": [
       {
        "input_tokens": 1716,
-       "output_tokens": 155,
-       "cost_usd": 0.007473,
+       "output_tokens": 146,
+       "cost_usd": 0.007338,
        "input": "손님도 없고 심심한데 지금 뭐 해야 되는 거 있어요?",
        "output": {
         "category": "now_tasks",
         "safety": false,
-        "reasoning": "지금 시각을 기준으로 현재 해야 할 업무가 무엇인지 묻는 입력으로, now_tasks에 해당한다. 손님이 없는 상황에서 할 일을 묻는 것이므로 안전과는 무관하다."
+        "reasoning": "지금 이 시각을 기준으로 해야 할 업무가 있는지 묻는 입력으로, 현재 시각 기반의 할 일을 묻는 now_tasks에 해당한다. 안전과는 무관하다."
        },
-       "latency_ms": 2828,
+       "latency_ms": 2782,
        "node": "classify"
       },
       {
@@ -14961,11 +15084,11 @@
       },
       {
        "input_tokens": 1046,
-       "output_tokens": 254,
-       "cost_usd": 0.006948,
+       "output_tokens": 258,
+       "cost_usd": 0.007008,
        "input": "손님도 없고 심심한데 지금 뭐 해야 되는 거 있어요?",
-       "output": "지금 해야 할 일 있어요! 📦\n\n**02:00 음료 입고·검수** 가 막 시작됐어요.\n\n- 먼저 입고된 음료 **수량을 확인(검수)** 하세요. [근거 1]\n- 검수 후 냉장고에 채울 때는 **뒤쪽부터** 넣어야 해요. 새 음료를 앞에 두면 안 되고, 먼저 들어온 게 앞으로 나오게 **선입선출** 로 정리하세요. [근거 1] [확인 필요]\n  → 이 절차는 확인이 필요한 내용이에요. 점장님께 한 번 확인해 보세요!\n\n30분 안에 따로 예정된 일은 없어요.",
-       "latency_ms": 5264,
+       "output": "지금 해야 할 일 있어요! 📦\n\n**02:00 음료 입고·검수** 가 막 시작됐어요.\n\n1. 먼저 수량 확인(검수)을 해요. [근거 1] [확인 필요]\n2. 냉장고 채울 때는 **뒤쪽부터** 채워요. 새로 들어온 음료가 뒤로, 기존 음료가 앞으로 오게요(선입선출). [근거 1] [확인 필요]\n3. 새 음료를 앞쪽에 두면 안 돼요! [근거 1] [확인 필요]\n\n> ⚠️ 이 내용은 점장님께 한 번 확인해 보세요.\n\n30분 이내에 따로 예정된 일은 없어요!",
+       "latency_ms": 4983,
        "node": "tasks_answer"
       }
      ]
@@ -14989,10 +15112,19 @@
      "category": "now_tasks",
      "safety": false,
      "outcome": "answered",
-     "answer": "07:00에 **수건 입고**가 있어요!\n\n업체가 수건을 가져오면, **먼저 장수를 직접 세서 수량을 확인**하고, 그다음에 납품서에 **서명**하세요. [근거 1][근거 2]\n확인하기 **전에 서명하면 안 돼요**. [근거 2]",
+     "answer": "06:30에 시작한 음료 냉장고 재고 보충·유통기한 초과 음료 폐기가 있어요. 아직 진행 중일 수 있으니 확인해 보세요. [근거 1]\n\n곧 있을 일은 이거예요!\n\n**07:00 — 수건 입고·서명**\n업체가 수건을 납품하면 장수를 직접 세서 수량을 확인하고, 그다음에 납품서에 서명하세요. [근거 2][근거 3]\n확인 전에 서명하면 안 돼요. [근거 3]",
      "citations": [
       {
        "n": 1,
+       "label": "S4 · 3. 장비·위치·물품 · 영상 2:35~4:38",
+       "source_type": "document",
+       "source_file": "data/virtual/s4.md",
+       "char_start": 967,
+       "char_end": 1159,
+       "needs_check": false
+      },
+      {
+       "n": 2,
        "label": "S4 · 2. 절차 · 영상 8:47~9:24",
        "source_type": "document",
        "source_file": "data/virtual/s4.md",
@@ -15001,7 +15133,7 @@
        "needs_check": false
       },
       {
-       "n": 2,
+       "n": 3,
        "label": "S4 · 7. 주의사항 · 영상 5:01~8:37",
        "source_type": "document",
        "source_file": "data/virtual/s4.md",
@@ -15013,6 +15145,23 @@
      "evidence": [
       {
        "n": 1,
+       "source_type": "document",
+       "store_id": "s4",
+       "section": "3. 장비·위치·물품",
+       "item_id": "w5",
+       "video_ts_start": 155,
+       "video_ts_end": 278,
+       "needs_check": false,
+       "confidence": "high",
+       "inferred": false,
+       "source_file": "data/virtual/s4.md",
+       "char_start": 967,
+       "char_end": 1159,
+       "text": "영상 1:41~2:08)_\n  - 스위치 1번~6번, 오픈 시 전부 ON\n- **냉난방기** _(영상 2:35~3:10)_\n  - 여름 설정 온도 24도. 06:00 오픈 전에 가동 완료\n- **음료 냉장고** _(영상 4:03~4:38)_\n  - 06:30쯤 재고 보충 및 유통기한 초과 음료 폐기\n- **운동 기구(러닝머신 등)** _(영상",
+       "score": 0.52672
+      },
+      {
+       "n": 2,
        "source_type": "document",
        "store_id": "s4",
        "section": "2. 절차",
@@ -15029,7 +15178,7 @@
        "score": 0.48581
       },
       {
-       "n": 2,
+       "n": 3,
        "source_type": "document",
        "store_id": "s4",
        "section": "7. 주의사항",
@@ -15050,7 +15199,18 @@
       "store_id": "s4",
       "current_time": "06:50",
       "found": true,
-      "now": [],
+      "now": [
+       {
+        "time": "06:30",
+        "text": "음료 냉장고",
+        "step_ids": [
+         "s4.drink_fridge"
+        ],
+        "evidence_ns": [
+         1
+        ]
+       }
+      ],
       "upcoming": [
        {
         "time": "07:00",
@@ -15059,8 +15219,8 @@
          "s4.towel_receive"
         ],
         "evidence_ns": [
-         1,
-         2
+         2,
+         3
         ]
        }
       ]
@@ -15069,10 +15229,10 @@
      "rewritten": false,
      "final_query": "지금 딱히 할 거 없는데 곧 뭐 있어요?",
      "retrieval_log": [],
-     "latency_ms": 5704,
-     "cost_usd": 0.012294,
-     "input_tokens": 2843,
-     "output_tokens": 251,
+     "latency_ms": 6452,
+     "cost_usd": 0.0141,
+     "input_tokens": 3070,
+     "output_tokens": 326,
      "embedding_tokens": 0,
      "trace": [
       {
@@ -15085,7 +15245,7 @@
         "safety": false,
         "reasoning": "현재 시각을 기준으로 곧 해야 할 일이나 예정된 업무가 있는지 묻는 입력으로, 시각 기반의 now_tasks에 해당한다."
        },
-       "latency_ms": 2625,
+       "latency_ms": 2718,
        "node": "classify"
       },
       {
@@ -15097,7 +15257,18 @@
         "store_id": "s4",
         "current_time": "06:50",
         "found": true,
-        "now": [],
+        "now": [
+         {
+          "time": "06:30",
+          "text": "음료 냉장고",
+          "step_ids": [
+           "s4.drink_fridge"
+          ],
+          "evidence_ns": [
+           1
+          ]
+         }
+        ],
         "upcoming": [
          {
           "time": "07:00",
@@ -15106,8 +15277,8 @@
            "s4.towel_receive"
           ],
           "evidence_ns": [
-           1,
-           2
+           2,
+           3
           ]
          }
         ]
@@ -15117,12 +15288,12 @@
        "node": "tasks"
       },
       {
-       "input_tokens": 1132,
-       "output_tokens": 119,
-       "cost_usd": 0.005181,
+       "input_tokens": 1359,
+       "output_tokens": 194,
+       "cost_usd": 0.006987,
        "input": "지금 딱히 할 거 없는데 곧 뭐 있어요?",
-       "output": "07:00에 **수건 입고**가 있어요!\n\n업체가 수건을 가져오면, **먼저 장수를 직접 세서 수량을 확인**하고, 그다음에 납품서에 **서명**하세요. [근거 1][근거 2]\n확인하기 **전에 서명하면 안 돼요**. [근거 2]",
-       "latency_ms": 3079,
+       "output": "06:30에 시작한 음료 냉장고 재고 보충·유통기한 초과 음료 폐기가 있어요. 아직 진행 중일 수 있으니 확인해 보세요. [근거 1]\n\n곧 있을 일은 이거예요!\n\n**07:00 — 수건 입고·서명**\n업체가 수건을 납품하면 장수를 직접 세서 수량을 확인하고, 그다음에 납품서에 서명하세요. [근거 2][근거 3]\n확인 전에 서명하면 안 돼요. [근거 3]",
+       "latency_ms": 3733,
        "node": "tasks_answer"
       }
      ]
@@ -15154,23 +15325,23 @@
      "rewritten": false,
      "final_query": "배고픈데 지금 밥 먹으러 가도 돼요?",
      "retrieval_log": [],
-     "latency_ms": 3906,
-     "cost_usd": 0.007872,
+     "latency_ms": 4141,
+     "cost_usd": 0.008307,
      "input_tokens": 1709,
-     "output_tokens": 183,
+     "output_tokens": 212,
      "embedding_tokens": 0,
      "trace": [
       {
        "input_tokens": 1709,
-       "output_tokens": 183,
-       "cost_usd": 0.007872,
+       "output_tokens": 212,
+       "cost_usd": 0.008307,
        "input": "배고픈데 지금 밥 먹으러 가도 돼요?",
        "output": {
         "category": "out_of_scope",
         "safety": false,
-        "reasoning": "밥을 먹으러 가도 되는지 묻는 것은 업무 시간 중 식사 가능 여부를 묻는 것으로 볼 수 있으나, 이는 매장 업무 절차·규칙과 무관한 개인적인 질문이며 인수인계 문서로 답할 수 없는 범위이다."
+        "reasoning": "밥을 먹으러 가도 되는지 묻는 것은 업무 시간 중 식사 가능 여부를 묻는 것으로 볼 수 있으나, 이는 매장 운영 문서로 답할 수 없는 개인적인 질문이며 업무 절차·규칙과 직접적인 관련이 없다. 날씨 질문처럼 업무와 무관한 범주에 해당한다."
        },
-       "latency_ms": 3906,
+       "latency_ms": 4141,
        "node": "classify"
       },
       {

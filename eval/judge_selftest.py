@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "agent"))
 
 from judge.groq import GroqJudge  # noqa: E402
-from judge.tasks import fact_covered, run_accuracy, run_hallucination  # noqa: E402
+from judge.tasks import fact_covered, run_accuracy, run_faithfulness  # noqa: E402
 from llm.client import CostTracker  # noqa: E402
 from settings import get_settings  # noqa: E402
 
@@ -22,14 +22,14 @@ CORRECT = (
     "정산 금액과 실제 현금이 1,000원 이상 차이 나면 매장 단톡방에 차액을 올려요."
 )
 CASES = {
-    "A_정답": (CORRECT, "정답 그대로 → 누락 없음·환각 없음이어야 함"),
+    "A_정답": (CORRECT, "정답 그대로 → 누락 없음·위반 없음이어야 함"),
     "B_가짜사실_추가": (
         CORRECT + " 차액이 5,000원 이상이면 점장님께 전화로 바로 보고해야 해요.",
-        "정답 + 원문에 없는 사실 1개 → 환각으로 잡혀야 함 (누락은 없음)",
+        "정답 + 원문에 없는 사실 1개 → 근거 충실도 위반으로 잡혀야 함 (누락은 없음)",
     ),
     "C_정답사실_누락": (
         "마감 정산은 포스의 '마감정산' 버튼으로 해요. 정산 금액과 실제 현금이 1,000원 이상 차이 나면 매장 단톡방에 차액을 올려요.",
-        "'현금은 금고의 흰 봉투' 조각을 뺌 → 누락으로 잡혀야 함 (환각은 없음)",
+        "'현금은 금고의 흰 봉투' 조각을 뺌 → 누락으로 잡혀야 함 (위반 없음)",
     ),
     "D_수치변조": (
         CORRECT.replace("1,000원", "3,000원"),
@@ -47,8 +47,20 @@ def main() -> None:
 
     spec = (ROOT / "data" / "virtual" / "corpus-spec.md").read_text(encoding="utf-8")
     fact_text = re.search(r"^\| C06 \| (.+?) \|", spec, re.M).group(1)
-    source = "\n\n".join(
-        (ROOT / "data" / "virtual" / f"s1.{e}").read_text(encoding="utf-8") for e in ("md", "txt")
+    facts = json.loads((ROOT / "eval" / "fact-spans.json").read_text(encoding="utf-8"))["facts"]["C06"]
+    NL = chr(10)
+
+    def u16(rel: str, a: int, b: int) -> str:
+        raw = (ROOT / rel).read_bytes().decode("utf-8").encode("utf-16-le")
+        return raw[a * 2 : b * 2].decode("utf-16-le")
+
+    doc, tr = facts["document"], facts["transcript"]["spans"][0]
+    # 에이전트가 실제로 받는 것과 같은 형태의 근거: 정답 사실이 있는 문서 구간 + 트랜스크립트 구간 (± 여유 문맥)
+    evidence = (NL * 2).join(
+        f"[청크 {n}]{NL}{u16(r['file'], max(0, r['char_start'] - 120), r['char_end'] + 120)}"
+        for n, r in enumerate(
+            ({**doc, "file": doc["file"]}, {**tr, "file": facts["transcript"]["file"]}), start=1
+        )
     )
 
     out = {
@@ -59,7 +71,7 @@ def main() -> None:
     }
     for name, (answer, expect) in CASES.items():
         acc, _ = run_accuracy(judge, answer, {"C06": fact_text}, "마감 정산은 어떻게 하나요?")
-        hal, _ = run_hallucination(judge, answer, source)
+        hal, _ = run_faithfulness(judge, answer, evidence)
         fc = acc.facts[0]
         unsupported = [c.claim for c in hal.claims if not c.supported]
         out["cases"][name] = {
@@ -67,13 +79,13 @@ def main() -> None:
             "answer": answer,
             "fact_covered": fact_covered(fc),
             "uncovered_parts": [p.part for p in fc.parts if not p.covered],
-            "hallucination": bool(unsupported),
+            "unfaithful": bool(unsupported),
             "unsupported_claims": unsupported,
-            "detail": {"accuracy": acc.model_dump(), "hallucination": hal.model_dump()},
+            "detail": {"accuracy": acc.model_dump(), "unfaithful": hal.model_dump()},
         }
         c = out["cases"][name]
         print(
-            f"{name}: 사실 포함={c['fact_covered']} 누락 조각={c['uncovered_parts']} | 환각={c['hallucination']} {unsupported}"
+            f"{name}: 사실 포함={c['fact_covered']} 누락 조각={c['uncovered_parts']} | 근거밖={c['unfaithful']} {unsupported}"
         )
     exp = {
         "A_정답": (True, False),
@@ -81,7 +93,7 @@ def main() -> None:
         "C_정답사실_누락": (False, False),
         "D_수치변조": (False, True),
     }
-    out["passed"] = {k: (v["fact_covered"], v["hallucination"]) == exp[k] for k, v in out["cases"].items()}
+    out["passed"] = {k: (v["fact_covered"], v["unfaithful"]) == exp[k] for k, v in out["cases"].items()}
     out["cost_usd"] = round(tracker.run_cost, 6)
     print("기대와 일치:", out["passed"], "| 채점 호출", tracker.run_calls, "회, $", out["cost_usd"])
     path = ROOT / "eval" / "results" / f"{date.today().isoformat()}-judge-selftest.json"
