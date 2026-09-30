@@ -74,6 +74,8 @@ def make_app(tmp_path, llm):
         chunk("s1", "transcript", "케이크 남으면 다 버려요 폐기 대장", 100),
         chunk("s1", "document", "우유 개봉 후 24시간 폐기", 200, "2. 절차", conf="needs_review"),
         chunk("s2", "document", "홀케이크 2일 판매 3일째 폐기", 0, "2. 절차"),
+        chunk("s1", "document", "라스트오더·케이크 폐기·머신 청소 시작", 300, "2. 절차"),
+        chunk("s1", "document", "음악·간판 끄기·마감 정산", 400, "2. 절차"),
     ]
     store = MemoryStore()
     store.add(chunks, emb.embed([c.embed_text for c in chunks], "document"))
@@ -194,3 +196,15 @@ def test_now_tasks_empty_returns_template_without_llm_answer(tmp_path):
     app, _ = make_app(tmp_path, llm)
     rec = run_question(app, "지금 뭐 해요?", "s1", current_time="12:00")
     assert rec["outcome"] == "no_tasks" and llm.calls == ["classify"]
+
+
+def test_now_tasks_multiple_distinct_evidence_chunks(tmp_path):
+    """서로 다른 근거 청크를 가진 일정이 둘 이상이어도 근거 번호가 항목마다 매겨진다 (회귀: evidence_key 이중 pop)."""
+    llm = ScriptedLLM(
+        {"classify": [cls("now_tasks")], "answer": ["케이크는 폐기, 우유는 곧이에요. [근거 1][근거 2]"]}
+    )
+    app, _ = make_app(tmp_path, llm)
+    rec = run_question(app, "지금 뭐 해요?", "s1", current_time="21:35")
+    numbers = {n for i in rec["tasks"]["now"] + rec["tasks"]["upcoming"] for n in i["evidence_ns"]}
+    assert len(rec["evidence"]) >= 2  # 서로 다른 근거 청크가 둘 이상이어야 이 회귀 테스트가 의미 있다
+    assert numbers <= {e["n"] for e in rec["evidence"]} and len(numbers) >= 2

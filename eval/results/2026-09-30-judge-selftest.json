@@ -20,16 +20,19 @@
        "parts": [
         {
          "part": "마감 정산은 포스의 '마감정산' 버튼으로 한다.",
+         "relevant_to_question": true,
          "answer_quote": "마감 정산은 포스의 '마감정산' 버튼으로 해요.",
          "covered": true
         },
         {
          "part": "현금은 금고의 흰 봉투에 넣는다.",
+         "relevant_to_question": true,
          "answer_quote": "현금은 금고의 흰 봉투에 넣어요.",
          "covered": true
         },
         {
          "part": "차액이 1,000원 이상이면 매장 단톡방에 금액을 올린다.",
+         "relevant_to_question": true,
          "answer_quote": "정산 금액과 실제 현금이 1,000원 이상 차이 나면 매장 단톡방에 차액을 올려요.",
          "covered": true
         }
@@ -75,16 +78,19 @@
        "parts": [
         {
          "part": "마감 정산은 포스의 '마감정산' 버튼으로 한다.",
+         "relevant_to_question": true,
          "answer_quote": "마감 정산은 포스의 '마감정산' 버튼으로 해요.",
          "covered": true
         },
         {
          "part": "현금은 금고의 흰 봉투에 넣는다.",
+         "relevant_to_question": true,
          "answer_quote": "현금은 금고의 흰 봉투에 넣어요.",
          "covered": true
         },
         {
          "part": "차액이 1,000원 이상이면 매장 단톡방에 금액을 올린다.",
+         "relevant_to_question": true,
          "answer_quote": "정산 금액과 실제 현금이 1,000원 이상 차이 나면 매장 단톡방에 차액을 올려요.",
          "covered": true
         }
@@ -96,17 +102,17 @@
      "claims": [
       {
        "claim": "마감 정산은 포스의 '마감정산' 버튼으로 해요.",
-       "source_quote": "마감 정산은 포스에 마감정산 버튼이 있어요. 그거 누르고 화면 따라가시면 돼요.",
+       "source_quote": "포스기에서 '마감정산' 버튼을 누르고 화면의 안내에 따라 진행한다.",
        "supported": true
       },
       {
        "claim": "현금은 금고의 흰 봉투에 넣어요.",
-       "source_quote": "현금은 금고 안에 흰 봉투가 있거든요, 거기에 넣으세요.",
+       "source_quote": "현금은 금고 안의 흰 봉투에 넣는다.",
        "supported": true
       },
       {
        "claim": "정산 금액과 실제 현금이 1,000원 이상 차이 나면 매장 단톡방에 차액을 올려요.",
-       "source_quote": "차액이 천 원 이상이면 매장 단톡방에 금액을 올려 주세요.",
+       "source_quote": "정산 금액과 실제 현금이 1,000원 이상 차이 날 경우 매장 단톡방에 차액 금액을 올린다.",
        "supported": true
       },
       {
@@ -135,16 +141,19 @@
        "parts": [
         {
          "part": "마감 정산은 포스의 '마감정산' 버튼으로 한다.",
+         "relevant_to_question": true,
          "answer_quote": "마감 정산은 포스의 '마감정산' 버튼으로 해요.",
          "covered": true
         },
         {
          "part": "현금은 금고의 흰 봉투에 넣는다.",
+         "relevant_to_question": true,
          "answer_quote": "",
          "covered": false
         },
         {
          "part": "차액이 1,000원 이상이면 매장 단톡방에 금액을 올린다.",
+         "relevant_to_question": true,
          "answer_quote": "정산 금액과 실제 현금이 1,000원 이상 차이 나면 매장 단톡방에 차액을 올려요.",
          "covered": true
         }
@@ -187,16 +196,19 @@
        "parts": [
         {
          "part": "마감 정산은 포스의 '마감정산' 버튼으로 한다.",
+         "relevant_to_question": true,
          "answer_quote": "마감 정산은 포스의 '마감정산' 버튼으로 해요.",
          "covered": true
         },
         {
          "part": "현금은 금고의 흰 봉투에 넣는다.",
+         "relevant_to_question": true,
          "answer_quote": "현금은 금고의 흰 봉투에 넣어요.",
          "covered": true
         },
         {
          "part": "차액이 1,000원 이상이면 매장 단톡방에 금액을 올린다.",
+         "relevant_to_question": true,
          "answer_quote": "정산 금액과 실제 현금이 3,000원 이상 차이 나면 매장 단톡방에 차액을 올려요.",
          "covered": false
         }
@@ -208,7 +220,7 @@
      "claims": [
       {
        "claim": "마감 정산은 포스의 '마감정산' 버튼으로 한다.",
-       "source_quote": "마감 정산은 포스에 마감정산 버튼이 있어요.",
+       "source_quote": "마감 정산은 포스기에서 '마감정산' 버튼을 누르고 화면의 안내에 따라 진행한다.",
        "supported": true
       },
       {
@@ -232,5 +244,5 @@
   "C_정답사실_누락": true,
   "D_수치변조": true
  },
- "cost_usd": 0.005579
+ "cost_usd": 0.005592
 }

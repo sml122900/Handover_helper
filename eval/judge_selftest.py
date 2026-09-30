@@ -58,7 +58,7 @@ def main() -> None:
         "cases": {},
     }
     for name, (answer, expect) in CASES.items():
-        acc, _ = run_accuracy(judge, answer, {"C06": fact_text})
+        acc, _ = run_accuracy(judge, answer, {"C06": fact_text}, "마감 정산은 어떻게 하나요?")
         hal, _ = run_hallucination(judge, answer, source)
         fc = acc.facts[0]
         unsupported = [c.claim for c in hal.claims if not c.supported]

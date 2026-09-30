@@ -1,7 +1,15 @@
 import pytest
 
 from judge.groq import inline_refs
-from judge.tasks import AccuracyResult, FactCheck, PartCheck, RefusalResult, fact_covered, refusal_correct
+from judge.tasks import (
+    AccuracyResult,
+    FactCheck,
+    PartCheck,
+    RefusalResult,
+    fact_covered,
+    fact_covered_relevant,
+    refusal_correct,
+)
 from llm.client import CallInfo, CostBudgetExceeded, CostTracker, cost_of, ledger_totals
 
 
@@ -9,24 +17,28 @@ def test_inline_refs_removes_defs_and_keeps_field_order():
     schema = inline_refs(AccuracyResult.model_json_schema())
     assert "$defs" not in schema and "$ref" not in str(schema)
     part = schema["properties"]["facts"]["items"]["properties"]["parts"]["items"]
-    assert list(part["properties"]) == ["part", "answer_quote", "covered"]  # 근거(인용)가 판정보다 앞
-    assert part["additionalProperties"] is False and set(part["required"]) == {
+    assert list(part["properties"]) == [
         "part",
+        "relevant_to_question",
         "answer_quote",
         "covered",
-    }
+    ]  # 인용이 covered 판정보다 앞
+    assert part["additionalProperties"] is False and set(part["required"]) == set(part["properties"])
 
 
 def test_fact_covered_needs_all_parts():
-    ok = FactCheck(fact_id="C06", parts=[PartCheck(part="a", answer_quote="a", covered=True)])
+    ok = FactCheck(
+        fact_id="C06", parts=[PartCheck(part="a", relevant_to_question=True, answer_quote="a", covered=True)]
+    )
     bad = FactCheck(
         fact_id="C06",
         parts=[
-            PartCheck(part="a", answer_quote="a", covered=True),
-            PartCheck(part="b", answer_quote="", covered=False),
+            PartCheck(part="a", relevant_to_question=True, answer_quote="a", covered=True),
+            PartCheck(part="b", relevant_to_question=False, answer_quote="", covered=False),
         ],
     )
     assert fact_covered(ok) and not fact_covered(bad) and not fact_covered(FactCheck(fact_id="x", parts=[]))
+    assert fact_covered_relevant(bad)  # 빠진 조각이 질문과 무관하면 보조 지표에서는 포함으로 본다
 
 
 def test_refusal_correct_rule():

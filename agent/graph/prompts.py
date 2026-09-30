@@ -18,10 +18,11 @@ CLASSIFY_SYSTEM = """너는 매장 인수인계 문서 도우미의 질문 분�
 | "어제 폐기 뭐 했는지 보여줘" | record_request | 도구로 조회해야 답 가능 |
 | "원두 발주 어떻게 해요?" | question | 업무 질문 |
 | "손님이 다쳤어요" | question | 업무 상황 질문 (safety_related=true) |
+| "회원이 환불해달라고 해요" | question | 업무 질문, 돈 문의라 safety_related=false |
 | "오늘 날씨 어때요?" | out_of_scope | 업무와 무관 |
 | "최저시급 얼마예요?" | out_of_scope | 이 문서로 답할 수 없음 |
 
-safety_related는 돈·안전·법(주류·담배 판매, 부상, 알레르기, 장비 운전 자격, 금전 차액 등)이 걸린 질문이면 true.
+safety_related는 사람의 건강·신체 안전이 걸린 상황(부상, 알레르기, 응급, 술 취한 손님·폭력 위험 등)이면 true. 돈·환불·규정·자격 문의는 false (긴급 신고 안내가 어울리지 않음).
 reasoning을 먼저 쓰고 category를 정한다."""
 
 SUFFICIENCY_SYSTEM = """너는 검색 결과 충분성 판정기다. 질문과 근거 청크를 보고, 근거만으로 질문에 답할 수 있는지 판정한다.

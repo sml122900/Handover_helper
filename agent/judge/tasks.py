@@ -15,6 +15,9 @@ class _Strict(BaseModel):
 # ---- 1. 답변 정확도: 정답 사실을 더 작은 조각으로 나눠 조각별로 답변에 있는지 ----
 class PartCheck(_Strict):
     part: str = Field(description="정답 사실을 이루는 조각 하나 (수치·시각·조건·대상 단위)")
+    relevant_to_question: bool = Field(
+        description="이 조각이 [질문]이 실제로 묻는 내용에 필요한가 (질문과 무관한 부가 세부는 false)"
+    )
     answer_quote: str = Field(description="답변에서 그 조각에 해당하는 문장 인용. 없으면 빈 문자열")
     covered: bool = Field(description="인용이 조각의 의미(수치·시각·조건 포함)를 그대로 담고 있으면 true")
 
@@ -31,9 +34,18 @@ class AccuracyResult(_Strict):
 ACCURACY_SYSTEM = """너는 채점자다. [정답 사실] 각각이 [답변]에 담겨 있는지 채점한다.
 절차:
 1. 정답 사실을 수치·시각·조건·대상 단위의 조각으로 나눈다.
-2. 조각마다 답변에서 해당 문장을 그대로 인용한다(answer_quote). 없으면 빈 문자열.
-3. 인용을 근거로 covered를 정한다. 표현이 달라도 의미(수치·시각·조건)가 같으면 true, 수치·시각이 다르거나 조건이 빠지면 false.
+2. 조각마다 [질문]이 실제로 묻는 내용에 필요한 조각인지 relevant_to_question을 정한다.
+3. 조각마다 답변에서 해당 문장을 그대로 인용한다(answer_quote). 없으면 빈 문자열.
+4. 인용을 근거로 covered를 정한다. 표현이 달라도 의미(수치·시각·조건)가 같으면 true, 수치·시각이 다르거나 조건이 빠지면 false.
 답변이 "문서에 없어요"라고 회피하면 해당 조각은 모두 false. 답변에 없는 내용을 네가 보충해서 true로 만들지 않는다."""
+
+# 시각 문항은 "지금 할 일과 30분 내 다가오는 일을 모두 포함"이 기준(골든셋)이라 일 단위로 채점한다
+ACCURACY_TASK_SYSTEM = """너는 채점자다. 시각 기반 질문의 [정답 사실]은 각각 '지금 또는 곧 해야 할 일' 하나를 가리킨다. 답변이 그 일을 알려 주는지 채점한다.
+절차:
+1. 정답 사실마다 parts에 조각 1개만 만든다(사실이 가리키는 일 전체를 한 조각으로, relevant_to_question은 항상 true).
+2. 답변에서 그 일을 알려 주는 문장을 그대로 인용한다(answer_quote). 없으면 빈 문자열.
+3. 답변이 그 일을 (해당하면 시각과 함께) 알려 주면 covered=true. 세부 수치·부가 조건까지 전부 요구하지 않는다. 다만 일의 시각이나 핵심 행동이 틀리거나 빠지면 false.
+답변이 "문서에 없어요"라고 회피하면 false. 답변에 없는 내용을 네가 보충해서 true로 만들지 않는다."""
 
 
 # ---- 2. 환각: 답변의 사실 주장을 원문 전체와 대조 ----
@@ -53,7 +65,7 @@ class HallucinationResult(_Strict):
 
 HALLUCINATION_SYSTEM = """너는 사실 검증자다. [답변]에 든 사실 주장(업무 절차·수치·시각·규칙·장소·조건)을 하나씩 뽑아 [원문](해당 매장의 인수인계 문서와 영상 발언 전문)과 대조한다.
 - 각 주장마다 원문에서 뒷받침 문장을 그대로 인용한 뒤(source_quote) supported를 정한다. 원문에 없거나 수치·시각이 다르면 false.
-- 사실 주장이 아닌 것은 뽑지 않는다: "문서에 없어요", 점장님께 확인·요청하라는 안내, 인사, [확인 필요] 표시, 답변 형식 문구.
+- 사실 주장이 아닌 것은 뽑지 않는다: "문서에 없어요"·"~는 나와 있지 않아요" 같은 부재 진술, 점장님께 확인·요청하라는 안내, 인사, [확인 필요] 표시, 답변 형식 문구.
 - 긴급 신고(119·112) 일반 안내가 "문서 근거 아님"이라고 표시돼 있으면 뽑지 않는다.
 - 답변에 사실 주장이 하나도 없으면 claims는 빈 배열."""
 
@@ -103,14 +115,14 @@ REFUSAL_SYSTEM = """너는 채점자다. 이 질문의 답은 인수인계 문�
 각 항목마다 답변에서 해당 문장을 먼저 그대로 인용한 뒤 판정한다. 인용할 문장이 없으면 빈 문자열이고 판정은 false다."""
 
 
-def run_accuracy(judge: GroqJudge, answer: str, facts: dict[str, str]):
-    user = (
-        "[정답 사실]\n"
-        + "\n".join(f"- {fid}: {text}" for fid, text in facts.items())
-        + f"\n\n[답변]\n{answer}"
-    )
+def run_accuracy(
+    judge: GroqJudge, answer: str, facts: dict[str, str], question: str = "", mode: str = "fact"
+):
+    fact_lines = "\n".join(f"- {fid}: {text}" for fid, text in facts.items())
+    user = f"[질문]\n{question}\n\n[정답 사실]\n{fact_lines}\n\n[답변]\n{answer}"
+    system = ACCURACY_TASK_SYSTEM if mode == "task" else ACCURACY_SYSTEM
     return judge.structured(
-        system=ACCURACY_SYSTEM, user=user, schema=AccuracyResult, name="accuracy", tag="judge:accuracy"
+        system=system, user=user, schema=AccuracyResult, name="accuracy", tag="judge:accuracy"
     )
 
 
@@ -141,7 +153,14 @@ def run_refusal(judge: GroqJudge, question: str, answer: str):
 
 # ---- 집계는 코드가 한다 ----
 def fact_covered(fc: FactCheck) -> bool:
+    """정답 사실의 모든 조각이 답변에 있어야 포함 (골든셋 정의: 해당 사실 ID의 내용을 모두 포함)."""
     return bool(fc.parts) and all(p.covered for p in fc.parts)
+
+
+def fact_covered_relevant(fc: FactCheck) -> bool:
+    """보조 지표: 질문이 묻는 내용에 필요한 조각만 기준으로 (질문이 사실의 일부만 묻는 문항의 과소평가를 분리해 본다)."""
+    rel = [p for p in fc.parts if p.relevant_to_question]
+    return bool(rel) and all(p.covered for p in rel)
 
 
 def refusal_correct(r: RefusalResult) -> bool:

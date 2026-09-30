@@ -33,6 +33,7 @@ from indexing.factory import make_store  # noqa: E402
 from judge.groq import GroqJudge  # noqa: E402
 from judge.tasks import (  # noqa: E402
     fact_covered,
+    fact_covered_relevant,
     refusal_correct,
     run_accuracy,
     run_citations,
@@ -81,13 +82,18 @@ def evaluate_question(q: dict, rec: dict, judge: GroqJudge, spans, fact_texts) -
 
     if q["type"] in ("fact", "time"):
         facts = {f: fact_texts[f] for f in q["expected_facts"]}
-        acc, info = run_accuracy(judge, answer, facts)
+        acc, info = run_accuracy(
+            judge, answer, facts, q["question"], "task" if q["type"] == "time" else "fact"
+        )
         judge_cost += info.cost_usd
         covered = {fc.fact_id: fact_covered(fc) for fc in acc.facts}
         ev["fact_covered"] = {
             f: covered.get(f, False) for f in facts
         }  # 채점기가 빠뜨린 사실은 미포함으로 본다
         ev["accuracy_full"] = all(ev["fact_covered"].values())
+        relevant = {fc.fact_id: fact_covered_relevant(fc) for fc in acc.facts}
+        ev["fact_covered_relevant"] = {f: relevant.get(f, False) for f in facts}
+        ev["accuracy_full_relevant"] = all(ev["fact_covered_relevant"].values())
         ev["accuracy_detail"] = acc.model_dump()
 
     if q["type"] == "fact":
@@ -170,6 +176,14 @@ def summarize(rows: list[dict]) -> dict:
         "facts": sum(len(ev[i]["fact_covered"]) for i in ft),
         "questions_full": sum(ev[i]["accuracy_full"] for i in ft),
         "questions": len(ft),
+        "relevant_only": {
+            "facts_covered": sum(sum(ev[i]["fact_covered_relevant"].values()) for i in ft),
+            "facts": sum(len(ev[i]["fact_covered_relevant"]) for i in ft),
+            "questions_full": sum(ev[i]["accuracy_full_relevant"] for i in ft),
+            "questions": len(ft),
+            "fact20_covered": sum(sum(ev[i]["fact_covered_relevant"].values()) for i in fq),
+            "fact20_facts": sum(len(ev[i]["fact_covered_relevant"]) for i in fq),
+        },
         "fact20": {
             "covered": sum(sum(ev[i]["fact_covered"].values()) for i in fq),
             "facts": sum(len(ev[i]["fact_covered"]) for i in fq),
@@ -284,7 +298,8 @@ def to_markdown(res: dict) -> str:
             "|---|---|",
             f"| Recall@5 사실 20문항 (재검색 후) | {ra['final_facts_hit']}/{ra['facts']} = {rate(ra['final_facts_hit'], ra['facts'])} (첫 검색 {ra['first_facts_hit']}/{ra['facts']}, 문항 완전 적중 {ra['final_questions_full']}/{ra['questions']}) |",
             f"| 시각 5문항 도구 근거 적중 (검색 점수와 분리) | {s['time5_tool_evidence']['facts_hit']}/{s['time5_tool_evidence']['facts']} |",
-            f"| 답변 정확도 (사실+시각) | 사실 {aa['facts_covered']}/{aa['facts']}, 문항 완전 {aa['questions_full']}/{aa['questions']} (사실20 {aa['fact20']['covered']}/{aa['fact20']['facts']}, 시각5 {aa['time5']['covered']}/{aa['time5']['facts']}) |",
+            f"| 답변 정확도 (사실+시각) | 사실 {aa['facts_covered']}/{aa['facts']}, 문항 완전 {aa['questions_full']}/{aa['questions']} (사실20 {aa['fact20']['covered']}/{aa['fact20']['facts']}, 시각5 {aa['time5']['covered']}/{aa['time5']['facts']}). 정의: 정답 사실 내용을 모두 포함(시각 문항은 일 단위) |",
+            f"| 답변 정확도 — 보조(질문이 묻는 조각만) | 사실 {aa['relevant_only']['facts_covered']}/{aa['relevant_only']['facts']}, 문항 완전 {aa['relevant_only']['questions_full']}/{aa['relevant_only']['questions']} (사실20 {aa['relevant_only']['fact20_covered']}/{aa['relevant_only']['fact20_facts']}) |",
             f"| 출처 일치율 | {c['supported']}/{c['pairs']} = {rate(c['supported'], c['pairs'])} |",
             f"| 환각률 (사실주장 근거 없음 1개 이상) | {h['answers_with_unsupported']}/{h['answers']} {h['ids']} |",
             f"| 거절 정확도 (없음 10) | {rf['correct']}/{rf['total']} 오답 {rf['wrong']} |",

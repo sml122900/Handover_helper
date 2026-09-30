@@ -143,7 +143,9 @@ class ClaudeClient:
             resp = self._client.messages.create(
                 model=self.model,
                 max_tokens=max_tokens,
-                temperature=0,
+                extra_body={
+                    "temperature": 0
+                },  # SDK 1.x messages.create에 temperature 인자가 없어 본문으로 전달
                 system=system,
                 messages=[{"role": "user", "content": user}],
                 tools=[tool],
@@ -172,7 +174,7 @@ class ClaudeClient:
         resp = self._client.messages.create(
             model=self.model,
             max_tokens=max_tokens,
-            temperature=0,
+            extra_body={"temperature": 0},  # SDK 1.x messages.create에 temperature 인자가 없어 본문으로 전달
             system=system,
             messages=[{"role": "user", "content": user}],
         )

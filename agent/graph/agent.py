@@ -300,22 +300,25 @@ def build_agent(deps: AgentDeps):
                     "output": result,
                 },
             }
-        # 각 일정 항목의 근거: 항목 텍스트로 매장 필터 검색해 문서 청크 우선 1개 (정답표는 쓰지 않는다)
+        # 각 일정 항목의 근거: 항목이 여러 일을 묶었으면("A·B·C") 하위 표현마다 매장 필터 검색해 문서 청크 우선 1개씩 (정답표는 쓰지 않는다)
         before = embedder.run_tokens
-        qvecs = embedder.embed([mask_text(it["text"]) for it in items], "query")
+        phrases = [[p.strip() for p in it["text"].split("·") if p.strip()] or [it["text"]] for it in items]
+        flat = [p for group in phrases for p in group]
+        qvecs = iter(embedder.embed([mask_text(p) for p in flat], "query"))
         evidence: list[dict] = []
-        for it, qv in zip(items, qvecs, strict=True):
-            top = store.search(qv, 3, deps.strategy, state["store_id"])
-            pick = next((h for h in top if h.chunk.raw.source_type == "document"), top[0])
-            it["evidence_key"] = (pick.chunk.raw.source_file, pick.chunk.raw.char_start)
-            if not any((e["source_file"], e["char_start"]) == it["evidence_key"] for e in evidence):
-                ev = to_evidence([pick])[0]
-                ev["n"] = len(evidence) + 1
-                evidence.append(ev)
-        for it in items:
-            it["evidence_n"] = next(
-                e["n"] for e in evidence if (e["source_file"], e["char_start"]) == it.pop("evidence_key")
-            )
+        for it, group in zip(items, phrases, strict=True):
+            it["evidence_ns"] = []
+            for _ in group:
+                top = store.search(next(qvecs), 3, deps.strategy, state["store_id"])
+                pick = next((h for h in top if h.chunk.raw.source_type == "document"), top[0])
+                key = (pick.chunk.raw.source_file, pick.chunk.raw.char_start)
+                found = next((e for e in evidence if (e["source_file"], e["char_start"]) == key), None)
+                if found is None:
+                    found = to_evidence([pick])[0]
+                    found["n"] = len(evidence) + 1
+                    evidence.append(found)
+                if found["n"] not in it["evidence_ns"]:
+                    it["evidence_ns"].append(found["n"])
         return {
             "tasks": result,
             "evidence": evidence,
@@ -331,7 +334,11 @@ def build_agent(deps: AgentDeps):
 
         def lines(items):
             return (
-                "\n".join(f"- {i['time']} {i['text']} [근거 {i['evidence_n']}]" for i in items) or "- (없음)"
+                "\n".join(
+                    f"- {i['time']} {i['text']} " + "".join(f"[근거 {n}]" for n in i["evidence_ns"])
+                    for i in items
+                )
+                or "- (없음)"
             )
 
         extra = f"[일정] 현재 시각 {t['current_time']}\n지금 시작한 일(최근 15분):\n{lines(t['now'])}\n곧 있을 일(30분 이내):\n{lines(t['upcoming'])}\n\n"

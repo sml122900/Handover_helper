@@ -9,7 +9,7 @@ class Classification(BaseModel):
     reasoning: str = Field(description="분류 근거 한두 문장")
     category: Literal["question", "now_tasks", "record_request", "out_of_scope"]
     safety_related: bool = Field(
-        description="돈·안전·법(주류·담배 판매, 부상, 알레르기, 장비 운전 자격 등)과 관련된 질문인가"
+        description="사람의 건강·신체 안전이 걸린 상황인가(부상, 알레르기, 응급, 술 취한 손님·폭력 위험 등). 돈·환불·규정 문의는 false"
     )
 
 
