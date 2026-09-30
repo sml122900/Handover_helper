@@ -155,4 +155,37 @@ describe.skipIf(!enabled)("RLS: 다른 사용자 데이터 접근 차단", () =>
     });
     expect(error).not.toBeNull();
   });
+
+  it("사용자는 handover_chunks를 읽거나 쓸 수 없다 (0012 — service_role 전용)", async () => {
+    const zero = "[" + new Array(1024).fill(0).join(",") + "]";
+    const seed = await admin
+      .from("handover_chunks")
+      .insert({
+        store_id: "rls-test", source_type: "document", source_file: "rls.md", char_start: 0, char_end: 1,
+        content: "RLS 테스트", chunking_strategy: "test", embedding_model: "test", embedding: zero,
+      })
+      .select("id")
+      .single();
+    expect(seed.error, "0012_handover_chunks.sql 적용 필요").toBeNull();
+    const chunkId = seed.data!.id as string;
+    try {
+      for (const client of [a, b]) {
+        const read = await client.from("handover_chunks").select("id").eq("id", chunkId);
+        expect(read.error !== null || (read.data ?? []).length === 0).toBe(true);
+        const ins = await client.from("handover_chunks").insert({
+          store_id: "x", source_type: "document", source_file: "x", char_start: 0, char_end: 1,
+          content: "x", chunking_strategy: "x", embedding_model: "x", embedding: zero,
+        });
+        expect(ins.error).not.toBeNull();
+        await client.from("handover_chunks").update({ content: "조작" }).eq("id", chunkId);
+        await client.from("handover_chunks").delete().eq("id", chunkId);
+        const rpc = await client.rpc("match_handover_chunks", { query_embedding: zero, match_count: 5 });
+        expect(rpc.error).not.toBeNull();
+      }
+      const { data } = await admin.from("handover_chunks").select("content").eq("id", chunkId).single();
+      expect(data?.content).toBe("RLS 테스트");
+    } finally {
+      await admin.from("handover_chunks").delete().eq("id", chunkId);
+    }
+  });
 });
