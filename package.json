@@ -21,7 +21,8 @@
     "test:integration": "node --env-file=.env node_modules/vitest/vitest.mjs run tests/rls.integration.test.ts tests/pipeline-start.integration.test.ts",
     "agent:test": "uv run --project agent pytest agent/tests",
     "agent:lint": "uv run --directory agent ruff check . ../eval",
-    "agent:retrieval": "uv run --project agent python eval/retrieval.py"
+    "agent:retrieval": "uv run --project agent python eval/retrieval.py",
+    "agent:serve": "uv run --directory agent python serve.py"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.0",

@@ -188,4 +188,34 @@ describe.skipIf(!enabled)("RLS: 다른 사용자 데이터 접근 차단", () =>
       await admin.from("handover_chunks").delete().eq("id", chunkId);
     }
   });
+
+  it("사용자는 에이전트 도구 로그 3종을 읽거나 쓸 수 없다 (0013 — service_role 전용)", async () => {
+    const day = "2026-10-01";
+    const seeds: Record<string, Record<string, unknown>> = {
+      handover_checklist_logs: { store_id: "rls-test", step_id: "rls.step", slot: "", work_date: day },
+      handover_waste_logs: { store_id: "rls-test", item: "RLS 테스트", qty: 1, work_date: day },
+      handover_notifications: { store_id: "rls-test", message: "RLS 테스트", urgency: "normal" },
+    };
+    const created: [string, string][] = [];
+    try {
+      for (const [table, row] of Object.entries(seeds)) {
+        const seed = await admin.from(table).insert(row).select("id").single();
+        expect(seed.error, "0013_agent_tool_logs.sql 적용 필요").toBeNull();
+        const id = seed.data!.id as string;
+        created.push([table, id]);
+        for (const client of [a, b]) {
+          const read = await client.from(table).select("id").eq("id", id);
+          expect(read.error !== null || (read.data ?? []).length === 0).toBe(true);
+          const ins = await client.from(table).insert({ ...row, store_id: "rls-attacker" });
+          expect(ins.error).not.toBeNull();
+          await client.from(table).update({ store_id: "rls-hijacked" }).eq("id", id);
+          await client.from(table).delete().eq("id", id);
+        }
+        const after = await admin.from(table).select("store_id").eq("id", id).single();
+        expect(after.data?.store_id).toBe("rls-test"); // 변경·삭제 시도가 행에 영향을 주지 않음
+      }
+    } finally {
+      for (const [table, id] of created) await admin.from(table).delete().eq("id", id);
+    }
+  });
 });

@@ -16,6 +16,8 @@ class Settings(BaseSettings):
 
     # 검색 저장소: memory(기본, 평가 재현용) | pg(0012 handover_chunks, service_role)
     agent_store: Literal["memory", "pg"] = "memory"
+    # 쓰기 도구 저장소: memory(기본) | supabase(0013 적용 후, service_role)
+    agent_tool_store: Literal["memory", "supabase"] = "memory"
     supabase_url: str | None = Field(
         default=None, validation_alias=AliasChoices("supabase_url", "NEXT_PUBLIC_SUPABASE_URL")
     )
