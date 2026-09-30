@@ -10,3 +10,13 @@ results/
 video/
 *.tsbuildinfo
 private-data/
+
+# 에이전트 평가 결과는 추적 (위 results/ 규칙의 예외)
+!eval/results/
+
+# agent/ (Python)
+agent/.venv/
+agent/.cache/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
