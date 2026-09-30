@@ -16,24 +16,24 @@ STABLE = ROOT / "eval" / "results" / ".cache" / "baseline-stable-evs.jsonl"
 
 
 def parse_human(text: str) -> dict:
+    """채점본 파싱. 마크다운 표(`| 사실 | ... | O |`)와 탭으로 구분된 붙여넣기 서식을 모두 지원한다."""
     out: dict = {}
-    for block in re.split(r"^## \d+\. ", text, flags=re.M)[1:]:
-        head = block.splitlines()[0]
-        qid = head.split()[0]
+    for block in re.split(r"^(?:## )?\d+\. (?=[A-Z]\d{2} \()", text, flags=re.M)[1:]:
+        qid = block.split()[0]
         d: dict = {"facts": {}, "absent": {}, "memo": "", "unfaithful": None}
-        for m in re.finditer(r"^\| ([CBMGL]\d{2}) \| .*? \| ([OX]) \|\s*$", block, flags=re.M):
+        for m in re.finditer(r"^\|? *([CBMGL]\d{2}) *[|	].*?[|	] *([OX]) *\|? *$", block, flags=re.M):
             d["facts"][m.group(1)] = m.group(2) == "O"
         for label, key in (
             ("문서에 없다고 명시함", "states_not_in_doc"),
             ("점장 확인을 제안함", "suggests_manager"),
             ("추측으로 구체적 답을 줌", "gives_guess"),
         ):
-            m = re.search(rf"^\| {label} \| ([OX]) \|", block, flags=re.M)
+            m = re.search(rf"^\|? *{label} *[|	] *([OX])", block, flags=re.M)
             if m:
                 d["absent"][key] = m.group(1) == "O"
-        m = re.search(r"\*\*근거 없는 사실 있음\*\* \(O/X\): *([OX])", block)
+        m = re.search(r"근거 없는 사실 있음(?:\*\*)? \(O/X\): *([OX])", block)
         d["unfaithful"] = m.group(1) == "O" if m else None
-        m = re.search(r"\*\*메모\*\*: (.*)", block)
+        m = re.search(r"^(?:\*\*)?메모(?:\*\*)?: (.*)", block, flags=re.M)
         d["memo"] = m.group(1).strip() if m else ""
         out[qid] = d
     return out
@@ -175,9 +175,9 @@ def main() -> None:
     L = [
         f"# 사람 채점 ↔ 채점 모델 일치율 ({date.today().isoformat()}, 설계 7-3 P1 검증)",
         "",
-        '> **해석 주의 (독립성)**: 제출된 채점본(`eval/human-judge-10edit.md`)에는 "집계 (Claude 참고 채점)" 절이 있고 메모가 '
-        '"엄격한 채점기는 여기서 O를 줄 수 있음"처럼 채점기를 제3자로 언급하는 문장으로 쓰여 있다. **어떤 칸이 사용자 본인의 독립 판정이고 어떤 칸이 참고 채점에서 온 것인지 이 파일만으로는 알 수 없다.** '
-        '아래 일치율은 "제출본 채점 ↔ gpt-oss-120b(2회+다수결)"로 읽어야 하며, 제출본이 사용자 본인의 독립 판단임이 확인되기 전에는 P1 검증 완료로 세지 않는 것을 권장한다.',
+        '> **해석 주의 (독립성)**: 제출본(수정본, 2026-10-01)은 머리말에서 "채점 결과를 열지 않은 상태에서 작성"했고 기준을 문면 그대로 엄격 적용했다고 밝힌다. '
+        '이전 판에 있던 "Claude 참고 채점" 표기는 없지만 메모가 채점기를 제3자로 언급하는 문체라, 작성 주체는 파일만으로 확인할 수 없고 **사용자의 진술(직접 채점, 결과 미열람)에 의존**한다. '
+        "표본이 작고(항목 29개) 위반 양성 사례가 적어 민감도 해석에 한계가 있다.",
         "",
         "- 채점 모델 쪽: 기준선 실행 1의 안정화 채점(모든 항목 2회 + 엇갈리면 3회째 다수결). 사람 채점 대상 응답과 같은 실행·같은 응답.",
         "- 표본 10건(사실 4·시각 2·없음 3·안전 1). 항목 수가 작아 일치율의 신뢰구간이 넓다.",
