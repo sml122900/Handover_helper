@@ -4,6 +4,8 @@ from settings import Settings
 
 def get_embedder(settings: Settings, token_budget: int | None = None) -> Embedder:
     assert settings.embedding_model
+    if token_budget is None:
+        token_budget = settings.embedding_token_budget
     if settings.embedding_provider == "voyage":
         from embedding.voyage import VoyageEmbedder
 

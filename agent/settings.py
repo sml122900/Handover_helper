@@ -16,6 +16,8 @@ class Settings(BaseSettings):
     voyage_api_key: str | None = None
     # provider별 기본 모델: voyage-4(1024차원) / bge-m3(1024차원)
     embedding_model: str | None = None
+    # 실행당 임베딩 토큰 상한 (Voyage 대시보드 예산은 알림만 보내고 호출을 막지 않으므로 코드에서 막는다)
+    embedding_token_budget: int = 200_000
     embedding_cache_dir: Path = ROOT / "agent" / ".cache" / "embeddings"
 
     @model_validator(mode="after")

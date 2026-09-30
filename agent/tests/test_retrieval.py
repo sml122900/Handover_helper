@@ -122,3 +122,28 @@ def test_store_pool_and_search():
 
 def test_masked_text_is_str_subclass():
     assert isinstance(mask_text("a"), MaskedText)
+
+
+def test_embedder_stops_when_run_budget_exceeded(tmp_path):
+    from embedding.base import BudgetExceeded
+
+    class Counting(FakeEmbedder):
+        max_batch_items = 1
+
+        def _embed_batch(self, texts, input_type):
+            self._record_usage(sum(len(t) for t in texts), input_type)  # 과금 토큰 = 글자 수로 흉내
+            return super()._embed_batch(texts, input_type)
+
+    e = Counting("m", tmp_path, token_budget=5)
+    texts = [mask_text("가나"), mask_text("다라"), mask_text("마바")]  # 배치당 2토큰
+    with pytest.raises(BudgetExceeded) as err:
+        e.embed(texts, "document")
+    assert e.run_tokens == 4 and e.api_calls == 2  # 2개까지 처리, 3번째(4+2>5)에서 중단
+    assert "EMBEDDING_TOKEN_BUDGET=5" in str(err.value) and "사용 4토큰" in str(err.value)
+    assert len(list(e.cache_dir.glob("*.npy"))) == 2  # 받은 것은 캐시에 남음
+
+
+def test_settings_default_budget():
+    from settings import Settings
+
+    assert Settings(_env_file=None, embedding_provider="local").embedding_token_budget == 200_000

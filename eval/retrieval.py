@@ -18,6 +18,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "agent"))
 
 from embedding import get_embedder  # noqa: E402
+from embedding.base import BudgetExceeded  # noqa: E402
 from indexing.chunkers import TRANSCRIPT_STRATEGY  # noqa: E402
 from indexing.corpus import STORES, build_chunks, load_sources  # noqa: E402
 from indexing.store import MemoryStore  # noqa: E402
@@ -26,7 +27,6 @@ from privacy.mask import mask_text  # noqa: E402
 from settings import get_settings  # noqa: E402
 
 K = 5
-TOKEN_BUDGET = 300_000  # 이번 세션 임베딩 총 토큰 상한
 
 
 def load_golden() -> list[dict]:
@@ -76,7 +76,7 @@ def random_baseline(pool_hit_sets: list[set[int]], n_pool: int) -> tuple[float, 
 
 def run(out_path: Path | None = None) -> dict:
     settings = get_settings()
-    embedder = get_embedder(settings, TOKEN_BUDGET)
+    embedder = get_embedder(settings)
     sources = load_sources()
     chunks = build_chunks(sources, embedder.model)
     masked = [c.to_masked() for c in chunks]  # 색인은 마스킹 후 청크만 받는다
@@ -261,5 +261,9 @@ if __name__ == "__main__":
             )
         print(Counter(c.chunking_strategy for c in chunks))
     else:
-        res = run(args.out)
+        try:
+            res = run(args.out)
+        except BudgetExceeded as e:
+            print(f"[중단] {e}")
+            sys.exit(2)
         print(to_markdown(res))

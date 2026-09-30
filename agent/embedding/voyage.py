@@ -4,20 +4,20 @@ from collections.abc import Sequence
 
 import httpx
 
-from embedding.base import BudgetExceeded, Embedder, InputType
+from embedding.base import Embedder, InputType
 from indexing.tokens import count_tokens
 from privacy.mask import MaskedText
 
 URL = "https://api.voyageai.com/v1/embeddings"
 
-# 결제 수단 미등록 계정의 제한(3 RPM, 10K TPM)에 맞춘 기본값. 등록 후엔 값을 올려도 된다
-RPM_LIMIT = 3
-TPM_LIMIT = 9_000  # 10K TPM 아래로 여유를 둔다
+# voyage-4 Usage tier 1 한도(대시보드 2,000 RPM / 8,000,000 TPM)의 절반 (2026-09-30 결제 수단 등록 후 상향)
+RPM_LIMIT = 1_000
+TPM_LIMIT = 4_000_000
 
 
 class VoyageEmbedder(Embedder):
     provider = "voyage"
-    max_batch_tokens = 4_000  # 배치 1개가 분당 한도의 절반 이하가 되게
+    max_batch_tokens = 4_000  # 배치 1개의 토큰 크기
 
     def __init__(self, model, cache_dir, api_key: str, token_budget: int | None = None):
         super().__init__(model, cache_dir, token_budget)
@@ -39,10 +39,6 @@ class VoyageEmbedder(Embedder):
 
     def _embed_batch(self, texts: Sequence[MaskedText], input_type: InputType) -> list[list[float]]:
         estimate = sum(count_tokens(t, self.model) for t in texts)
-        if self.token_budget is not None and self.tokens_used() + estimate > self.token_budget:
-            raise BudgetExceeded(
-                f"임베딩 토큰 예산 초과 예상: 사용 {self.tokens_used()} + 예상 {estimate} > {self.token_budget}"
-            )
         body = {"input": [str(t) for t in texts], "model": self.model, "input_type": input_type}
         for attempt in range(6):
             self._wait_for_rate_limit(estimate)

@@ -25,7 +25,8 @@ class Embedder(ABC):
         self.model = model
         self.cache_dir = cache_dir / model.replace("/", "_")
         self.cache_dir.mkdir(parents=True, exist_ok=True)
-        self.token_budget = token_budget
+        self.token_budget = token_budget  # 이 실행(프로세스)의 임베딩 토큰 상한
+        self.run_tokens = 0  # 이 실행에서 실제 과금된 토큰
         self.api_calls = 0  # 캐시에 없어 실제 호출한 배치 수 (재실행 시 0이어야 함)
 
     def _key(self, text: str, input_type: str) -> Path:
@@ -40,10 +41,22 @@ class Embedder(ABC):
         missing = [i for i, p in enumerate(paths) if not p.exists()]
         # 배치마다 즉시 캐시에 저장 — 중간에 실패해도 이미 받은(과금된) 임베딩은 잃지 않는다
         for batch in self._batches(missing, texts):
+            self._check_budget(batch, texts)
             vecs = self._embed_batch([texts[i] for i in batch], input_type)
             for i, v in zip(batch, vecs, strict=True):
                 np.save(paths[i], np.asarray(v, dtype=np.float32))
         return np.stack([np.load(p) for p in paths])
+
+    def _check_budget(self, batch: list[int], texts: Sequence[MaskedText]) -> None:
+        if self.token_budget is None:
+            return
+        est = sum(self._text_tokens(texts[i]) for i in batch)
+        if self.run_tokens + est > self.token_budget:
+            raise BudgetExceeded(
+                f"이 실행의 임베딩 토큰 상한(EMBEDDING_TOKEN_BUDGET={self.token_budget:,}) 초과가 예상돼 중단합니다. "
+                f"이 실행에서 사용 {self.run_tokens:,}토큰(API 배치 {self.api_calls}회), 다음 배치 예상 {est:,}토큰. "
+                "이미 받은 임베딩은 캐시에 저장돼 있습니다."
+            )
 
     max_batch_items = 64
     max_batch_tokens: int | None = None
@@ -79,6 +92,7 @@ class Embedder(ABC):
         return sum(json.loads(line)["tokens"] for line in lines if line)
 
     def _record_usage(self, tokens: int, input_type: str) -> None:
+        self.run_tokens += tokens
         with self._usage_file.open("a") as f:
             f.write(json.dumps({"model": self.model, "input_type": input_type, "tokens": tokens}) + "\n")
 
