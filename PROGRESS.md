@@ -799,7 +799,7 @@ npm run dev
 - `E2E_BASE_URL`(로컬 dev·배포 공용): 테스트 유저 로그인 → 업로드 → `/api/pipeline/start` → 상태·단계 폴링 → done·트랜스크립트·문서 스키마·보강 질문·사용량 로그·**임시 청크 잔여 0** 검증. `E2E_FILE`·`E2E_PAID` 옵션
 - `scripts/make-tts-video.ps1`: 가상 sample-demo 대본 한국어 TTS(1회분 444.7초) 반복 → 1280×720 정지 화면 mp4. 산출물 `output/tts/`(gitignore)
 
-**테스트**: vitest **133 통과**(오케스트레이션 순서·STT 건너뛰기·실패 전파, runKey, 재시도 중복 클릭 경합, 진행 표시·백오프, env) / 통합(실 DB): startPipeline 타 사용자 거부·소유자 1건 전송 통과, RLS 16/17 (실패 1 = stage 케이스, 0009 미적용). **0007·0008은 적용 확인됨**(3-A① 결제 우회 등 4건 이제 통과)
+**테스트**: vitest **133 통과**(오케스트레이션 순서·STT 건너뛰기·실패 전파, runKey, 재시도 중복 클릭 경합, 진행 표시·백오프, env) / 통합(실 DB): startPipeline 타 사용자 거부·소유자 1건 전송 통과, test:integration 16/17 (rls 14/15 + pipeline-start 2/2; 실패 1 = stage 케이스, 0009 미적용) — 2026-09-30 정정: 당시 표기 "RLS 16/17"은 두 파일 합산 수치였음. 현재 기준: rls 16개(0011 status_changed_at 케이스 추가), test:integration 18개, 18/18 통과 확인(2026-09-30). **0007·0008은 적용 확인됨**(3-A① 결제 우회 등 4건 이제 통과)
 
 ### 로컬 Inngest 검증 (inngest-cli dev + next dev)
 | 시나리오 | 결과 |
