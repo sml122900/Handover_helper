@@ -171,7 +171,7 @@ Phase 0 + Phase 1 + Phase 2(결제·cron·랜딩·UI 다듬기) 완료. Phase 3 
 - Phase 2-2: 영상 30일 자동 삭제 cron (vercel.json + /api/cron/cleanup-videos). CRON_SECRET 설정 필요
 - Phase 2-3: 랜딩 페이지 개선 (pain point·how it works·features·CTA)
 - Phase 3-A①(2026-09-27): 기준선·ESLint·실데이터 분리(private-data/, GOLDEN_DIR)·마스킹 코드 계층·보안 감사(0007·0008 미적용 — 사용자 실행 필요)
-- Phase 3-A②(2026-09-29): Inngest 작업 큐·진행 단계 UX·Sentry/Analytics·e2e 배포 모드. 0009 미적용·Groq 키 무효(401) — 사용자 할 일
+- Phase 3-A②(2026-09-29): Inngest 작업 큐·진행 단계 UX·Sentry/Analytics·e2e 배포 모드. 0009 미적용 — 사용자 할 일. Groq 키 무효(401)는 해결됨(원인: .env 등호 양옆 공백으로 인한 검색 패턴 불일치, 키 자체는 유효)
 - 남은 것: ① Groq STT 실 영상 E2E 확인 ② Phase 0 본체 = 골든셋 10개 반복 ③ Phase 3 (포트폴리오·출시 완성)
 - 상세 이력: PROGRESS.md
 

@@ -95,6 +95,19 @@ def utf16_slice(text: str, start: int, end: int) -> str:
     return b[start * 2 : end * 2].decode("utf-16-le")
 
 
+def tasks_evidence(tasks: dict) -> str:
+    """get_current_tasks 결과를 에이전트가 답변 프롬프트에서 받은 형태로 옮긴다 (시각 문항의 근거)."""
+
+    def lines(items: list[dict]) -> str:
+        return "\n".join(f"- {i['time']} {i['text']}" for i in items) or "- (없음)"
+
+    return (
+        f"[일정 도구 결과] 현재 시각 {tasks['current_time']}\n"
+        f"지금 시작한 일(최근 30분):\n{lines(tasks['now'])}\n"
+        f"곧 있을 일(30분 이내):\n{lines(tasks['upcoming'])}"
+    )
+
+
 def received_chunks(rec: dict) -> list[str]:
     """이 답변을 쓰는 동안 에이전트가 실제로 받은 청크: 답변 근거(evidence) + 재검색 전 검색 결과(위치로 복원)."""
     seen: dict[tuple, str] = {(e["source_file"], e["char_start"]): e["text"] for e in rec["evidence"]}
@@ -154,6 +167,10 @@ def judge_eval(q: dict, rec: dict, judge: GroqJudge, fact_texts) -> dict:
     else:
         chunks = received_chunks(rec)
         evidence_text = "\n\n".join(f"[청크 {i}]\n{t}" for i, t in enumerate(chunks, start=1))
+        if rec.get("tasks") and rec["tasks"].get(
+            "found"
+        ):  # 시각 문항: 에이전트가 받은 도구 결과(일정)도 근거다
+            evidence_text += "\n\n" + tasks_evidence(rec["tasks"])
         fai, info = run_faithfulness(judge, answer, evidence_text)
         judge_cost += info.cost_usd
         ev["unfaithful"] = any(not c.supported for c in fai.claims)
@@ -297,7 +314,49 @@ def summarize(rows: list[dict]) -> dict:
         "claude_total": round(float(np.sum(cost)), 4),
     }
     out["outcomes"] = dict(Counter(recs[i]["outcome"] for i in ev))
+    out["latency_breakdown"] = latency_breakdown(recs, types)
     return out
+
+
+def latency_breakdown(recs: dict, types: dict) -> dict:
+    """노드별 지연 분해(전 문항) + 문서에 없음 문항에서 재검색 경로(재작성+2차 검색+2차 충분성)의 기여."""
+    by_node: dict[str, list[int]] = {}
+    total = 0
+    for rec in recs.values():
+        for t in rec["trace"]:
+            by_node.setdefault(t["node"], []).append(t.get("latency_ms", 0))
+            total += t.get("latency_ms", 0)
+    nodes = {
+        k: {
+            "calls": len(v),
+            "mean_ms": int(np.mean(v)),
+            "p50_ms": int(np.percentile(v, 50)),
+            "p95_ms": int(np.percentile(v, 95)),
+            "share": round(sum(v) / total, 4) if total else None,
+        }
+        for k, v in by_node.items()
+    }
+    extra = []
+    whole = []
+    for qid, rec in recs.items():
+        if types[qid] != "absent" or not rec["rewritten"]:
+            continue
+        names = [t["node"] for t in rec["trace"]]
+        first_suff = names.index("sufficiency")
+        extra.append(
+            sum(t.get("latency_ms", 0) for t in rec["trace"][first_suff + 1 :] if t["node"] != "escalate")
+        )
+        whole.append(sum(t.get("latency_ms", 0) for t in rec["trace"]))
+    absent = None
+    if whole:
+        absent = {
+            "questions": len(whole),
+            "mean_total_ms": int(np.mean(whole)),
+            "mean_rewrite_path_ms": int(np.mean(extra)),
+            "share": round(sum(extra) / sum(whole), 4),
+            "mean_without_rewrite_path_ms": int(np.mean(whole) - np.mean(extra)),
+        }
+    return {"nodes": nodes, "absent_rewrite_path": absent}
 
 
 def flip_report(runs: list[list[dict]]) -> dict:
@@ -372,6 +431,26 @@ def to_markdown(res: dict) -> str:
             L.append(
                 f"|   ↳ {d['id']} ({d['type']}) | 결과 {d['outcome']}, 재검색 전 적중 {d['hit_before']} → 후 {d['hit_after']}, 질의 {d['queries']} |"
             )
+    lb = res["summaries"][0].get("latency_breakdown") if res["summaries"] else None
+    if lb:
+        L += [
+            "",
+            "## 지연 분해 (실행 1, 노드별)",
+            "",
+            "| 노드 | 호출 수 | 평균 | p50 | p95 | 전체 지연 중 비중 |",
+            "|---|---|---|---|---|---|",
+        ]
+        for name, v in sorted(lb["nodes"].items(), key=lambda kv: -kv[1]["mean_ms"] * kv[1]["calls"]):
+            L.append(
+                f"| {name} | {v['calls']} | {v['mean_ms']} ms | {v['p50_ms']} ms | {v['p95_ms']} ms | {v['share']:.1%} |"
+            )
+        a = lb["absent_rewrite_path"]
+        if a:
+            L += [
+                "",
+                f"- 문서에 없음 {a['questions']}문항: 평균 {a['mean_total_ms']} ms 중 재검색 경로(재작성+2차 검색+2차 충분성)가 {a['mean_rewrite_path_ms']} ms ({a['share']:.1%}). 재검색 없이 에스컬레이션하면 약 {a['mean_without_rewrite_path_ms']} ms",
+                "- 지연 목표(p95 8초)는 바꾸지 않고 미달로 기록한다",
+            ]
     if res.get("stability"):
         st = res["stability"]
         L += [
@@ -393,6 +472,11 @@ def main() -> None:
     ap.add_argument("--runs", type=int, default=1)
     ap.add_argument(
         "--regen", default=None, help="쉼표로 구분한 문항 ID의 캐시를 보존용으로 옮기고 다시 생성"
+    )
+    ap.add_argument(
+        "--rejudge",
+        default=None,
+        help="쉼표로 구분한 문항 ID의 채점 캐시를 보존용으로 옮기고 다시 채점(응답은 유지)",
     )
     ap.add_argument("--no-judge", action="store_true", help="질문 응답만 생성·캐시하고 채점은 나중에")
     ap.add_argument("--label", default="baseline")
@@ -445,6 +529,15 @@ def main() -> None:
                 with path.with_name(path.stem + "-archive.jsonl").open("a", encoding="utf-8") as f:
                     f.write("\n".join(gone) + "\n")
                 path.write_text("\n".join(keep) + ("\n" if keep else ""), encoding="utf-8")
+    if args.rejudge and ev_cache.exists():
+        rejudge_ids = set(args.rejudge.split(","))
+        lines = [x for x in ev_cache.read_text(encoding="utf-8").splitlines() if x]
+        gone = [x for x in lines if json.loads(x)["id"] in rejudge_ids]
+        if gone:
+            with ev_cache.with_name(ev_cache.stem + "-archive.jsonl").open("a", encoding="utf-8") as f:
+                f.write("\n".join(gone) + "\n")
+            keep = [x for x in lines if json.loads(x)["id"] not in rejudge_ids]
+            ev_cache.write_text("\n".join(keep) + ("\n" if keep else ""), encoding="utf-8")
     recs, evs = load(rec_cache), load(ev_cache)
     runs: list[list[dict]] = []
     judge_stopped = False

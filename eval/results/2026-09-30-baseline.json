@@ -53,7 +53,9 @@
    "N10"
   ],
   "runs": 2,
-  "note": "도구 문항(U01~U05)은 쓰기 도구(D3)라 지표에서 제외, 분류 정확도만 기록"
+  "note": "도구 문항(U01~U05)은 쓰기 도구(D3)라 지표에서 제외, 분류 정확도만 기록",
+  "faithfulness_definition": "근거 충실도(faithfulness, 검색 근거 기준): 답변의 사실 주장(부재 진술·점장 확인 안내·응급 일반 안내 제외)이 그 답변이 실제로 받은 청크(최초 검색 상위 5개 + 재검색분, 시각 문항은 도구 근거 청크)에 뒷받침되는지. 원문에는 있어도 받은 청크에 없으면 근거 밖. 답변이 고정 문구(에스컬레이션·기록 요청·범위 밖·일정 없음)와 완전히 일치하면 호출을 건너뛰고 사실 주장 없음으로 집계",
+  "accuracy_definition": "주 지표: 골든셋 정의(정답 사실 내용 전체 포함, 시각 문항은 일 단위). 보조 지표: 질문이 묻는 조각만 — 채점 모델 판단 포함"
  },
  "summaries": [
   {
@@ -85,7 +87,66 @@
     "facts_hit": 8,
     "facts": 11
    },
-   "judged": false,
+   "judged": true,
+   "answer_accuracy": {
+    "facts_covered": 19,
+    "facts": 33,
+    "questions_full": 11,
+    "questions": 25,
+    "relevant_only": {
+     "facts_covered": 22,
+     "facts": 33,
+     "questions_full": 14,
+     "questions": 25,
+     "fact20_covered": 15,
+     "fact20_facts": 22
+    },
+    "fact20": {
+     "covered": 12,
+     "facts": 22,
+     "questions_full": 10,
+     "questions": 20
+    },
+    "time5": {
+     "covered": 7,
+     "facts": 11,
+     "questions_full": 1,
+     "questions": 5
+    }
+   },
+   "faithfulness": {
+    "answers_with_unsupported": 4,
+    "skipped_templates": 11,
+    "answers": 35,
+    "ids": [
+     "F02",
+     "F05",
+     "F13",
+     "F16"
+    ]
+   },
+   "citation_match": {
+    "supported": 114,
+    "pairs": 119,
+    "answers_without_citation": [
+     "F03"
+    ]
+   },
+   "refusal_accuracy": {
+    "correct": 10,
+    "total": 10,
+    "wrong": [],
+    "safety_with_emergency_marked": [
+     "N03",
+     "N06",
+     "N08"
+    ],
+    "safety_ids": [
+     "N03",
+     "N06",
+     "N08"
+    ]
+   },
    "rewrite": {
     "questions_rewritten": [
      "N01",
@@ -227,6 +288,80 @@
     "no_tasks": 1,
     "record_request": 5,
     "escalated": 10
+   },
+   "latency_breakdown": {
+    "nodes": {
+     "classify": {
+      "calls": 40,
+      "mean_ms": 3371,
+      "p50_ms": 3225,
+      "p95_ms": 4350,
+      "share": 0.2575
+     },
+     "retrieve": {
+      "calls": 39,
+      "mean_ms": 217,
+      "p50_ms": 0,
+      "p95_ms": 517,
+      "share": 0.0162
+     },
+     "sufficiency": {
+      "calls": 39,
+      "mean_ms": 5640,
+      "p50_ms": 5547,
+      "p95_ms": 7692,
+      "share": 0.4201
+     },
+     "answer": {
+      "calls": 19,
+      "mean_ms": 4934,
+      "p50_ms": 4327,
+      "p95_ms": 7801,
+      "share": 0.1791
+     },
+     "tasks": {
+      "calls": 6,
+      "mean_ms": 182,
+      "p50_ms": 54,
+      "p95_ms": 496,
+      "share": 0.0021
+     },
+     "tasks_answer": {
+      "calls": 5,
+      "mean_ms": 4662,
+      "p50_ms": 4500,
+      "p95_ms": 6668,
+      "share": 0.0445
+     },
+     "record_reply": {
+      "calls": 5,
+      "mean_ms": 0,
+      "p50_ms": 0,
+      "p95_ms": 0,
+      "share": 0.0
+     },
+     "rewrite": {
+      "calls": 10,
+      "mean_ms": 4216,
+      "p50_ms": 4139,
+      "p95_ms": 5301,
+      "share": 0.0805
+     },
+     "escalate": {
+      "calls": 10,
+      "mean_ms": 0,
+      "p50_ms": 0,
+      "p95_ms": 0,
+      "share": 0.0
+     }
+    },
+    "absent_rewrite_path": {
+     "questions": 10,
+     "mean_total_ms": 20201,
+     "mean_rewrite_path_ms": 10757,
+     "share": 0.5325,
+     "mean_without_rewrite_path_ms": 9443
+    }
    }
   },
   {
@@ -263,7 +398,65 @@
     "facts_hit": 7,
     "facts": 11
    },
-   "judged": false,
+   "judged": true,
+   "answer_accuracy": {
+    "facts_covered": 20,
+    "facts": 33,
+    "questions_full": 14,
+    "questions": 25,
+    "relevant_only": {
+     "facts_covered": 23,
+     "facts": 33,
+     "questions_full": 17,
+     "questions": 25,
+     "fact20_covered": 16,
+     "fact20_facts": 22
+    },
+    "fact20": {
+     "covered": 13,
+     "facts": 22,
+     "questions_full": 12,
+     "questions": 20
+    },
+    "time5": {
+     "covered": 7,
+     "facts": 11,
+     "questions_full": 2,
+     "questions": 5
+    }
+   },
+   "faithfulness": {
+    "answers_with_unsupported": 2,
+    "skipped_templates": 12,
+    "answers": 35,
+    "ids": [
+     "F12",
+     "F13"
+    ]
+   },
+   "citation_match": {
+    "supported": 106,
+    "pairs": 111,
+    "answers_without_citation": [
+     "F03",
+     "T05"
+    ]
+   },
+   "refusal_accuracy": {
+    "correct": 10,
+    "total": 10,
+    "wrong": [],
+    "safety_with_emergency_marked": [
+     "N03",
+     "N06",
+     "N08"
+    ],
+    "safety_ids": [
+     "N03",
+     "N06",
+     "N08"
+    ]
+   },
    "rewrite": {
     "questions_rewritten": [
      "N01",
@@ -406,13 +599,164 @@
     "out_of_scope": 1,
     "record_request": 5,
     "escalated": 10
+   },
+   "latency_breakdown": {
+    "nodes": {
+     "classify": {
+      "calls": 40,
+      "mean_ms": 3770,
+      "p50_ms": 3156,
+      "p95_ms": 6116,
+      "share": 0.2771
+     },
+     "retrieve": {
+      "calls": 39,
+      "mean_ms": 114,
+      "p50_ms": 0,
+      "p95_ms": 516,
+      "share": 0.0082
+     },
+     "sufficiency": {
+      "calls": 39,
+      "mean_ms": 5916,
+      "p50_ms": 5765,
+      "p95_ms": 7766,
+      "share": 0.4239
+     },
+     "answer": {
+      "calls": 19,
+      "mean_ms": 4599,
+      "p50_ms": 4452,
+      "p95_ms": 6670,
+      "share": 0.1605
+     },
+     "tasks": {
+      "calls": 5,
+      "mean_ms": 0,
+      "p50_ms": 0,
+      "p95_ms": 0,
+      "share": 0.0
+     },
+     "tasks_answer": {
+      "calls": 4,
+      "mean_ms": 5304,
+      "p50_ms": 5054,
+      "p95_ms": 7037,
+      "share": 0.039
+     },
+     "out_of_scope_reply": {
+      "calls": 1,
+      "mean_ms": 0,
+      "p50_ms": 0,
+      "p95_ms": 0,
+      "share": 0.0
+     },
+     "record_reply": {
+      "calls": 5,
+      "mean_ms": 0,
+      "p50_ms": 0,
+      "p95_ms": 0,
+      "share": 0.0
+     },
+     "rewrite": {
+      "calls": 10,
+      "mean_ms": 4972,
+      "p50_ms": 4375,
+      "p95_ms": 8309,
+      "share": 0.0913
+     },
+     "escalate": {
+      "calls": 10,
+      "mean_ms": 0,
+      "p50_ms": 0,
+      "p95_ms": 0,
+      "share": 0.0
+     }
+    },
+    "absent_rewrite_path": {
+     "questions": 10,
+     "mean_total_ms": 22893,
+     "mean_rewrite_path_ms": 11969,
+     "share": 0.5228,
+     "mean_without_rewrite_path_ms": 10924
+    }
    }
   }
  ],
  "stability": {
   "questions": 40,
-  "questions_with_any_flip": 1,
+  "questions_with_any_flip": 7,
   "flips": [
+   {
+    "id": "F02",
+    "diff": {
+     "unfaithful": [
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "id": "F05",
+    "diff": {
+     "accuracy_full": [
+      false,
+      true
+     ],
+     "accuracy_full_relevant": [
+      false,
+      true
+     ],
+     "unfaithful": [
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "id": "F12",
+    "diff": {
+     "unfaithful": [
+      false,
+      true
+     ]
+    }
+   },
+   {
+    "id": "F16",
+    "diff": {
+     "unfaithful": [
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "id": "F19",
+    "diff": {
+     "accuracy_full": [
+      false,
+      true
+     ],
+     "accuracy_full_relevant": [
+      false,
+      true
+     ]
+    }
+   },
+   {
+    "id": "T04",
+    "diff": {
+     "accuracy_full": [
+      false,
+      true
+     ],
+     "accuracy_full_relevant": [
+      false,
+      true
+     ]
+    }
+   },
    {
     "id": "T05",
     "diff": {
@@ -429,13 +773,13 @@
   ]
  },
  "costs": {
-  "anthropic(이 실행)": "$0.1492 / 19회",
-  "groq(이 실행)": "$0.0000 / 0회",
-  "voyage(이 실행) 임베딩 토큰": 9,
+  "anthropic(이 실행)": "$0.0000 / 0회",
+  "groq(이 실행)": "$0.0148 / 28회",
+  "voyage(이 실행) 임베딩 토큰": 0,
   "누적(전 세션 기록)": {
    "groq": {
-    "calls": 66,
-    "usd": 0.0489
+    "calls": 268,
+    "usd": 0.147
    },
    "anthropic": {
     "calls": 302,
@@ -711,7 +1055,124 @@
      },
      "retrieval_final": {
       "C04": true
-     }
+     },
+     "fact_covered": {
+      "C04": true
+     },
+     "accuracy_full": true,
+     "fact_covered_relevant": {
+      "C04": true
+     },
+     "accuracy_full_relevant": true,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "C04",
+        "parts": [
+         {
+          "part": "케이크는 당일 입고분만 판매하고",
+          "relevant_to_question": true,
+          "answer_quote": "이 매장은 **당일 들어온 것만 판매**하는 원칙이라, 남은 케이크를 내일 파는 일은 없어요.",
+          "covered": true
+         },
+         {
+          "part": "라스트오더(21:30) 시점에 남은 케이크는 전부 폐기한다.",
+          "relevant_to_question": true,
+          "answer_quote": "오후 9시 30분이 되면 쇼케이스에 남아 있는 케이크는 **전량 폐기**해야 해요.",
+          "covered": true
+         },
+         {
+          "part": "폐기하면 폐기 대장에 품목·수량을 적는다.",
+          "relevant_to_question": true,
+          "answer_quote": "폐기 후에는 **폐기 대장**에 품목(이름)과 수량(개수)을 꼭 기재해 주세요.",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "오후 9시 30분이 되면 쇼케이스에 남아 있는 케이크는 전량 폐기해야 해요.",
+        "source_quote": "오후 9시 30분—마지막 주문 마감... 오후 9시 30분이 되면 새 주문을 받지 않는다. 이 시각부터 정리 모드로 전환한다.\n케이크 폐기 및 폐기 대장 기록 ... 쇼케이스에 남아 있는 케이크를 전량 폐기한다.",
+        "supported": true
+       },
+       {
+        "claim": "하루 종일 하나도 안 팔렸더라도 예외 없이 다 버리는 거예요.",
+        "source_quote": "케이크가 하루 종일 하나도 팔리지 않았더라도 → 남은 케이크는 다음 날로 넘기지 않고 오후 9시 30분에 전량 폐기한다.",
+        "supported": true
+       },
+       {
+        "claim": "이 매장은 당일 들어온 것만 판매하는 원칙이라, 남은 케이크를 내일 파는 일은 없어요.",
+        "source_quote": "당일 들어온 것만 판매하며 남은 케이크는 절대 다음 날로 넘기지 않는다.",
+        "supported": true
+       },
+       {
+        "claim": "폐기 후에는 폐기 대장에 품목(이름)과 수량(개수)을 꼭 기재해 주세요.",
+        "source_quote": "폐기 대장 — 케이크 폐기 시 품목(이름)과 수량(개수)을 기재하는 장부",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 5,
+     "citation_pairs": 8,
+     "citation_supported": 8,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "오후 9시 30분이 되면 쇼케이스에 남아 있는 케이크는 **전량 폐기**해야 해요.",
+        "cited_n": 1,
+        "chunk_quote": "남은 케이크는 ... 오후 9시 30분에 전량 폐기한다.",
+        "supports": true
+       },
+       {
+        "sentence": "오후 9시 30분이 되면 쇼케이스에 남아 있는 케이크는 **전량 폐기**해야 해요.",
+        "cited_n": 2,
+        "chunk_quote": "쇼케이스에 남아 있는 케이크를 전량 폐기한다. 당일 들어온 것만 판매하며 남은 케이크는 절대 다음 날로 넘기지 않는다.",
+        "supports": true
+       },
+       {
+        "sentence": "오후 9시 30분이 되면 쇼케이스에 남아 있는 케이크는 **전량 폐기**해야 해요.",
+        "cited_n": 3,
+        "chunk_quote": "오후 9시 30분 이후 잔여 케이크 전량 폐기.",
+        "supports": true
+       },
+       {
+        "sentence": "하루 종일 하나도 안 팔렸더라도 예외 없이 다 버리는 거예요.",
+        "cited_n": 1,
+        "chunk_quote": "케이크가 하루 종일 하나도 팔리지 않았더라도 → 남은 케이크는 ... 오후 9시 30분에 전량 폐기한다.",
+        "supports": true
+       },
+       {
+        "sentence": "하루 종일 하나도 안 팔렸더라도 예외 없이 다 버리는 거예요.",
+        "cited_n": 4,
+        "chunk_quote": "아홉 시 반이 되면 남은 케이크는 다 버리는 거예요.",
+        "supports": true
+       },
+       {
+        "sentence": "이 매장은 **당일 들어온 것만 판매**하는 원칙이라, 남은 케이크를 내일 파는 일은 없어요.",
+        "cited_n": 2,
+        "chunk_quote": "당일 들어온 것만 판매하며 남은 케이크는 절대 다음 날로 넘기지 않는다.",
+        "supports": true
+       },
+       {
+        "sentence": "이 매장은 **당일 들어온 것만 판매**하는 원칙이라, 남은 케이크를 내일 파는 일은 없어요.",
+        "cited_n": 5,
+        "chunk_quote": "케이크는 그날 들어온 것만 팔아요. 어제 남은 걸 오늘 파는 일은 없고요.",
+        "supports": true
+       },
+       {
+        "sentence": "폐기 후에는 **폐기 대장**에 품목(이름)과 수량(개수)을 꼭 기재해 주세요.",
+        "cited_n": 3,
+        "chunk_quote": "케이크 폐기 시 품목(이름)과 수량(개수)을 기재하는 장부",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.002061
     }
    },
    {
@@ -971,7 +1432,119 @@
      },
      "retrieval_final": {
       "B02": true
-     }
+     },
+     "fact_covered": {
+      "B02": true
+     },
+     "accuracy_full": true,
+     "fact_covered_relevant": {
+      "B02": true
+     },
+     "accuracy_full_relevant": true,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "B02",
+        "parts": [
+         {
+          "part": "홀케이크는 제조일을 포함해 2일까지 판매하고",
+          "relevant_to_question": true,
+          "answer_quote": "홀케이크는 만든 날 포함해서 이틀까지 판매할 수 있어요.",
+          "covered": true
+         },
+         {
+          "part": "3일째 오전에 폐기한다.",
+          "relevant_to_question": true,
+          "answer_quote": "수요일 오전에 폐기",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": true,
+     "unsupported_claims": [
+      "어제 만든 거라면 오늘이 이틀째이므로 오늘까지는 내놓아도 된다."
+     ],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "홀케이크는 만든 날 포함해서 이틀까지 판매할 수 있다.",
+        "source_quote": "[02:48] 아, 그리고 이건 빵이 아니라 케이크 얘기인데요, 홀케이크는 좀 달라요. 만든 날을 포함해서 이틀까지 팔아요. 사흘째 되는 날 오전에 폐기해요.",
+        "supported": true
+       },
+       {
+        "claim": "월요일에 만들었으면 화요일까지 판매하고, 수요일 오전에 폐기한다.",
+        "source_quote": "[03:13] 홀케이크 만든 날이 월요일이면 언제까지 파냐고요? 만든 날 포함해서 이틀이니까 화요일까지 팔고, 수요일, 그러니까 사흘째 오전에 버려요.",
+        "supported": true
+       },
+       {
+        "claim": "어제 만든 거라면 오늘이 이틀째이므로 오늘까지는 내놓아도 된다.",
+        "source_quote": "",
+        "supported": false
+       },
+       {
+        "claim": "크림이 들어간 빵은 마감 후 남으면 전량 폐기한다.",
+        "source_quote": "[02:10] 다시 한번 정리하면요. 크림 들어간 빵은 마감 후에 남으면 전부 버려요. ... 크림 들어간 건 전부 폐기예요.",
+        "supported": true
+       },
+       {
+        "claim": "크림이 들어간 빵을 어제빵 코너에 내놓으면 안 된다.",
+        "source_quote": "① 크림·생크림 들어간 빵(크림빵, 생크림 롤 등)은 전량 폐기한다.",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 5,
+     "citation_pairs": 7,
+     "citation_supported": 7,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "홀케이크는 **만든 날 포함해서 이틀까지** 판매할 수 있어요.",
+        "cited_n": 3,
+        "chunk_quote": "홀케이크는 만든 날을 포함해서 이틀까지 팔아요.",
+        "supports": true
+       },
+       {
+        "sentence": "홀케이크는 **만든 날 포함해서 이틀까지** 판매할 수 있어요.",
+        "cited_n": 4,
+        "chunk_quote": "만든 날 포함해서 이틀이니까 화요일까지 팔고, 수요일, 그러니까 사흘째 오전에 버려요.",
+        "supports": true
+       },
+       {
+        "sentence": "예를 들어 월요일에 만들었으면 → **화요일까지 판매**, **수요일 오전에 폐기**예요.",
+        "cited_n": 4,
+        "chunk_quote": "만든 날 포함해서 이틀이니까 화요일까지 팔고, 수요일, 그러니까 사흘째 오전에 버려요.",
+        "supports": true
+       },
+       {
+        "sentence": "어제 만든 거라면 오늘이 이틀째니까 **오늘까지는 내놔도 돼요**.",
+        "cited_n": 3,
+        "chunk_quote": "홀케이크는 만든 날을 포함해서 이틀까지 팔아요. 사흘째 되는 날 오전에 폐기해요.",
+        "supports": true
+       },
+       {
+        "sentence": "어제 만든 거라면 오늘이 이틀째니까 **오늘까지는 내놔도 돼요**.",
+        "cited_n": 4,
+        "chunk_quote": "만든 날 포함해서 이틀이니까 화요일까지 팔고, 수요일, 그러니까 사흘째 오전에 버려요.",
+        "supports": true
+       },
+       {
+        "sentence": "단, 크림이 들어간 빵(크림빵, 생크림 롤 등)은 홀케이크와 달리 마감 후 남으면 **전량 폐기**예요. 어제빵 코너에 내놓으면 안 돼요.",
+        "cited_n": 1,
+        "chunk_quote": "크림·생크림 들어간 빵(크림빵, 생크림 롤 등)은 전량 폐기한다.",
+        "supports": true
+       },
+       {
+        "sentence": "단, 크림이 들어간 빵(크림빵, 생크림 롤 등)은 홀케이크와 달리 마감 후 남으면 **전량 폐기**예요. 어제빵 코너에 내놓으면 안 돼요.",
+        "cited_n": 5,
+        "chunk_quote": "크림 들어간 빵은 마감 후에 남으면 전부 버려요.",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.001854
     }
    },
    {
@@ -1043,7 +1616,40 @@
      },
      "retrieval_final": {
       "M01": false
-     }
+     },
+     "fact_covered": {
+      "M01": false
+     },
+     "accuracy_full": false,
+     "fact_covered_relevant": {
+      "M01": false
+     },
+     "accuracy_full_relevant": false,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "M01",
+        "parts": [
+         {
+          "part": "도시락·삼각김밥·김밥은 유통기한 2시간 전에 포스에서 '폐기 등록'으로 스캔해 판매 불가 처리한다.",
+          "relevant_to_question": true,
+          "answer_quote": "",
+          "covered": false
+         },
+         {
+          "part": "실물은 창고의 폐기 박스에 넣는다.",
+          "relevant_to_question": true,
+          "answer_quote": "",
+          "covered": false
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_skipped": "no_tasks",
+     "judge_cost_usd": 0.000318
     }
    },
    {
@@ -1314,7 +1920,136 @@
      "retrieval_final": {
       "C02": false,
       "C03": true
-     }
+     },
+     "fact_covered": {
+      "C02": false,
+      "C03": true
+     },
+     "accuracy_full": false,
+     "fact_covered_relevant": {
+      "C02": false,
+      "C03": true
+     },
+     "accuracy_full_relevant": false,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "C02",
+        "parts": [
+         {
+          "part": "라스트오더는 21:30이다.",
+          "relevant_to_question": true,
+          "answer_quote": "",
+          "covered": false
+         }
+        ]
+       },
+       {
+        "fact_id": "C03",
+        "parts": [
+         {
+          "part": "에스프레소 머신 청소는 라스트오더 직후(21:30) 시작한다.",
+          "relevant_to_question": true,
+          "answer_quote": "마지막 주문 직후, 케이크 정리가 끝나고 바로 시작해요.",
+          "covered": true
+         },
+         {
+          "part": "전용 세제 1스푼을 넣고 백플러시를 5회 반복한다.",
+          "relevant_to_question": true,
+          "answer_quote": "머신 전용 세제를 한 스푼 넣고 백플러시를 5회 반복해야 해요.",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "에스프레소 머신 청소(백플러시)는 마지막 주문 직후, 케이크 정리가 끝나고 바로 시작한다.",
+        "source_quote": "[04:09] 케이크 정리하는 동안 아니 정리하고 나서, 바로 에스프레소 머신 청소를 시작해요. 마지막 주문 직후에 바로 들어가는 거예요.",
+        "supported": true
+       },
+       {
+        "claim": "머신 전용 세제를 한 스푼 넣고 백플러시를 5회 반복해야 한다.",
+        "source_quote": "머신 전용 세제를 한 스푼 넣고 백플러시를 5회 반복한다. 5회를 모두 완료해야 한다.",
+        "supported": true
+       },
+       {
+        "claim": "5회를 꼭 다 채워야 하고, 중간에 끝내면 안 된다.",
+        "source_quote": "머신 전용 세제를 한 스푼 넣고 백플러시를 5회 반복한다. 5회를 모두 완료해야 한다.",
+        "supported": true
+       },
+       {
+        "claim": "청소할 때 소리가 꽤 크고 증기도 나오니까 놀라지 않아도 된다.",
+        "source_quote": "- **에스프레소 머신** _(영상 4:09~5:04)_\n  - 백플러시 청소 시 증기가 발생하며 소리가 크다.\n[04:44] 머신 청소는 세제 한 스푼 넣고 나서 백플러시 다섯 번이에요. 그게 끝이에요. 이 머신 소리가 좀 크죠?",
+        "supported": true
+       },
+       {
+        "claim": "머신 전용 세제 위치는 에스프레소 머신 주변이라고만 나와 있고 정확한 위치는 문서에 없어요.",
+        "source_quote": "머신 전용 세제 — 위치: 에스프레소 머신 주변 (정확한 위치 미언급)",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 5,
+     "citation_pairs": 8,
+     "citation_supported": 6,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "에스프레소 머신 청소(백플러시)는 마지막 주문 직후, 케이크 정리가 끝나고 바로 시작해요.",
+        "cited_n": 2,
+        "chunk_quote": "",
+        "supports": false
+       },
+       {
+        "sentence": "에스프레소 머신 청소(백플러시)는 마지막 주문 직후, 케이크 정리가 끝나고 바로 시작해요.",
+        "cited_n": 4,
+        "chunk_quote": "케이크 정리하는 동안 아니 정리하고 나서, 바로 에스프레소 머신 청소를 시작해요. 마지막 주문 직후에 바로 들어가는 거예요.",
+        "supports": true
+       },
+       {
+        "sentence": "물로 헹구는 게 아니라 머신 전용 세제를 한 스푼 넣고 백플러시를 5회 반복해야 해요.",
+        "cited_n": 1,
+        "chunk_quote": "전용 세제 1스푼을 넣고 백플러시 5회 반",
+        "supports": true
+       },
+       {
+        "sentence": "물로 헹구는 게 아니라 머신 전용 세제를 한 스푼 넣고 백플러시를 5회 반복해야 해요.",
+        "cited_n": 2,
+        "chunk_quote": "머신 전용 세제를 한 스푼 넣고 백플러시를 5회 반복한다. 5회를 모두 완료해야 한다.",
+        "supports": true
+       },
+       {
+        "sentence": "5회를 꼭 다 채워야 하고, 중간에 끝내면 안 돼요.",
+        "cited_n": 3,
+        "chunk_quote": "",
+        "supports": false
+       },
+       {
+        "sentence": "참고로 청소할 때 소리가 꽤 크고 증기도 나오니까 놀라지 않아도 돼요.",
+        "cited_n": 1,
+        "chunk_quote": "백플러시 청소 시 증기가 발생하며 소리가 크다.",
+        "supports": true
+       },
+       {
+        "sentence": "참고로 청소할 때 소리가 꽤 크고 증기도 나오니까 놀라지 않아도 돼요.",
+        "cited_n": 5,
+        "chunk_quote": "이 머신 소리가 좀 크죠?",
+        "supports": true
+       },
+       {
+        "sentence": "머신 전용 세제 위치는 에스프레소 머신 주변이라고만 나와 있고 정확한 위치는 문서에 없어요.",
+        "cited_n": 1,
+        "chunk_quote": "위치: 에스프레소 머신 주변 (정확한 위치 미언급)",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.002135
     }
    },
    {
@@ -1565,7 +2300,98 @@
      },
      "retrieval_final": {
       "C05": true
-     }
+     },
+     "fact_covered": {
+      "C05": false
+     },
+     "accuracy_full": false,
+     "fact_covered_relevant": {
+      "C05": false
+     },
+     "accuracy_full_relevant": false,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "C05",
+        "parts": [
+         {
+          "part": "개봉한 우유는 뚜껑에 개봉 시각을 적고",
+          "relevant_to_question": true,
+          "answer_quote": "",
+          "covered": false
+         },
+         {
+          "part": "개봉 후 24시간이 지나면 폐기한다.",
+          "relevant_to_question": true,
+          "answer_quote": "개봉 후 24시간이 지난 우유는 아깝더라도 즉시 폐기해야 해요.",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": true,
+     "unsupported_claims": [
+      "어제 낮에 개봉했다면 이미 24시간이 넘었을 가능성이 높으니, 뚜껑에 적힌 개봉 시각을 확인해 보세요. 24시간이 지났으면 바로 버려 주세요."
+     ],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "개봉 후 24시간이 지난 우유는 아깝더라도 즉시 폐기해야 해요.",
+        "source_quote": "개봉 후 24시간이 경과한 우유가 있을 때 → 아깝더라도 즉시 폐기한다.",
+        "supported": true
+       },
+       {
+        "claim": "어제 낮에 개봉했다면 이미 24시간이 넘었을 가능성이 높으니, 뚜껑에 적힌 개봉 시각을 확인해 보세요. 24시간이 지났으면 바로 버려 주세요.",
+        "source_quote": "",
+        "supported": false
+       }
+      ]
+     },
+     "faithfulness_chunks": 5,
+     "citation_pairs": 6,
+     "citation_supported": 6,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "개봉 후 24시간이 지난 우유는 아깝더라도 즉시 폐기해야 해요.",
+        "cited_n": 1,
+        "chunk_quote": "개봉 후 24시간이 경과한 우유가 있을 때 → 아깝더라도 즉시 폐기한다.",
+        "supports": true
+       },
+       {
+        "sentence": "개봉 후 24시간이 지난 우유는 아깝더라도 즉시 폐기해야 해요.",
+        "cited_n": 2,
+        "chunk_quote": "스물네 시간이 지났으면 버려요. 하루가 지난 우유는 버리는 거예요.",
+        "supports": true
+       },
+       {
+        "sentence": "개봉 후 24시간이 지난 우유는 아깝더라도 즉시 폐기해야 해요.",
+        "cited_n": 3,
+        "chunk_quote": "열고 나서 하루, 그러니까 스물네 시간이 지난 건 버려요.",
+        "supports": true
+       },
+       {
+        "sentence": "어제 낮에 개봉했다면 이미 24시간이 넘었을 가능성이 높으니, 뚜껑에 적힌 개봉 시각을 확인해 보세요. 24시간이 지났으면 바로 버려 주세요.",
+        "cited_n": 1,
+        "chunk_quote": "개봉 후 24시간이 경과한 우유가 있을 때 → 아깝더라도 즉시 폐기한다.",
+        "supports": true
+       },
+       {
+        "sentence": "어제 낮에 개봉했다면 이미 24시간이 넘었을 가능성이 높으니, 뚜껑에 적힌 개봉 시각을 확인해 보세요. 24시간이 지났으면 바로 버려 주세요.",
+        "cited_n": 2,
+        "chunk_quote": "스물네 시간이 지났으면 버려요. 하루가 지난 우유는 버리는 거예요.",
+        "supports": true
+       },
+       {
+        "sentence": "어제 낮에 개봉했다면 이미 24시간이 넘었을 가능성이 높으니, 뚜껑에 적힌 개봉 시각을 확인해 보세요. 24시간이 지났으면 바로 버려 주세요.",
+        "cited_n": 3,
+        "chunk_quote": "열고 나서 하루, 그러니까 스물네 시간이 지난 건 버려요.",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.001414
     }
    },
    {
@@ -1816,7 +2642,95 @@
      },
      "retrieval_final": {
       "B01": true
-     }
+     },
+     "fact_covered": {
+      "B01": true
+     },
+     "accuracy_full": true,
+     "fact_covered_relevant": {
+      "B01": true
+     },
+     "accuracy_full_relevant": true,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "B01",
+        "parts": [
+         {
+          "part": "마감 후 남은 빵 중 생크림·크림이 들어간 제품은 전량 폐기한다.",
+          "relevant_to_question": true,
+          "answer_quote": "**크림빵** → 전량 폐기",
+          "covered": true
+         },
+         {
+          "part": "식빵·바게트는 다음 날 오전 '어제빵' 코너에서 30% 할인해 판매한다.",
+          "relevant_to_question": true,
+          "answer_quote": "**식빵·바게트** → 버리지 않고 따로 보관, 다음 날 아침 '어제빵 코너'에 30% 할인으로 진열",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "크림빵은 전량 폐기한다.",
+        "source_quote": "크림·생크림 들어간 빵(크림빵, 생크림 롤 등)은 전량 폐기한다.",
+        "supported": true
+       },
+       {
+        "claim": "식빵·바게트는 버리지 않고 따로 보관하여 다음 날 아침 '어제빵 코너'에 30% 할인으로 진열한다.",
+        "source_quote": "식빵·바게트는 버리지 않고 따로 보관하여 다음 날 아침 '어제빵 코너'에 30% 할인으로 내놓는다.",
+        "supported": true
+       },
+       {
+        "claim": "폐기하기 전에 태블릿 '폐기 등록' 화면에 품목·수량·사유를 입력해야 한다.",
+        "source_quote": "폐기 전 반드시 태블릿 '폐기 등록' 화면에 품목·수량·사유를 입력해야 한다.",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 5,
+     "citation_pairs": 5,
+     "citation_supported": 3,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "크림빵 → 전량 폐기 [근거 1][근거 2]",
+        "cited_n": 1,
+        "chunk_quote": "크림·생크림 들어간 빵(크림빵, 생크림 롤 등)은 전량 폐기한다.",
+        "supports": true
+       },
+       {
+        "sentence": "크림빵 → 전량 폐기 [근거 1][근거 2]",
+        "cited_n": 2,
+        "chunk_quote": "",
+        "supports": false
+       },
+       {
+        "sentence": "식빵·바게트 → 버리지 않고 따로 보관, 다음 날 아침 '어제빵 코너'에 30% 할인으로 진열 [근거 1][근거 5]",
+        "cited_n": 1,
+        "chunk_quote": "식빵·바게트는 버리지 않고 따로 보관하여 다음 날 아침 '어제빵 코너'에 30% 할인으로 내놓는다.",
+        "supports": true
+       },
+       {
+        "sentence": "식빵·바게트 → 버리지 않고 따로 보관, 다음 날 아침 '어제빵 코너'에 30% 할인으로 진열 [근거 1][근거 5]",
+        "cited_n": 5,
+        "chunk_quote": "생크림이나 크림 들어간 빵은요, 그날 남으면 전부 버려요... 식빵이랑 바게트는 안 버려요. 다음 날 오전에 어제빵 코너에서 팔아요. 삼십 퍼센트 할인해서요.",
+        "supports": true
+       },
+       {
+        "sentence": "그리고 폐기하기 전에 태블릿 '폐기 등록' 화면에서 품목·수량·사유를 꼭 입력해야 해요. [근거 2]",
+        "cited_n": 2,
+        "chunk_quote": "",
+        "supports": false
+       }
+      ]
+     },
+     "judge_cost_usd": 0.001523
     }
    },
    {
@@ -2058,7 +2972,78 @@
      },
      "retrieval_final": {
       "B06": true
-     }
+     },
+     "fact_covered": {
+      "B06": false
+     },
+     "accuracy_full": false,
+     "fact_covered_relevant": {
+      "B06": true
+     },
+     "accuracy_full_relevant": true,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "B06",
+        "parts": [
+         {
+          "part": "진열 트레이는 전부 빼서 세척실에서 닦고",
+          "relevant_to_question": false,
+          "answer_quote": "",
+          "covered": false
+         },
+         {
+          "part": "빵 집게는 소독수에 30분 담가 둔다",
+          "relevant_to_question": true,
+          "answer_quote": "집게는 **소독수에 30분 동안 담가 소독**해야 해요.",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "집게는 소독수에 30분 동안 담가 소독해야 해요.",
+        "source_quote": "빵 집게를 소독수에 30분 동안 담가 놓는다.",
+        "supported": true
+       },
+       {
+        "claim": "소독 후 보관 위치는 세척실이다.",
+        "source_quote": "빵 집게 — 위치: 세척실",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 5,
+     "citation_pairs": 3,
+     "citation_supported": 3,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "설거지만으로는 안 돼요! 집게는 **소독수에 30분 동안 담가 소독**해야 해요.",
+        "cited_n": 1,
+        "chunk_quote": "빵 집게를 소독수에 30분 동안 담가 놓는다.",
+        "supports": true
+       },
+       {
+        "sentence": "설거지만으로는 안 돼요! 집게는 **소독수에 30분 동안 담가 소독**해야 해요.",
+        "cited_n": 2,
+        "chunk_quote": "- **빵 집게** — 위치: 세척실 _(영상 7:36~7:56)_\n  - 소독수에 30분 담가 소독",
+        "supports": true
+       },
+       {
+        "sentence": "소독 후 보관 위치는 **세척실**이에요.",
+        "cited_n": 2,
+        "chunk_quote": "- **빵 집게** — 위치: 세척실 _(영상 7:36~7:56)_",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.001152
     }
    },
    {
@@ -2327,7 +3312,117 @@
      },
      "retrieval_final": {
       "M04": true
-     }
+     },
+     "fact_covered": {
+      "M04": false
+     },
+     "accuracy_full": false,
+     "fact_covered_relevant": {
+      "M04": true
+     },
+     "accuracy_full_relevant": true,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "M04",
+        "parts": [
+         {
+          "part": "02:00에 음료가 입고된다.",
+          "relevant_to_question": false,
+          "answer_quote": "",
+          "covered": false
+         },
+         {
+          "part": "수량을 검수한 뒤",
+          "relevant_to_question": true,
+          "answer_quote": "수량 확인(검수) 먼저 하는 것도 잊지 마세요.",
+          "covered": true
+         },
+         {
+          "part": "냉장고 뒤쪽부터 채운다",
+          "relevant_to_question": true,
+          "answer_quote": "반드시 **뒤쪽부터** 채워야 해요.",
+          "covered": true
+         },
+         {
+          "part": "(먼저 들어온 것이 앞으로)",
+          "relevant_to_question": true,
+          "answer_quote": "새로 들어온 음료를 뒤에 넣어서, 먼저 들어온 음료가 앞으로 나오도록 해야 해요.",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "반드시 뒤쪽부터 채워야 한다.",
+        "source_quote": "냉장고에 음료를 채울 때 새로 들어온 상품을 앞쪽에 두면 안 된다. 반드시 뒤쪽부터 채워 먼저 들어온 상품이 앞으로 나오도록 한다(선입선출).",
+        "supported": true
+       },
+       {
+        "claim": "새로 들어온 음료를 뒤에 넣어서, 먼저 들어온 음료가 앞으로 나오도록 해야 한다.",
+        "source_quote": "냉장고에 음료를 채울 때 새로 들어온 상품을 앞쪽에 두면 안 된다. 반드시 뒤쪽부터 채워 먼저 들어온 상품이 앞으로 나오도록 한다(선입선출).",
+        "supported": true
+       },
+       {
+        "claim": "이것은 선입선출 원칙이다.",
+        "source_quote": "반드시 뒤쪽부터 채워 먼저 들어온 상품이 앞으로 나오도록 한다(선입선출).",
+        "supported": true
+       },
+       {
+        "claim": "새로 온 걸 앞에 두면 안 된다.",
+        "source_quote": "새로 들어온 상품을 앞쪽에 두면 안 된다. 반드시 뒤쪽부터 채워 먼저 들어온 상품이 앞으로 나오도록 한다.",
+        "supported": true
+       },
+       {
+        "claim": "냉장고 채우기 전에 수량 확인(검수)을 먼저 해야 한다.",
+        "source_quote": "새벽 2시에 음료가 입고된다. 먼저 수량을 확인(검수)한다. 검수 후 냉장고를 채울 때는 뒤쪽부터 채워 먼저 들어온 상품이 앞쪽으로 나오도록 한다.",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 5,
+     "citation_pairs": 5,
+     "citation_supported": 5,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "새로 들어온 음료를 뒤에 넣어서, 먼저 들어온 음료가 앞으로 나오도록 해야 해요. 이걸 **선입선출** 원칙이라고 해요.",
+        "cited_n": 1,
+        "chunk_quote": "냉장고에 음료를 채울 때 새로 들어온 상품을 앞쪽에 두면 안 된다. 반드시 뒤쪽부터 채워 먼저 들어온 상품이 앞으로 나오도록 한다(선입선출).",
+        "supports": true
+       },
+       {
+        "sentence": "새로 들어온 음료를 뒤에 넣어서, 먼저 들어온 음료가 앞으로 나오도록 해야 해요. 이걸 **선입선출** 원칙이라고 해요.",
+        "cited_n": 2,
+        "chunk_quote": "- **냉장고** — 위치: 매장 내 _(영상 5:20~5:57)_\n  - 음료 입고 시 뒤쪽부터 채워 선입선출 원칙을 지킨다.",
+        "supports": true
+       },
+       {
+        "sentence": "새로 온 걸 앞에 두면 안 된다는 점, 꼭 기억해 주세요!",
+        "cited_n": 4,
+        "chunk_quote": "새벽 두 시에는 음료가 들어와요. 입고되면 수량부터 세요. 검수예요. 수량을 확인하는 거죠. 검수가 끝나면 냉장고에 채우는데, 냉장고 뒤쪽부터 채워요. 그래야 먼저 들어온 게 앞으로 나오거든요. 먼저 들어온 게 앞에 오도록 뒤에서부터 넣는 거예요. 새로 온 걸 앞에 놓으면 안 돼요.",
+        "supports": true
+       },
+       {
+        "sentence": "새로 온 걸 앞에 두면 안 된다는 점, 꼭 기억해 주세요!",
+        "cited_n": 5,
+        "chunk_quote": "[05:37] 음료는 새로 온 걸 어디에 넣는다고 했죠? 뒤쪽이요, 맞아요. 냉장고 뒤쪽부터 채워서 먼저 들어온 게 앞으로 오게요. 그리고 음료는 몇 시에 들어온다고 했죠? 새벽 두 시요.",
+        "supports": true
+       },
+       {
+        "sentence": "참고로, 냉장고 채우기 전에 **수량 확인(검수)** 먼저 하는 것도 잊지 마세요.",
+        "cited_n": 3,
+        "chunk_quote": "새벽 2시에 음료가 입고된다. 먼저 수량을 확인(검수)한다. 검수 후 냉장고를 채울 때는 뒤쪽부터 채워 먼저 들어온 상품이 앞쪽으로 나오도록 한다(선입선출).",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.001968
     }
    },
    {
@@ -2578,7 +3673,96 @@
      },
      "retrieval_final": {
       "M03": true
-     }
+     },
+     "fact_covered": {
+      "M03": false
+     },
+     "accuracy_full": false,
+     "fact_covered_relevant": {
+      "M03": false
+     },
+     "accuracy_full_relevant": false,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "M03",
+        "parts": [
+         {
+          "part": "교대할 때 시재 점검을 한다.",
+          "relevant_to_question": true,
+          "answer_quote": "",
+          "covered": false
+         },
+         {
+          "part": "차액이 나오면 교대자와 같이 다시 세고,",
+          "relevant_to_question": true,
+          "answer_quote": "앞 근무자랑 같이 다시 한 번 더 세보세요.",
+          "covered": true
+         },
+         {
+          "part": "그래도 차이가 있으면 근무일지에 금액을 적는다.",
+          "relevant_to_question": true,
+          "answer_quote": "얼마 차이 나는지 금액을 근무일지에 적으면 돼요.",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "앞 근무자랑 같이 다시 한 번 더 세보세요.",
+        "source_quote": "출근 후 앞 근무자와 함께 계산대 서랍 안의 돈을 센다. 금액이 맞지 않으면 앞 근무자와 함께 다시 센다.",
+        "supported": true
+       },
+       {
+        "claim": "그래도 차이가 나면 얼마 차이 나는지 금액을 근무일지에 적으면 돼요.",
+        "source_quote": "그 차액을 근무일지에 기록한다.",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 5,
+     "citation_pairs": 5,
+     "citation_supported": 5,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "앞 근무자랑 같이 다시 한 번 더 세보세요.",
+        "cited_n": 1,
+        "chunk_quote": "출근 후 앞 근무자와 함께 계산대 서랍 안의 돈을 센다. 금액이 맞지 않으면 앞 근무자와 함께 다시 센다.",
+        "supports": true
+       },
+       {
+        "sentence": "앞 근무자랑 같이 다시 한 번 더 세보세요.",
+        "cited_n": 2,
+        "chunk_quote": "액수가 안 맞을 때가 있잖아요. 그럼 교대하는 분이랑 같이 다시 세요.",
+        "supports": true
+       },
+       {
+        "sentence": "그래도 차이가 나면 얼마 차이 나는지 금액을 근무일지에 적으면 돼요.",
+        "cited_n": 1,
+        "chunk_quote": "그럼 차이가 있으면 차액을 근무일지에 기록한다.",
+        "supports": true
+       },
+       {
+        "sentence": "그래도 차이가 나면 얼마 차이 나는지 금액을 근무일지에 적으면 돼요.",
+        "cited_n": 2,
+        "chunk_quote": "그래도 차이가 있으면 그때는 근무일지에 금액을 적어요.",
+        "supports": true
+       },
+       {
+        "sentence": "그래도 차이가 나면 얼마 차이 나는지 금액을 근무일지에 적으면 돼요.",
+        "cited_n": 3,
+        "chunk_quote": "그래도 안 맞으면 근무일지에 금액을 적어요.",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.001348
     }
    },
    {
@@ -2829,7 +4013,84 @@
      },
      "retrieval_final": {
       "C06": true
-     }
+     },
+     "fact_covered": {
+      "C06": false
+     },
+     "accuracy_full": false,
+     "fact_covered_relevant": {
+      "C06": true
+     },
+     "accuracy_full_relevant": true,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "C06",
+        "parts": [
+         {
+          "part": "마감 정산은 포스의 '마감정산' 버튼으로 한다.",
+          "relevant_to_question": false,
+          "answer_quote": "",
+          "covered": false
+         },
+         {
+          "part": "현금은 금고의 흰 봉투에 넣는다.",
+          "relevant_to_question": false,
+          "answer_quote": "",
+          "covered": false
+         },
+         {
+          "part": "차액이 1,000원 이상이면 매장 단톡방에 금액을 올린다.",
+          "relevant_to_question": true,
+          "answer_quote": "차액이 **1,000원 이상** 나면 **매장 단톡방**에 차액 금액을 올려 주세요.",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "차액이 1,000원 이상 나면 매장 단톡방에 차액 금액을 올려 주세요.",
+        "source_quote": "차액이 천 원 이상이면 매장 단톡방에 금액을 올려 주세요. 얼마 차이 나는지 숫자로요.",
+        "supported": true
+       },
+       {
+        "claim": "숫자로 얼마 차이 나는지 적으면 된다.",
+        "source_quote": "차액이 천 원 이상이면 매장 단톡방에 금액을 올려 주세요. 얼마 차이 나는지 숫자로요.",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 5,
+     "citation_pairs": 3,
+     "citation_supported": 3,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "차액이 **1,000원 이상** 나면 **매장 단톡방**에 차액 금액을 올려 주세요.",
+        "cited_n": 1,
+        "chunk_quote": "- **매장 단톡방** (마감 정산 차액 보고 채널) — 정산 금액과 실제 현금이 1,000원 이상 차이 날 경우 차액 금액을 올림",
+        "supports": true
+       },
+       {
+        "sentence": "차액이 **1,000원 이상** 나면 **매장 단톡방**에 차액 금액을 올려 주세요.",
+        "cited_n": 2,
+        "chunk_quote": "정산 금액과 실제 현금이 1,000원 이상 차이 날 경우 매장 단톡방에 차액 금액을 올린다.",
+        "supports": true
+       },
+       {
+        "sentence": "숫자로 얼마 차이 나는지 적으면 돼요.",
+        "cited_n": 4,
+        "chunk_quote": "차액이 천 원 이상이면 매장 단톡방에 금액을 올려 주세요. 얼마 차이 나는지 숫자로요.",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.001227
     }
    },
    {
@@ -3089,7 +4350,90 @@
      },
      "retrieval_final": {
       "B05": true
-     }
+     },
+     "fact_covered": {
+      "B05": true
+     },
+     "accuracy_full": true,
+     "fact_covered_relevant": {
+      "B05": true
+     },
+     "accuracy_full_relevant": true,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "B05",
+        "parts": [
+         {
+          "part": "마감 정산 후 금고에 시재 10만 원만 남기고",
+          "relevant_to_question": true,
+          "answer_quote": "금고에 시재 10만 원만 남기고",
+          "covered": true
+         },
+         {
+          "part": "나머지 현금은 입금 봉투에 넣는다",
+          "relevant_to_question": true,
+          "answer_quote": "나머지 현금은 전부 입금 봉투에 넣으면 돼요",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "금고에 시재 10만 원만 남기고, 나머지 현금은 전부 입금 봉투에 넣는다.",
+        "source_quote": "정산을 끝내고 나면 금고에 시재를 남겨 놔요. 십만 원만 남겨요. 금고에는 십만 원만 두고, 나머지 현금은 전부 입금 봉투에 넣어요. 그게 마감 정산의 마지막이에요. 십만 원 딱 남기는 거 잊지 마세요.",
+        "supported": true
+       },
+       {
+        "claim": "10만 원 딱 맞춰 남기는 거예요. 더 많이 남겨두면 안 됩니다.",
+        "source_quote": "[08:08] 시재는 얼마 남기냐고요? 십만 원이요. 금고에 십만 원만 남기고 나머지는 입금 봉투에 다 넣어요. 십만 원보다 많으면 안 되냐고 물으시면… 네, 십만 원만이에요.",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 5,
+     "citation_pairs": 5,
+     "citation_supported": 5,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "전부 넣는 건 아니에요. **금고에 시재 10만 원만 남기고**, 나머지 현금은 전부 입금 봉투에 넣으면 돼요.",
+        "cited_n": 1,
+        "chunk_quote": "정산을 완료한 후 금고에 시재 10만 원만 남기고, 나머지 현금은 전부 입금 봉투에 넣는다.",
+        "supports": true
+       },
+       {
+        "sentence": "전부 넣는 건 아니에요. **금고에 시재 10만 원만 남기고**, 나머지 현금은 전부 입금 봉투에 넣으면 돼요.",
+        "cited_n": 2,
+        "chunk_quote": "마감 정산 후 시재 10만 원만 보관, 나머지는 입금 봉투에 넣음",
+        "supports": true
+       },
+       {
+        "sentence": "10만 원 딱 맞춰 남기는 거예요. 더 많이 남겨두면 안 됩니다.",
+        "cited_n": 1,
+        "chunk_quote": "정산을 완료한 후 금고에 시재 10만 원만 남기고, 나머지 현금은 전부 입금 봉투에 넣는다.",
+        "supports": true
+       },
+       {
+        "sentence": "10만 원 딱 맞춰 남기는 거예요. 더 많이 남겨두면 안 됩니다.",
+        "cited_n": 4,
+        "chunk_quote": "정산을 끝내고 나면 금고에 시재를 남겨 놔요. 십만 원만 남겨요. 금고에는 십만 원만 두고, 나머지 현금은 전부 입금 봉투에 넣어요.",
+        "supports": true
+       },
+       {
+        "sentence": "10만 원 딱 맞춰 남기는 거예요. 더 많이 남겨두면 안 됩니다.",
+        "cited_n": 5,
+        "chunk_quote": "시재는 얼마 남기냐고요? 십만 원이요. 금고에 십만 원만 남기고 나머지는 입금 봉투에 다 넣어요.",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.00142
     }
    },
    {
@@ -3340,7 +4684,106 @@
      },
      "retrieval_final": {
       "G03": true
-     }
+     },
+     "fact_covered": {
+      "G03": true
+     },
+     "accuracy_full": true,
+     "fact_covered_relevant": {
+      "G03": true
+     },
+     "accuracy_full_relevant": true,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "G03",
+        "parts": [
+         {
+          "part": "락커에서 나온 분실물은 프런트 분실물함에 넣고 날짜를 적는다.",
+          "relevant_to_question": true,
+          "answer_quote": "프런트에 있는 **분실물함**에 넣어 주세요. \n\n넣을 때 **발견한 날짜**를 꼭 적어 두세요.",
+          "covered": true
+         },
+         {
+          "part": "7일 보관 후 폐기한다.",
+          "relevant_to_question": true,
+          "answer_quote": "**7일 보관 후 폐기**예요. 매일 오전 11시 30분쯤 분실물함을 정리하면서, 날짜 확인 후 7일 지난 건 그때 버리시면 돼요.",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "프런트에 있는 분실물함에 넣어 주세요.",
+        "source_quote": "- **프런트 분실물함** — 위치: 프런트 _(영상 7:47~8:37)_",
+        "supported": true
+       },
+       {
+        "claim": "넣을 때 발견한 날짜를 꼭 적어 두세요.",
+        "source_quote": "- 락커에서 발견된 분실물을 날짜 기재 후 보관.",
+        "supported": true
+       },
+       {
+        "claim": "7일 보관 후 폐기예요.",
+        "source_quote": "- 7일 경과 시 폐기",
+        "supported": true
+       },
+       {
+        "claim": "매일 오전 11시 30분쯤 분실물함을 정리하면서, 날짜 확인 후 7일 지난 건 그때 버리시면 돼요.",
+        "source_quote": "[09:04] 분실물 정리는 몇 시에 하냐고요? 열한 시 반쯤이에요.\n[08:47] 낮 열한 시 반쯤에는 분실물함을 한 번 정리해요.",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 5,
+     "citation_pairs": 6,
+     "citation_supported": 6,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "프런트에 있는 **분실물함**에 넣어 주세요.",
+        "cited_n": 1,
+        "chunk_quote": "- **프런트 분실물함** — 위치: 프런트 _(영상 7:47~8:37)_\n  - 락커에서 발견된 분실물을 날짜 기재 후 보관.",
+        "supports": true
+       },
+       {
+        "sentence": "프런트에 있는 **분실물함**에 넣어 주세요.",
+        "cited_n": 4,
+        "chunk_quote": "[07:47] 그리고 락커 정리하다 보면 물건이 나와요. 락커에서 나온 분실물은 프런트 분실물함에 넣어요.",
+        "supports": true
+       },
+       {
+        "sentence": "넣을 때 **발견한 날짜**를 꼭 적어 두세요.",
+        "cited_n": 1,
+        "chunk_quote": "- 락커에서 발견된 분실물을 날짜 기재 후 보관.",
+        "supports": true
+       },
+       {
+        "sentence": "넣을 때 **발견한 날짜**를 꼭 적어 두세요.",
+        "cited_n": 4,
+        "chunk_quote": "[07:47] ... 락커에서 나온 분실물은 프런트 분실물함에 넣어요. 넣을 때 날짜를 적어요.",
+        "supports": true
+       },
+       {
+        "sentence": "**7일 보관 후 폐기**예요. 매일 오전 11시 30분쯤 분실물함을 정리하면서, 날짜 확인 후 7일 지난 건 그때 버리시면 돼요.",
+        "cited_n": 1,
+        "chunk_quote": "- 락커에서 발견된 분실물을 날짜 기재 후 보관. 7일 경과 시 폐기",
+        "supports": true
+       },
+       {
+        "sentence": "**7일 보관 후 폐기**예요. 매일 오전 11시 30분쯤 분실물함을 정리하면서, 날짜 확인 후 7일 지난 건 그때 버리시면 돼요.",
+        "cited_n": 3,
+        "chunk_quote": "[08:37] 락커에서 나온 분실물은 프런트 분실물함에 넣고 날짜를 적어요. 칠 일 보관하고 폐기해요.",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.001659
     }
    },
    {
@@ -3582,7 +5025,90 @@
      },
      "retrieval_final": {
       "G05": true
-     }
+     },
+     "fact_covered": {
+      "G05": true
+     },
+     "accuracy_full": true,
+     "fact_covered_relevant": {
+      "G05": true
+     },
+     "accuracy_full_relevant": true,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "G05",
+        "parts": [
+         {
+          "part": "'점검중' 팻말을 걸다",
+          "relevant_to_question": true,
+          "answer_quote": "'점검중' 팻말을 해당 런닝머신에 걸기",
+          "covered": true
+         },
+         {
+          "part": "사진을 찍다",
+          "relevant_to_question": true,
+          "answer_quote": "사진 촬영하기",
+          "covered": true
+         },
+         {
+          "part": "직원 단톡방에 사진을 올리다",
+          "relevant_to_question": true,
+          "answer_quote": "직원 단톡방에 사진 올리기",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": true,
+     "unsupported_claims": [
+      "이상 있는 기구는 바로 사용 중단시켜야 한다."
+     ],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "이상 있는 기구는 바로 사용 중단시켜야 한다.",
+        "source_quote": "",
+        "supported": false
+       },
+       {
+        "claim": "'점검중' 팻말을 해당 런닝머신에 걸어야 한다.",
+        "source_quote": "운동 기구에 이상이 생겼을 때 → 해당 기구에 '점검중' 팻말을 걸고, 사진을 찍어 직원 단톡방에 올린다. 순서: 팻말 부착 → 사진 촬영 → 단톡방",
+        "supported": true
+       },
+       {
+        "claim": "사진을 촬영해야 한다.",
+        "source_quote": "운동 기구에 이상이 생겼을 때 → 해당 기구에 '점검중' 팻말을 걸고, 사진을 찍어 직원 단톡방에 올린다. 순서: 팻말 부착 → 사진 촬영 → 단톡방",
+        "supported": true
+       },
+       {
+        "claim": "직원 단톡방에 사진을 올려야 한다.",
+        "source_quote": "운동 기구에 이상이 생겼을 때 → 해당 기구에 '점검중' 팻말을 걸고, 사진을 찍어 직원 단톡방에 올린다. 순서: 팻말 부착 → 사진 촬영 → 단톡방",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 5,
+     "citation_pairs": 2,
+     "citation_supported": 2,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "순서는 이렇게 하시면 돼요.",
+        "cited_n": 1,
+        "chunk_quote": "운동 기구에 이상이 생겼을 때 → 해당 기구에 '점검중' 팻말을 걸고, 사진을 찍어 직원 단톡방에 올린다. 순서: 팻말 부착 → 사진 촬영 → 단톡방",
+        "supports": true
+       },
+       {
+        "sentence": "순서는 이렇게 하시면 돼요.",
+        "cited_n": 4,
+        "chunk_quote": "[05:54] 어… 그리고 기구요. 러닝머신 같은 기구가 가끔 이상할 때가 있어요. 그럴 땐 그 기구에 점검중 팻말을 걸어요. 그러고 나서 사진을 찍고요, 직원 단톡방에 그 사진을 올려요. 팻말 걸고, 사진 찍고, 단톡방에 올리기. 이 세 가지요.",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.001447
     }
    },
    {
@@ -3824,7 +5350,78 @@
      },
      "retrieval_final": {
       "G06": true
-     }
+     },
+     "fact_covered": {
+      "G06": false
+     },
+     "accuracy_full": false,
+     "fact_covered_relevant": {
+      "G06": false
+     },
+     "accuracy_full_relevant": false,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "G06",
+        "parts": [
+         {
+          "part": "회원 등록이 안 된 사람이 들어오면",
+          "relevant_to_question": true,
+          "answer_quote": "",
+          "covered": false
+         },
+         {
+          "part": "1일권(1만 원) 결제를 안내한다.",
+          "relevant_to_question": true,
+          "answer_quote": "일일 이용권(1일권, 10,000원)을 안내하고 결제를 유도하면 돼요.",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "일일 이용권(1일권, 10,000원)을 안내하고 결제를 유도하면 돼요.",
+        "source_quote": "- **미등록 회원(비회원)이 입장하려 할 때** → 일일 이용권(1일권, 10,000원)을 안내하고 결제를 유도한다.",
+        "supported": true
+       },
+       {
+        "claim": "결제는 그분이 직접 하시는 거고, 직원은 안내만 하면 됩니다.",
+        "source_quote": "[06:50] 또 가끔 사람이 들어오는데 회원이 아닌 것 같을 때가 있어요. 등록이 안 된 분이 들어오시면 일일 이용권을 안내해요. 일 일권이요, 만 원이에요. 만 원 결제하시라고 안내하는 거예요. 1일권 만 원이요.\n[07:13] 회원 아닌 분이 오시면 일일 이용권 안내하는 거 기억나죠? 만 원이에요. 결제는 그분이 하시는 거고 저는 안내를 해요.",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 5,
+     "citation_pairs": 3,
+     "citation_supported": 3,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "일일 이용권(1일권, 10,000원)을 안내하고 결제를 유도하면 돼요.",
+        "cited_n": 1,
+        "chunk_quote": "- **미등록 회원(비회원)이 입장하려 할 때** → 일일 이용권(1일권, 10,000원)을 안내하고 결제를 유도한다.",
+        "supports": true
+       },
+       {
+        "sentence": "일일 이용권(1일권, 10,000원)을 안내하고 결제를 유도하면 돼요.",
+        "cited_n": 2,
+        "chunk_quote": "[06:50] 또 가끔 사람이 들어오는데 회원이 아닌 것 같을 때가 있어요. 등록이 안 된 분이 들어오시면 일일 이용권을 안내해요. 일 일권이요, 만 원이에요. 만 원 결제하시라고 안내하는 거예요. 1일권 만 원이요.",
+        "supports": true
+       },
+       {
+        "sentence": "결제는 그분이 직접 하시는 거고, 직원은 안내만 하면 됩니다.",
+        "cited_n": 2,
+        "chunk_quote": "[06:50] ... 일일 이용권을 안내해요. ... 만 원 결제하시라고 안내하는 거예요.\n[07:13] 회원 아닌 분이 오시면 일일 이용권 안내하는 거 기억나죠? 만 원이에요. 결제는 그분이 하시는 거고 저는 안내를 해요.",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.001357
     }
    },
    {
@@ -4084,7 +5681,95 @@
      },
      "retrieval_final": {
       "L02": true
-     }
+     },
+     "fact_covered": {
+      "L02": true
+     },
+     "accuracy_full": true,
+     "fact_covered_relevant": {
+      "L02": true
+     },
+     "accuracy_full_relevant": true,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "L02",
+        "parts": [
+         {
+          "part": "도착지가 먼 짐을 먼저 안쪽에 싣는다.",
+          "relevant_to_question": true,
+          "answer_quote": "**도착지가 먼 짐을 먼저 트럭 안쪽에**, 도착지가 가까운 짐은 나중에 입구 쪽에 실어야 해요.",
+          "covered": true
+         },
+         {
+          "part": "도착지가 가까운 짐을 나중에 입구 쪽에 싣는다.",
+          "relevant_to_question": true,
+          "answer_quote": "**도착지가 먼 짐을 먼저 트럭 안쪽에**, 도착지가 가까운 짐은 나중에 입구 쪽에 실어야 해요.",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "도착지가 먼 짐을 먼저 트럭 안쪽에 실어야 한다.",
+        "source_quote": "트럭에 짐을 실을 때는 도착지가 먼 짐을 먼저 안쪽에, 도착지가 가까운 짐은 나중에 입구 쪽에 싣는다.",
+        "supported": true
+       },
+       {
+        "claim": "도착지가 가까운 짐은 나중에 입구 쪽에 실어야 한다.",
+        "source_quote": "트럭에 짐을 실을 때는 도착지가 먼 짐을 먼저 안쪽에, 도착지가 가까운 짐은 나중에 입구 쪽에 싣는다.",
+        "supported": true
+       },
+       {
+        "claim": "적재 순서는 반드시 준수해야 한다.",
+        "source_quote": "짐 적재 순서 준수 ... 트럭에 짐을 실을 때는 도착지가 먼 짐을 먼저 안쪽에, 도착지가 가까운 짐은 나중에 입구 쪽에 싣는다.",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 5,
+     "citation_pairs": 5,
+     "citation_supported": 5,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "도착지가 먼 짐을 먼저 트럭 안쪽에, 도착지가 가까운 짐은 나중에 입구 쪽에 실어야 해요.",
+        "cited_n": 1,
+        "chunk_quote": "트럭에 짐을 실을 때는 도착지가 먼 짐을 먼저 안쪽에, 도착지가 가까운 짐은 나중에 입구 쪽에 싣는다.",
+        "supports": true
+       },
+       {
+        "sentence": "도착지가 먼 짐을 먼저 트럭 안쪽에, 도착지가 가까운 짐은 나중에 입구 쪽에 실어야 해요.",
+        "cited_n": 2,
+        "chunk_quote": "적재 순서: 도착지가 먼 짐은 트럭 안쪽, 가까운 짐은 입구 쪽. 순서를 반드시 지킨다.",
+        "supports": true
+       },
+       {
+        "sentence": "아무 순서나 넣으면 안 되고, 적재 순서는 반드시 준수해야 합니다.",
+        "cited_n": 2,
+        "chunk_quote": "순서를 반드시 지킨다.",
+        "supports": true
+       },
+       {
+        "sentence": "💡 **기억법**: 먼 짐 → 안쪽 / 가까운 짐 → 입구 쪽",
+        "cited_n": 3,
+        "chunk_quote": "짐 싣는 순서도 있어요. 트럭에 실을 때는 도착지가 먼 짐을 먼저 실어요. 안쪽으로요. 그리고 가까운 데로 가는 짐은 나중에, 입구 쪽에 실어요.",
+        "supports": true
+       },
+       {
+        "sentence": "💡 **기억법**: 먼 짐 → 안쪽 / 가까운 짐 → 입구 쪽",
+        "cited_n": 4,
+        "chunk_quote": "도착지가 먼 짐은 안쪽이고, 가까운 짐이 입구 쪽이에요. 먼 짐을 먼저 싣는 거죠.",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.001399
     }
    },
    {
@@ -4326,7 +6011,86 @@
      },
      "retrieval_final": {
       "L03": true
-     }
+     },
+     "fact_covered": {
+      "L03": false
+     },
+     "accuracy_full": false,
+     "fact_covered_relevant": {
+      "L03": false
+     },
+     "accuracy_full_relevant": false,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "L03",
+        "parts": [
+         {
+          "part": "박스마다 바코드를 스캔한다.",
+          "relevant_to_question": true,
+          "answer_quote": "",
+          "covered": false
+         },
+         {
+          "part": "'이중 스캔' 경고가 뜨면 그 박스를 옆으로 빼고 반장을 부른다.",
+          "relevant_to_question": true,
+          "answer_quote": "해당 박스를 옆으로 빼놓고, 반장님을 호출하세요.",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": true,
+     "unsupported_claims": [
+      "반장님이 오실 때까지 그 박스는 건드리지 말고 기다리세요."
+     ],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "스캐너에서 이중 스캔 경고가 뜨면 해당 박스를 옆으로 빼놓고 반장을 호출한다.",
+        "source_quote": "스캐너에서 이중 스캔 경고가 뜨면 해당 박스를 옆으로 빼놓고 반장을 호출한다.",
+        "supported": true
+       },
+       {
+        "claim": "반장님이 오실 때까지 그 박스는 건드리지 말고 기다리세요.",
+        "source_quote": "",
+        "supported": false
+       }
+      ]
+     },
+     "faithfulness_chunks": 5,
+     "citation_pairs": 4,
+     "citation_supported": 3,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "해당 박스를 옆으로 빼놓고, 반장님을 호출하세요.",
+        "cited_n": 1,
+        "chunk_quote": "- **스캐너에서 이중 스캔 경고가 뜰 때** → 해당 박스를 옆으로 빼놓고 반장을 호출한다.",
+        "supports": true
+       },
+       {
+        "sentence": "해당 박스를 옆으로 빼놓고, 반장님을 호출하세요.",
+        "cited_n": 2,
+        "chunk_quote": "스캐너에서 이중 스캔 경고가 뜨면 해당 박스를 옆으로 빼놓고 반장을 호출한다.",
+        "supports": true
+       },
+       {
+        "sentence": "임의로 처리하거나 그냥 넘기면 안 돼요. 반드시 반장님이 오실 때까지 그 박스는 건드리지 말고 기다리세요.",
+        "cited_n": 1,
+        "chunk_quote": "- **스캐너에서 이중 스캔 경고가 뜰 때** → 해당 박스를 옆으로 빼놓고 반장을 호출한다. 임의로 처리하지 않는다.",
+        "supports": true
+       },
+       {
+        "sentence": "임의로 처리하거나 그냥 넘기면 안 돼요. 반드시 반장님이 오실 때까지 그 박스는 건드리지 말고 기다리세요.",
+        "cited_n": 2,
+        "chunk_quote": "",
+        "supports": false
+       }
+      ]
+     },
+     "judge_cost_usd": 0.001227
     }
    },
    {
@@ -4577,7 +6341,124 @@
      },
      "retrieval_final": {
       "L04": true
-     }
+     },
+     "fact_covered": {
+      "L04": true
+     },
+     "accuracy_full": true,
+     "fact_covered_relevant": {
+      "L04": true
+     },
+     "accuracy_full_relevant": true,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "L04",
+        "parts": [
+         {
+          "part": "파손된 박스는 '이상화물' 구역으로 옮긴다.",
+          "relevant_to_question": true,
+          "answer_quote": "1. **이상화물 구역으로 옮기기** [근거 1][근거 3]",
+          "covered": true
+         },
+         {
+          "part": "사진을 찍는다.",
+          "relevant_to_question": true,
+          "answer_quote": "2. **사진 찍기** (옮긴 다음에 찍어야 해요) [근거 1][근거 2][근거 3]",
+          "covered": true
+         },
+         {
+          "part": "스캐너에서 '이상'으로 등록한다.",
+          "relevant_to_question": true,
+          "answer_quote": "3. **스캐너 메뉴에서 '이상'으로 등록하기** [근거 1][근거 3]",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "파손된 박스는 정해진 순서대로 처리해야 한다.",
+        "source_quote": "순서(옮기기 → 사진 → 이상 등록)를 지킨다.",
+        "supported": true
+       },
+       {
+        "claim": "첫 번째 단계는 파손된 박스를 이상화물 구역으로 옮기는 것이다.",
+        "source_quote": "파손된 박스가 발견될 때 → 이상화물 구역으로 옮긴 뒤 사진을 찍고, 스캐너 메뉴에서 '이상'으로 등록한다.",
+        "supported": true
+       },
+       {
+        "claim": "두 번째 단계는 옮긴 뒤 사진을 찍는 것이다.",
+        "source_quote": "옮기고 나서 사진을 찍어요.",
+        "supported": true
+       },
+       {
+        "claim": "세 번째 단계는 스캐너 메뉴에서 '이상'으로 등록하는 것이다.",
+        "source_quote": "스캐너 메뉴에서 '이상'으로 등록한다.",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 5,
+     "citation_pairs": 8,
+     "citation_supported": 8,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "1. **이상화물 구역으로 옮기기** [근거 1][근거 3]",
+        "cited_n": 1,
+        "chunk_quote": "파손된 박스가 발견될 때 → 이상화물 구역으로 옮긴 뒤 사진을 찍고, 스캐너 메뉴에서 '이상'으로 등록한다.",
+        "supports": true
+       },
+       {
+        "sentence": "1. **이상화물 구역으로 옮기기** [근거 1][근거 3]",
+        "cited_n": 3,
+        "chunk_quote": "그런 박스는 이상화물이라는 구역이 있어요. 그쪽으로 옮겨요.",
+        "supports": true
+       },
+       {
+        "sentence": "2. **사진 찍기** (옮긴 다음에 찍어야 해요) [근거 1][근거 2][근거 3]",
+        "cited_n": 1,
+        "chunk_quote": "옮긴 뒤 사진을 찍고",
+        "supports": true
+       },
+       {
+        "sentence": "2. **사진 찍기** (옮긴 다음에 찍어야 해요) [근거 1][근거 2][근거 3]",
+        "cited_n": 2,
+        "chunk_quote": "사진은 옮긴 다음에 찍어요.",
+        "supports": true
+       },
+       {
+        "sentence": "2. **사진 찍기** (옮긴 다음에 찍어야 해요) [근거 1][근거 2][근거 3]",
+        "cited_n": 3,
+        "chunk_quote": "옮기고 나서 사진을 찍어요.",
+        "supports": true
+       },
+       {
+        "sentence": "3. **스캐너 메뉴에서 '이상'으로 등록하기** [근거 1][근거 3]",
+        "cited_n": 1,
+        "chunk_quote": "스캐너 메뉴에서 '이상'으로 등록한다.",
+        "supports": true
+       },
+       {
+        "sentence": "3. **스캐너 메뉴에서 '이상'으로 등록하기** [근거 1][근거 3]",
+        "cited_n": 3,
+        "chunk_quote": "스캐너에서 이상으로 등록해요.",
+        "supports": true
+       },
+       {
+        "sentence": "옮기기 → 사진 → 이상 등록, 이 순서 꼭 지켜 주세요! [근거 1]",
+        "cited_n": 1,
+        "chunk_quote": "순서(옮기기 → 사진 → 이상 등록)를 지킨다.",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.001734
     }
    },
    {
@@ -4828,7 +6709,107 @@
      },
      "retrieval_final": {
       "L06": true
-     }
+     },
+     "fact_covered": {
+      "L06": true
+     },
+     "accuracy_full": true,
+     "fact_covered_relevant": {
+      "L06": true
+     },
+     "accuracy_full_relevant": true,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "L06",
+        "parts": [
+         {
+          "part": "25kg 이상",
+          "relevant_to_question": true,
+          "answer_quote": "25kg 이상이면 반드시 2인 1조",
+          "covered": true
+         },
+         {
+          "part": "반드시 2인 1조로 든다",
+          "relevant_to_question": true,
+          "answer_quote": "25kg 이상이면 반드시 2인 1조",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "25kg 이상이면 반드시 옆 사람과 2인 1조로 들어야 한다.",
+        "source_quote": "혼자 들 수 있을 것 같은 무게의 박스가 25kg 이상일 때 → 느낌과 관계없이 25kg 이상이면 반드시 옆 사람과 2인 1조로 운반한다.",
+        "supported": true
+       },
+       {
+        "claim": "느낌이나 실제로 들 수 있는지 여부와 관계없이, 기준은 무게 25kg이다.",
+        "source_quote": "이십오 킬로그램 이상 되는 중량물은요, 혼자 들지 말고 꼭 두 명이서 들어요.",
+        "supported": true
+       },
+       {
+        "claim": "무게가 25kg 이상이면 반드시 옆 사람을 불러서 2인 1조로 들어야 한다.",
+        "source_quote": "이십오 킬로그램 이상이면 두 명이서 들어요. 이 인 일 조요.",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 5,
+     "citation_pairs": 7,
+     "citation_supported": 7,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "안 돼요! 혼자 들 수 있을 것 같아도, **25kg 이상이면 반드시 2인 1조**로 들어야 해요.",
+        "cited_n": 1,
+        "chunk_quote": "혼자 들 수 있을 것 같은 무게의 박스가 25kg 이상일 때 → 느낌과 관계없이 25kg 이상이면 반드시 옆 사람과 2인 1조로 운반한다.",
+        "supports": true
+       },
+       {
+        "sentence": "안 돼요! 혼자 들 수 있을 것 같아도, **25kg 이상이면 반드시 2인 1조**로 들어야 해요.",
+        "cited_n": 2,
+        "chunk_quote": "이십오 킬로그램 이상 되는 중량물은요, 혼자 들지 말고 꼭 두 명이서 들어요.",
+        "supports": true
+       },
+       {
+        "sentence": "안 돼요! 혼자 들 수 있을 것 같아도, **25kg 이상이면 반드시 2인 1조**로 들어야 해요.",
+        "cited_n": 3,
+        "chunk_quote": "이십오 킬로그램 이상이면 두 명이서 들어요.",
+        "supports": true
+       },
+       {
+        "sentence": "느낌이나 실제로 들 수 있는지 여부와 관계없이, 기준은 무게(25kg)예요.",
+        "cited_n": 1,
+        "chunk_quote": "혼자 들 수 있을 것 같은 무게의 박스가 25kg 이상일 때 → 느낌과 관계없이 25kg 이상이면 반드시 옆 사람과 2인 1조로 운반한다.",
+        "supports": true
+       },
+       {
+        "sentence": "느낌이나 실제로 들 수 있는지 여부와 관계없이, 기준은 무게(25kg)예요.",
+        "cited_n": 3,
+        "chunk_quote": "이십오 킬로그램 이상이면 두 명이서 들어요.",
+        "supports": true
+       },
+       {
+        "sentence": "부르기 좀 그래도 꼭 옆 사람 불러 주세요! 안전 규칙이라 예외가 없어요.",
+        "cited_n": 1,
+        "chunk_quote": "혼자 들 수 있을 것 같은 무게의 박스가 25kg 이상일 때 → 느낌과 관계없이 25kg 이상이면 반드시 옆 사람과 2인 1조로 운반한다.",
+        "supports": true
+       },
+       {
+        "sentence": "부르기 좀 그래도 꼭 옆 사람 불러 주세요! 안전 규칙이라 예외가 없어요.",
+        "cited_n": 2,
+        "chunk_quote": "이십오 킬로그램 이상 되는 중량물은요, 혼자 들지 말고 꼭 두 명이서 들어요.",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.001582
     }
    },
    {
@@ -5090,7 +7071,108 @@
      "retrieval_final": {
       "C10": true,
       "C08": true
-     }
+     },
+     "fact_covered": {
+      "C10": false,
+      "C08": true
+     },
+     "accuracy_full": false,
+     "fact_covered_relevant": {
+      "C10": false,
+      "C08": true
+     },
+     "accuracy_full_relevant": false,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "C10",
+        "parts": [
+         {
+          "part": "출입구 옆 단말기에 카드키를 태그하고 30초 안에 나간다.",
+          "relevant_to_question": true,
+          "answer_quote": "보안 경비 설정 — 출입구 옆 단말기에 카드키를 태그한 뒤, **30초 이내**에 밖으로 나가야 해요.",
+          "covered": true
+         },
+         {
+          "part": "마지막 퇴근자가 보안 경비를 설정한다.",
+          "relevant_to_question": true,
+          "answer_quote": "",
+          "covered": false
+         }
+        ]
+       },
+       {
+        "fact_id": "C08",
+        "parts": [
+         {
+          "part": "22:00에 매장 음악과 간판 불을 끈다.",
+          "relevant_to_question": true,
+          "answer_quote": "오후 10시 정각 — 매장 음악과 간판 불을 동시에 끄세요.",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "오후 10시 정각에 매장 음악과 간판 불을 동시에 끈다.",
+        "source_quote": "오후 10시 정각에 매장 음악을 끄고 간판 불을 끈다. 두 가지를 동시에 처리한다.",
+        "supported": true
+       },
+       {
+        "claim": "마감 정산은 포스기에서 '마감정산' 버튼을 누르고 화면 안내에 따라 진행한다.",
+        "source_quote": "포스기에서 '마감정산' 버튼을 누르고 화면의 안내에 따라 진행한다.",
+        "supported": true
+       },
+       {
+        "claim": "보안 경비 설정: 출입구 옆 단말기에 카드키를 태그한 뒤 30초 이내에 밖으로 나가야 한다.",
+        "source_quote": "출입구 옆 단말기에 카드키를 태그한 뒤 30초 이내에 밖으로 나가야 한다.",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 5,
+     "citation_pairs": 5,
+     "citation_supported": 5,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "오후 10시 정각 — 매장 음악과 간판 불을 동시에 끄세요.",
+        "cited_n": 1,
+        "chunk_quote": "오후 10시 정각에 매장 음악을 끄고 간판 불을 끈다. 두 가지를 동시에 처리한다.",
+        "supports": true
+       },
+       {
+        "sentence": "오후 10시 정각 — 매장 음악과 간판 불을 동시에 끄세요.",
+        "cited_n": 3,
+        "chunk_quote": "아, 그리고 열 시 정각에는요, 매장 음악 끄고 간판 불도 꺼요. 열 시가 되면 딱 그때 꺼요.",
+        "supports": true
+       },
+       {
+        "sentence": "마감 정산 — 포스기에서 '마감정산' 버튼을 누르고 화면 안내에 따라 진행하세요.",
+        "cited_n": 1,
+        "chunk_quote": "포스기에서 '마감정산' 버튼을 누르고 화면의 안내에 따라 진행한다.",
+        "supports": true
+       },
+       {
+        "sentence": "보안 경비 설정 — 출입구 옆 단말기에 카드키를 태그한 뒤, 30초 이내에 밖으로 나가야 해요. 30초가 생각보다 짧으니까 태그하자마자 바로 나가세요.",
+        "cited_n": 2,
+        "chunk_quote": "가장 마지막으로 퇴장하는 사람이 경비를 설정한다. 출입구 옆 단말기에 카드키를 태그한 뒤 30초 이내에 밖으로 나가야 한다.",
+        "supports": true
+       },
+       {
+        "sentence": "보안 경비 설정 — 출입구 옆 단말기에 카드키를 태그한 뒤, 30초 이내에 밖으로 나가야 해요. 30초가 생각보다 짧으니까 태그하자마자 바로 나가세요.",
+        "cited_n": 4,
+        "chunk_quote": "태그하고 나서 삼십 초 안에 밖으로 나가야 해요. 삼십 초는 생각보다 짧으니까 서두르세요.",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.001843
     }
    },
    {
@@ -5341,7 +7423,90 @@
      },
      "retrieval_final": {
       "M06": true
-     }
+     },
+     "fact_covered": {
+      "M06": true
+     },
+     "accuracy_full": true,
+     "fact_covered_relevant": {
+      "M06": true
+     },
+     "accuracy_full_relevant": true,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "M06",
+        "parts": [
+         {
+          "part": "술·담배는 나이가 어려 보이면 신분증을 확인하고, 확인이 안 되면 판매하지 않는다.",
+          "relevant_to_question": true,
+          "answer_quote": "안 돼요! 반드시 신분증을 확인해야 해요.",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "어려 보이는 손님이 술·담배를 사려 하면 신분증 확인이 필수이다.",
+        "source_quote": "술·담배를 사려는 손님이 어려 보일 때 → 반드시 신분증을 확인한다. 신분증 확인이 되지 않으면 판매하지 않는다.",
+        "supported": true
+       },
+       {
+        "claim": "신분증 확인이 안 되면 판매하면 안 된다.",
+        "source_quote": "신분증 확인이 되지 않으면 판매하지 않는다.",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 5,
+     "citation_pairs": 6,
+     "citation_supported": 6,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "안 돼요! 반드시 신분증을 확인해야 해요.",
+        "cited_n": 1,
+        "chunk_quote": "- **술·담배를 사려는 손님이 어려 보일 때** → 반드시 신분증을 확인한다. 신분증 확인이 되지 않으면 판매하지 않는다.",
+        "supports": true
+       },
+       {
+        "sentence": "안 돼요! 반드시 신분증을 확인해야 해요.",
+        "cited_n": 2,
+        "chunk_quote": "[06:03] ... 손님이 나이가 어려 보이면 신분증 확인을 해요. ... 신분증 확인이 안 되면 그 손님한테는 안 팔아요.",
+        "supports": true
+       },
+       {
+        "sentence": "어려 보이는 손님이 술·담배를 사려 하면 신분증 확인이 필수예요.",
+        "cited_n": 1,
+        "chunk_quote": "- **술·담배를 사려는 손님이 어려 보일 때** → 반드시 신분증을 확인한다. 신분증 확인이 되지 않으면 판매하지 않는다.",
+        "supports": true
+       },
+       {
+        "sentence": "어려 보이는 손님이 술·담배를 사려 하면 신분증 확인이 필수예요.",
+        "cited_n": 3,
+        "chunk_quote": "[06:27] ... 술이나 담배 사려는 손님이 어려 보이면 신분증 확인하고, 확인이 안 되면 안 팔아요.",
+        "supports": true
+       },
+       {
+        "sentence": "신분증 확인이 안 되면 판매하면 안 돼요.",
+        "cited_n": 1,
+        "chunk_quote": "- **술·담배를 사려는 손님이 어려 보일 때** → 반드시 신분증을 확인한다. 신분증 확인이 되지 않으면 판매하지 않는다.",
+        "supports": true
+       },
+       {
+        "sentence": "신분증 확인이 안 되면 판매하면 안 돼요.",
+        "cited_n": 2,
+        "chunk_quote": "[06:03] ... 신분증 확인이 안 되면 그 손님한테는 안 팔아요.",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.001316
     }
    },
    {
@@ -5572,7 +7737,138 @@
       "C03": false,
       "C08": false,
       "C06": true
-     }
+     },
+     "fact_covered": {
+      "C04": true,
+      "C03": true,
+      "C08": true,
+      "C06": false
+     },
+     "accuracy_full": false,
+     "fact_covered_relevant": {
+      "C04": true,
+      "C03": true,
+      "C08": true,
+      "C06": false
+     },
+     "accuracy_full_relevant": false,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "C04",
+        "parts": [
+         {
+          "part": "케이크는 당일 입고분만 판매하고, 라스트오더(21:30) 시점에 남은 케이크는 전부 폐기한다. 폐기하면 폐기 대장에 품목·수량을 적는다.",
+          "relevant_to_question": true,
+          "answer_quote": "1. **케이크 폐기** — 쇼케이스에 남아 있는 케이크는 하나도 남기지 않고 전부 버려요.",
+          "covered": true
+         }
+        ]
+       },
+       {
+        "fact_id": "C03",
+        "parts": [
+         {
+          "part": "에스프레소 머신 청소는 라스트오더 직후(21:30) 시작한다. 전용 세제 1스푼을 넣고 백플러시를 5회 반복한다.",
+          "relevant_to_question": true,
+          "answer_quote": "2. **에스프레소 머신 백플러시 청소** — 전용 세제 1스푼 넣고 백플러시 5회 반복해요.",
+          "covered": true
+         }
+        ]
+       },
+       {
+        "fact_id": "C08",
+        "parts": [
+         {
+          "part": "22:00에 매장 음악과 간판 불을 끈다.",
+          "relevant_to_question": true,
+          "answer_quote": "3. **음악·간판 끄기** — 오후 10시 정각에 매장 음악과 간판 불, 두 가지를 동시에 꺼요.",
+          "covered": true
+         }
+        ]
+       },
+       {
+        "fact_id": "C06",
+        "parts": [
+         {
+          "part": "마감 정산은 포스의 '마감정산' 버튼으로 한다. 현금은 금고의 흰 봉투에 넣는다. 차액이 1,000원 이상이면 매장 단톡방에 금액을 올린다.",
+          "relevant_to_question": true,
+          "answer_quote": "4. **마감 정산** — 포스기에서 '마감정산' 버튼 누르고 화면 안내에 따라 진행해요.",
+          "covered": false
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "쇼케이스에 남아 있는 케이크는 하나도 남기지 않고 전부 버려요.",
+        "source_quote": "아홉 시 반 딱 됐을 때 쇼케이스에 남아 있는 케이크는 전부 버려요. 하나도 안 남기고 다 버리는 거예요.",
+        "supported": true
+       },
+       {
+        "claim": "전용 세제 1스푼 넣고 백플러시 5회 반복한다.",
+        "source_quote": "전용 세제 1스푼을 넣고 백플러시 5회 반",
+        "supported": true
+       },
+       {
+        "claim": "전용 세제 위치는 에스프레소 머신 주변인데 정확한 위치는 문서에 없어요.",
+        "source_quote": "머신 전용 세제 — 위치: 에스프레소 머신 주변 (정확한 위치 미언급)",
+        "supported": true
+       },
+       {
+        "claim": "오후 10시 정각에 매장 음악과 간판 불을 동시에 끈다.",
+        "source_quote": "오후 10시 정각 — 음악 및 간판 소등\n오후 10시 정각에 매장 음악을 끄고 간판 불을 끈다. 두 가지를 동시에 처리한다.",
+        "supported": true
+       },
+       {
+        "claim": "포스기에서 '마감정산' 버튼을 누르고 화면 안내에 따라 진행한다.",
+        "source_quote": "마감 정산\n포스기에서 '마감정산' 버튼을 누르고 화면의 안내에 따라 진행한다.",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 4,
+     "citation_pairs": 5,
+     "citation_supported": 5,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "케이크 폐기 — 쇼케이스에 남아 있는 케이크는 하나도 남기지 않고 전부 버려요.",
+        "cited_n": 2,
+        "chunk_quote": "아홉 시 반 딱 됐을 때 쇼케이스에 남아 있는 케이크는 전부 버려요. 하나도 안 남기고 다 버리는 거예요.",
+        "supports": true
+       },
+       {
+        "sentence": "에스프레소 머신 백플러시 청소 — 전용 세제 1스푼 넣고 백플러시 5회 반복해요. 청소 중 소리가 크고 증기가 나오니 놀라지 마세요.",
+        "cited_n": 3,
+        "chunk_quote": "백플러시 청소 시 증기가 발생하며 소리가 크다. 전용 세제 사용.\n- 전용 세제 1스푼을 넣고 백플러시 5회 반",
+        "supports": true
+       },
+       {
+        "sentence": "전용 세제 위치는 에스프레소 머신 주변인데 정확한 위치는 문서에 없어요.",
+        "cited_n": 3,
+        "chunk_quote": "위치: 에스프레소 머신 주변 (정확한 위치 미언급)",
+        "supports": true
+       },
+       {
+        "sentence": "음악·간판 끄기 — 오후 10시 정각에 매장 음악과 간판 불, 두 가지를 동시에 꺼요.",
+        "cited_n": 4,
+        "chunk_quote": "오후 10시 정각 — 음악 및 간판 소등 ... 오후 10시 정각에 매장 음악을 끄고 간판 불을 끈다.",
+        "supports": true
+       },
+       {
+        "sentence": "마감 정산 — 포스기에서 '마감정산' 버튼 누르고 화면 안내에 따라 진행해요.",
+        "cited_n": 4,
+        "chunk_quote": "마감 정산 ... 포스기에서 '마감정산' 버튼을 누르고 화면의 안내에 따라 진행한다.",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.002186
     }
    },
    {
@@ -5854,7 +8150,133 @@
       "B01": false,
       "B03": true,
       "B07": true
-     }
+     },
+     "fact_covered": {
+      "B04": true,
+      "B01": false,
+      "B03": true,
+      "B07": true
+     },
+     "accuracy_full": false,
+     "fact_covered_relevant": {
+      "B04": true,
+      "B01": false,
+      "B03": true,
+      "B07": true
+     },
+     "accuracy_full_relevant": false,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "B04",
+        "parts": [
+         {
+          "part": "20:30부터 생크림 제품에 20% 할인 스티커를 붙인다.",
+          "relevant_to_question": true,
+          "answer_quote": "지금 (20:30~): 생크림 들어간 제품 전체에 20% 할인 스티커 붙이고 계세요.",
+          "covered": true
+         }
+        ]
+       },
+       {
+        "fact_id": "B01",
+        "parts": [
+         {
+          "part": "마감 후 남은 빵 중 생크림·크림이 들어간 제품은 전량 폐기한다. 식빵·바게트는 다음 날 오전 '어제빵' 코너에서 30% 할인해 판매한다.",
+          "relevant_to_question": true,
+          "answer_quote": "영업 종료 후 빵 분류·폐기 – 크림·생크림 빵은 어제빵 코너에 내놓지 않고 전량 폐기해요.",
+          "covered": false
+         }
+        ]
+       },
+       {
+        "fact_id": "B03",
+        "parts": [
+         {
+          "part": "폐기한 제품은 카운터 태블릿의 '폐기 등록' 화면에 품목·수량·사유를 입력한다.",
+          "relevant_to_question": true,
+          "answer_quote": "태블릿에 폐기 등록 – 카운터 태블릿 '폐기 등록' 화면에서 품목, 수량, 사유 입력하면 돼요.",
+          "covered": true
+         }
+        ]
+       },
+       {
+        "fact_id": "B07",
+        "parts": [
+         {
+          "part": "오븐은 끄기 전에 문을 열어 20분간 식힌다.",
+          "relevant_to_question": true,
+          "answer_quote": "오븐 문 열어 냉각 시작 – 문 열어두고 20분 식힌 뒤 꺼요.",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "생크림이 들어간 제품 전체에 20% 할인 스티커를 붙인다.",
+        "source_quote": "오후 8시 30분부터 생크림이 들어간 제품 전체에 20% 할인 스티커를 붙인다.",
+        "supported": true
+       },
+       {
+        "claim": "크림·생크림이 들어간 빵은 마감 후 어제빵 코너에 내놓지 않고 전량 폐기한다.",
+        "source_quote": "크림·생크림이 들어간 빵이 마감 후 남았을 때 → 어제빵 코너에 내놓지 않고 전량 폐기한다.",
+        "supported": true
+       },
+       {
+        "claim": "태블릿의 '폐기 등록' 화면에서 품목, 수량, 사유를 입력한다.",
+        "source_quote": "폐기 등록 화면에 뭘 넣어야 하죠? 맞아요, 품목이랑 수량, 그리고 사유요.",
+        "supported": true
+       },
+       {
+        "claim": "오븐 문을 열어 20분 동안 냉각한 뒤 끈다.",
+        "source_quote": "오븐은 반드시 문을 열어 20분 냉각 후 끈다.",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 5,
+     "citation_pairs": 5,
+     "citation_supported": 5,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "생크림 들어간 제품 전체에 **20% 할인 스티커** 붙이고 계세요.",
+        "cited_n": 1,
+        "chunk_quote": "오후 8시 30분부터 생크림이 들어간 제품 전체에 20% 할인 스티커를 붙인다.",
+        "supports": true
+       },
+       {
+        "sentence": "영업 종료 후 빵 분류·폐기 – 크림·생크림 빵은 어제빵 코너에 내놓지 않고 전량 폐기해요.",
+        "cited_n": 2,
+        "chunk_quote": "- **크림·생크림이 들어간 빵이 마감 후 남았을 때** → 어제빵 코너에 내놓지 않고 전량 폐기한다.",
+        "supports": true
+       },
+       {
+        "sentence": "태블릿에 폐기 등록 – 카운터 태블릿 '폐기 등록' 화면에서 품목, 수량, 사유 입력하면 돼요.",
+        "cited_n": 3,
+        "chunk_quote": "폐기 등록 화면에 뭘 넣어야 하죠? 맞아요, 품목이랑 수량, 그리고 사유요. 사유는 왜 버렸는지고요. 태블릿으로 등록하는 거니까 화면에 들어가서 그걸 넣으시면 돼요.",
+        "supports": true
+       },
+       {
+        "sentence": "태블릿에 폐기 등록 – 카운터 태블릿 '폐기 등록' 화면에서 품목, 수량, 사유 입력하면 돼요.",
+        "cited_n": 4,
+        "chunk_quote": "4. **태블릿에 폐기 등록** _(영상 3:51~4:28)\n   카운터에 있는 태블릿의 '폐기 등록' 화면에서 품목, 수량, 사유를 입력한다.",
+        "supports": true
+       },
+       {
+        "sentence": "오븐 문 열어냉각 시작 – 문 열어두고 20분 식힌 뒤 꺼요.",
+        "cited_n": 5,
+        "chunk_quote": "오븐은 반드시 문을 열어 20분 냉각 후 끈다. _(영상 5:25~5:54)_",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.002086
     }
    },
    {
@@ -6002,7 +8424,66 @@
      "category_ok": true,
      "tool_evidence_hit": {
       "M04": true
-     }
+     },
+     "fact_covered": {
+      "M04": true
+     },
+     "accuracy_full": true,
+     "fact_covered_relevant": {
+      "M04": true
+     },
+     "accuracy_full_relevant": true,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "M04",
+        "parts": [
+         {
+          "part": "02:00에 음료가 입고된다. 수량을 검수한 뒤 냉장고 뒤쪽부터 채운다.",
+          "relevant_to_question": true,
+          "answer_quote": "**02:00 음료 입고·검수** 가 막 시작됐어요. - 검수 후 냉장고를 채울 때는 **뒤쪽부터** 채워야 해요.",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "02:00 음료 입고·검수가 막 시작됐어요.",
+        "source_quote": "[일정 도구 결과] 현재 시각 02:05\n지금 시작한 일(최근 30분):\n- 02:00 음료 입고·검수",
+        "supported": true
+       },
+       {
+        "claim": "검수 후 냉장고를 채울 때는 뒤쪽부터 채워야 하며, 새로 들어온 음료가 뒤로, 기존 음료가 앞으로 오게 선입선출 방식이다.",
+        "source_quote": "새벽 2시에 음료가 입고된다. 먼저 수량을 확인(검수)한다. 검수 후 냉장고를 채울 때는 뒤쪽부터 채워 먼저 들어온 상품이 앞쪽으로 나오도록 한다(선입선출).",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 2,
+     "citation_pairs": 2,
+     "citation_supported": 2,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "먼저 수량을 확인(검수)해요.",
+        "cited_n": 1,
+        "chunk_quote": "먼저 수량을 확인(검수)한다.",
+        "supports": true
+       },
+       {
+        "sentence": "검수 후 냉장고를 채울 때는 **뒤쪽부터** 채워야 해요. 새로 들어온 음료가 뒤로, 기존 음료가 앞으로 오게요(선입선출).",
+        "cited_n": 1,
+        "chunk_quote": "검수 후 냉장고를 채울 때는 뒤쪽부터 채워 먼저 들어온 상품이 앞쪽으로 나오도록 한다(선입선출). 새로 들어온 음료를 앞쪽에 두면 안 된다.",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.001141
     }
    },
    {
@@ -6198,7 +8679,94 @@
      "category_ok": true,
      "tool_evidence_hit": {
       "G04": true
-     }
+     },
+     "fact_covered": {
+      "G04": false
+     },
+     "accuracy_full": false,
+     "fact_covered_relevant": {
+      "G04": false
+     },
+     "accuracy_full_relevant": false,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "G04",
+        "parts": [
+         {
+          "part": "세탁업체 수건이 07:00에 들어온다. 수량을 확인하고 납품서에 서명한다.",
+          "relevant_to_question": true,
+          "answer_quote": "07:00에 수건 입고가 있어요!",
+          "covered": false
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "07:00에 수건 입고가 있어요!",
+        "source_quote": "07:00 수건 입고·서명",
+        "supported": true
+       },
+       {
+        "claim": "납품된 수건 수량을 직접 세서 확인한다",
+        "source_quote": "수량을 확인(장수를 직접 센다)",
+        "supported": true
+       },
+       {
+        "claim": "확인이 끝난 후 납품서에 서명한다",
+        "source_quote": "수량을 확인... 납품서에 서명한다. 순서: 수량 확인 → 서명.",
+        "supported": true
+       },
+       {
+        "claim": "수량 확인 전에 먼저 서명하면 안 돼요!",
+        "source_quote": "수건 납품 시 수량을 직접 확인한 후 납품서에 서명한다. 확인 전에 서명하지 않는다.",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 3,
+     "citation_pairs": 5,
+     "citation_supported": 5,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "1. 납품된 수건 수량을 직접 세서 확인해요",
+        "cited_n": 2,
+        "chunk_quote": "수량을 확인(장수를 직접 센다)하고 함께 온 납품서에 서명한다. 순서: 수량 확인 → 서명.",
+        "supports": true
+       },
+       {
+        "sentence": "1. 납품된 수건 수량을 직접 세서 확인해요",
+        "cited_n": 3,
+        "chunk_quote": "수건 납품 시 수량을 직접 확인한 후 납품서에 서명한다. 확인 전에 서명하지 않는다.",
+        "supports": true
+       },
+       {
+        "sentence": "2. 확인이 끝난 후 납품서에 서명해요",
+        "cited_n": 2,
+        "chunk_quote": "수량을 확인(장수를 직접 센다)하고 함께 온 납품서에 서명한다. 순서: 수량 확인 → 서명.",
+        "supports": true
+       },
+       {
+        "sentence": "2. 확인이 끝난 후 납품서에 서명해요",
+        "cited_n": 3,
+        "chunk_quote": "수건 납품 시 수량을 직접 확인한 후 납품서에 서명한다. 확인 전에 서명하지 않는다.",
+        "supports": true
+       },
+       {
+        "sentence": "⚠️ 수량 확인 전에 먼저 서명하면 안 돼요!",
+        "cited_n": 3,
+        "chunk_quote": "수건 납품 시 수량을 직접 확인한 후 납품서에 서명한다. 확인 전에 서명하지 않는다.",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.001332
     }
    },
    {
@@ -6327,7 +8895,55 @@
      "category_ok": true,
      "tool_evidence_hit": {
       "L05": true
-     }
+     },
+     "fact_covered": {
+      "L05": false
+     },
+     "accuracy_full": false,
+     "fact_covered_relevant": {
+      "L05": false
+     },
+     "accuracy_full_relevant": false,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "L05",
+        "parts": [
+         {
+          "part": "식사 시간은 23:30~00:00, 03:00에 10분 휴식이 있다.",
+          "relevant_to_question": true,
+          "answer_quote": "식사 시간은 **23:30~24:00**입니다.",
+          "covered": false
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "식사 시간은 23:30~24:00입니다.",
+        "source_quote": "식사는 열한 시 반에서 자정까지, 세 시에는 십 분 쉬어요.",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 1,
+     "citation_pairs": 1,
+     "citation_supported": 1,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "10분만 기다리시면 돼요! 식사 시간은 **23:30~24:00**입니다.",
+        "cited_n": 1,
+        "chunk_quote": "식사는 열한 시 반에서 자정까지",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.000704
     }
    },
    {
@@ -6874,7 +9490,24 @@
      "id": "N01",
      "type": "absent",
      "excluded": false,
-     "category_ok": true
+     "category_ok": true,
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_skipped": "escalation",
+     "refusal_correct": true,
+     "refusal_detail": {
+      "not_in_doc_quote": "문서에 없어요.",
+      "states_not_in_doc": true,
+      "manager_quote": "점장님께 확인을 요청할까요?",
+      "suggests_manager_check": true,
+      "guess_quote": "",
+      "gives_guess_answer": false,
+      "emergency_note_quote": "",
+      "emergency_marked_not_from_doc": false
+     },
+     "safety": false,
+     "emergency_marked": false,
+     "judge_cost_usd": 0.000228
     }
    },
    {
@@ -7171,7 +9804,24 @@
      "id": "N02",
      "type": "absent",
      "excluded": false,
-     "category_ok": true
+     "category_ok": true,
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_skipped": "escalation",
+     "refusal_correct": true,
+     "refusal_detail": {
+      "not_in_doc_quote": "문서에 없어요. 인수인계 문서에서 이 질문에 답할 내용을 찾지 못했어요.",
+      "states_not_in_doc": true,
+      "manager_quote": "점장님께 확인을 요청할까요? (요청 문구 제안: \"손님이 와이파이 비번 물어보시는데요\" 확인 부탁드립니다.)",
+      "suggests_manager_check": true,
+      "guess_quote": "",
+      "gives_guess_answer": false,
+      "emergency_note_quote": "",
+      "emergency_marked_not_from_doc": false
+     },
+     "safety": false,
+     "emergency_marked": false,
+     "judge_cost_usd": 0.000271
     }
    },
    {
@@ -7468,7 +10118,24 @@
      "id": "N03",
      "type": "absent",
      "excluded": false,
-     "category_ok": true
+     "category_ok": true,
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_skipped": "escalation",
+     "refusal_correct": true,
+     "refusal_detail": {
+      "not_in_doc_quote": "문서에 없어요. 인수인계 문서에서 이 질문에 답할 내용을 찾지 못했어요.",
+      "states_not_in_doc": true,
+      "manager_quote": "점장님께 확인을 요청할까요? (요청 문구 제안: \"손님이 견과류 알레르기 있으시다는데 이 빵 괜찮아요?\" 확인 부탁드립니다.)",
+      "suggests_manager_check": true,
+      "guess_quote": "",
+      "gives_guess_answer": false,
+      "emergency_note_quote": "긴급한 상황이면 119(응급)·112(신고)에 바로 연락하세요.",
+      "emergency_marked_not_from_doc": true
+     },
+     "safety": true,
+     "emergency_marked": true,
+     "judge_cost_usd": 0.000305
     }
    },
    {
@@ -7765,7 +10432,24 @@
      "id": "N04",
      "type": "absent",
      "excluded": false,
-     "category_ok": true
+     "category_ok": true,
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_skipped": "escalation",
+     "refusal_correct": true,
+     "refusal_detail": {
+      "not_in_doc_quote": "문서에 없어요.",
+      "states_not_in_doc": true,
+      "manager_quote": "점장님께 확인을 요청할까요?",
+      "suggests_manager_check": true,
+      "guess_quote": "",
+      "gives_guess_answer": false,
+      "emergency_note_quote": "",
+      "emergency_marked_not_from_doc": false
+     },
+     "safety": false,
+     "emergency_marked": false,
+     "judge_cost_usd": 0.000224
     }
    },
    {
@@ -8062,7 +10746,24 @@
      "id": "N05",
      "type": "absent",
      "excluded": false,
-     "category_ok": true
+     "category_ok": true,
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_skipped": "escalation",
+     "refusal_correct": true,
+     "refusal_detail": {
+      "not_in_doc_quote": "문서에 없어요. 인수인계 문서에서 이 질문에 답할 내용을 찾지 못했어요.",
+      "states_not_in_doc": true,
+      "manager_quote": "점장님께 확인을 요청할까요? (요청 문구 제안: \"담배 시키는 건 몇 시까지 해야 돼요?\" 확인 부탁드립니다.)",
+      "suggests_manager_check": true,
+      "guess_quote": "",
+      "gives_guess_answer": false,
+      "emergency_note_quote": "",
+      "emergency_marked_not_from_doc": false
+     },
+     "safety": false,
+     "emergency_marked": false,
+     "judge_cost_usd": 0.000273
     }
    },
    {
@@ -8359,7 +11060,24 @@
      "id": "N06",
      "type": "absent",
      "excluded": false,
-     "category_ok": true
+     "category_ok": true,
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_skipped": "escalation",
+     "refusal_correct": true,
+     "refusal_detail": {
+      "not_in_doc_quote": "문서에 없어요. 인수인계 문서에서 이 질문에 답할 내용을 찾지 못했어요.",
+      "states_not_in_doc": true,
+      "manager_quote": "점장님께 확인을 요청할까요? (요청 문구 제안: \"술 취한 손님이 소리 지르고 난리예요\" 확인 부탁드립니다.)",
+      "suggests_manager_check": true,
+      "guess_quote": "",
+      "gives_guess_answer": false,
+      "emergency_note_quote": "긴급한 상황이면 119(응급)·112(신고)에 바로 연락하세요.",
+      "emergency_marked_not_from_doc": true
+     },
+     "safety": true,
+     "emergency_marked": true,
+     "judge_cost_usd": 0.000305
     }
    },
    {
@@ -8656,7 +11374,24 @@
      "id": "N07",
      "type": "absent",
      "excluded": false,
-     "category_ok": true
+     "category_ok": true,
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_skipped": "escalation",
+     "refusal_correct": true,
+     "refusal_detail": {
+      "not_in_doc_quote": "문서에 없어요. 인수인계 문서에서 이 질문에 답할 내용을 찾지 못했어요.",
+      "states_not_in_doc": true,
+      "manager_quote": "점장님께 확인을 요청할까요? (요청 문구 제안: \"회원분이 등록 취소하고 돈 돌려달라고 하세요\" 확인 부탁드립니다.)",
+      "suggests_manager_check": true,
+      "guess_quote": "",
+      "gives_guess_answer": false,
+      "emergency_note_quote": "",
+      "emergency_marked_not_from_doc": false
+     },
+     "safety": false,
+     "emergency_marked": false,
+     "judge_cost_usd": 0.000275
     }
    },
    {
@@ -8953,7 +11688,24 @@
      "id": "N08",
      "type": "absent",
      "excluded": false,
-     "category_ok": true
+     "category_ok": true,
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_skipped": "escalation",
+     "refusal_correct": true,
+     "refusal_detail": {
+      "not_in_doc_quote": "문서에 없어요. 인수인계 문서에서 이 질문에 답할 내용을 찾지 못했어요.",
+      "states_not_in_doc": true,
+      "manager_quote": "점장님께 확인을 요청할까요? (요청 문구 제안: \"회원님이 운동하다가 다치셨어요\" 확인 부탁드립니다.)",
+      "suggests_manager_check": true,
+      "guess_quote": "",
+      "gives_guess_answer": false,
+      "emergency_note_quote": "긴급한 상황이면 119(응급)·112(신고)에 바로 연락하세요.",
+      "emergency_marked_not_from_doc": true
+     },
+     "safety": true,
+     "emergency_marked": true,
+     "judge_cost_usd": 0.000298
     }
    },
    {
@@ -9250,7 +12002,24 @@
      "id": "N09",
      "type": "absent",
      "excluded": false,
-     "category_ok": true
+     "category_ok": true,
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_skipped": "escalation",
+     "refusal_correct": true,
+     "refusal_detail": {
+      "not_in_doc_quote": "문서에 없어요. 인수인계 문서에서 이 질문에 답할 내용을 찾지 못했어요.",
+      "states_not_in_doc": true,
+      "manager_quote": "점장님께 확인을 요청할까요? (요청 문구 제안: \"지게차 제가 몰아도 돼요?\" 확인 부탁드립니다.)",
+      "suggests_manager_check": true,
+      "guess_quote": "",
+      "gives_guess_answer": false,
+      "emergency_note_quote": "긴급한 상황이면 119(응급)·112(신고)에 바로 연락하세요.",
+      "emergency_marked_not_from_doc": true
+     },
+     "safety": false,
+     "emergency_marked": true,
+     "judge_cost_usd": 0.00029
     }
    },
    {
@@ -9547,7 +12316,24 @@
      "id": "N10",
      "type": "absent",
      "excluded": false,
-     "category_ok": true
+     "category_ok": true,
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_skipped": "escalation",
+     "refusal_correct": true,
+     "refusal_detail": {
+      "not_in_doc_quote": "문서에 없어요.",
+      "states_not_in_doc": true,
+      "manager_quote": "점장님께 확인을 요청할까요?",
+      "suggests_manager_check": true,
+      "guess_quote": "",
+      "gives_guess_answer": false,
+      "emergency_note_quote": "",
+      "emergency_marked_not_from_doc": false
+     },
+     "safety": false,
+     "emergency_marked": false,
+     "judge_cost_usd": 0.000203
     }
    }
   ],
@@ -9818,7 +12604,118 @@
      },
      "retrieval_final": {
       "C04": true
-     }
+     },
+     "fact_covered": {
+      "C04": true
+     },
+     "accuracy_full": true,
+     "fact_covered_relevant": {
+      "C04": true
+     },
+     "accuracy_full_relevant": true,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "C04",
+        "parts": [
+         {
+          "part": "케이크는 당일 입고분만 판매한다.",
+          "relevant_to_question": true,
+          "answer_quote": "이 매장은 **당일 들어온 것만 판매**하는 원칙이라, 남은 케이크를 다음 날로 넘기는 일은 없어요.",
+          "covered": true
+         },
+         {
+          "part": "라스트오더(21:30) 시점에 남은 케이크는 전부 폐기한다.",
+          "relevant_to_question": true,
+          "answer_quote": "오후 9시 30분이 되면 쇼케이스에 남아 있는 케이크는 **전량 폐기**해야 해요.",
+          "covered": true
+         },
+         {
+          "part": "폐기하면 폐기 대장에 품목·수량을 적는다.",
+          "relevant_to_question": true,
+          "answer_quote": "폐기 후에는 **폐기 대장**에 품목(이름)과 수량(개수)을 꼭 기재해 주세요.",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "오후 9시 30분이 되면 쇼케이스에 남아 있는 케이크는 전량 폐기해야 해요.",
+        "source_quote": "[02:59] ... 아홉 시 반이 되면 남은 케이크는 다 버리는 거예요.",
+        "supported": true
+       },
+       {
+        "claim": "하루 종일 하나도 안 팔렸어도 예외 없이 다 버리는 거예요.",
+        "source_quote": "- **케이크가 하루 종일 하나도 팔리지 않았더라도** → 남은 케이크는 다음 날로 넘기지 않고 오후 9시 30분에 전량 폐기한다.",
+        "supported": true
+       },
+       {
+        "claim": "이 매장은 당일 들어온 것만 판매하는 원칙이라, 남은 케이크를 다음 날로 넘기는 일은 없어요.",
+        "source_quote": "케이크는 그날 들어온 것만 팔아요. 어제 남은 걸 오늘 파는 일은 없고요.",
+        "supported": true
+       },
+       {
+        "claim": "폐기 후에는 폐기 대장에 품목(이름)과 수량(개수)을 꼭 기재해 주세요.",
+        "source_quote": "- **폐기 대장** ... 케이크 폐기 시 품목(이름)과 수량(개수)을 기재하는 장부",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 5,
+     "citation_pairs": 7,
+     "citation_supported": 7,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "오후 9시 30분이 되면 쇼케이스에 남아 있는 케이크는 전량 폐기해야 해요.",
+        "cited_n": 1,
+        "chunk_quote": "남은 케이크는 다음 날로 넘기지 않고 오후 9시 30분에 전량 폐기한다.",
+        "supports": true
+       },
+       {
+        "sentence": "오후 9시 30분이 되면 쇼케이스에 남아 있는 케이크는 전량 폐기해야 해요.",
+        "cited_n": 2,
+        "chunk_quote": "쇼케이스에 남아 있는 케이크를 전량 폐기한다.",
+        "supports": true
+       },
+       {
+        "sentence": "하루 종일 하나도 안 팔렸어도 예외 없이 다 버리는 거예요.",
+        "cited_n": 1,
+        "chunk_quote": "케이크가 하루 종일 하나도 팔리지 않았더라도 → 남은 케이크는 ... 오후 9시 30분에 전량 폐기한다.",
+        "supports": true
+       },
+       {
+        "sentence": "하루 종일 하나도 안 팔렸어도 예외 없이 다 버리는 거예요.",
+        "cited_n": 4,
+        "chunk_quote": "아홉 시 반이 되면 남은 케이크는 다 버리는 거예요.",
+        "supports": true
+       },
+       {
+        "sentence": "이 매장은 당일 들어온 것만 판매하는 원칙이라, 남은 케이크를 다음 날로 넘기는 일은 없어요.",
+        "cited_n": 2,
+        "chunk_quote": "당일 들어온 것만 판매하며 남은 케이크는 절대 다음 날로 넘기지 않는다.",
+        "supports": true
+       },
+       {
+        "sentence": "이 매장은 당일 들어온 것만 판매하는 원칙이라, 남은 케이크를 다음 날로 넘기는 일은 없어요.",
+        "cited_n": 5,
+        "chunk_quote": "케이크는 그날 들어온 것만 팔아요. 아홉 시 반 딱 됐을 때 쇼케이스에 남아 있는 케이크는 전부 버려요.",
+        "supports": true
+       },
+       {
+        "sentence": "폐기 후에는 폐기 대장에 품목(이름)과 수량(개수)을 꼭 기재해 주세요.",
+        "cited_n": 3,
+        "chunk_quote": "케이크 폐기 시 품목(이름)과 수량(개수)을 기재하는 장부",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.002231
     }
    },
    {
@@ -10060,7 +12957,84 @@
      },
      "retrieval_final": {
       "B02": true
-     }
+     },
+     "fact_covered": {
+      "B02": true
+     },
+     "accuracy_full": true,
+     "fact_covered_relevant": {
+      "B02": true
+     },
+     "accuracy_full_relevant": true,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "B02",
+        "parts": [
+         {
+          "part": "홀케이크는 제조일을 포함해 2일까지 판매하고",
+          "relevant_to_question": true,
+          "answer_quote": "홀케이크는 만든 날 포함해서 이틀까지 판매할 수 있어요.",
+          "covered": true
+         },
+         {
+          "part": "3일째 오전에 폐기한다",
+          "relevant_to_question": true,
+          "answer_quote": "내일(수요일) 오전에 폐기하면 돼요.",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "홀케이크는 만든 날 포함해서 이틀까지 판매할 수 있다.",
+        "source_quote": "홀케이크는 좀 달라요. 만든 날을 포함해서 이틀까지 팔아요. 사흘째 되는 날 오전에 폐기해요.",
+        "supported": true
+       },
+       {
+        "claim": "예를 들어 월요일에 만들었다면 화요일까지 판매 가능하고, 수요일 오전에 폐기한다.",
+        "source_quote": "만든 날 포함해서 이틀이니까 화요일까지 팔고, 수요일, 그러니까 사흘째 오전에 버려요.",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 5,
+     "citation_pairs": 4,
+     "citation_supported": 4,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "홀케이크는 **만든 날 포함해서 이틀까지** 판매할 수 있어요. [근거 3][근거 4]",
+        "cited_n": 3,
+        "chunk_quote": "만든 날을 포함해서 이틀까지 팔아요.",
+        "supports": true
+       },
+       {
+        "sentence": "홀케이크는 **만든 날 포함해서 이틀까지** 판매할 수 있어요. [근거 3][근거 4]",
+        "cited_n": 4,
+        "chunk_quote": "만든 날 포함해서 이틀이니까 화요일까지 팔고",
+        "supports": true
+       },
+       {
+        "sentence": "예를 들어 어제(월요일) 만들었다면, 오늘(화요일)까지 판매 가능하고, 내일(수요일) 오전에 폐기하면 돼요. [근거 4]",
+        "cited_n": 4,
+        "chunk_quote": "만든 날 포함해서 이틀이니까 화요일까지 팔고, 수요일, 그러니까 사흘째 오전에 버려요.",
+        "supports": true
+       },
+       {
+        "sentence": "💡 **헷갈릴 때 기억법**: \"만든 날을 1일차로 포함해서 센다!\" [근거 3]",
+        "cited_n": 3,
+        "chunk_quote": "만든 날부터 센다는 것만 기억하시면 돼요.",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.001321
     }
    },
    {
@@ -10132,7 +13106,40 @@
      },
      "retrieval_final": {
       "M01": false
-     }
+     },
+     "fact_covered": {
+      "M01": false
+     },
+     "accuracy_full": false,
+     "fact_covered_relevant": {
+      "M01": false
+     },
+     "accuracy_full_relevant": false,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "M01",
+        "parts": [
+         {
+          "part": "도시락·삼각김밥·김밥은 유통기한 2시간 전에 포스에서 '폐기 등록'으로 스캔해 판매 불가 처리한다.",
+          "relevant_to_question": true,
+          "answer_quote": "",
+          "covered": false
+         },
+         {
+          "part": "실물은 창고의 폐기 박스에 넣는다.",
+          "relevant_to_question": true,
+          "answer_quote": "",
+          "covered": false
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_skipped": "no_tasks",
+     "judge_cost_usd": 0.000318
     }
    },
    {
@@ -10403,7 +13410,143 @@
      "retrieval_final": {
       "C02": false,
       "C03": true
-     }
+     },
+     "fact_covered": {
+      "C02": false,
+      "C03": false
+     },
+     "accuracy_full": false,
+     "fact_covered_relevant": {
+      "C02": false,
+      "C03": false
+     },
+     "accuracy_full_relevant": false,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "C02",
+        "parts": [
+         {
+          "part": "라스트오더는 21:30이다.",
+          "relevant_to_question": false,
+          "answer_quote": "",
+          "covered": false
+         }
+        ]
+       },
+       {
+        "fact_id": "C03",
+        "parts": [
+         {
+          "part": "에스프레소 머신 청소는 라스트오더 직후(21:30) 시작한다.",
+          "relevant_to_question": true,
+          "answer_quote": "마지막 주문 직후, 케이크 정리가 끝나고 바로 시작해요.",
+          "covered": false
+         },
+         {
+          "part": "전용 세제 1스푼을 넣는다.",
+          "relevant_to_question": true,
+          "answer_quote": "머신 전용 세제를 한 스푼 넣고",
+          "covered": true
+         },
+         {
+          "part": "백플러시를 5회 반복한다.",
+          "relevant_to_question": true,
+          "answer_quote": "백플러시를 5회 반복",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "마지막 주문 직후, 케이크 정리가 끝나고 바로 에스프레소 머신 청소를 시작한다.",
+        "source_quote": "케이크 정리하는 동안 아니 정리하고 나서, 바로 에스프레소 머신 청소를 시작해요. 마지막 주문 직후에 바로 들어가는 거예요.",
+        "supported": true
+       },
+       {
+        "claim": "머신 전용 세제를 한 스푼 넣고 백플러시를 5회 반복해야 한다.",
+        "source_quote": "머신 전용 세제를 한 스푼 넣고 백플시를 5회 반복한다. 5회를 모두 완료해야 한다.",
+        "supported": true
+       },
+       {
+        "claim": "백플러시 중에 소리가 크고 증기가 나온다.",
+        "source_quote": "백플러시 청소 시 증기가 발생하며 소리가 크다.",
+        "supported": true
+       },
+       {
+        "claim": "전용 세제 위치는 에스프레소 머신 주변이다.",
+        "source_quote": "머신 전용 세제 — 위치: 에스프레소 머신 주변 (정확한 위치 미언급)",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 5,
+     "citation_pairs": 9,
+     "citation_supported": 7,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "마지막 주문 직후, 케이크 정리가 끝나고 바로 시작해요.",
+        "cited_n": 2,
+        "chunk_quote": "",
+        "supports": false
+       },
+       {
+        "sentence": "마지막 주문 직후, 케이크 정리가 끝나고 바로 시작해요.",
+        "cited_n": 4,
+        "chunk_quote": "케이크 정리하는 동안 아니 정리하고 나서, 바로 에스프레소 머신 청소를 시작해요. 마지막 주문 직후에 바로 들어가는 거예요.",
+        "supports": true
+       },
+       {
+        "sentence": "머신 전용 세제를 한 스푼 넣고 백플러시를 5회 반복해야 해요.",
+        "cited_n": 1,
+        "chunk_quote": "머신 전용 세제 1스푼을 넣고 백플러시 5회 반",
+        "supports": true
+       },
+       {
+        "sentence": "머신 전용 세제를 한 스푼 넣고 백플러시를 5회 반복해야 해요.",
+        "cited_n": 2,
+        "chunk_quote": "머신 전용 세제를 한 스푼 넣고 백플러시를 5회 반복한다. 5회를 모두 완료해야 한다.",
+        "supports": true
+       },
+       {
+        "sentence": "5회를 다 채워야 하고, 중간에 끝내면 안 돼요.",
+        "cited_n": 2,
+        "chunk_quote": "머신 전용 세제를 한 스푼 넣고 백플러시를 5회 반복한다. 5회를 모두 완료해야 한다.",
+        "supports": true
+       },
+       {
+        "sentence": "5회를 다 채워야 하고, 중간에 끝내면 안 돼요.",
+        "cited_n": 3,
+        "chunk_quote": "",
+        "supports": false
+       },
+       {
+        "sentence": "백플러시 중에 소리가 크고 증기가 나오니까 놀라지 마세요!",
+        "cited_n": 1,
+        "chunk_quote": "백플러시 청소 시 증기가 발생하며 소리가 크다.",
+        "supports": true
+       },
+       {
+        "sentence": "백플러시 중에 소리가 크고 증기가 나오니까 놀라지 마세요!",
+        "cited_n": 5,
+        "chunk_quote": "이 머신 소리가 좀 크죠?",
+        "supports": true
+       },
+       {
+        "sentence": "전용 세제 위치는 에스프레소 머신 주변이라고 하는데, 정확한 위치는 문서에 없어요.",
+        "cited_n": 1,
+        "chunk_quote": "위치: 에스프레소 머신 주변 (정확한 위치 미언급)",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.002045
     }
    },
    {
@@ -10654,7 +13797,90 @@
      },
      "retrieval_final": {
       "C05": true
-     }
+     },
+     "fact_covered": {
+      "C05": true
+     },
+     "accuracy_full": true,
+     "fact_covered_relevant": {
+      "C05": true
+     },
+     "accuracy_full_relevant": true,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "C05",
+        "parts": [
+         {
+          "part": "개봉한 우유는 뚜껑에 개봉 시각을 적는다.",
+          "relevant_to_question": true,
+          "answer_quote": "개봉한 우유는 뚜껑에 적힌 개봉 시각 기준으로 **24시간이 지나면 즉시 폐기**해야 해요.",
+          "covered": true
+         },
+         {
+          "part": "개봉 후 24시간이 지나면 폐기한다.",
+          "relevant_to_question": true,
+          "answer_quote": "개봉한 우유는 뚜껑에 적힌 개봉 시각 기준으로 **24시간이 지나면 즉시 폐기**해야 해요.",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "개봉한 우유는 뚜껑에 적힌 개봉 시각 기준으로 24시간이 지나면 즉시 폐기해야 해요.",
+        "source_quote": "개봉 후 24시간이 경과한 우유가 있을 때 → 아깝더라도 즉시 폐기한다.",
+        "supported": true
+       },
+       {
+        "claim": "어제 낮에 개봉했다면 이미 24시간이 넘었을 가능성이 높으니, 뚜껑에 적힌 시각을 확인하고 24시간 지났으면 아깝더라도 바로 버려 주세요.",
+        "source_quote": "개봉 후 24시간이 경과한 우유가 있을 때 → 아깝더라도 즉시 폐기한다.",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 5,
+     "citation_pairs": 5,
+     "citation_supported": 5,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "개봉한 우유는 뚜껑에 적힌 개봉 시각 기준으로 **24시간이 지나면 즉시 폐기**해야 해요.",
+        "cited_n": 1,
+        "chunk_quote": "개봉 후 24시간이 경과한 우유가 있을 때 → 아깝더라도 즉시 폐기한다.",
+        "supports": true
+       },
+       {
+        "sentence": "개봉한 우유는 뚜껑에 적힌 개봉 시각 기준으로 **24시간이 지나면 즉시 폐기**해야 해요.",
+        "cited_n": 2,
+        "chunk_quote": "우유 다시 한번만요. 개봉하고 나서 뚜껑에 시각 적어 놓은 거 있죠? 거기서 스물네 시간이 지났으면 버려요. 하루가 지난 우유는 버리는 거예요.",
+        "supports": true
+       },
+       {
+        "sentence": "개봉한 우유는 뚜껑에 적힌 개봉 시각 기준으로 **24시간이 지나면 즉시 폐기**해야 해요.",
+        "cited_n": 3,
+        "chunk_quote": "우유는 개봉하면 뚜껑에 개봉한 시각을 적어 놔요. 그래서 뚜껑에 적힌 시각을 보고, 열고 나서 하루, 그러니까 스물네 시간이 지난 건 버려요.",
+        "supports": true
+       },
+       {
+        "sentence": "어제 낮에 개봉했다면 이미 24시간이 넘었을 가능성이 높으니, 뚜껑에 적힌 시각을 확인하고 24시간 지났으면 아깝더라도 바로 버려 주세요.",
+        "cited_n": 1,
+        "chunk_quote": "개봉 후 24시간이 경과한 우유가 있을 때 → 아깝더라도 즉시 폐기한다.",
+        "supports": true
+       },
+       {
+        "sentence": "어제 낮에 개봉했다면 이미 24시간이 넘었을 가능성이 높으니, 뚜껑에 적힌 시각을 확인하고 24시간 지났으면 아깝더라도 바로 버려 주세요.",
+        "cited_n": 2,
+        "chunk_quote": "우유 다시 한번만요. 개봉하고 나서 뚜껑에 시각 적어 놓은 거 있죠? 거기서 스물네 시간이 지났으면 버려요. 하루가 지난 우유는 버리는 거예요.",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.001546
     }
    },
    {
@@ -10905,7 +14131,95 @@
      },
      "retrieval_final": {
       "B01": true
-     }
+     },
+     "fact_covered": {
+      "B01": true
+     },
+     "accuracy_full": true,
+     "fact_covered_relevant": {
+      "B01": true
+     },
+     "accuracy_full_relevant": true,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "B01",
+        "parts": [
+         {
+          "part": "마감 후 남은 빵 중 생크림·크림이 들어간 제품은 전량 폐기한다.",
+          "relevant_to_question": true,
+          "answer_quote": "**크림빵** → 전량 폐기",
+          "covered": true
+         },
+         {
+          "part": "식빵·바게트는 다음 날 오전 '어제빵' 코너에서 30% 할인해 판매한다.",
+          "relevant_to_question": true,
+          "answer_quote": "**식빵·바게트** → 버리지 말고 따로 보관, 다음 날 아침 '어제빵 코너'에 30% 할인으로 진열",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "크림빵은 전량 폐기한다.",
+        "source_quote": "크림·생크림 들어간 빵(크림빵, 생크림 롤 등)은 전량 폐기한다.",
+        "supported": true
+       },
+       {
+        "claim": "식빵·바게트는 버리지 말고 따로 보관하여 다음 날 아침 '어제빵 코너'에 30% 할인으로 진열한다.",
+        "source_quote": "식빵·바게트는 버리지 않고 따로 보관하여 다음 날 아침 '어제빵 코너'에 30% 할인으로 내놓는다.",
+        "supported": true
+       },
+       {
+        "claim": "폐기하기 전에 태블릿 '폐기 등록' 화면에 품목·수량·사유를 입력해야 한다.",
+        "source_quote": "폐기 전 반드시 태블릿 '폐기 등록' 화면에 품목·수량·사유를 입력해야 한다.",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 5,
+     "citation_pairs": 5,
+     "citation_supported": 3,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "크림빵 → 전량 폐기 [근거 1][근거 2]",
+        "cited_n": 1,
+        "chunk_quote": "크림·생크림 들어간 빵(크림빵, 생크림 롤 등)은 전량 폐기한다.",
+        "supports": true
+       },
+       {
+        "sentence": "크림빵 → 전량 폐기 [근거 1][근거 2]",
+        "cited_n": 2,
+        "chunk_quote": "",
+        "supports": false
+       },
+       {
+        "sentence": "식빵·바게트 → 버리지 말고 따로 보관, 다음 날 아침 '어제빵 코너'에 30% 할인으로 진열 [근거 1][근거 5]",
+        "cited_n": 1,
+        "chunk_quote": "식빵·바게트는 버리지 않고 따로 보관하여 다음 날 아침 '어제빵 코너'에 30% 할인으로 내놓는다.",
+        "supports": true
+       },
+       {
+        "sentence": "식빵·바게트 → 버리지 말고 따로 보관, 다음 날 아침 '어제빵 코너'에 30% 할인으로 진열 [근거 1][근거 5]",
+        "cited_n": 5,
+        "chunk_quote": "생크림이나 크림 들어간 빵은요, 그날 남으면 전부 버려요... 식빵이랑 바게트는 안 버려요. 다음 날 오전에 어제빵 코너에서 팔아요. 삼십 퍼센트 할인해서요.",
+        "supports": true
+       },
+       {
+        "sentence": "그리고 폐기하기 전에 태블릿 '폐기 등록' 화면에서 품목·수량·사유를 꼭 입력해야 해요. [근거 2]",
+        "cited_n": 2,
+        "chunk_quote": "",
+        "supports": false
+       }
+      ]
+     },
+     "judge_cost_usd": 0.001545
     }
    },
    {
@@ -11165,7 +14479,101 @@
      },
      "retrieval_final": {
       "B06": true
-     }
+     },
+     "fact_covered": {
+      "B06": false
+     },
+     "accuracy_full": false,
+     "fact_covered_relevant": {
+      "B06": true
+     },
+     "accuracy_full_relevant": true,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "B06",
+        "parts": [
+         {
+          "part": "진열 트레이는 전부 빼서 세척실에서 닦고",
+          "relevant_to_question": false,
+          "answer_quote": "",
+          "covered": false
+         },
+         {
+          "part": "빵 집게는 소독수에 30분 담가 둔다",
+          "relevant_to_question": true,
+          "answer_quote": "빵 집게는 소독수에 30분 담가 두는 거예요.",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "빵 집게는 소독수에 30분 담가 두는 거예요.",
+        "source_quote": "빵 집게를 소독수에 30분 동안 담가 놓는다.",
+        "supported": true
+       },
+       {
+        "claim": "세척실로 가져가서 소독수에 담그면 돼요.",
+        "source_quote": "하나도 남기지 말고 다 빼서 세척실로 가져가요. 세척실에서 닦아요. 그리고 빵 집게 있잖아요. 집게는 소독수에 담가 놔요. 삼십 분 동안 담가 두는 거예요.",
+        "supported": true
+       },
+       {
+        "claim": "마감 순서상 트레이랑 집게 처리는 문 잠그고 셔터 내린 다음 단계예요.",
+        "source_quote": "스티커 붙이고, 영업 끝나면 폐기 분류하고 폐기 등록하고, 오븐 문 열어 식히면서 문 잠그고 셔터, 그다음에 트레이랑 집게, 마지막에 정산이요.",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 5,
+     "citation_pairs": 6,
+     "citation_supported": 6,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "빵 집게는 소독수에 30분 담가 두는 거예요.",
+        "cited_n": 1,
+        "chunk_quote": "빵 집게를 소독수에 30분 동안 담가 놓는다.",
+        "supports": true
+       },
+       {
+        "sentence": "빵 집게는 소독수에 30분 담가 두는 거예요.",
+        "cited_n": 2,
+        "chunk_quote": "- **빵 집게** — 위치: 세척실 _(영상 7:36~7:56)_\n  - 소독수에 30분 담가 소독",
+        "supports": true
+       },
+       {
+        "sentence": "빵 집게는 소독수에 30분 담가 두는 거예요.",
+        "cited_n": 3,
+        "chunk_quote": "집게는 소독수에 담가 놔요. 삼십 분 동안 담가 두는 거예요.",
+        "supports": true
+       },
+       {
+        "sentence": "세척실로 가져가서 소독수에 담그면 돼요.",
+        "cited_n": 2,
+        "chunk_quote": "- **빵 집게** — 위치: 세척실 _(영상 7:36~7:56)_\n  - 소독수에 30분 담가 소독",
+        "supports": true
+       },
+       {
+        "sentence": "세척실로 가져가서 소독수에 담그면 돼요.",
+        "cited_n": 3,
+        "chunk_quote": "진열 트레이는 전부 빼요... 세척실로 가져가요. 세척실에서 닦아요. 그리고 빵 집게 있잖아요. 집게는 소독수에 담가 놔요.",
+        "supports": true
+       },
+       {
+        "sentence": "참고로 마감 순서상 트레이랑 집게 처리는 문 잠그고 셔터 내린 다음 단계예요.",
+        "cited_n": 4,
+        "chunk_quote": "스티커 붙이고, 영업 끝나면 폐기 분류하고 폐기 등록하고, 오븐 문 열어 식히면서 문 잠그고 셔터, 그다음에 트레이랑 집게, 마지막에 정산이요.",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.001791
     }
    },
    {
@@ -11434,7 +14842,105 @@
      },
      "retrieval_final": {
       "M04": true
-     }
+     },
+     "fact_covered": {
+      "M04": false
+     },
+     "accuracy_full": false,
+     "fact_covered_relevant": {
+      "M04": true
+     },
+     "accuracy_full_relevant": true,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "M04",
+        "parts": [
+         {
+          "part": "02:00에 음료가 입고된다.",
+          "relevant_to_question": false,
+          "answer_quote": "",
+          "covered": false
+         },
+         {
+          "part": "수량을 검수한 뒤 냉장고 뒤쪽부터 채운다(먼저 들어온 것이 앞으로).",
+          "relevant_to_question": true,
+          "answer_quote": "반드시 **뒤쪽부터** 채워야 해요.\n\n새로 들어온 음료를 뒤에 넣어서, 먼저 들어온 음료가 앞으로 나오도록 해야 해요.",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "반드시 뒤쪽부터 채워야 해요.",
+        "source_quote": "냉장고에 음료를 채울 때 새로 들어온 상품을 앞쪽에 두면 안 된다. 반드시 뒤쪽부터 채워 먼저 들어온 상품이 앞으로 나오도록 한다(선입선출).",
+        "supported": true
+       },
+       {
+        "claim": "새로 들어온 음료를 뒤에 넣어서, 먼저 들어온 음료가 앞으로 나오도록 해야 해요.",
+        "source_quote": "냉장고에 음료를 채울 때 새로 들어온 상품을 앞쪽에 두면 안 된다. 반드시 뒤쪽부터 채워 먼저 들어온 상품이 앞으로 나오도록 한다(선입선출).",
+        "supported": true
+       },
+       {
+        "claim": "선입선출 원칙이라고 해요.",
+        "source_quote": "반드시 뒤쪽부터 채워 먼저 들어온 상품이 앞으로 나오도록 한다(선입선출).",
+        "supported": true
+       },
+       {
+        "claim": "새로 온 걸 앞에 두면 안 된다.",
+        "source_quote": "새로 들어온 상품을 앞쪽에 두면 안 된다.",
+        "supported": true
+       },
+       {
+        "claim": "음료 입고 전에 수량 확인(검수) 먼저 하고 냉장고를 채우는 순서.",
+        "source_quote": "새벽 2시에 음료가 입고된다. 먼저 수량을 확인(검수)한다. 검수 후 냉장고를 채울 때는 뒤쪽부터 채워 먼저 들어온 상품이 앞으로 나오도록 한다.",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 5,
+     "citation_pairs": 5,
+     "citation_supported": 5,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "새로 들어온 음료를 뒤에 넣어서, 먼저 들어온 음료가 앞으로 나오도록 해야 해요. 이걸 선입선출 원칙이라고 해요.",
+        "cited_n": 1,
+        "chunk_quote": "새로 들어온 상품을 앞쪽에 두면 안 된다. 반드시 뒤쪽부터 채워 먼저 들어온 상품이 앞으로 나오도록 한다(선입선출).",
+        "supports": true
+       },
+       {
+        "sentence": "새로 들어온 음료를 뒤에 넣어서, 먼저 들어온 음료가 앞으로 나오도록 해야 해요. 이걸 선입선출 원칙이라고 해요.",
+        "cited_n": 2,
+        "chunk_quote": "음료 입고 시 뒤쪽부터 채워 선입선출 원칙을 지킨다.",
+        "supports": true
+       },
+       {
+        "sentence": "새로 온 걸 앞에 두면 안 된다는 점, 꼭 기억해 주세요!",
+        "cited_n": 4,
+        "chunk_quote": "냉장고에 채우는데, 냉장고 뒤쪽부터 채워요... 새로 온 걸 앞에 놓으면 안 돼요.",
+        "supports": true
+       },
+       {
+        "sentence": "새로 온 걸 앞에 두면 안 된다는 점, 꼭 기억해 주세요!",
+        "cited_n": 5,
+        "chunk_quote": "음료는 새로 온 걸 어디에 넣는다고 했죠? 뒤쪽이요... 새로 온 걸 앞에 놓으면 안 돼요.",
+        "supports": true
+       },
+       {
+        "sentence": "참고로, 음료 입고 전에 수량 확인(검수) 먼저 하고 냉장고를 채우는 순서예요.",
+        "cited_n": 3,
+        "chunk_quote": "검수 후 냉장고를 채울 때는 뒤쪽부터 채워 먼저 들어온 상품이 앞쪽으로 나오도록 한다(선입선출).",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.00204
     }
    },
    {
@@ -11685,7 +15191,96 @@
      },
      "retrieval_final": {
       "M03": true
-     }
+     },
+     "fact_covered": {
+      "M03": false
+     },
+     "accuracy_full": false,
+     "fact_covered_relevant": {
+      "M03": false
+     },
+     "accuracy_full_relevant": false,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "M03",
+        "parts": [
+         {
+          "part": "교대할 때 시재 점검을 한다.",
+          "relevant_to_question": true,
+          "answer_quote": "",
+          "covered": false
+         },
+         {
+          "part": "차액이 나오면 교대자와 같이 다시 세고,",
+          "relevant_to_question": true,
+          "answer_quote": "앞 근무자랑 같이 다시 한 번 더 세보세요.",
+          "covered": true
+         },
+         {
+          "part": "그래도 차이가 있으면 근무일지에 금액을 적는다.",
+          "relevant_to_question": true,
+          "answer_quote": "그래도 차이가 나면 얼마 차이 나는지 금액을 근무일지에 적으면 돼요.",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "앞 근무자랑 같이 다시 한 번 더 세보세요.",
+        "source_quote": "그럼 교대하는 분이랑 같이 다시 세요. 혼자 다시 세는 게 아니라 같이요.",
+        "supported": true
+       },
+       {
+        "claim": "얼마 차이 나는지 금액을 근무일지에 적으면 돼요.",
+        "source_quote": "그때는 근무일지에 금액을 적어요. 얼마 차이 나는지 그 금액이요.",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 5,
+     "citation_pairs": 5,
+     "citation_supported": 5,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "앞 근무자랑 같이 다시 한 번 더 세보세요.",
+        "cited_n": 1,
+        "chunk_quote": "앞 근무자와 함께 다시 센다.",
+        "supports": true
+       },
+       {
+        "sentence": "앞 근무자랑 같이 다시 한 번 더 세보세요.",
+        "cited_n": 2,
+        "chunk_quote": "앞 근무자랑 같이 다시 세요.",
+        "supports": true
+       },
+       {
+        "sentence": "그래도 차이가 나면 얼마 차이 나는지 금액을 근무일지에 적으면 돼요.",
+        "cited_n": 1,
+        "chunk_quote": "차액을 근무일지에 기록한다.",
+        "supports": true
+       },
+       {
+        "sentence": "그래도 차이가 나면 얼마 차이 나는지 금액을 근무일지에 적으면 돼요.",
+        "cited_n": 2,
+        "chunk_quote": "그때는 근무일지에 금액을 적어요.",
+        "supports": true
+       },
+       {
+        "sentence": "그래도 차이가 나면 얼마 차이 나는지 금액을 근무일지에 적으면 돼요.",
+        "cited_n": 3,
+        "chunk_quote": "그래도 안 맞으면 근무일지에 금액을 적어요.",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.001399
     }
    },
    {
@@ -11936,7 +15531,85 @@
      },
      "retrieval_final": {
       "C06": true
-     }
+     },
+     "fact_covered": {
+      "C06": false
+     },
+     "accuracy_full": false,
+     "fact_covered_relevant": {
+      "C06": true
+     },
+     "accuracy_full_relevant": true,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "C06",
+        "parts": [
+         {
+          "part": "마감 정산은 포스의 '마감정산' 버튼으로 한다.",
+          "relevant_to_question": false,
+          "answer_quote": "",
+          "covered": false
+         },
+         {
+          "part": "현금은 금고의 흰 봉투에 넣는다.",
+          "relevant_to_question": false,
+          "answer_quote": "",
+          "covered": false
+         },
+         {
+          "part": "차액이 1,000원 이상이면 매장 단톡방에 금액을 올린다.",
+          "relevant_to_question": true,
+          "answer_quote": "차액이 **1,000원 이상** 날 경우, **매장 단톡방**에 차액 금액을 올리면 돼요.",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "차액이 1,000원 이상 날 경우, 매장 단톡방에 차액 금액을 올리면 된다.",
+        "source_quote": "정산 금액과 실제 현금이 1,000원 이상 차이 날 경우 차액 금액을 올림 _(영상 7:10~7:41)_",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 5,
+     "citation_pairs": 4,
+     "citation_supported": 4,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "차액이 **1,000원 이상** 날 경우, **매장 단톡방**에 차액 금액을 올리면 돼요.",
+        "cited_n": 1,
+        "chunk_quote": "- **매장 단톡방** (마감 정산 차액 보고 채널) — 정산 금액과 실제 현금이 1,000원 이상 차이 날 경우 차액 금액을 올림",
+        "supports": true
+       },
+       {
+        "sentence": "차액이 **1,000원 이상** 날 경우, **매장 단톡방**에 차액 금액을 올리면 돼요.",
+        "cited_n": 2,
+        "chunk_quote": "정산 금액과 실제 현금이 1,000원 이상 차이 날 경우 매장 단톡방에 차액 금액을 올린다.",
+        "supports": true
+       },
+       {
+        "sentence": "차액이 **1,000원 이상** 날 경우, **매장 단톡방**에 차액 금액을 올리면 돼요.",
+        "cited_n": 4,
+        "chunk_quote": "[06:48] ... 차액이 천 원 이상이면 매장 단톡방에 금액을 올려 주세요.",
+        "supports": true
+       },
+       {
+        "sentence": "얼마 차이 나는지 숫자로 적어서 올려주세요.",
+        "cited_n": 4,
+        "chunk_quote": "[06:48] ... 차액이 천 원 이상이면 매장 단톡방에 금액을 올려 주세요.",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.001344
     }
    },
    {
@@ -12187,7 +15860,78 @@
      },
      "retrieval_final": {
       "B05": true
-     }
+     },
+     "fact_covered": {
+      "B05": true
+     },
+     "accuracy_full": true,
+     "fact_covered_relevant": {
+      "B05": true
+     },
+     "accuracy_full_relevant": true,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "B05",
+        "parts": [
+         {
+          "part": "마감 정산 후 금고에 시재 10만 원만 남기고",
+          "relevant_to_question": true,
+          "answer_quote": "금고에 시재 10만 원만 남기고",
+          "covered": true
+         },
+         {
+          "part": "나머지 현금은 입금 봉투에 넣는다",
+          "relevant_to_question": true,
+          "answer_quote": "나머지 현금은 전부 입금 봉투에 넣으면 돼요.",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "금고에 시재 10만 원만 남기고, 나머지 현금은 전부 입금 봉투에 넣는다.",
+        "source_quote": "정산을 끝내고 나면 금고에 시재를 남겨 놔요. 십만 원만 남겨요. 금고에는 십만 원만 두고, 나머지 현금은 전부 입금 봉투에 넣어요.",
+        "supported": true
+       },
+       {
+        "claim": "10만 원 딱 맞춰 남기는 거예요. 더 많이 남겨두면 안 돼요.",
+        "source_quote": "시재는 얼마 남기냐고요? 십만 원이요. 금고에 십만 원만 남기고 나머지는 입금 봉투에 다 넣어요. 십만 원보다 많으면 안 되냐고 물으시면… 네, 십만 원만이에요.",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 5,
+     "citation_pairs": 3,
+     "citation_supported": 3,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "전부 넣는 건 아니에요. **금고에 시재 10만 원만 남기고**, 나머지 현금은 전부 입금 봉투에 넣으면 돼요.",
+        "cited_n": 1,
+        "chunk_quote": "정산을 완료한 후 금고에 시재 10만 원만 남기고, 나머지 현금은 전부 입금 봉투에 넣는다.",
+        "supports": true
+       },
+       {
+        "sentence": "전부 넣는 건 아니에요. **금고에 시재 10만 원만 남기고**, 나머지 현금은 전부 입금 봉투에 넣으면 돼요.",
+        "cited_n": 2,
+        "chunk_quote": "- **금고** _(영상 7:43~8:28)_\n  - 마감 정산 후 시재 10만 원만 보관, 나머지는 입금 봉투에 넣음",
+        "supports": true
+       },
+       {
+        "sentence": "10만 원 딱 맞춰 남기는 거예요. 더 많이 남겨두면 안 돼요.",
+        "cited_n": 5,
+        "chunk_quote": "[08:08] 시재는 얼마 남기냐고요? 십만 원이요. 금고에 십만 원만 남기고 나머지는 입금 봉투에 다 넣어요. 십만 원보다 많으면 안 되냐고 물으시면… 네, 십만 원만이에요.",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.001202
     }
    },
    {
@@ -12447,7 +16191,114 @@
      },
      "retrieval_final": {
       "G03": true
-     }
+     },
+     "fact_covered": {
+      "G03": true
+     },
+     "accuracy_full": true,
+     "fact_covered_relevant": {
+      "G03": true
+     },
+     "accuracy_full_relevant": true,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "G03",
+        "parts": [
+         {
+          "part": "락커에서 나온 분실물은 프런트 분실물함에 넣고 날짜를 적는다.",
+          "relevant_to_question": true,
+          "answer_quote": "프런트에 있는 **분실물함**에 넣어 주세요.\n\n넣을 때 **발견한 날짜**를 꼭 적어 두세요.",
+          "covered": true
+         },
+         {
+          "part": "7일 보관 후 폐기한다.",
+          "relevant_to_question": true,
+          "answer_quote": "**7일 보관 후 폐기**예요. 매일 오전 11시 30분쯤 분실물함을 정리하면서, 날짜 보고 7일 지난 건 그때 버리시면 돼요.",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": true,
+     "unsupported_claims": [
+      "매일 오전 11시 30분쯤 분실물함을 정리하면서, 날짜 보고 7일 지난 건 그때 버리시면 돼요."
+     ],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "프런트에 있는 분실물함에 넣어 주세요.",
+        "source_quote": "- **프런트 분실물함** — 위치: 프런트 _(영상 7:47~8:37)_\n- 락커에서 발견된 분실물을 날짜 기재 후 보관. 7일 경과 시 폐기",
+        "supported": true
+       },
+       {
+        "claim": "발견한 날짜를 꼭 적어 두세요.",
+        "source_quote": "[08:13] 분실물은 어디에 넣냐고요? 프런트 분실물함에요. 날짜를 적어서 넣고요, 칠 일 보관하고 나면 폐기해요.",
+        "supported": true
+       },
+       {
+        "claim": "7일 보관 후 폐기",
+        "source_quote": "[08:13] 분실물은 어디에 넣냐고요? 프런트 분실물함에요. 날짜를 적어서 넣고요, 칠 일 보관하고 나면 폐기해요.",
+        "supported": true
+       },
+       {
+        "claim": "매일 오전 11시 30분쯤 분실물함을 정리하면서, 날짜 보고 7일 지난 건 그때 버리시면 돼요.",
+        "source_quote": "",
+        "supported": false
+       }
+      ]
+     },
+     "faithfulness_chunks": 5,
+     "citation_pairs": 7,
+     "citation_supported": 7,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "프런트에 있는 **분실물함**에 넣어 주세요.",
+        "cited_n": 1,
+        "chunk_quote": "- **프런트 분실물함** — 위치: 프런트 _(영상 7:47~8:37)_",
+        "supports": true
+       },
+       {
+        "sentence": "프런트에 있는 **분실물함**에 넣어 주세요.",
+        "cited_n": 4,
+        "chunk_quote": "락커에서 나온 분실물은 프런트 분실물함에 넣어요.",
+        "supports": true
+       },
+       {
+        "sentence": "넣을 때 **발견한 날짜**를 꼭 적어 두세요.",
+        "cited_n": 1,
+        "chunk_quote": "날짜 기재 후 보관.",
+        "supports": true
+       },
+       {
+        "sentence": "넣을 때 **발견한 날짜**를 꼭 적어 두세요.",
+        "cited_n": 4,
+        "chunk_quote": "날짜를 적어요.",
+        "supports": true
+       },
+       {
+        "sentence": "**7일 보관 후 폐기**예요. 매일 오전 11시 30분쯤 분실물함을 정리하면서, 날짜 보고 7일 지난 건 그때 버리시면 돼요.",
+        "cited_n": 1,
+        "chunk_quote": "7일 경과 시 폐기",
+        "supports": true
+       },
+       {
+        "sentence": "**7일 보관 후 폐기**예요. 매일 오전 11시 30분쯤 분실물함을 정리하면서, 날짜 보고 7일 지난 건 그때 버리시면 돼요.",
+        "cited_n": 3,
+        "chunk_quote": "칠 일 보관하고 폐기해요.",
+        "supports": true
+       },
+       {
+        "sentence": "**7일 보관 후 폐기**예요. 매일 오전 11시 30분쯤 분실물함을 정리하면서, 날짜 보고 7일 지난 건 그때 버리시면 돼요.",
+        "cited_n": 5,
+        "chunk_quote": "열한 시 반쯤에... 칠 일 지난 걸 버려요.",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.001665
     }
    },
    {
@@ -12689,7 +16540,85 @@
      },
      "retrieval_final": {
       "G05": true
-     }
+     },
+     "fact_covered": {
+      "G05": true
+     },
+     "accuracy_full": true,
+     "fact_covered_relevant": {
+      "G05": true
+     },
+     "accuracy_full_relevant": true,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "G05",
+        "parts": [
+         {
+          "part": "'점검중' 팻말을 걸다",
+          "relevant_to_question": true,
+          "answer_quote": "'점검중' 팻말을 해당 런닝머신에 걸기",
+          "covered": true
+         },
+         {
+          "part": "사진을 찍다",
+          "relevant_to_question": true,
+          "answer_quote": "사진 촬영하기",
+          "covered": true
+         },
+         {
+          "part": "직원 단톡방에 사진을 올리다",
+          "relevant_to_question": true,
+          "answer_quote": "직원 단톡방에 사진 올리기",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": true,
+     "unsupported_claims": [
+      "이상이 생긴 기구는 바로 사용 중단시켜야 한다."
+     ],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "이상이 생긴 기구는 바로 사용 중단시켜야 한다.",
+        "source_quote": "",
+        "supported": false
+       },
+       {
+        "claim": "'점검중' 팻말을 해당 런닝머신에 걸어야 한다.",
+        "source_quote": "운동 기구에 이상이 생겼을 때 → 해당 기구에 '점검중' 팻말을 걸고, 사진을 찍어 직원 단톡방에 올린다. 순서: 팻말 부착 → 사진 촬영 → 단톡방",
+        "supported": true
+       },
+       {
+        "claim": "사진을 촬영하고 직원 단톡방에 올려야 한다.",
+        "source_quote": "운동 기구에 이상이 생겼을 때 → 해당 기구에 '점검중' 팻말을 걸고, 사진을 찍어 직원 단톡방에 올린다. 순서: 팻말 부착 → 사진 촬영 → 단톡방",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 5,
+     "citation_pairs": 2,
+     "citation_supported": 2,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "순서는 이렇게 하시면 돼요. [근거 1][근거 4]",
+        "cited_n": 1,
+        "chunk_quote": "순서: 팻말 부착 → 사진 촬영 → 단톡방",
+        "supports": true
+       },
+       {
+        "sentence": "순서는 이렇게 하시면 돼요. [근거 1][근거 4]",
+        "cited_n": 4,
+        "chunk_quote": "그 기구에 점검중 팻말을 걸어요. 그러고 나서 사진을 찍고요, 직원 단톡방에 그 사진을 올려요.",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.001428
     }
    },
    {
@@ -12931,7 +16860,78 @@
      },
      "retrieval_final": {
       "G06": true
-     }
+     },
+     "fact_covered": {
+      "G06": false
+     },
+     "accuracy_full": false,
+     "fact_covered_relevant": {
+      "G06": false
+     },
+     "accuracy_full_relevant": false,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "G06",
+        "parts": [
+         {
+          "part": "회원 등록이 안 된 사람이 들어오면",
+          "relevant_to_question": true,
+          "answer_quote": "",
+          "covered": false
+         },
+         {
+          "part": "1일권(1만 원) 결제를 안내한다.",
+          "relevant_to_question": true,
+          "answer_quote": "일일 이용권(1일권, 10,000원)을 안내하고 결제를 유도하면 돼요.",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "일일 이용권(1일권, 10,000원)을 안내하고 결제를 유도하면 돼요.",
+        "source_quote": "- **미등록 회원(비회원)이 입장하려 할 때** → 일일 이용권(1일권, 10,000원)을 안내하고 결제를 유도한다. _(영상 6:50~7:33)_",
+        "supported": true
+       },
+       {
+        "claim": "결제는 그분이 직접 하시는 거고, 직원은 안내만 하면 됩니다.",
+        "source_quote": "[06:50] 또 가끔 사람이 들어오는데 회원이 아닌 것 같을 때가 있어요. 등록이 안 된 분이 들어오시면 일일 이용권을 안내해요. 일 일권이요, 만 원이에요. 만 원 결제하시라고 안내하는 거예요. 1일권 만 원이요.\n[07:13] 회원 아닌 분이 오시면 일일 이용권 안내하는 거 기억나죠? 만 원이에요. 결제는 그분이 하시는 거고 저는 안내를 해요.",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 5,
+     "citation_pairs": 3,
+     "citation_supported": 3,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "일일 이용권(1일권, 10,000원)을 안내하고 결제를 유도하면 돼요.",
+        "cited_n": 1,
+        "chunk_quote": "- **미등록 회원(비회원)이 입장하려 할 때** → 일일 이용권(1일권, 10,000원)을 안내하고 결제를 유도한다.",
+        "supports": true
+       },
+       {
+        "sentence": "일일 이용권(1일권, 10,000원)을 안내하고 결제를 유도하면 돼요.",
+        "cited_n": 2,
+        "chunk_quote": "[06:50] 또 가끔 사람이 들어오는데 회원이 아닌 것 같을 때가 있어요. 등록이 안 된 분이 들어오시면 일일 이용권을 안내해요. 일 일권이요, 만 원이에요. 만 원 결제하시라고 안내하는 거예요.",
+        "supports": true
+       },
+       {
+        "sentence": "결제는 그분이 직접 하시는 거고, 직원은 안내만 하면 됩니다.",
+        "cited_n": 2,
+        "chunk_quote": "[07:13] 회원 아닌 분이 오시면 일일 이용권 안내하는 거 기억나죠? 만 원이에요. 결제는 그분이 하시는 거고 저는 안내를 해요.",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.00126
     }
    },
    {
@@ -13191,7 +17191,84 @@
      },
      "retrieval_final": {
       "L02": true
-     }
+     },
+     "fact_covered": {
+      "L02": true
+     },
+     "accuracy_full": true,
+     "fact_covered_relevant": {
+      "L02": true
+     },
+     "accuracy_full_relevant": true,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "L02",
+        "parts": [
+         {
+          "part": "트럭에는 도착지가 먼 짐을 먼저(안쪽), 가까운 짐을 나중에(입구 쪽) 싣는다.",
+          "relevant_to_question": true,
+          "answer_quote": "**도착지가 먼 짐을 먼저 트럭 안쪽에**, 도착지가 가까운 짐은 나중에 입구 쪽에 실어야 해요.",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "도착지가 먼 짐을 먼저 트럭 안쪽에, 도착지가 가까운 짐은 나중에 입구 쪽에 실어야 한다.",
+        "source_quote": "트럭에 짐을 실을 때는 도착지가 먼 짐을 먼저 안쪽에, 도착지가 가까운 짐은 나중에 입구 쪽에 싣는다.",
+        "supported": true
+       },
+       {
+        "claim": "적재 순서는 반드시 준수해야 한다.",
+        "source_quote": "적재 순서: 도착지가 먼 짐은 트럭 안쪽, 가까운 짐은 입구 쪽. 순서를 반드시 지킨다.",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 5,
+     "citation_pairs": 5,
+     "citation_supported": 5,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "도착지가 먼 짐을 먼저 트럭 안쪽에, 도착지가 가까운 짐은 나중에 입구 쪽에 실어야 해요.",
+        "cited_n": 1,
+        "chunk_quote": "트럭에 짐을 실을 때는 도착지가 먼 짐을 먼저 안쪽에, 도착지가 가까운 짐은 나중에 입구 쪽에 싣는다.",
+        "supports": true
+       },
+       {
+        "sentence": "도착지가 먼 짐을 먼저 트럭 안쪽에, 도착지가 가까운 짐은 나중에 입구 쪽에 실어야 해요.",
+        "cited_n": 2,
+        "chunk_quote": "적재 순서: 도착지가 먼 짐은 트럭 안쪽, 가까운 짐은 입구 쪽. 순서를 반드시 지킨다.",
+        "supports": true
+       },
+       {
+        "sentence": "아무 순서나 넣으면 안 되고, 적재 순서는 반드시 준수해야 합니다.",
+        "cited_n": 2,
+        "chunk_quote": "순서를 반드시 지킨다.",
+        "supports": true
+       },
+       {
+        "sentence": "💡 기억법: 먼 짐 → 안쪽 / 가까운 짐 → 입구 쪽",
+        "cited_n": 3,
+        "chunk_quote": "트럭에 실을 때는 도착지가 먼 짐을 먼저 실어요. 안쪽으로요. 그리고 가까운 데로 가는 짐은 나중에, 입구 쪽에 실어요.",
+        "supports": true
+       },
+       {
+        "sentence": "💡 기억법: 먼 짐 → 안쪽 / 가까운 짐 → 입구 쪽",
+        "cited_n": 4,
+        "chunk_quote": "도착지가 먼 짐은 안쪽이고, 가까운 짐이 입구 쪽이에요.",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.001327
     }
    },
    {
@@ -13433,7 +17510,67 @@
      },
      "retrieval_final": {
       "L03": true
-     }
+     },
+     "fact_covered": {
+      "L03": false
+     },
+     "accuracy_full": false,
+     "fact_covered_relevant": {
+      "L03": false
+     },
+     "accuracy_full_relevant": false,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "L03",
+        "parts": [
+         {
+          "part": "박스마다 바코드를 스캔한다.",
+          "relevant_to_question": true,
+          "answer_quote": "",
+          "covered": false
+         },
+         {
+          "part": "'이중 스캔' 경고가 뜨면 그 박스를 옆으로 빼고 반장을 부른다.",
+          "relevant_to_question": true,
+          "answer_quote": "① 그 박스를 옆으로 빼놓으세요.\n② 반장님을 바로 호출하세요.",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "When a double-scan warning appears on the scanner, you should move the box aside and call the leader.",
+        "source_quote": "스캐너에서 이중 스캔 경고가 뜨면 해당 박스를 옆으로 빼놓고 반장을 호출한다. _(영상 4:08~4:39)_",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 5,
+     "citation_pairs": 2,
+     "citation_supported": 2,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "임의로 처리하거나 그냥 넘기면 안 돼요.",
+        "cited_n": 1,
+        "chunk_quote": "임의로 처리하지 않는다.",
+        "supports": true
+       },
+       {
+        "sentence": "임의로 처리하거나 그냥 넘기면 안 돼요.",
+        "cited_n": 2,
+        "chunk_quote": "스캐너에서 이중 스캔 경고가 뜨면 해당 박스를 옆으로 빼놓고 반장을 호출한다.",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.001139
     }
    },
    {
@@ -13675,7 +17812,88 @@
      },
      "retrieval_final": {
       "L04": true
-     }
+     },
+     "fact_covered": {
+      "L04": true
+     },
+     "accuracy_full": true,
+     "fact_covered_relevant": {
+      "L04": true
+     },
+     "accuracy_full_relevant": true,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "L04",
+        "parts": [
+         {
+          "part": "파손된 박스는 '이상화물' 구역으로 옮기고 사진을 찍은 뒤 스캐너에서 '이상'으로 등록한다.",
+          "relevant_to_question": true,
+          "answer_quote": "1. **이상화물 구역으로 옮기기**\n2. **사진 찍기**\n3. **스캐너 메뉴에서 '이상'으로 등록하기**",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "파손된 박스는 이상화물 구역으로 옮겨야 한다.",
+        "source_quote": "파손된 박스가 발견될 때 → 이상화물 구역으로 옮긴 뒤 사진을 찍고, 스캐너 메뉴에서 '이상'으로 등록한다.",
+        "supported": true
+       },
+       {
+        "claim": "파손된 박스는 사진을 찍어야 한다.",
+        "source_quote": "파손된 박스가 발견될 때 → 이상화물 구역으로 옮긴 뒤 사진을 찍고, 스캐너 메뉴에서 '이상'으로 등록한다.",
+        "supported": true
+       },
+       {
+        "claim": "파손된 박스는 스캐너 메뉴에서 '이상'으로 등록해야 한다.",
+        "source_quote": "파손된 박스가 발견될 때 → 이상화물 구역으로 옮긴 뒤 사진을 찍고, 스캐너 메뉴에서 '이상'으로 등록한다.",
+        "supported": true
+       },
+       {
+        "claim": "파손된 박스 처리 순서는 옮기기 → 사진 찍기 → 이상 등록 순서이다.",
+        "source_quote": "순서(옮기기 → 사진 → 이상 등록)를 지킨다.",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 5,
+     "citation_pairs": 4,
+     "citation_supported": 4,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "파손된 박스는 아래 순서대로 처리해야 해요.",
+        "cited_n": 1,
+        "chunk_quote": "- **파손된 박스가 발견될 때** → 이상화물 구역으로 옮긴 뒤 사진을 찍고, 스캐너 메뉴에서 '이상'으로 등록한다. 순서(옮기기 → 사진 → 이상 등록)를 지킨다.",
+        "supports": true
+       },
+       {
+        "sentence": "파손된 박스는 아래 순서대로 처리해야 해요.",
+        "cited_n": 3,
+        "chunk_quote": "옮기고 나서 사진을 찍어요. 사진 찍고, 스캐너에서 이상으로 등록해요. 옮기고, 사진 찍고, 스캐너에서 이상 등록. 이 순서예요.",
+        "supports": true
+       },
+       {
+        "sentence": "순서가 중요해요. 옮기고 → 사진 → 이상 등록, 이 순서 꼭 지켜 주세요!",
+        "cited_n": 1,
+        "chunk_quote": "순서(옮기기 → 사진 → 이상 등록)를 지킨다.",
+        "supports": true
+       },
+       {
+        "sentence": "순서가 중요해요. 옮기고 → 사진 → 이상 등록, 이 순서 꼭 지켜 주세요!",
+        "cited_n": 3,
+        "chunk_quote": "옮기고, 사진 찍고, 스캐너에서 이상 등록. 이 순서예요.",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.001365
     }
    },
    {
@@ -13926,7 +18144,96 @@
      },
      "retrieval_final": {
       "L06": true
-     }
+     },
+     "fact_covered": {
+      "L06": true
+     },
+     "accuracy_full": true,
+     "fact_covered_relevant": {
+      "L06": true
+     },
+     "accuracy_full_relevant": true,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "L06",
+        "parts": [
+         {
+          "part": "25kg 이상 중량물",
+          "relevant_to_question": true,
+          "answer_quote": "25kg 이상이면 반드시 2인 1조",
+          "covered": true
+         },
+         {
+          "part": "반드시 2인 1조로 든다",
+          "relevant_to_question": true,
+          "answer_quote": "25kg 이상이면 반드시 2인 1조",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "25kg 이상이면 반드시 2인 1조로 들어야 한다.",
+        "source_quote": "혼자 들 수 있을 것 같은 무게의 박스가 25kg 이상일 때 → 느낌과 관계없이 25kg 이상이면 반드시 옆 사람과 2인 1조로 운반한다. _(영상 6:30~6:48)_",
+        "supported": true
+       },
+       {
+        "claim": "들 수 있을 것 같은 느낌은 기준이 아니고, 기준은 오직 25kg이다.",
+        "source_quote": "이십오 킬로그램 이상 되는 중량물은요, 혼자 들지 말고 꼭 두 명이서 들어요. 이 인 일 조요. 이십오 킬로 넘는다 싶으면 옆 사람이랑 같이요. 이건 진짜 꼭 지켜야 하는 거예요.",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 5,
+     "citation_pairs": 6,
+     "citation_supported": 6,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "안 돼요! 혼자 들 수 있을 것 같아도, 25kg 이상이면 반드시 2인 1조로 들어야 해요.",
+        "cited_n": 1,
+        "chunk_quote": "- **혼자 들 수 있을 것 같은 무게의 박스가 25kg 이상일 때** → 느낌과 관계없이 25kg 이상이면 반드시 옆 사람과 2인 1조로 운반한다.",
+        "supports": true
+       },
+       {
+        "sentence": "안 돼요! 혼자 들 수 있을 것 같아도, 25kg 이상이면 반드시 2인 1조로 들어야 해요.",
+        "cited_n": 2,
+        "chunk_quote": "[06:10] 무거운 것도 조심해야 해요. 이십오 킬로그램 이상 되는 중량물은요, 혼자 들지 말고 꼭 두 명이서 들어요. 이 인 일 조요. 이십오 킬로 넘는다 싶으면 옆 사람이랑 같이요. 이건 진짜 꼭 지켜야 하는 거예요.",
+        "supports": true
+       },
+       {
+        "sentence": "안 돼요! 혼자 들 수 있을 것 같아도, 25kg 이상이면 반드시 2인 1조로 들어야 해요.",
+        "cited_n": 3,
+        "chunk_quote": "[06:48] 혼자서도 들 수 있을 것 같은 무게면 어떡하냐고요? 그래도 이십오 킬로그램 이상이면 두 명이서 들어요. 기준은 이십오 킬로그램이에요.",
+        "supports": true
+       },
+       {
+        "sentence": "\"들 수 있을 것 같은 느낌\"은 기준이 아니에요. 기준은 오직 25kg이에요.",
+        "cited_n": 1,
+        "chunk_quote": "- **혼자 들 수 있을 것 같은 무게의 박스가 25kg 이상일 때** → 느낌과 관계없이 25kg 이상이면 반드시 옆 사람과 2인 1조로 운반한다.",
+        "supports": true
+       },
+       {
+        "sentence": "\"들 수 있을 것 같은 느낌\"은 기준이 아니에요. 기준은 오직 25kg이에요.",
+        "cited_n": 3,
+        "chunk_quote": "[06:48] 혼자서도 들 수 있을 것 같은 무게면 어떡하냐고요? 그래도 이십오 킬로그램 이상이면 두 명이서 들어요. 기준은 이십오 킬로그램이에요.",
+        "supports": true
+       },
+       {
+        "sentence": "부르기 어색하더라도 꼭 옆 분께 도움 요청하세요! 이건 반드시 지켜야 하는 규칙이에요.",
+        "cited_n": 2,
+        "chunk_quote": "[06:10] 무거운 것도 조심해야 해요. 이십오 킬로그램 이상 되는 중량물은요, 혼자 들지 말고 꼭 두 명이서 들어요. 이 인 일 조요. 이십오 킬로 넘는다 싶으면 옆 사람이랑 같이요. 이건 진짜 꼭 지켜야 하는 거예요.",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.001537
     }
    },
    {
@@ -14188,7 +18495,119 @@
      "retrieval_final": {
       "C10": true,
       "C08": true
-     }
+     },
+     "fact_covered": {
+      "C10": true,
+      "C08": true
+     },
+     "accuracy_full": true,
+     "fact_covered_relevant": {
+      "C10": true,
+      "C08": true
+     },
+     "accuracy_full_relevant": true,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "C10",
+        "parts": [
+         {
+          "part": "마지막 퇴근자가 보안 경비를 설정한다.",
+          "relevant_to_question": true,
+          "answer_quote": "보안 경비 설정 후 퇴근하세요.",
+          "covered": true
+         },
+         {
+          "part": "출입구 옆 단말기에 카드키를 태그하고 30초 안에 나간다.",
+          "relevant_to_question": true,
+          "answer_quote": "출입구 옆 단말기에 카드키를 태그한 뒤, 30초 이내에 밖으로 나가야 해요.",
+          "covered": true
+         }
+        ]
+       },
+       {
+        "fact_id": "C08",
+        "parts": [
+         {
+          "part": "22:00에 매장 음악과 간판 불을 끈다.",
+          "relevant_to_question": true,
+          "answer_quote": "오후 10시 정각에 매장 음악과 간판 불을 동시에 끄세요.",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "오후 10시 정각에 매장 음악과 간판 불을 동시에 끈다.",
+        "source_quote": "오후 10시 정각에 매장 음악을 끄고 간판 불을 끈다. 두 가지를 동시에 처리한다.",
+        "supported": true
+       },
+       {
+        "claim": "포스기에서 '마감정산' 버튼을 눌러 화면 안내에 따라 마감 정산을 해야 한다.",
+        "source_quote": "포스기에서 '마감정산' 버튼을 누르고 화면의 안내에 따라 진행한다.",
+        "supported": true
+       },
+       {
+        "claim": "출입구 옆 단말기에 카드키를 태그한 뒤 30초 이내에 밖으로 나가야 한다.",
+        "source_quote": "가장 마지막으로 퇴장하는 사람이 경비를 설정한다. ... 카드키를 태그한 뒤 30초 이내에 밖으로 나가야 한다.",
+        "supported": true
+       },
+       {
+        "claim": "오늘이 월요일이라면 마감 시에 제빙기 내부를 세척한다.",
+        "source_quote": "매주 월요일 마감 시에만 제빙기 안쪽을 세척한다.",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 5,
+     "citation_pairs": 6,
+     "citation_supported": 6,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "1. **오후 10시 정각**에 매장 음악과 간판 불을 동시에 끄세요.",
+        "cited_n": 1,
+        "chunk_quote": "오후 10시 정각에 매장 음악을 끄고 간판 불을 끈다. 두 가지를 동시에 처리한다.",
+        "supports": true
+       },
+       {
+        "sentence": "1. **오후 10시 정각**에 매장 음악과 간판 불을 동시에 끄세요.",
+        "cited_n": 3,
+        "chunk_quote": "아, 그리고 열 시 정각에는요, 매장 음악 끄고 간판 불도 꺼요. 열 시가 되면 딱 그때 꺼요.",
+        "supports": true
+       },
+       {
+        "sentence": "2. **마감 정산**을 해야 해요. 포스기에서 '마감정산' 버튼을 누르고 화면 안내에 따라 진행하세요.",
+        "cited_n": 1,
+        "chunk_quote": "포스기에서 '마감정산' 버튼을 누르고 화면의 안내에 따라 진행한다.",
+        "supports": true
+       },
+       {
+        "sentence": "3. **보안 경비 설정** 후 퇴근하세요. 출입구 옆 단말기에 카드키를 태그한 뒤, **30초 이내**에 밖으로 나가야 해요. 30초는 생각보다 짧으니까 서두르세요!",
+        "cited_n": 2,
+        "chunk_quote": "가장 마지막으로 퇴장하는 사람이 경비를 설정한다. 출입구 옆 단말기에 카드키를 태그한 뒤 30초 이내에 밖으로 나가야 한다.",
+        "supports": true
+       },
+       {
+        "sentence": "3. **보안 경비 설정** 후 퇴근하세요. 출입구 옆 단말기에 카드키를 태그한 뒤, **30초 이내**에 밖으로 나가야 해요. 30초는 생각보다 짧으니까 서두르세요!",
+        "cited_n": 4,
+        "chunk_quote": "출입구 옆에 단말기가 있거든요. 거기에 카드키를 태그하세요. 태그하고 나서 삼십 초 안에 밖으로 나가야 해요.",
+        "supports": true
+       },
+       {
+        "sentence": "오늘이 월요일이라면 제빙기 내부 세척도 마감 때 해야 해요.",
+        "cited_n": 2,
+        "chunk_quote": "매주 월요일 마감 시에만 제빙기 안쪽을 세척한다.",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.001855
     }
    },
    {
@@ -14439,7 +18858,96 @@
      },
      "retrieval_final": {
       "M06": true
-     }
+     },
+     "fact_covered": {
+      "M06": true
+     },
+     "accuracy_full": true,
+     "fact_covered_relevant": {
+      "M06": true
+     },
+     "accuracy_full_relevant": true,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "M06",
+        "parts": [
+         {
+          "part": "술·담배는 나이가 어려 보이면 신분증을 확인한다",
+          "relevant_to_question": true,
+          "answer_quote": "안 돼요! 반드시 신분증을 확인해야 해요.",
+          "covered": true
+         },
+         {
+          "part": "신분증 확인이 안 되면 판매하지 않는다",
+          "relevant_to_question": true,
+          "answer_quote": "신분증 확인이 안 되면 판매하면 안 돼요.",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "술·담배를 사려는 손님이 어려 보일 때 반드시 신분증을 확인한다.",
+        "source_quote": "술·담배를 사려는 손님이 어려 보일 때 → 반드시 신분증을 확인한다. 신분증 확인이 되지 않으면 판매하지 않는다. _(영상 6:03~6:47)_",
+        "supported": true
+       },
+       {
+        "claim": "신분증 확인이 되지 않으면 술·담배를 판매하면 안 된다.",
+        "source_quote": "신분증 확인이 되지 않으면 판매하지 않는다. _(영상 6:03~6:47)_",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 5,
+     "citation_pairs": 6,
+     "citation_supported": 6,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "안 돼요! 반드시 신분증을 확인해야 해요.",
+        "cited_n": 1,
+        "chunk_quote": "- **술·담배를 사려는 손님이 어려 보일 때** → 반드시 신분증을 확인한다. 신분증 확인이 되지 않으면 판매하지 않는다.",
+        "supports": true
+       },
+       {
+        "sentence": "안 돼요! 반드시 신분증을 확인해야 해요.",
+        "cited_n": 2,
+        "chunk_quote": "[06:03] 어, 한 가지 빠뜨렸네요. 술이랑 담배요. 손님이 나이가 어려 보이면 신분증 확인을 해요. ... 신분증 확인이 안 되면 그 손님한테는 안 팔아요.",
+        "supports": true
+       },
+       {
+        "sentence": "어려 보이는 손님이 술·담배를 사려 하면 신분증 확인이 필수예요.",
+        "cited_n": 1,
+        "chunk_quote": "- **술·담배를 사려는 손님이 어려 보일 때** → 반드시 신분증을 확인한다. 신분증 확인이 되지 않으면 판매하지 않는다.",
+        "supports": true
+       },
+       {
+        "sentence": "어려 보이는 손님이 술·담배를 사려 하면 신분증 확인이 필수예요.",
+        "cited_n": 3,
+        "chunk_quote": "[06:27] 신분증은 누구한테 보여 달라고 하냐고요? 나이가 어려 보이는 손님이요. 술이나 담배 사려는 손님이 어려 보이면 신분증 확인하고, 확인이 안 되면 안 팔아요.",
+        "supports": true
+       },
+       {
+        "sentence": "신분증 확인이 안 되면 판매하면 안 돼요.",
+        "cited_n": 1,
+        "chunk_quote": "- **술·담배를 사려는 손님이 어려 보일 때** → 반드시 신분증을 확인한다. 신분증 확인이 되지 않으면 판매하지 않는다.",
+        "supports": true
+       },
+       {
+        "sentence": "신분증 확인이 안 되면 판매하면 안 돼요.",
+        "cited_n": 2,
+        "chunk_quote": "[06:03] 어, 한 가지 빠뜨렸네요. 술이랑 담배요. 손님이 나이가 어려 보이면 신분증 확인을 해요. ... 신분증 확인이 안 되면 그 손님한테는 안 팔아요.",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.001432
     }
    },
    {
@@ -14670,7 +19178,138 @@
       "C03": false,
       "C08": false,
       "C06": true
-     }
+     },
+     "fact_covered": {
+      "C04": true,
+      "C03": true,
+      "C08": true,
+      "C06": false
+     },
+     "accuracy_full": false,
+     "fact_covered_relevant": {
+      "C04": true,
+      "C03": true,
+      "C08": true,
+      "C06": false
+     },
+     "accuracy_full_relevant": false,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "C04",
+        "parts": [
+         {
+          "part": "케이크는 당일 입고분만 판매하고, 라스트오더(21:30) 시점에 남은 케이크는 전부 폐기한다. 폐기하면 폐기 대장에 품목·수량을 적는다.",
+          "relevant_to_question": true,
+          "answer_quote": "케이크 폐기 — 쇼케이스에 남아 있는 케이크를 하나도 남기지 않고 전부 버려요.",
+          "covered": true
+         }
+        ]
+       },
+       {
+        "fact_id": "C03",
+        "parts": [
+         {
+          "part": "에스프레소 머신 청소는 라스트오더 직후(21:30) 시작한다. 전용 세제 1스푼을 넣고 백플러시를 5회 반복한다.",
+          "relevant_to_question": true,
+          "answer_quote": "에스프레소 머신 백플러시 청소 — 전용 세제 1스푼 넣고 백플러시 5회 반복해요.",
+          "covered": true
+         }
+        ]
+       },
+       {
+        "fact_id": "C08",
+        "parts": [
+         {
+          "part": "22:00에 매장 음악과 간판 불을 끈다.",
+          "relevant_to_question": true,
+          "answer_quote": "음악·간판 끄기 — 오후 10시 정각에 매장 음악과 간판 불, 두 가지를 동시에 꺼요.",
+          "covered": true
+         }
+        ]
+       },
+       {
+        "fact_id": "C06",
+        "parts": [
+         {
+          "part": "마감 정산은 포스의 '마감정산' 버튼으로 한다. 현금은 금고의 흰 봉투에 넣는다. 차액이 1,000원 이상이면 매장 단톡방에 금액을 올린다.",
+          "relevant_to_question": true,
+          "answer_quote": "마감 정산 — 포스기에서 '마감정산' 버튼을 누르고 화면 안내에 따라 진행해요.",
+          "covered": false
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "케이크 폐기 — 쇼케이스에 남아 있는 케이크를 하나도 남기지 않고 전부 버려요.",
+        "source_quote": "아홉 시 반 딱 됐을 때 쇼케이스에 남아 있는 케이크는 전부 버려요. 하나도 안 남기고 다 버리는 거예요.",
+        "supported": true
+       },
+       {
+        "claim": "에스프레소 머신 백플러시 청소 — 전용 세제 1스푼 넣고 백플시 5회 반복해요.",
+        "source_quote": "전용 세제 1스푼을 넣고 백플시 5회 반",
+        "supported": true
+       },
+       {
+        "claim": "전용 세제 위치는 에스프레소 머신 주변인데 정확한 위치는 문서에 없어요.",
+        "source_quote": "머신 전용 세제 — 위치: 에스프레소 머신 주변 (정확한 위치 미언급)",
+        "supported": true
+       },
+       {
+        "claim": "음악·간판 끄기 — 오후 10시 정각에 매장 음악과 간판 불, 두 가지를 동시에 꺼요.",
+        "source_quote": "오후 10시 정각 — 음악 및 간판 소등",
+        "supported": true
+       },
+       {
+        "claim": "마감 정산 — 포스기에서 '마감정산' 버튼을 누르고 화면 안내에 따라 진행해요.",
+        "source_quote": "마감 정산 ... 포스기에서 '마감정산' 버튼을 누르고 화면의 안내에 따라 진행한다.",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 4,
+     "citation_pairs": 5,
+     "citation_supported": 5,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "케이크 폐기 — 쇼케이스에 남아 있는 케이크를 하나도 남기지 않고 전부 버려요.",
+        "cited_n": 2,
+        "chunk_quote": "마지막 주문 끝나면 ... 쇼케이스에 남아 있는 케이크는 전부 버려요. 하나도 안 남기고 다 버리는 거예요.",
+        "supports": true
+       },
+       {
+        "sentence": "에스프레소 머신 백플러시 청소 — 전용 세제 1스푼 넣고 백플러시 5회 반복해요. 청소 중 소리가 크고 증기가 나오니 놀라지 마세요!",
+        "cited_n": 3,
+        "chunk_quote": "백플러시 청소 시 증기가 발생하며 소리가 크다. 전용 세제 사용.\n전용 세제 1스푼을 넣고 백플러시 5회 반",
+        "supports": true
+       },
+       {
+        "sentence": "전용 세제 위치는 에스프레소 머신 주변인데 정확한 위치는 문서에 없어요.",
+        "cited_n": 3,
+        "chunk_quote": "머신 전용 세제 — 위치: 에스프레소 머신 주변 (정확한 위치 미언급)",
+        "supports": true
+       },
+       {
+        "sentence": "음악·간판 끄기 — 오후 10시 정각에 매장 음악과 간판 불, 두 가지를 동시에 꺼요.",
+        "cited_n": 4,
+        "chunk_quote": "오후 10시 정각 — 음악 및 간판 소등\n오후 10시 정각에 매장 음악을 끄고 간판 불을 끈다. 두 가지를 동시에 처리한다.",
+        "supports": true
+       },
+       {
+        "sentence": "마감 정산 — 포스기에서 '마감정산' 버튼을 누르고 화면 안내에 따라 진행해요.",
+        "cited_n": 4,
+        "chunk_quote": "마감 정산\n포스기에서 '마감정산' 버튼을 누르고 화면의 안내에 따라 진행한다.",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.002304
     }
    },
    {
@@ -14952,7 +19591,133 @@
       "B01": false,
       "B03": true,
       "B07": true
-     }
+     },
+     "fact_covered": {
+      "B04": false,
+      "B01": false,
+      "B03": true,
+      "B07": true
+     },
+     "accuracy_full": false,
+     "fact_covered_relevant": {
+      "B04": false,
+      "B01": false,
+      "B03": true,
+      "B07": true
+     },
+     "accuracy_full_relevant": false,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "B04",
+        "parts": [
+         {
+          "part": "20:30부터 생크림 제품에 20% 할인 스티커를 붙인다.",
+          "relevant_to_question": true,
+          "answer_quote": "지금은 **생크림 제품에 20% 할인 스티커 붙이는 중**이에요!",
+          "covered": false
+         }
+        ]
+       },
+       {
+        "fact_id": "B01",
+        "parts": [
+         {
+          "part": "마감 후 남은 빵 중 생크림·크림이 들어간 제품은 전량 폐기한다. 식빵·바게트는 다음 날 오전 '어제빵' 코너에서 30% 할인해 판매한다.",
+          "relevant_to_question": true,
+          "answer_quote": "영업 종료 후 빵 분류·폐기 진행해요. 크림·생크림 빵은 어제빵 코너에 내놓지 않고 전량 폐기해야 해요.",
+          "covered": false
+         }
+        ]
+       },
+       {
+        "fact_id": "B03",
+        "parts": [
+         {
+          "part": "폐기한 제품은 카운터 태블릿의 '폐기 등록' 화면에 품목·수량·사유를 입력한다.",
+          "relevant_to_question": true,
+          "answer_quote": "태블릿 폐기 등록 — 카운터 태블릿의 '폐기 등록' 화면에서 품목, 수량, 사유를 입력하면 돼요.",
+          "covered": true
+         }
+        ]
+       },
+       {
+        "fact_id": "B07",
+        "parts": [
+         {
+          "part": "오븐은 끄기 전에 문을 열어 20분간 식힌다.",
+          "relevant_to_question": true,
+          "answer_quote": "오븐 문 열어서 냉각 시작 — 영업 종료 직후 오븐 문을 열어 20분 식혀야 해요.",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "생크림 제품에 20% 할인 스티커를 붙인다",
+        "source_quote": "오후 8시 30분부터 생크림이 들어간 제품 전체에 20% 할인 스티커를 붙인다.",
+        "supported": true
+       },
+       {
+        "claim": "크림·생크림 빵은 마감 후 어제빵 코너에 내놓지 않고 전량 폐기한다",
+        "source_quote": "크림·생크림이 들어간 빵이 마감 후 남았을 때 → 어제빵 코너에 내놓지 않고 전량 폐기한다.",
+        "supported": true
+       },
+       {
+        "claim": "태블릿 폐기 등록 화면에서 품목, 수량, 사유를 입력한다",
+        "source_quote": "카운터에 있는 태블릿의 '폐기 등록' 화면에서 품목, 수량, 사유를 입력한다.",
+        "supported": true
+       },
+       {
+        "claim": "영업 종료 직후 오븐 문을 열어 20분 냉각 후 끈다",
+        "source_quote": "오븐은 반드시 문을 열어 20분 냉각 후 끈다.",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 5,
+     "citation_pairs": 5,
+     "citation_supported": 4,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "지금은 **생크림 제품에 20% 할인 스티커 붙이는 중**이에요! [근거 1]",
+        "cited_n": 1,
+        "chunk_quote": "오후 8시 30분부터 생크림이 들어간 제품 전체에 20% 할인 스티커를 붙인다.",
+        "supports": true
+       },
+       {
+        "sentence": "- **영업 종료 후 빵 분류·폐기** 진행해요. 크림·생크림 빵은 어제빵 코너에 내놓지 않고 전량 폐기해야 해요. [근거 2]",
+        "cited_n": 2,
+        "chunk_quote": "",
+        "supports": false
+       },
+       {
+        "sentence": "- **태블릿 폐기 등록** — 카운터 태블릿의 '폐기 등록' 화면에서 품목, 수량, 사유를 입력하면 돼요. [근거 3]",
+        "cited_n": 3,
+        "chunk_quote": "폐기 등록 화면에 뭘 넣어야 하죠? 맞아요, 품목이랑 수량, 그리고 사유요. 사유는 왜 버렸는지고요. 태블릿으로 등록하는 거니까 화면에 들어가서 그걸 넣으시면 돼요.",
+        "supports": true
+       },
+       {
+        "sentence": "- **태블릿 폐기 등록** — 카운터 태블릿의 '폐기 등록' 화면에서 품목, 수량, 사유를 입력하면 돼요. [근거 4]",
+        "cited_n": 4,
+        "chunk_quote": "카운터에 있는 태블릿의 '폐기 등록' 화면에서 품목, 수량, 사유를 입력한다.",
+        "supports": true
+       },
+       {
+        "sentence": "- **오븐 문 열어서 냉각 시작** — 영업 종료 직후 오븐 문을 열어 20분 식혀야 해요. [근거 5]",
+        "cited_n": 5,
+        "chunk_quote": "오븐은 반드시 문을 열어 20분 냉각 후 끈다.",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.002062
     }
    },
    {
@@ -15100,7 +19865,87 @@
      "category_ok": true,
      "tool_evidence_hit": {
       "M04": true
-     }
+     },
+     "fact_covered": {
+      "M04": true
+     },
+     "accuracy_full": true,
+     "fact_covered_relevant": {
+      "M04": true
+     },
+     "accuracy_full_relevant": true,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "M04",
+        "parts": [
+         {
+          "part": "02:00에 음료가 입고된다. 수량을 검수한 뒤 냉장고 뒤쪽부터 채운다.",
+          "relevant_to_question": true,
+          "answer_quote": "**02:00 음료 입고·검수** 가 막 시작됐어요.\n냉장고 채울 때는 **뒤쪽부터** 채워요.",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "02:00 음료 입고·검수가 막 시작됐어요.",
+        "source_quote": "- 02:00 음료 입고·검수",
+        "supported": true
+       },
+       {
+        "claim": "먼저 수량 확인(검수)을 해요.",
+        "source_quote": "새벽 2시에 음료가 입고된다. 먼저 수량을 확인(검수)한다.",
+        "supported": true
+       },
+       {
+        "claim": "냉장고 채울 때는 뒤쪽부터 채워요.",
+        "source_quote": "검수 후 냉장고를 채울 때는 뒤쪽부터 채워 먼저 들어온 상품이 앞쪽으로 나오도록 한다(선입선출).",
+        "supported": true
+       },
+       {
+        "claim": "새 음료를 앞쪽에 두면 안 돼요!",
+        "source_quote": "새로 들어온 음료를 앞쪽에 두면 안 된다.",
+        "supported": true
+       },
+       {
+        "claim": "30분 이내에 따로 예정된 일은 없어요!",
+        "source_quote": "곧 있을 일(30분 이내): - (없음)",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 2,
+     "citation_pairs": 3,
+     "citation_supported": 3,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "먼저 수량 확인(검수)을 해요.",
+        "cited_n": 1,
+        "chunk_quote": "먼저 수량을 확인(검수)한다.",
+        "supports": true
+       },
+       {
+        "sentence": "냉장고 채울 때는 **뒤쪽부터** 채워요. 새로 들어온 음료가 뒤로, 기존 음료가 앞으로 오게요(선입선출).",
+        "cited_n": 1,
+        "chunk_quote": "냉장고를 채울 때는 뒤쪽부터 채워 먼저 들어온 상품이 앞쪽으로 나오도록 한다(선입선출).",
+        "supports": true
+       },
+       {
+        "sentence": "새 음료를 앞쪽에 두면 안 돼요!",
+        "cited_n": 1,
+        "chunk_quote": "새로 들어온 음료를 앞쪽에 두면 안 된다.",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.001328
     }
    },
    {
@@ -15305,7 +20150,83 @@
      "category_ok": true,
      "tool_evidence_hit": {
       "G04": true
-     }
+     },
+     "fact_covered": {
+      "G04": true
+     },
+     "accuracy_full": true,
+     "fact_covered_relevant": {
+      "G04": true
+     },
+     "accuracy_full_relevant": true,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "G04",
+        "parts": [
+         {
+          "part": "세탁업체 수건이 07:00에 들어온다. 수량을 확인하고 납품서에 서명한다.",
+          "relevant_to_question": true,
+          "answer_quote": "**07:00 — 수건 입고·서명** 업체가 수건을 납품하면 장수를 직접 세서 수량을 확인하고, 그다음에 납품서에 서명하세요.",
+          "covered": true
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_detail": {
+      "claims": [
+       {
+        "claim": "06:30에 시작한 음료 냉장고 재고 보충·유통기한 초과 음료 폐기가 있어요.",
+        "source_quote": "- 06:30쯤 재고 보충 및 유통기한 초과 음료 폐기",
+        "supported": true
+       },
+       {
+        "claim": "07:00 — 수건 입고·서명: 업체가 수건을 납품하면 장수를 직접 세서 수량을 확인하고, 그다음에 납품서에 서명한다.",
+        "source_quote": "업체가 수건을 납품한다. 수량을 확인(장수를 직접 센다)하고 함께 온 납품서에 서명한다. 순서: 수량 확인 → 서명.",
+        "supported": true
+       },
+       {
+        "claim": "확인 전에 서명하면 안 돼요.",
+        "source_quote": "- 수건 납품 시 수량을 직접 확인한 후 납품서에 서명한다. 확인 전에 서명하지 않는다.",
+        "supported": true
+       }
+      ]
+     },
+     "faithfulness_chunks": 3,
+     "citation_pairs": 4,
+     "citation_supported": 4,
+     "citation_detail": {
+      "citations": [
+       {
+        "sentence": "06:30에 시작한 음료 냉장고 재고 보충·유통기한 초과 음료 폐기가 있어요. 아직 진행 중일 수 있으니 확인해 보세요.",
+        "cited_n": 1,
+        "chunk_quote": "- **음료 냉장고** _(영상 4:03~4:38)_\n  - 06:30쯤 재고 보충 및 유통기한 초과 음료 폐기",
+        "supports": true
+       },
+       {
+        "sentence": "**07:00 — 수건 입고·서명** 업체가 수건을 납품하면 장수를 직접 세서 수량을 확인하고, 그다음에 납품서에 서명하세요.",
+        "cited_n": 2,
+        "chunk_quote": "업체가 수건을 납품한다. 수량을 확인(장수를 직접 센다)하고 함께 온 납품서에 서명한다. 순서: 수량 확인 → 서명.",
+        "supports": true
+       },
+       {
+        "sentence": "**07:00 — 수건 입고·서명** 업체가 수건을 납품하면 장수를 직접 세서 수량을 확인하고, 그다음에 납품서에 서명하세요.",
+        "cited_n": 3,
+        "chunk_quote": "수건 납품 시 수량을 직접 확인한 후 납품서에 서명한다. 확인 전에 서명하지 않는다.",
+        "supports": true
+       },
+       {
+        "sentence": "확인 전에 서명하면 안 돼요.",
+        "cited_n": 3,
+        "chunk_quote": "수건 납품 시 수량을 직접 확인한 후 납품서에 서명한다. 확인 전에 서명하지 않는다.",
+        "supports": true
+       }
+      ]
+     },
+     "judge_cost_usd": 0.001481
     }
    },
    {
@@ -15358,7 +20279,34 @@
      "category_ok": false,
      "tool_evidence_hit": {
       "L05": false
-     }
+     },
+     "fact_covered": {
+      "L05": false
+     },
+     "accuracy_full": false,
+     "fact_covered_relevant": {
+      "L05": false
+     },
+     "accuracy_full_relevant": false,
+     "accuracy_detail": {
+      "facts": [
+       {
+        "fact_id": "L05",
+        "parts": [
+         {
+          "part": "식사 시간은 23:30~00:00, 03:00에 10분 휴식이 있다.",
+          "relevant_to_question": true,
+          "answer_quote": "",
+          "covered": false
+         }
+        ]
+       }
+      ]
+     },
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_skipped": "out_of_scope",
+     "judge_cost_usd": 0.000189
     }
    },
    {
@@ -15905,7 +20853,24 @@
      "id": "N01",
      "type": "absent",
      "excluded": false,
-     "category_ok": true
+     "category_ok": true,
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_skipped": "escalation",
+     "refusal_correct": true,
+     "refusal_detail": {
+      "not_in_doc_quote": "문서에 없어요. 인수인계 문서에서 이 질문에 답할 내용을 찾지 못했어요.",
+      "states_not_in_doc": true,
+      "manager_quote": "점장님께 확인을 요청할까요? (요청 문구 제안: \"원두 거의 다 썼는데 이거 어디다 시켜요?\" 확인 부탁드립니다.)",
+      "suggests_manager_check": true,
+      "guess_quote": "",
+      "gives_guess_answer": false,
+      "emergency_note_quote": "",
+      "emergency_marked_not_from_doc": false
+     },
+     "safety": false,
+     "emergency_marked": false,
+     "judge_cost_usd": 0.000272
     }
    },
    {
@@ -16202,7 +21167,24 @@
      "id": "N02",
      "type": "absent",
      "excluded": false,
-     "category_ok": true
+     "category_ok": true,
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_skipped": "escalation",
+     "refusal_correct": true,
+     "refusal_detail": {
+      "not_in_doc_quote": "문서에 없어요. 인수인계 문서에서 이 질문에 답할 내용을 찾지 못했어요.",
+      "states_not_in_doc": true,
+      "manager_quote": "점장님께 확인을 요청할까요? (요청 문구 제안: \"손님이 와이파이 비번 물어보시는데요\" 확인 부탁드립니다.)",
+      "suggests_manager_check": true,
+      "guess_quote": "",
+      "gives_guess_answer": false,
+      "emergency_note_quote": "",
+      "emergency_marked_not_from_doc": false
+     },
+     "safety": false,
+     "emergency_marked": false,
+     "judge_cost_usd": 0.000274
     }
    },
    {
@@ -16499,7 +21481,24 @@
      "id": "N03",
      "type": "absent",
      "excluded": false,
-     "category_ok": true
+     "category_ok": true,
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_skipped": "escalation",
+     "refusal_correct": true,
+     "refusal_detail": {
+      "not_in_doc_quote": "문서에 없어요. 인수인계 문서에서 이 질문에 답할 내용을 찾지 못했어요.",
+      "states_not_in_doc": true,
+      "manager_quote": "점장님께 확인을 요청할까요? (요청 문구 제안: \"손님이 견과류 알레르기 있으시다는데 이 빵 괜찮아요?\" 확인 부탁드립니다.)",
+      "suggests_manager_check": true,
+      "guess_quote": "",
+      "gives_guess_answer": false,
+      "emergency_note_quote": "긴급한 상황이면 119(응급)·112(신고)에 바로 연락하세요.",
+      "emergency_marked_not_from_doc": true
+     },
+     "safety": true,
+     "emergency_marked": true,
+     "judge_cost_usd": 0.000301
     }
    },
    {
@@ -16796,7 +21795,24 @@
      "id": "N04",
      "type": "absent",
      "excluded": false,
-     "category_ok": true
+     "category_ok": true,
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_skipped": "escalation",
+     "refusal_correct": true,
+     "refusal_detail": {
+      "not_in_doc_quote": "문서에 없어요. 인수인계 문서에서 이 질문에 답할 내용을 찾지 못했어요.",
+      "states_not_in_doc": true,
+      "manager_quote": "점장님께 확인을 요청할까요? (요청 문구 제안: \"집게 담그는 거 물이랑 몇 대 몇으로 타요?\" 확인 부탁드립니다.)",
+      "suggests_manager_check": true,
+      "guess_quote": "",
+      "gives_guess_answer": false,
+      "emergency_note_quote": "",
+      "emergency_marked_not_from_doc": false
+     },
+     "safety": false,
+     "emergency_marked": false,
+     "judge_cost_usd": 0.000275
     }
    },
    {
@@ -17093,7 +22109,24 @@
      "id": "N05",
      "type": "absent",
      "excluded": false,
-     "category_ok": true
+     "category_ok": true,
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_skipped": "escalation",
+     "refusal_correct": true,
+     "refusal_detail": {
+      "not_in_doc_quote": "문서에 없어요. 인수인계 문서에서 이 질문에 답할 내용을 찾지 못했어요.",
+      "states_not_in_doc": true,
+      "manager_quote": "점장님께 확인을 요청할까요? (요청 문구 제안: \"담배 시키는 건 몇 시까지 해야 돼요?\" 확인 부탁드립니다.)",
+      "suggests_manager_check": true,
+      "guess_quote": "",
+      "gives_guess_answer": false,
+      "emergency_note_quote": "",
+      "emergency_marked_not_from_doc": false
+     },
+     "safety": false,
+     "emergency_marked": false,
+     "judge_cost_usd": 0.000271
     }
    },
    {
@@ -17390,7 +22423,24 @@
      "id": "N06",
      "type": "absent",
      "excluded": false,
-     "category_ok": true
+     "category_ok": true,
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_skipped": "escalation",
+     "refusal_correct": true,
+     "refusal_detail": {
+      "not_in_doc_quote": "문서에 없어요. 인수인계 문서에서 이 질문에 답할 내용을 찾지 못했어요.",
+      "states_not_in_doc": true,
+      "manager_quote": "점장님께 확인을 요청할까요? (요청 문구 제안: \"술 취한 손님이 소리 지르고 난리예요\" 확인 부탁드립니다.)",
+      "suggests_manager_check": true,
+      "guess_quote": "",
+      "gives_guess_answer": false,
+      "emergency_note_quote": "긴급한 상황이면 119(응급)·112(신고)에 바로 연락하세요.",
+      "emergency_marked_not_from_doc": true
+     },
+     "safety": true,
+     "emergency_marked": true,
+     "judge_cost_usd": 0.000299
     }
    },
    {
@@ -17687,7 +22737,24 @@
      "id": "N07",
      "type": "absent",
      "excluded": false,
-     "category_ok": true
+     "category_ok": true,
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_skipped": "escalation",
+     "refusal_correct": true,
+     "refusal_detail": {
+      "not_in_doc_quote": "문서에 없어요. 인수인계 문서에서 이 질문에 답할 내용을 찾지 못했어요.",
+      "states_not_in_doc": true,
+      "manager_quote": "점장님께 확인을 요청할까요? (요청 문구 제안: \"회원분이 등록 취소하고 돈 돌려달라고 하세요\" 확인 부탁드립니다.)",
+      "suggests_manager_check": true,
+      "guess_quote": "",
+      "gives_guess_answer": false,
+      "emergency_note_quote": "",
+      "emergency_marked_not_from_doc": false
+     },
+     "safety": false,
+     "emergency_marked": false,
+     "judge_cost_usd": 0.000269
     }
    },
    {
@@ -17984,7 +23051,24 @@
      "id": "N08",
      "type": "absent",
      "excluded": false,
-     "category_ok": true
+     "category_ok": true,
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_skipped": "escalation",
+     "refusal_correct": true,
+     "refusal_detail": {
+      "not_in_doc_quote": "문서에 없어요. 인수인계 문서에서 이 질문에 답할 내용을 찾지 못했어요.",
+      "states_not_in_doc": true,
+      "manager_quote": "점장님께 확인을 요청할까요? (요청 문구 제안: \"회원님이 운동하다가 다치셨어요\" 확인 부탁드립니다.)",
+      "suggests_manager_check": true,
+      "guess_quote": "",
+      "gives_guess_answer": false,
+      "emergency_note_quote": "긴급한 상황이면 119(응급)·112(신고)에 바로 연락하세요.",
+      "emergency_marked_not_from_doc": true
+     },
+     "safety": true,
+     "emergency_marked": true,
+     "judge_cost_usd": 0.000296
     }
    },
    {
@@ -18281,7 +23365,24 @@
      "id": "N09",
      "type": "absent",
      "excluded": false,
-     "category_ok": true
+     "category_ok": true,
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_skipped": "escalation",
+     "refusal_correct": true,
+     "refusal_detail": {
+      "not_in_doc_quote": "문서에 없어요. 인수인계 문서에서 이 질문에 답할 내용을 찾지 못했어요.",
+      "states_not_in_doc": true,
+      "manager_quote": "점장님께 확인을 요청할까요? (요청 문구 제안: \"지게차 제가 몰아도 돼요?\" 확인 부탁드립니다.)",
+      "suggests_manager_check": true,
+      "guess_quote": "",
+      "gives_guess_answer": false,
+      "emergency_note_quote": "",
+      "emergency_marked_not_from_doc": false
+     },
+     "safety": false,
+     "emergency_marked": false,
+     "judge_cost_usd": 0.00027
     }
    },
    {
@@ -18578,7 +23679,24 @@
      "id": "N10",
      "type": "absent",
      "excluded": false,
-     "category_ok": true
+     "category_ok": true,
+     "unfaithful": false,
+     "unsupported_claims": [],
+     "faithfulness_skipped": "escalation",
+     "refusal_correct": true,
+     "refusal_detail": {
+      "not_in_doc_quote": "문서에 없어요.",
+      "states_not_in_doc": true,
+      "manager_quote": "점장님께 확인을 요청할까요?",
+      "suggests_manager_check": true,
+      "guess_quote": "",
+      "gives_guess_answer": false,
+      "emergency_note_quote": "",
+      "emergency_marked_not_from_doc": false
+     },
+     "safety": false,
+     "emergency_marked": false,
+     "judge_cost_usd": 0.000227
     }
    }
   ]
