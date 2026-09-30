@@ -17,7 +17,7 @@ from langgraph.graph import END, START, StateGraph
 
 from embedding.base import Embedder
 from graph import prompts
-from graph.schemas import Classification, Rewrite, Sufficiency
+from graph.schemas import Classification, IntegratedAnswer, Rewrite, Sufficiency
 from graph.tools import get_current_tasks, load_schedules
 from indexing.store import Hit, VectorStore
 from llm.client import LLM
@@ -72,6 +72,7 @@ class AgentDeps:
     embedder: Embedder
     store: VectorStore
     strategy: str = DEFAULT_STRATEGY
+    integrated: bool = False  # 실험 G: 충분성 판단을 답변 노드에 통합
     answer_prompt: str = "v1"  # v1(기준선) | v2(실험 D' 개선안)
     schedules: dict = field(default_factory=load_schedules)
 
@@ -286,6 +287,29 @@ def build_agent(deps: AgentDeps):
     def answer(state: State) -> dict:
         return write_answer(state, prompts.answer_system(deps.answer_prompt))
 
+    def answer_integrated(state: State) -> dict:
+        user = f"[질문]\n{state['question']}\n\n[근거]\n{render_evidence(state['evidence'])}"
+        res, info = llm.structured(
+            system=prompts.INTEGRATED_ANSWER_SYSTEM,
+            user=user,
+            schema=IntegratedAnswer,
+            tool_name="submit_answer",
+            max_tokens=1500,
+            tag="answer",
+        )
+        answerable = res.answerable and bool(res.answer.strip())
+        out: dict = {
+            "sufficiency": {"reasoning": res.reasoning, "sufficient": answerable, "missing": res.reasoning},
+            "_trace": _llm_trace(info, input=state["question"], output=res.model_dump()),
+        }
+        if answerable:
+            out |= {
+                "answer": res.answer.strip(),
+                "citations": citation_view(state["evidence"], res.answer),
+                "outcome": "answered",
+            }
+        return out
+
     def escalate(state: State) -> dict:
         text = escalation_text(state["question"], state.get("safety", False))
         return {"answer": text, "citations": [], "outcome": "escalated", "_trace": {"output": text}}
@@ -381,27 +405,42 @@ def build_agent(deps: AgentDeps):
     def after_tasks(state: State) -> str:
         return END if state.get("outcome") == "no_tasks" else "tasks_answer"
 
+    def after_integrated(state: State) -> str:
+        if state["sufficiency"]["sufficient"]:
+            return END
+        return "rewrite" if state["attempt"] == 0 else "escalate"
+
     g = StateGraph(State)
-    for name, fn in (
+    nodes = [
         ("classify", classify),
         ("retrieve", retrieve),
-        ("sufficiency", sufficiency),
         ("rewrite", rewrite),
-        ("answer", answer),
         ("escalate", escalate),
         ("tasks", tasks),
         ("tasks_answer", tasks_answer),
         ("record_reply", record_reply),
         ("out_of_scope_reply", out_of_scope_reply),
-    ):
+    ]
+    nodes += (
+        [("answer", answer_integrated)]
+        if deps.integrated
+        else [("sufficiency", sufficiency), ("answer", answer)]
+    )
+    for name, fn in nodes:
         g.add_node(name, _timed(name, fn))
     g.add_edge(START, "classify")
     g.add_conditional_edges("classify", after_classify)
-    g.add_edge("retrieve", "sufficiency")
-    g.add_conditional_edges("sufficiency", after_sufficiency)
+    if deps.integrated:  # 실험 G: retrieve → answer(충분성 판정 통합) → 답변 / 재작성 / 에스컬레이션
+        g.add_edge("retrieve", "answer")
+        g.add_conditional_edges("answer", after_integrated)
+        end_nodes = ("escalate", "tasks_answer", "record_reply", "out_of_scope_reply")
+    else:
+        g.add_edge("retrieve", "sufficiency")
+        g.add_conditional_edges("sufficiency", after_sufficiency)
+        end_nodes = ("answer", "escalate", "tasks_answer", "record_reply", "out_of_scope_reply")
     g.add_conditional_edges("rewrite", lambda st: "escalate" if st.get("rewrite_failed") else "retrieve")
     g.add_conditional_edges("tasks", after_tasks)
-    for end_node in ("answer", "escalate", "tasks_answer", "record_reply", "out_of_scope_reply"):
+    for end_node in end_nodes:
         g.add_edge(end_node, END)
     return g.compile()
 

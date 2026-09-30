@@ -22,3 +22,13 @@ class Sufficiency(BaseModel):
 class Rewrite(BaseModel):
     reasoning: str = Field(description="어떤 표현으로 바꿔야 문서에서 찾을 수 있는지")
     query: str = Field(description="문서식 표현으로 다시 쓴 검색 질의 한 줄")
+
+
+class IntegratedAnswer(BaseModel):
+    """실험 G: 충분성 판단을 답변 노드에 통합. 필드 순서는 근거(reasoning) → 판정(answerable) → 답변(answer)."""
+
+    reasoning: str = Field(description="근거가 질문의 핵심에 직접 답하는지 근거 번호를 인용하며 설명")
+    answerable: bool
+    answer: str = Field(
+        description="answerable이 true일 때의 답변([근거 n] 인용 규칙 적용). false면 빈 문자열"
+    )

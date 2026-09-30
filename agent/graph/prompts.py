@@ -90,3 +90,16 @@ def answer_system(version: str) -> str:
 
 def tasks_answer_system(version: str) -> str:
     return TASKS_ANSWER_SYSTEM_V2 if version == "v2" else TASKS_ANSWER_SYSTEM
+
+
+# ---- 실험 G: 충분성 판단을 답변 노드에 통합 ----
+INTEGRATED_ANSWER_SYSTEM = (
+    ANSWER_SYSTEM
+    + """
+
+답하기 전에 근거가 질문에 답할 수 있는지 먼저 판정한다 (반드시 지킨다):
+- answerable=true: 질문이 묻는 내용(수치·시각·절차·장소·예외 여부)이 근거에 직접 적혀 있다. 이때 answer에 위 규칙대로 답변을 쓴다.
+- answerable=false: 관련 주제만 나오고 묻는 핵심(예: 비율, 자격, 규정, 방법)이 없거나, 다른 매장·다른 대상의 규칙만 있다. 추측이 필요하면 false다. 이때 answer는 빈 문자열로 둔다.
+- 근거에 없는 내용을 상식으로 메우지 않는다.
+필드는 reasoning(근거 번호를 인용) → answerable → answer 순서로 채운다."""
+)

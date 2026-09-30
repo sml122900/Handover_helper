@@ -88,7 +88,7 @@ def spec_runs(spec: str, gold: dict) -> tuple[list[dict], dict]:
 def main() -> None:
     sys.stdout.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser()
-    ap.add_argument("--kind", choices=["D", "C"], required=True)
+    ap.add_argument("--kind", choices=["D", "C", "G"], required=True)
     ap.add_argument("--ref", required=True, help='"이름=라벨:번호,라벨:번호,라벨:번호"')
     ap.add_argument("--cand", action="append", required=True)
     ap.add_argument("--title", default=None)
@@ -113,7 +113,7 @@ def main() -> None:
         return len(conds[name])
 
     L = [
-        f"# {args.title or ("실험 D' 답변 프롬프트" if args.kind == 'D' else '실험 C 모델 비교')} ({date.today().isoformat()})",
+        f"# {args.title or {'D': "실험 D' 답변 프롬프트", 'C': '실험 C 모델 비교', 'G': '실험 G 충분성 판단 통합'}[args.kind]} ({date.today().isoformat()})",
         "",
     ]
     if args.header:
@@ -202,6 +202,19 @@ def main() -> None:
             "",
             f"- **{name}**: 주 지표(답변 정확도) {main_v}, 곁 지표(충실도 위반 2문항 이상 증가 없음) {'통과' if side_ok else '실패'} → {proposal}. 실제 기본값 채택은 사용자 결정",
         ]
+        if args.kind == "G":
+            # 필수 조건: 거절 정확도가 기준선(10/10)보다 한 번이라도 떨어지면 다른 지표와 무관하게 미채택
+            ref_refusal = min(m["refusal"] for m in conds[ref])
+            refusal_ok = all(m["refusal"] >= max(ref_refusal, 10) for m in conds[name])
+            no_worse = main_v != "악화" and verdict(fai, False) != "악화"
+            gain = (c_new < c_ref) or (p_new < p_ref)
+            if not refusal_ok:
+                g = "**미채택(필수 조건 실패: 거절 정확도가 10/10 아래로 떨어짐)** — 다른 지표와 무관"
+            elif no_worse and gain:
+                g = "채택 제안 조건 충족(거절 10/10 유지·정확도/충실도 악화 없음·비용 또는 지연 이득)"
+            else:
+                g = "채택 제안 조건 미충족(제안: 기본값 유지)"
+            L += [f"- **{name}** 실험 G 판정: 거절 정확도 {[m['refusal'] for m in conds[name]]} → {g}"]
 
     L += [
         "",

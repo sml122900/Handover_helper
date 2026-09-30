@@ -12,6 +12,10 @@
    "uncovered_parts": [],
    "unfaithful": false,
    "unsupported_claims": [],
+   "votes": {
+    "accuracy": 2,
+    "faithfulness": 2
+   },
    "detail": {
     "accuracy": {
      "facts": [
@@ -70,6 +74,10 @@
    "unsupported_claims": [
     "차액이 5,000원 이상이면 점장님께 전화로 바로 보고해야 해요."
    ],
+   "votes": {
+    "accuracy": 2,
+    "faithfulness": 2
+   },
    "detail": {
     "accuracy": {
      "facts": [
@@ -133,6 +141,10 @@
    ],
    "unfaithful": false,
    "unsupported_claims": [],
+   "votes": {
+    "accuracy": 2,
+    "faithfulness": 2
+   },
    "detail": {
     "accuracy": {
      "facts": [
@@ -188,6 +200,10 @@
    "unsupported_claims": [
     "정산 금액과 실제 현금이 3,000원 이상 차이 나면 매장 단톡방에 차액을 올려요."
    ],
+   "votes": {
+    "accuracy": 2,
+    "faithfulness": 2
+   },
    "detail": {
     "accuracy": {
      "facts": [
@@ -271,5 +287,5 @@
    "ok": true
   }
  },
- "cost_usd": 0.003669
+ "cost_usd": 0.007367
 }

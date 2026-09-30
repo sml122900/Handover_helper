@@ -1,3 +1,4 @@
+# ruff: noqa: B023  (람다는 루프 안에서 즉시 실행된다)
 """채점기 네거티브 테스트 (설계 7-3): 정답 답변에 가짜 사실을 넣으면 환각으로, 정답 사실을 빼면 누락으로 잡는지 확인.
 
 실행: uv run --directory agent python ../eval/judge_selftest.py   (Groq 채점 호출 8회, Claude 호출 없음)
@@ -13,6 +14,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "agent"))
 
 from judge.groq import GroqJudge  # noqa: E402
+from judge.stable import collect, majority, representative  # noqa: E402
 from judge.tasks import fact_covered, run_accuracy, run_faithfulness  # noqa: E402
 from llm.client import CostTracker  # noqa: E402
 from settings import get_settings  # noqa: E402
@@ -70,8 +72,21 @@ def main() -> None:
         "cases": {},
     }
     for name, (answer, expect) in CASES.items():
-        acc, _ = run_accuracy(judge, answer, {"C06": fact_text}, "마감 정산은 어떻게 하나요?")
-        hal, _ = run_faithfulness(judge, answer, evidence)
+        # 안정화 채점: 2회 + 엇갈리면 3회째 다수결 (2026-10-01)
+        va = collect(
+            lambda: run_accuracy(judge, answer, {"C06": fact_text}, "마감 정산은 어떻게 하나요?"),
+            lambda r: fact_covered(r.facts[0]),
+            True,
+        )
+        covered_final = majority([fact_covered(r.facts[0]) for r in va.results])
+        acc = representative(va, lambda r: fact_covered(r.facts[0]), covered_final)
+        vf = collect(
+            lambda: run_faithfulness(judge, answer, evidence),
+            lambda r: any(not c.supported for c in r.claims),
+            True,
+        )
+        bad_final = majority([any(not c.supported for c in r.claims) for r in vf.results])
+        hal = representative(vf, lambda r: any(not c.supported for c in r.claims), bad_final)
         fc = acc.facts[0]
         unsupported = [c.claim for c in hal.claims if not c.supported]
         out["cases"][name] = {
@@ -81,6 +96,7 @@ def main() -> None:
             "uncovered_parts": [p.part for p in fc.parts if not p.covered],
             "unfaithful": bool(unsupported),
             "unsupported_claims": unsupported,
+            "votes": {"accuracy": va.calls, "faithfulness": vf.calls},
             "detail": {"accuracy": acc.model_dump(), "unfaithful": hal.model_dump()},
         }
         c = out["cases"][name]
@@ -107,7 +123,13 @@ def main() -> None:
     }
     out["time_cases"] = {}
     for name, (answer, expect_unfaithful) in time_cases.items():
-        fai, _ = run_faithfulness(judge, answer, tool, "tasks")
+        vt = collect(
+            lambda: run_faithfulness(judge, answer, tool, "tasks"),
+            lambda r: any(not c.supported for c in r.claims),
+            True,
+        )
+        t_final = majority([any(not c.supported for c in r.claims) for r in vt.results])
+        fai = representative(vt, lambda r: any(not c.supported for c in r.claims), t_final)
         bad = [c.claim for c in fai.claims if not c.supported]
         out["time_cases"][name] = {
             "answer": answer,

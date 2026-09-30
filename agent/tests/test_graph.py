@@ -235,3 +235,75 @@ def test_node_failure_is_recorded_as_failed(tmp_path):
     app, _ = make_app(tmp_path, BrokenLLM({}))
     rec = run_question(app, "질문", "s1")
     assert rec["outcome"] == "failed" and "검증 실패" in rec["error"] and rec["answer"] == ""
+
+
+class IntegratedLLM(ScriptedLLM):
+    """실험 G: 답변 노드가 answerable과 답변을 함께 돌려준다."""
+
+
+def make_integrated(tmp_path, llm):
+    from graph.agent import AgentDeps as _Deps
+    from graph.agent import build_agent as _build
+
+    app, _ = make_app(tmp_path, llm)
+    # make_app이 만든 것과 같은 재료로 통합 그래프를 다시 만든다
+    emb = HashEmbedder("m", tmp_path)
+    chunks = [
+        chunk("s1", "document", "케이크 남으면 전부 폐기 폐기 대장 기록", 0, "2. 절차"),
+        chunk("s2", "document", "홀케이크 2일 판매 3일째 폐기", 0, "2. 절차"),
+    ]
+    store = MemoryStore()
+    store.add(chunks, emb.embed([c.embed_text for c in chunks], "document"))
+    return _build(_Deps(llm=llm, embedder=emb, store=store, integrated=True))
+
+
+def test_integrated_answers_in_one_call_without_sufficiency(tmp_path):
+    from graph.schemas import IntegratedAnswer
+
+    llm = IntegratedLLM(
+        {
+            "classify": [cls("question")],
+            "answer": [
+                IntegratedAnswer(
+                    reasoning="[근거 1]에 직접 있다", answerable=True, answer="전부 폐기해요. [근거 1]"
+                )
+            ],
+        }
+    )
+    rec = run_question(make_integrated(tmp_path, llm), "케이크 남으면 폐기 대장 기록", "s1")
+    assert rec["outcome"] == "answered" and rec["answer"] == "전부 폐기해요. [근거 1]"
+    assert llm.calls == ["classify", "answer"]  # 충분성 호출 없음
+    assert [t["node"] for t in rec["trace"]] == ["classify", "retrieve", "answer"]
+    assert rec["citations"][0]["n"] == 1
+
+
+def test_integrated_not_answerable_rewrites_once_then_escalates(tmp_path):
+    from graph.schemas import IntegratedAnswer
+
+    no = IntegratedAnswer(reasoning="핵심이 없다", answerable=False, answer="")
+    llm = IntegratedLLM(
+        {
+            "classify": [cls("question", safety=True)],
+            "answer": [no, no],
+            "rewrite": [Rewrite(reasoning="r", query="다른 표현")],
+        }
+    )
+    rec = run_question(make_integrated(tmp_path, llm), "손님이 다쳤어요", "s1")
+    assert rec["outcome"] == "escalated" and "119" in rec["answer"]
+    assert llm.calls == ["classify", "answer", "rewrite", "answer"]  # 재검색은 최대 1회
+    assert len(rec["retrieval_log"]) == 2
+
+
+def test_integrated_true_but_empty_answer_counts_as_not_answerable(tmp_path):
+    from graph.schemas import IntegratedAnswer
+
+    weird = IntegratedAnswer(reasoning="있다", answerable=True, answer="  ")
+    llm = IntegratedLLM(
+        {
+            "classify": [cls("question")],
+            "answer": [weird, weird],
+            "rewrite": [Rewrite(reasoning="r", query="q")],
+        }
+    )
+    rec = run_question(make_integrated(tmp_path, llm), "무언가", "s1")
+    assert rec["outcome"] == "escalated"

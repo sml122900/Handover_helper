@@ -40,6 +40,7 @@ from graph.prompts import PROMPT_VERSIONS  # noqa: E402
 from indexing.corpus import build_masked_index  # noqa: E402
 from indexing.factory import make_store  # noqa: E402
 from judge.groq import GroqJudge  # noqa: E402
+from judge.stable import collect, majority, representative  # noqa: E402
 from judge.tasks import (  # noqa: E402
     fact_covered,
     fact_covered_relevant,
@@ -135,29 +136,36 @@ def template_kind(q: dict, rec: dict) -> str | None:
     return None
 
 
-def judge_eval(q: dict, rec: dict, judge: GroqJudge, fact_texts) -> dict:
-    """채점 모델(Groq) 호출 부분: 답변 정확도·근거 충실도·출처 일치·거절. 집계는 코드가 한다."""
+def judge_eval(q: dict, rec: dict, judge: GroqJudge, fact_texts, stable: bool = False) -> dict:
+    """채점 모델(Groq) 호출 부분: 답변 정확도·근거 충실도·출처 일치·거절. 집계는 코드가 한다.
+
+    stable=True면 모든 항목을 2회 채점하고 엇갈리면 3회째로 다수결한다 (기존 단일 채점은 stable=False).
+    """
     ev: dict = {}
     answer = rec["answer"]
     judge_cost = 0.0
+    votes_log: dict[str, dict] = {}
     if q["type"] == "tool":
         return ev
 
     if q["type"] in ("fact", "time"):
         facts = {f: fact_texts[f] for f in q["expected_facts"]}
-        acc, info = run_accuracy(
-            judge, answer, facts, q["question"], "task" if q["type"] == "time" else "fact"
-        )
-        judge_cost += info.cost_usd
-        covered = {fc.fact_id: fact_covered(fc) for fc in acc.facts}
-        ev["fact_covered"] = {
-            f: covered.get(f, False) for f in facts
-        }  # 채점기가 빠뜨린 사실은 미포함으로 본다
+        mode = "task" if q["type"] == "time" else "fact"
+
+        def verdict(acc) -> dict:
+            got = {fc.fact_id: (fact_covered(fc), fact_covered_relevant(fc)) for fc in acc.facts}
+            return {f: got.get(f, (False, False)) for f in facts}  # 채점기가 빠뜨린 사실은 미포함으로 본다
+
+        v = collect(lambda: run_accuracy(judge, answer, facts, q["question"], mode), verdict, stable)
+        judge_cost += v.cost_usd
+        per = [verdict(r) for r in v.results]
+        final = {f: (majority([x[f][0] for x in per]), majority([x[f][1] for x in per])) for f in facts}
+        ev["fact_covered"] = {f: final[f][0] for f in facts}
         ev["accuracy_full"] = all(ev["fact_covered"].values())
-        relevant = {fc.fact_id: fact_covered_relevant(fc) for fc in acc.facts}
-        ev["fact_covered_relevant"] = {f: relevant.get(f, False) for f in facts}
+        ev["fact_covered_relevant"] = {f: final[f][1] for f in facts}
         ev["accuracy_full_relevant"] = all(ev["fact_covered_relevant"].values())
-        ev["accuracy_detail"] = acc.model_dump()
+        ev["accuracy_detail"] = representative(v, verdict, final).model_dump()
+        votes_log["accuracy"] = {"calls": v.calls, "third": v.third}
 
     template = template_kind(q, rec)
     if template:  # 고정 문구는 검색 근거에서 온 사실 주장이 없다 → 호출을 건너뛰고 "사실 주장 없음"으로 집계
@@ -171,29 +179,52 @@ def judge_eval(q: dict, rec: dict, judge: GroqJudge, fact_texts) -> dict:
             "found"
         ):  # 시각 문항: 에이전트가 받은 도구 결과(일정)도 근거다
             evidence_text += "\n\n" + tasks_evidence(rec["tasks"])
-        fai, info = run_faithfulness(judge, answer, evidence_text, "tasks" if q["type"] == "time" else "doc")
-        judge_cost += info.cost_usd
-        ev["unfaithful"] = any(not c.supported for c in fai.claims)
-        ev["unsupported_claims"] = [c.claim for c in fai.claims if not c.supported]
-        ev["faithfulness_detail"] = fai.model_dump()
+        fmode = "tasks" if q["type"] == "time" else "doc"
+
+        def unfaithful(fai) -> bool:
+            return any(not c.supported for c in fai.claims)
+
+        v = collect(lambda: run_faithfulness(judge, answer, evidence_text, fmode), unfaithful, stable)
+        judge_cost += v.cost_usd
+        final_u = majority([unfaithful(r) for r in v.results])
+        rep = representative(v, unfaithful, final_u)
+        ev["unfaithful"] = final_u
+        ev["unsupported_claims"] = [c.claim for c in rep.claims if not c.supported]
+        ev["faithfulness_detail"] = rep.model_dump()
         ev["faithfulness_chunks"] = len(chunks)
+        votes_log["faithfulness"] = {"calls": v.calls, "third": v.third}
 
     if rec["citations"] or re.search(r"\[근거 \d+\]", answer):
         evidence_text = "\n\n".join(f"[근거 {e['n']}]\n{e['text']}" for e in rec["evidence"])
-        cit, info = run_citations(judge, answer, evidence_text)
-        judge_cost += info.cost_usd
-        ev["citation_pairs"] = len(cit.citations)
-        ev["citation_supported"] = sum(c.supports for c in cit.citations)
-        ev["citation_detail"] = cit.model_dump()
+
+        def cit_key(cit) -> tuple:
+            return (sum(c.supports for c in cit.citations), len(cit.citations))
+
+        v = collect(lambda: run_citations(judge, answer, evidence_text), cit_key, stable)
+        judge_cost += v.cost_usd
+        final_c = majority([cit_key(r) for r in v.results])
+        rep = representative(v, cit_key, final_c)
+        ev["citation_supported"], ev["citation_pairs"] = final_c
+        ev["citation_detail"] = rep.model_dump()
+        votes_log["citations"] = {"calls": v.calls, "third": v.third}
 
     if q["type"] == "absent":
-        ref, info = run_refusal(judge, q["question"], answer)
-        judge_cost += info.cost_usd
-        ev["refusal_correct"] = refusal_correct(ref)
-        ev["refusal_detail"] = ref.model_dump()
+
+        def ref_key(ref) -> tuple:
+            return (refusal_correct(ref), ref.emergency_marked_not_from_doc)
+
+        v = collect(lambda: run_refusal(judge, q["question"], answer), ref_key, stable)
+        judge_cost += v.cost_usd
+        per = [ref_key(r) for r in v.results]
+        final_r = (majority([x[0] for x in per]), majority([x[1] for x in per]))
+        ev["refusal_correct"] = final_r[0]
+        ev["refusal_detail"] = representative(v, ref_key, final_r).model_dump()
         ev["safety"] = q.get("safety", False)
-        ev["emergency_marked"] = ref.emergency_marked_not_from_doc
+        ev["emergency_marked"] = final_r[1]
+        votes_log["refusal"] = {"calls": v.calls, "third": v.third}
     ev["judge_cost_usd"] = round(judge_cost, 6)
+    if stable:
+        ev["judge_votes"] = votes_log
     return ev
 
 
@@ -342,7 +373,7 @@ def latency_breakdown(recs: dict, types: dict) -> dict:
         if types[qid] != "absent" or not rec["rewritten"]:
             continue
         names = [t["node"] for t in rec["trace"]]
-        first_suff = names.index("sufficiency")
+        first_suff = names.index("sufficiency") if "sufficiency" in names else names.index("answer")
         extra.append(
             sum(t.get("latency_ms", 0) for t in rec["trace"][first_suff + 1 :] if t["node"] != "escalate")
         )
@@ -478,6 +509,13 @@ def main() -> None:
         default=None,
         help="쉼표로 구분한 문항 ID의 채점 캐시를 보존용으로 옮기고 다시 채점(응답은 유지)",
     )
+    ap.add_argument("--integrated", action="store_true", help="실험 G: 충분성 판단을 답변 노드에 통합")
+    ap.add_argument(
+        "--stable",
+        action="store_true",
+        help="채점 안정화: 모든 항목 2회 채점, 엇갈리면 3회째 다수결 (2026-10-01 결정)",
+    )
+    ap.add_argument("--judge-budget-usd", type=float, default=1.5, help="이 실행의 Groq 채점 비용 상한")
     ap.add_argument("--no-judge", action="store_true", help="질문 응답만 생성·캐시하고 채점은 나중에")
     ap.add_argument("--label", default="baseline")
     ap.add_argument("--preset", default="sonnet", choices=PRESETS, help="실험 C: 노드별 모델 조합")
@@ -499,13 +537,18 @@ def main() -> None:
     masked, vecs = build_masked_index(embedder)
     store.add(masked, vecs)
     claude_tracker = CostTracker(s.agent_cost_budget_usd, "anthropic")
-    judge_tracker = CostTracker(None, "groq")
+    judge_tracker = CostTracker(args.judge_budget_usd, "groq")
     llm = make_llm(args.preset, s.anthropic_api_key, s.agent_model, claude_tracker)
     answer_prompt = args.answer_prompt or s.agent_answer_prompt
     judge = GroqJudge(s.groq_api_key, s.judge_model, judge_tracker)
     app = build_agent(
         AgentDeps(
-            llm=llm, embedder=embedder, store=store, strategy=DEFAULT_STRATEGY, answer_prompt=answer_prompt
+            llm=llm,
+            embedder=embedder,
+            store=store,
+            strategy=DEFAULT_STRATEGY,
+            answer_prompt=answer_prompt,
+            integrated=args.integrated,
         )
     )
     spans = retrieval.load_spans()
@@ -514,7 +557,8 @@ def main() -> None:
     # 실행 결과 캐시: 질문 응답(Claude 비용)과 채점(Groq 한도)을 분리해 중단돼도 이어서 실행할 수 있다
     cache_dir = ROOT / "eval" / "results" / ".cache"
     cache_dir.mkdir(parents=True, exist_ok=True)
-    rec_cache, ev_cache = cache_dir / f"{label}-recs.jsonl", cache_dir / f"{label}-evs.jsonl"
+    out_label = f"{label}-stable" if args.stable else label  # 결과 파일 라벨 (안정화 채점은 별도 결과)
+    rec_cache, ev_cache = cache_dir / f"{label}-recs.jsonl", cache_dir / f"{out_label}-evs.jsonl"
 
     def load(path: Path) -> dict:
         if not path.exists():
@@ -562,7 +606,7 @@ def main() -> None:
                 base = base_eval(q, rec, spans)
                 if key not in evs and not args.no_judge and not judge_stopped:
                     try:
-                        evs[key] = judge_eval(q, rec, judge, fact_texts)
+                        evs[key] = judge_eval(q, rec, judge, fact_texts, stable=args.stable)
                         save(ev_cache, n, q["id"], evs[key])
                     except (
                         RuntimeError
@@ -591,11 +635,13 @@ def main() -> None:
     ledger = ledger_totals()
     res = {
         "config": {
-            "label": label,
+            "label": out_label,
+            "judge_mode": "stable(2회+다수결)" if args.stable else "single",
             "date": date.today().isoformat(),
             "agent_model": llm.describe(),
             "llm_preset": args.preset,
             "answer_prompt": answer_prompt,
+            "graph": "integrated(충분성 통합)" if args.integrated else "split(충분성 노드 분리)",
             "prompt_version": PROMPT_VERSIONS[answer_prompt],
             "embedding": f"{embedder.provider}/{embedder.model}",
             "chunking": DEFAULT_STRATEGY + " (문서) + 트랜스크립트 고정 창",
@@ -621,7 +667,7 @@ def main() -> None:
         },
         "runs": [[{"id": r["q"]["id"], "record": r["rec"], "eval": r["ev"]} for r in rows] for rows in runs],
     }
-    path = ROOT / "eval" / "results" / f"{date.today().isoformat()}-{label}.json"
+    path = ROOT / "eval" / "results" / f"{date.today().isoformat()}-{out_label}.json"
     path.write_text(json.dumps(res, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     path.with_suffix(".md").write_text(to_markdown(res), encoding="utf-8")
     print(to_markdown(res))
