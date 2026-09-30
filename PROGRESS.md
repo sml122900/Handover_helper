@@ -991,3 +991,23 @@ npm run dev
 - `scripts/check-corpus.ts`: "수동 정정"이 들어 있는 md/json은 `output/`으로 덮어쓰지 않음(재실행해도 정정 유지). 재실행 결과 새 수치 **0건**, 사실 40/40·공백 침범 0
 - 개선 후보 4번(수치 왜곡)은 파이프라인 오류 사례로 그대로 유지 (코퍼스는 정정, 파이프라인은 미수정)
 - `docs/decisions/agent-extension.md`: corpus-spec 승인, s1 정정, 본문 3,500자 소폭 미달 허용 3건 추가 (결정 이성민). `corpus-spec.md` 상태 줄을 "승인됨(2026-09-30)"으로 변경
+
+### 처리 멈춤 감지 + "다시 시도" (2026-09-30, API 실호출 0회)
+**완료한 것**
+- `lib/pipeline/stuck.ts` 순수 함수: uploaded 5분, transcribing/structuring = 화면 예상 소요(`estimatedRemainingSeconds`) ×3, 최소 15분 초과 시 멈춤. 경계값 정확히 같으면 정상
+- `supabase/migrations/0011_video_status_changed_at.sql` (+ALL_MIGRATIONS): `videos.status_changed_at` + status/stage 변경 시 갱신 트리거. 컬럼 없으면 멈춤 감지만 꺼짐(나머지 정상)
+- `claimStuckAndEnqueue`: status + status_changed_at 조건부 update → 중복 클릭·정상 진행 경합 1건 차단, 새 runKey로 이벤트 재전송. 트랜스크립트 있으면 prepare가 STT 건너뜀(재과금 없음)
+- enqueue 실패 → `failed` + 사유 저장 + Sentry(`captureError`). 기존 failed 재시도 경로도 동일 적용
+- UI: 처리 중 영상이 멈춤이면 안내 + "다시 시도" 버튼. 폴링은 서버 시계로 판단한 `stuck`을 스냅샷에 포함
+- vitest `tests/stuck.test.ts` 9개 (단계별 경계값·중복 클릭·상태 변경 경합·enqueue 실패)
+
+**사용자가 할 일**
+- [ ] Supabase SQL Editor에서 `0011_video_status_changed_at.sql` 실행 (그 전엔 멈춤 감지 꺼짐)
+- [ ] push·배포 후 Inngest 대시보드 Apps → handover → Sync (0011 배포 순서: SQL 먼저)
+
+**사용자 검토 필요 (새 문구)**
+- "처리가 멈춘 것 같아요. 다시 시도하면 이어서 처리합니다." / 버튼 "다시 시도"
+- "아직 처리 중인 영상입니다. 잠시 후 다시 확인하세요." / "이미 재시도했거나 상태가 바뀐 영상입니다."
+- "변환 작업을 시작하지 못했습니다. '재시도'를 눌러 주세요. 반복되면 파일을 다시 업로드하세요."
+
+**판단**: 멈춘 것으로 보였지만 실제로는 느리게 진행 중인 원본 실행이 살아있을 수 있음 → 재시도 이벤트와 겹쳐도 Inngest concurrency(사용자당 1)로 직렬화, 구조화 결과 중복 가능성은 남음. 실측 필요

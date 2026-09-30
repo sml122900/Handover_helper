@@ -3,8 +3,9 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { retryPipeline, startPipeline } from "@/lib/pipeline/start";
+import { retryPipeline, retryStuckPipeline, startPipeline } from "@/lib/pipeline/start";
 import { selectVideoStatuses, type VideoStatusRow } from "@/lib/pipeline/video-status";
+import { isRowStuck } from "@/lib/pipeline/stuck";
 import { checkUploadAllowed } from "@/lib/plan";
 import { getPlanUsage } from "@/lib/usage";
 import { ALLOWED_EXTS } from "@/lib/upload-validate";
@@ -110,7 +111,23 @@ export async function retryVideo(formData: FormData): Promise<void> {
 }
 
 // 폴링용: 프로젝트 영상 상태 조회 (stage는 0009 이후 — 컬럼이 없으면 status만)
-export async function getVideoStatuses(projectId: string): Promise<VideoStatusRow[]> {
+export async function getVideoStatuses(projectId: string): Promise<(VideoStatusRow & { stuck: boolean })[]> {
   const supabase = await createClient();
-  return selectVideoStatuses(supabase, projectId);
+  const rows = await selectVideoStatuses(supabase, projectId);
+  return rows.map((v) => ({ ...v, stuck: isRowStuck(v) })); // 서버 시계로 판단 (클라이언트 시계 차이 방지)
+}
+
+// 멈춘 영상 재시도: 서버가 멈춤을 다시 판단, 트랜스크립트가 있으면 구조화부터 (STT 재과금 없음)
+export async function retryStuckVideo(formData: FormData): Promise<void> {
+  const videoId = formData.get("videoId") as string;
+  if (!videoId) return;
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return;
+
+  const result = await retryStuckPipeline(supabase, user.id, videoId);
+  if (result.projectId) revalidatePath(`/projects/${result.projectId}`);
 }

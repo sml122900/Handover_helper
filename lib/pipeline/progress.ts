@@ -114,3 +114,9 @@ export const POLL_MAX_MS = 15000;
 export function nextPollDelay(currentMs: number, changed: boolean): number {
   return changed ? POLL_MIN_MS : Math.min(Math.round(currentMs * 1.5), POLL_MAX_MS);
 }
+
+// 현재 화면에 표시되는 남은 예상 시간(초) — 멈춤 판단 기준(lib/pipeline/stuck.ts)이 같은 값을 씀
+export function estimatedRemainingSeconds(input: ProgressInput): number {
+  const active = activeStep(input.status, input.stage) ?? "upload";
+  return remainingSeconds(active === "upload" ? "stt" : active, input);
+}

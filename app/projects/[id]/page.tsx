@@ -5,9 +5,10 @@ import { VideoUploader } from "./VideoUploader";
 import { ScreenRecorder } from "./ScreenRecorder";
 import { VideoStatusPoller } from "./VideoStatusPoller";
 import { VideoProgress } from "./VideoProgress";
-import { retryVideo } from "./upload-actions";
+import { retryStuckVideo, retryVideo } from "./upload-actions";
 import { formatDateTime } from "@/lib/format-date";
 import { selectVideoStatuses } from "@/lib/pipeline/video-status";
+import { isRowStuck } from "@/lib/pipeline/stuck";
 
 export const dynamic = "force-dynamic";
 
@@ -50,7 +51,7 @@ export default async function ProjectDetailPage(props: { params: Promise<{ id: s
     <main className="mx-auto max-w-2xl px-6 py-10">
       <VideoStatusPoller
         projectId={id}
-        snapshot={videos.map((v) => `${v.id}:${v.status}:${v.stage ?? ""}:${v.error_message ?? ""}`).join("|")}
+        snapshot={videos.map((v) => `${v.id}:${v.status}:${v.stage ?? ""}:${v.error_message ?? ""}:${isRowStuck(v)}`).join("|")}
         hasPending={videos.some((v) => PROCESSING.has(v.status))}
       />
       <Link href="/projects" className="text-sm text-[var(--text-sub)] hover:text-[var(--text)]">
@@ -100,6 +101,22 @@ export default async function ProjectDetailPage(props: { params: Promise<{ id: s
                   durationSeconds={v.duration_seconds}
                   isText={v.storage_path.endsWith(".txt") || v.storage_path.endsWith(".md")}
                 />
+              )}
+              {PROCESSING.has(v.status) && isRowStuck(v) && (
+                <div className="mt-2 flex flex-wrap items-center gap-3">
+                  <p className="flex-1 text-xs text-amber-400">
+                    처리가 멈춘 것 같아요. 다시 시도하면 이어서 처리합니다.
+                  </p>
+                  <form action={retryStuckVideo}>
+                    <input type="hidden" name="videoId" value={v.id} />
+                    <button
+                      type="submit"
+                      className="rounded-md border border-[var(--card-border)] px-3 py-1 text-xs text-[var(--text-sub)] hover:border-[var(--card-border-hover)] hover:text-[var(--text)]"
+                    >
+                      다시 시도
+                    </button>
+                  </form>
+                </div>
               )}
               {v.status === "failed" && (
                 <div className="mt-2 flex flex-wrap items-center gap-3">

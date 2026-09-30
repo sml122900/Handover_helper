@@ -8,7 +8,8 @@ import { inngest, VIDEO_UPLOADED, type VideoUploadedData } from "../inngest/clie
 import { captureError } from "../observability";
 import { processVideo } from "./process-video";
 import { runKeyFor } from "./run";
-import { claimAndEnqueueRetry } from "./retry";
+import { claimAndEnqueueRetry, claimStuckAndEnqueue } from "./retry";
+import { isStuck } from "./stuck";
 
 // 파이프라인 시작·재시도 — 서버 액션(completeUpload·retryVideo)과 /api/pipeline/start 공용
 // supabase는 호출자 세션 클라이언트 (RLS로 본인 영상만 조회 = 소유권 검사)
@@ -89,7 +90,9 @@ export async function retryPipeline(
     return { ok: false, error: limited, projectId: video.project_id };
   }
 
-  const claimed = await claimAndEnqueueRetry(admin, videoId, (runKey) => enqueue({ videoId, userId, runKey }));
+  const claimed = await claimAndEnqueueRetry(admin, videoId, (runKey) => enqueue({ videoId, userId, runKey }), Date.now, (e) =>
+    captureError(e, { videoId, stage: "enqueue-retry" })
+  );
   return claimed
     ? { ok: true, projectId: video.project_id }
     : { ok: false, error: "이미 재시도 중입니다.", projectId: video.project_id };
@@ -113,4 +116,42 @@ async function verifyUploadedObject(admin: SupabaseClient, path: string): Promis
   const ext = path.split(".").pop()?.toLowerCase() ?? "";
   const result = validateUploadedObject({ ext, sizeBytes: size, head });
   return result.ok ? null : result.reason;
+}
+
+// 멈춘 영상 재시도 — 서버 시계로 멈춤을 다시 판단(클라이언트 신뢰 안 함), 화면과 같은 status·status_changed_at일 때만 선점
+export async function retryStuckPipeline(
+  supabase: SupabaseClient,
+  userId: string,
+  videoId: string
+): Promise<StartResult> {
+  const { data: video } = await supabase
+    .from("videos")
+    .select("id, project_id, status, stage, duration_seconds, storage_path, status_changed_at")
+    .eq("id", videoId)
+    .single();
+  if (!video) return { ok: false, error: "영상을 찾을 수 없습니다." };
+  const stuck = isStuck({
+    status: video.status,
+    stage: video.stage,
+    durationSeconds: video.duration_seconds,
+    isText: video.storage_path.endsWith(".txt") || video.storage_path.endsWith(".md"),
+    statusChangedAt: video.status_changed_at,
+  });
+  if (!stuck) return { ok: false, error: "아직 처리 중인 영상입니다. 잠시 후 다시 확인하세요.", projectId: video.project_id };
+
+  const admin = createAdminClient();
+  const limited = await checkRateLimit(userId, "pipeline");
+  if (limited) return { ok: false, error: limited, projectId: video.project_id };
+
+  const claimed = await claimStuckAndEnqueue(
+    admin,
+    videoId,
+    { status: video.status, statusChangedAt: video.status_changed_at },
+    (runKey) => enqueue({ videoId, userId, runKey }),
+    Date.now,
+    (e) => captureError(e, { videoId, stage: "enqueue-stuck-retry" })
+  );
+  return claimed
+    ? { ok: true, projectId: video.project_id }
+    : { ok: false, error: "이미 재시도했거나 상태가 바뀐 영상입니다.", projectId: video.project_id };
 }

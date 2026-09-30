@@ -4,9 +4,10 @@ import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { getVideoStatuses } from "./upload-actions";
 import { POLL_MIN_MS, nextPollDelay } from "@/lib/pipeline/progress";
+import type { VideoStatusRow } from "@/lib/pipeline/video-status";
 
-const snapshotOf = (rows: { id: string; status: string; stage: string | null; error_message: string | null }[]) =>
-  rows.map((v) => `${v.id}:${v.status}:${v.stage ?? ""}:${v.error_message ?? ""}`).join("|");
+const snapshotOf = (rows: (VideoStatusRow & { stuck: boolean })[]) =>
+  rows.map((v) => `${v.id}:${v.status}:${v.stage ?? ""}:${v.error_message ?? ""}:${v.stuck}`).join("|");
 
 // 처리 중인 영상이 있으면 상태 폴링 → 변하면 화면 갱신
 // 간격: 변화 있으면 3초, 없으면 1.5배씩 최대 15초 / 탭이 숨겨지면 중지, 돌아오면 즉시 조회
