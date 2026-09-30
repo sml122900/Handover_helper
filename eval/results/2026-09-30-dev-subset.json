@@ -45,33 +45,39 @@
     "facts": 4
    },
    "answer_accuracy": {
-    "facts_covered": 1,
+    "facts_covered": 3,
     "facts": 7,
     "questions_full": 0,
     "questions": 3,
+    "relevant_only": {
+     "facts_covered": 4,
+     "facts": 7,
+     "questions_full": 1,
+     "questions": 3,
+     "fact20_covered": 2,
+     "fact20_facts": 3
+    },
     "fact20": {
-     "covered": 0,
+     "covered": 1,
      "facts": 3,
      "questions_full": 0,
      "questions": 2
     },
     "time5": {
-     "covered": 1,
+     "covered": 2,
      "facts": 4,
      "questions_full": 0,
      "questions": 1
     }
    },
    "hallucination": {
-    "answers_with_unsupported": 1,
+    "answers_with_unsupported": 0,
     "answers": 5,
-    "ids": [
-     "F10"
-    ]
+    "ids": []
    },
    "citation_match": {
     "supported": 15,
-    "pairs": 18,
+    "pairs": 17,
     "answers_without_citation": []
    },
    "refusal_accuracy": {
@@ -99,7 +105,7 @@
       "hit_after": null,
       "queries": [
        "손님이 견과류 알레르기 있으시다는데 이 빵 괜찮아요?",
-       "빵류 견과류 알레르기 유발 성분 원재료 표시 및 고객 안내 절차"
+       "빵류 알레르기 유발 성분(견과류) 원재료 표시 및 알레르기 안내 규정"
       ]
      },
      {
@@ -110,20 +116,20 @@
       "hit_after": null,
       "queries": [
        "회원분이 등록 취소하고 돈 돌려달라고 하세요",
-       "회원 등록 취소 절차 및 환불 처리 방법 환불 조건 환불 금액 산정"
+       "회원 등록 취소(탈퇴·해지) 절차 및 환불 처리 방법 환불 조건 환불 금액 산정 기준 담당자"
       ]
      }
     ]
    },
    "latency_ms": {
-    "p50": 19233,
-    "p95": 20496,
+    "p50": 16516,
+    "p95": 19418,
     "n": 5
    },
    "cost_per_question_usd": {
-    "mean": 0.02883,
-    "max": 0.03729,
-    "claude_total": 0.1442
+    "mean": 0.02998,
+    "max": 0.03817,
+    "claude_total": 0.1499
    },
    "outcomes": {
     "answered": 3,
@@ -133,17 +139,17 @@
  ],
  "stability": null,
  "costs": {
-  "anthropic(이 실행)": "$0.1442 / 16회",
-  "groq(이 실행)": "$0.0095 / 13회",
-  "voyage(이 실행) 임베딩 토큰": 95,
+  "anthropic(이 실행)": "$0.1499 / 16회",
+  "groq(이 실행)": "$0.0102 / 13회",
+  "voyage(이 실행) 임베딩 토큰": 97,
   "누적(전 세션 기록)": {
    "groq": {
-    "calls": 30,
-    "usd": 0.0221
+    "calls": 51,
+    "usd": 0.0378
    },
    "anthropic": {
-    "calls": 23,
-    "usd": 0.2068
+    "calls": 39,
+    "usd": 0.3567
    }
   }
  },
@@ -158,7 +164,7 @@
      "category": "question",
      "safety": false,
      "outcome": "answered",
-     "answer": "에스프레소 머신 청소(백플러시)는 **마지막 주문 직후, 케이크 정리가 끝난 뒤 바로** 시작해요. [근거 2][근거 4]\n\n물로 헹구는 게 아니라 **머신 전용 세제를 한 스푼 넣고 백플러시를 5회 반복**해야 해요. [근거 1][근거 2]\n5회를 다 채워야 하고, 중간에 끝내면 안 돼요. [근거 2][근거 3]\n\n참고로 청소할 때 소리가 꽤 크고 증기도 나오니까 놀라지 않아도 돼요. [근거 1][근거 5]\n\n---\n\n머신 전용 세제 위치는 에스프레소 머신 주변이라고만 나와 있고 정확한 위치는 문서에 없어요. [근거 1] [확인 필요]\n👉 점장님께 세제 정확한 위치를 한 번 확인해 보세요!",
+     "answer": "## 에스프레소 머신 청소 방법\n\n**언제 씻나요?**\n케이크 정리가 끝난 직후, 마지막 주문 직후에 바로 시작해요. [근거 2][근거 4]\n\n**물로만 헹구면 안 돼요!**\n머신 **전용 세제**를 한 스푼 넣고, **백플러시를 5회 반복**해야 해요. [근거 2][근거 5]\n5회를 다 채워야 하고, 중간에 끝내면 안 돼요. [근거 2][근거 3]\n\n**참고로** 청소할 때 소리가 꽤 크고 증기도 나오니까 놀라지 마세요! [근거 1][근거 5]\n\n---\n\n**⚠️ 전용 세제 위치**\n에스프레소 머신 주변에 있다고는 하는데, 정확한 위치는 문서에 명시되어 있지 않아요. [근거 1] [확인 필요]\n→ **점장님께 세제 정확한 위치를 미리 확인해 두세요!**",
      "citations": [
       {
        "n": 1,
@@ -295,7 +301,7 @@
      ],
      "tasks": null,
      "sufficiency": {
-      "reasoning": "질문은 두 가지를 묻고 있습니다: ① 커피 기계(에스프레소 머신)를 언제 씻는지, ② 그냥 물로 헹구면 되는지.\n\n① 세척 시점: 근거 4에서 \"케이크 정리하고 나서, 바로 에스프레소 머신 청소를 시작해요. 마지막 주문 직후에 바로 들어가는 거예요.\"라고 명확히 언급되어 있습니다.\n\n② 세척 방법: 근거 1, 2, 3, 4, 5 모두 \"머신 전용 세제를 한 스푼 넣고 백플러시를 5회 반복\"한다고 명시하고 있습니다. 즉, 물로만 헹구는 것이 아니라 전용 세제를 사용해야 한다는 점이 근거에 직접 적혀 있습니다.\n\n두 질문 모두 근거에서 직접 답을 찾을 수 있습니다.",
+      "reasoning": "질문은 두 가지를 묻고 있습니다: ① 커피 기계(에스프레소 머신)를 언제 씻는지, ② 그냥 물로 헹구면 되는지.\n\n① 세척 시점: 근거 4에서 \"케이크 정리하고 나서, 바로 에스프레소 머신 청소를 시작해요. 마지막 주문 직후에 바로 들어가는 거예요.\"라고 명확히 언급되어 있습니다.\n\n② 세척 방법: 근거 1, 2, 3, 4, 5 모두 \"머신 전용 세제를 한 스푼 넣고 백플러시를 5회 반복\"한다고 명시되어 있습니다. 즉, 그냥 물로 헹구는 것이 아니라 전용 세제를 사용해야 한다는 점이 근거에 직접 적혀 있습니다.\n\n두 질문 모두 근거에서 직접 답을 찾을 수 있습니다.",
       "sufficient": true,
       "missing": ""
      },
@@ -349,23 +355,23 @@
        ]
       }
      ],
-     "latency_ms": 20483,
-     "cost_usd": 0.029055,
-     "input_tokens": 5355,
-     "output_tokens": 866,
+     "latency_ms": 16516,
+     "cost_usd": 0.029691,
+     "input_tokens": 5452,
+     "output_tokens": 889,
      "embedding_tokens": 0,
      "trace": [
       {
-       "input_tokens": 1623,
-       "output_tokens": 149,
-       "cost_usd": 0.007104,
+       "input_tokens": 1720,
+       "output_tokens": 146,
+       "cost_usd": 0.00735,
        "input": "커피 기계는 언제 씻는 거예요? 그냥 물로 헹구면 돼요?",
        "output": {
         "category": "question",
         "safety": false,
-        "reasoning": "커피 기계 세척 시점과 방법을 묻는 업무 절차 질문이다. 기록 요청이나 현재 시각 기반 질문이 아니며, 업무와 관련된 내용이므로 question으로 분류한다."
+        "reasoning": "커피 기계 세척 시점과 방법을 묻는 업무 절차 질문이다. 기록 요청이나 시각 기반 질문이 아니며, 업무와 관련된 내용이므로 question으로 분류한다."
        },
-       "latency_ms": 3078,
+       "latency_ms": 3500,
        "node": "classify"
       },
       {
@@ -383,24 +389,24 @@
       },
       {
        "input_tokens": 2189,
-       "output_tokens": 386,
-       "cost_usd": 0.012357,
+       "output_tokens": 389,
+       "cost_usd": 0.012402,
        "input": "커피 기계는 언제 씻는 거예요? 그냥 물로 헹구면 돼요?",
        "output": {
-        "reasoning": "질문은 두 가지를 묻고 있습니다: ① 커피 기계(에스프레소 머신)를 언제 씻는지, ② 그냥 물로 헹구면 되는지.\n\n① 세척 시점: 근거 4에서 \"케이크 정리하고 나서, 바로 에스프레소 머신 청소를 시작해요. 마지막 주문 직후에 바로 들어가는 거예요.\"라고 명확히 언급되어 있습니다.\n\n② 세척 방법: 근거 1, 2, 3, 4, 5 모두 \"머신 전용 세제를 한 스푼 넣고 백플러시를 5회 반복\"한다고 명시하고 있습니다. 즉, 물로만 헹구는 것이 아니라 전용 세제를 사용해야 한다는 점이 근거에 직접 적혀 있습니다.\n\n두 질문 모두 근거에서 직접 답을 찾을 수 있습니다.",
+        "reasoning": "질문은 두 가지를 묻고 있습니다: ① 커피 기계(에스프레소 머신)를 언제 씻는지, ② 그냥 물로 헹구면 되는지.\n\n① 세척 시점: 근거 4에서 \"케이크 정리하고 나서, 바로 에스프레소 머신 청소를 시작해요. 마지막 주문 직후에 바로 들어가는 거예요.\"라고 명확히 언급되어 있습니다.\n\n② 세척 방법: 근거 1, 2, 3, 4, 5 모두 \"머신 전용 세제를 한 스푼 넣고 백플러시를 5회 반복\"한다고 명시되어 있습니다. 즉, 그냥 물로 헹구는 것이 아니라 전용 세제를 사용해야 한다는 점이 근거에 직접 적혀 있습니다.\n\n두 질문 모두 근거에서 직접 답을 찾을 수 있습니다.",
         "sufficient": true,
         "missing": ""
        },
-       "latency_ms": 6985,
+       "latency_ms": 6358,
        "node": "sufficiency"
       },
       {
        "input_tokens": 1543,
-       "output_tokens": 331,
-       "cost_usd": 0.009594,
+       "output_tokens": 354,
+       "cost_usd": 0.009939,
        "input": "커피 기계는 언제 씻는 거예요? 그냥 물로 헹구면 돼요?",
-       "output": "에스프레소 머신 청소(백플러시)는 **마지막 주문 직후, 케이크 정리가 끝난 뒤 바로** 시작해요. [근거 2][근거 4]\n\n물로 헹구는 게 아니라 **머신 전용 세제를 한 스푼 넣고 백플러시를 5회 반복**해야 해요. [근거 1][근거 2]\n5회를 다 채워야 하고, 중간에 끝내면 안 돼요. [근거 2][근거 3]\n\n참고로 청소할 때 소리가 꽤 크고 증기도 나오니까 놀라지 않아도 돼요. [근거 1][근거 5]\n\n---\n\n머신 전용 세제 위치는 에스프레소 머신 주변이라고만 나와 있고 정확한 위치는 문서에 없어요. [근거 1] [확인 필요]\n👉 점장님께 세제 정확한 위치를 한 번 확인해 보세요!",
-       "latency_ms": 10405,
+       "output": "## 에스프레소 머신 청소 방법\n\n**언제 씻나요?**\n케이크 정리가 끝난 직후, 마지막 주문 직후에 바로 시작해요. [근거 2][근거 4]\n\n**물로만 헹구면 안 돼요!**\n머신 **전용 세제**를 한 스푼 넣고, **백플러시를 5회 반복**해야 해요. [근거 2][근거 5]\n5회를 다 채워야 하고, 중간에 끝내면 안 돼요. [근거 2][근거 3]\n\n**참고로** 청소할 때 소리가 꽤 크고 증기도 나오니까 놀라지 마세요! [근거 1][근거 5]\n\n---\n\n**⚠️ 전용 세제 위치**\n에스프레소 머신 주변에 있다고는 하는데, 정확한 위치는 문서에 명시되어 있지 않아요. [근거 1] [확인 필요]\n→ **점장님께 세제 정확한 위치를 미리 확인해 두세요!**",
+       "latency_ms": 6657,
        "node": "answer"
       }
      ]
@@ -412,9 +418,14 @@
      "category_ok": true,
      "fact_covered": {
       "C02": false,
-      "C03": false
+      "C03": true
      },
      "accuracy_full": false,
+     "fact_covered_relevant": {
+      "C02": false,
+      "C03": true
+     },
+     "accuracy_full_relevant": false,
      "accuracy_detail": {
       "facts": [
        {
@@ -422,6 +433,7 @@
         "parts": [
          {
           "part": "라스트오더는 21:30이다.",
+          "relevant_to_question": true,
           "answer_quote": "",
           "covered": false
          }
@@ -432,12 +444,20 @@
         "parts": [
          {
           "part": "에스프레소 머신 청소는 라스트오더 직후(21:30) 시작한다.",
-          "answer_quote": "",
-          "covered": false
+          "relevant_to_question": true,
+          "answer_quote": "마지막 주문 직후에 바로 시작해요.",
+          "covered": true
          },
          {
-          "part": "전용 세제 1스푼을 넣고 백플러시를 5회 반복한다.",
-          "answer_quote": "머신 전용 세제를 한 스푼 넣고 백플러시를 5회 반복해야 해요.",
+          "part": "전용 세제 1스푼을 넣는다.",
+          "relevant_to_question": true,
+          "answer_quote": "머신 **전용 세제**를 한 스푼 넣고",
+          "covered": true
+         },
+         {
+          "part": "백플러시를 5회 반복한다.",
+          "relevant_to_question": true,
+          "answer_quote": "백플러시를 5회 반복해야 해요.",
           "covered": true
          }
         ]
@@ -457,8 +477,8 @@
      "hallucination_detail": {
       "claims": [
        {
-        "claim": "에스프레소 머신 청소(백플러시)는 마지막 주문 직후, 케이크 정리가 끝난 뒤 바로 시작한다.",
-        "source_quote": "3. **에스프레소 머신 청소 (백플러시)** _(영상 4:09~4:44)_: 머신 전용 세제를 한 스푼 넣고 백플러시를 5회 반복한다. 5회를 모두 완료해야 한다.\n\n케이크 폐기 및 폐기 대장 기록 → **에스프레소 머신 청소** 순서로 진행한다.",
+        "claim": "케이크 정리가 끝난 직후, 마지막 주문 직후에 바로 에스프레소 머신 청소를 시작한다.",
+        "source_quote": "케이크 정리하는 동안 아니 정리하고 나서, 바로 에스프레소 머신 청소를 시작해요.",
         "supported": true
        },
        {
@@ -467,17 +487,17 @@
         "supported": true
        },
        {
-        "claim": "5회를 다 채워야 하고, 중간에 끝내면 안 된다.",
-        "source_quote": "에스프레소 머신 백플러시는 반드시 5회를 완료해야 한다. 도중에 중단하면 안 된다.",
+        "claim": "백플러시를 5회 모두 완료해야 하고, 중간에 끝내면 안 된다.",
+        "source_quote": "5회를 모두 완료해야 한다.",
         "supported": true
        },
        {
-        "claim": "청소할 때 증기가 발생하고 소리가 크게 난다.",
+        "claim": "에스프레소 머신 청소 시 증기가 발생하고 소리가 크다.",
         "source_quote": "백플러시 청소 시 증기가 발생하며 소리가 크다.",
         "supported": true
        },
        {
-        "claim": "머신 전용 세제 위치는 에스프레소 머신 주변이라고만 나와 있고 정확한 위치는 문서에 없으며 확인이 필요하다.",
+        "claim": "머신 전용 세제는 에스프레소 머신 주변에 있지만 정확한 위치는 문서에 명시되어 있지 않다.",
         "source_quote": "머신 전용 세제 — 위치: 에스프레소 머신 주변 (정확한 위치 미언급) ⚠️ [확인 필요]",
         "supported": true
        }
@@ -488,27 +508,27 @@
      "citation_detail": {
       "citations": [
        {
-        "sentence": "에스프레소 머신 청소(백플러시)는 **마지막 주문 직후, 케이크 정리가 끝난 뒤 바로** 시작해요.",
+        "sentence": "케이크 정리가 끝난 직후, 마지막 주문 직후에 바로 시작해요.",
         "cited_n": 2,
         "chunk_quote": "",
         "supports": false
        },
        {
-        "sentence": "에스프레소 머신 청소(백플러시)는 **마지막 주문 직후, 케이크 정리가 끝난 뒤 바로** 시작해요.",
+        "sentence": "케이크 정리가 끝난 직후, 마지막 주문 직후에 바로 시작해요.",
         "cited_n": 4,
-        "chunk_quote": "[04:09] 케이크 정리하는 동안 아니 정리하고 나서, 바로 에스프레소 머신 청소를 시작해요. 마지막 주문 직후에 바로 들어가는 거예요.",
+        "chunk_quote": "케이크 정리하는 동안 아니 정리하고 나서, 바로 에스프레소 머신 청소를 시작해요. 마지막 주문 직후에 바로 들어가는 거예요.",
         "supports": true
        },
        {
-        "sentence": "물로 헹구는 게 아니라 **머신 전용 세제를 한 스푼 넣고 백플러시를 5회 반복**해야 해요.",
-        "cited_n": 1,
-        "chunk_quote": "머신 전용 세제 — 위치: 에스프레소 머신 주변 (정확한 위치 미언급) ⚠️ [확인 필요] _(영상 4:09~4:24)\n- 전용 세제 1스푼을 넣고 백플러시 5회 반",
-        "supports": true
-       },
-       {
-        "sentence": "물로 헹구는 게 아니라 **머신 전용 세제를 한 스푼 넣고 백플러시를 5회 반복**해야 해요.",
+        "sentence": "머신 전용 세제를 한 스푼 넣고, 백플러시를 5회 반복해야 해요.",
         "cited_n": 2,
-        "chunk_quote": "3. **에스프레소 머신 청소 (백플러시)** _(영상 4:09~4:44)_\n   머신 전용 세제를 한 스푼 넣고 백플러시를 5회 반복한다. 5회를 모두 완료해야 한다.",
+        "chunk_quote": "머신 전용 세제를 한 스푼 넣고 백플러시를 5회 반복한다. 5회를 모두 완료해야 한다.",
+        "supports": true
+       },
+       {
+        "sentence": "머신 전용 세제를 한 스푼 넣고, 백플러시를 5회 반복해야 해요.",
+        "cited_n": 5,
+        "chunk_quote": "머신 청소는 세제 한 스푼 넣고 나서 백플러시 다섯 번이에요.",
         "supports": true
        },
        {
@@ -524,26 +544,26 @@
         "supports": false
        },
        {
-        "sentence": "참고로 청소할 때 소리가 꽤 크고 증기도 나오니까 놀라지 않아도 돼요.",
+        "sentence": "청소할 때 소리가 꽤 크고 증기도 나오니까 놀라지 마세요!",
         "cited_n": 1,
-        "chunk_quote": "- **에스프레소 머신** _(영상 4:09~5:04)_\n  - 백플러시 청소 시 증기가 발생하며 소리가 크다. 전용 세제 사용.",
+        "chunk_quote": "백플러시 청소 시 증기가 발생하며 소리가 크다.",
         "supports": true
        },
        {
-        "sentence": "참고로 청소할 때 소리가 꽤 크고 증기도 나오니까 놀라지 않아도 돼요.",
+        "sentence": "청소할 때 소리가 꽤 크고 증기도 나오니까 놀라지 마세요!",
         "cited_n": 5,
-        "chunk_quote": "[04:44] 머신 청소는 세제 한 스푼 넣고 나서 백플러시 다섯 번이에요. 그게 끝이에요. 이 머신 소리가 좀 크죠?",
+        "chunk_quote": "이 머신 소리가 좀 크죠? 저는 처음에 깜짝 놀랐어요.",
         "supports": true
        },
        {
-        "sentence": "머신 전용 세제 위치는 에스프레소 머신 주변이라고만 나와 있고 정확한 위치는 문서에 없어요.",
+        "sentence": "에스프레소 머신 주변에 있다고는 하는데, 정확한 위치는 문서에 명시되어 있지 않아요.",
         "cited_n": 1,
         "chunk_quote": "머신 전용 세제 — 위치: 에스프레소 머신 주변 (정확한 위치 미언급)",
         "supports": true
        }
       ]
      },
-     "judge_cost_usd": 0.002858
+     "judge_cost_usd": 0.003045
     }
    },
    {
@@ -553,9 +573,9 @@
      "store_id": "s1",
      "current_time": null,
      "category": "question",
-     "safety": true,
+     "safety": false,
      "outcome": "answered",
-     "answer": "차액이 **1,000원 이상** 날 경우, **매장 단톡방**에 차액 금액을 올리면 돼요. [근거 1][근거 2][근거 4]\n\n얼마 차이 나는지 숫자로 적어서 올려 주세요. [근거 4]\n\n1,000원 미만 차이는 별도 보고 절차가 문서에 없어요.",
+     "answer": "차액이 **1,000원 이상** 나면 **매장 단톡방**에 차액 금액을 올려 주세요. [근거 1][근거 2]\n\n숫자로 얼마 차이 나는지 적으면 돼요. [근거 4]\n\n1,000원 미만 차이일 때 어떻게 해야 하는지는 문서에 없어요.",
      "citations": [
       {
        "n": 1,
@@ -674,7 +694,7 @@
      ],
      "tasks": null,
      "sufficiency": {
-      "reasoning": "근거 1, 2, 4, 5에 명확하게 답이 나와 있다. 근거 4(영상 6:48~7:21)에서 \"차액이 천 원 이상이면 매장 단톡방에 금액을 올려 주세요\"라고 직접 언급하고 있으며, 근거 5(영상 7:21~7:53)에서도 \"천 원 이상 차이 나면 단톡방에 얼마 차이 나는지 올려요\"라고 재확인된다. 근거 1과 2에서도 동일하게 \"매장 단톡방에 차액 금액을 올린다\"고 명시되어 있다. 질문이 묻는 '어디다 말해야 하는지'에 대한 답(매장 단톡방)과 조건(1,000원 이상 차이)이 모두 근거에 직접 적혀 있다.",
+      "reasoning": "근거 1, 2, 4, 5에 명확하게 답이 나와 있다. 근거 4(영상 6:48~7:21)에서 \"차액이 천 원 이상이면 매장 단톡방에 금액을 올려 주세요\"라고 직접 언급하고 있으며, 근거 5(영상 7:21~7:53)에서도 \"천 원 이상 차이 나면 단톡방에 얼마 차이 나는지 올려요\"라고 재확인된다. 근거 1에서도 \"매장 단톡방 (마감 정산 차액 보고 채널) — 정산 금액과 실제 현금이 1,000원 이상 차이 날 경우 차액 금액을 올림\"이라고 명시되어 있다. 질문의 핵심인 '어디다 말해야 하는가'에 대한 답(매장 단톡방)이 근거에 직접 적혀 있으므로 충분하다.",
       "sufficient": true,
       "missing": ""
      },
@@ -728,23 +748,23 @@
        ]
       }
      ],
-     "latency_ms": 16811,
-     "cost_usd": 0.025776,
-     "input_tokens": 5562,
-     "output_tokens": 606,
+     "latency_ms": 12609,
+     "cost_usd": 0.026832,
+     "input_tokens": 5659,
+     "output_tokens": 657,
      "embedding_tokens": 0,
      "trace": [
       {
-       "input_tokens": 1644,
-       "output_tokens": 130,
-       "cost_usd": 0.006882,
+       "input_tokens": 1741,
+       "output_tokens": 158,
+       "cost_usd": 0.007593,
        "input": "마감하고 돈 세는데 화면에 뜬 금액이랑 실제 돈이 좀 달라요, 이거 어디다 말해야 돼요?",
        "output": {
         "category": "question",
-        "safety": true,
-        "reasoning": "금전 차액 발생 시 보고 절차를 묻는 업무 질문이며, 금전(돈) 관련 안전·법적 사안에 해당하므로 safety_related=true."
+        "safety": false,
+        "reasoning": "마감 시 현금 차액이 발생했을 때 보고 절차를 묻는 업무 질문이다. 기록 요청이 아니라 방법·절차를 묻는 것이며, 돈 관련 문의이므로 신체 안전과는 무관하다."
        },
-       "latency_ms": 4311,
+       "latency_ms": 3422,
        "node": "classify"
       },
       {
@@ -762,24 +782,24 @@
       },
       {
        "input_tokens": 2282,
-       "output_tokens": 346,
-       "cost_usd": 0.012036,
+       "output_tokens": 375,
+       "cost_usd": 0.012471,
        "input": "마감하고 돈 세는데 화면에 뜬 금액이랑 실제 돈이 좀 달라요, 이거 어디다 말해야 돼요?",
        "output": {
-        "reasoning": "근거 1, 2, 4, 5에 명확하게 답이 나와 있다. 근거 4(영상 6:48~7:21)에서 \"차액이 천 원 이상이면 매장 단톡방에 금액을 올려 주세요\"라고 직접 언급하고 있으며, 근거 5(영상 7:21~7:53)에서도 \"천 원 이상 차이 나면 단톡방에 얼마 차이 나는지 올려요\"라고 재확인된다. 근거 1과 2에서도 동일하게 \"매장 단톡방에 차액 금액을 올린다\"고 명시되어 있다. 질문이 묻는 '어디다 말해야 하는지'에 대한 답(매장 단톡방)과 조건(1,000원 이상 차이)이 모두 근거에 직접 적혀 있다.",
+        "reasoning": "근거 1, 2, 4, 5에 명확하게 답이 나와 있다. 근거 4(영상 6:48~7:21)에서 \"차액이 천 원 이상이면 매장 단톡방에 금액을 올려 주세요\"라고 직접 언급하고 있으며, 근거 5(영상 7:21~7:53)에서도 \"천 원 이상 차이 나면 단톡방에 얼마 차이 나는지 올려요\"라고 재확인된다. 근거 1에서도 \"매장 단톡방 (마감 정산 차액 보고 채널) — 정산 금액과 실제 현금이 1,000원 이상 차이 날 경우 차액 금액을 올림\"이라고 명시되어 있다. 질문의 핵심인 '어디다 말해야 하는가'에 대한 답(매장 단톡방)이 근거에 직접 적혀 있으므로 충분하다.",
         "sufficient": true,
         "missing": ""
        },
-       "latency_ms": 5578,
+       "latency_ms": 6125,
        "node": "sufficiency"
       },
       {
        "input_tokens": 1636,
-       "output_tokens": 130,
-       "cost_usd": 0.006858,
+       "output_tokens": 124,
+       "cost_usd": 0.006768,
        "input": "마감하고 돈 세는데 화면에 뜬 금액이랑 실제 돈이 좀 달라요, 이거 어디다 말해야 돼요?",
-       "output": "차액이 **1,000원 이상** 날 경우, **매장 단톡방**에 차액 금액을 올리면 돼요. [근거 1][근거 2][근거 4]\n\n얼마 차이 나는지 숫자로 적어서 올려 주세요. [근거 4]\n\n1,000원 미만 차이는 별도 보고 절차가 문서에 없어요.",
-       "latency_ms": 6921,
+       "output": "차액이 **1,000원 이상** 나면 **매장 단톡방**에 차액 금액을 올려 주세요. [근거 1][근거 2]\n\n숫자로 얼마 차이 나는지 적으면 돼요. [근거 4]\n\n1,000원 미만 차이일 때 어떻게 해야 하는지는 문서에 없어요.",
+       "latency_ms": 3046,
        "node": "answer"
       }
      ]
@@ -793,6 +813,10 @@
       "C06": false
      },
      "accuracy_full": false,
+     "fact_covered_relevant": {
+      "C06": true
+     },
+     "accuracy_full_relevant": true,
      "accuracy_detail": {
       "facts": [
        {
@@ -800,17 +824,20 @@
         "parts": [
          {
           "part": "마감 정산은 포스의 '마감정산' 버튼으로 한다.",
+          "relevant_to_question": false,
           "answer_quote": "",
           "covered": false
          },
          {
           "part": "현금은 금고의 흰 봉투에 넣는다.",
+          "relevant_to_question": false,
           "answer_quote": "",
           "covered": false
          },
          {
           "part": "차액이 1,000원 이상이면 매장 단톡방에 금액을 올린다.",
-          "answer_quote": "차액이 **1,000원 이상** 날 경우, **매장 단톡방**에 차액 금액을 올리면 돼요.",
+          "relevant_to_question": true,
+          "answer_quote": "차액이 **1,000원 이상** 나면 **매장 단톡방**에 차액 금액을 올려 주세요.",
           "covered": true
          }
         ]
@@ -823,60 +850,47 @@
      "retrieval_final": {
       "C06": true
      },
-     "hallucination": true,
-     "unsupported_claims": [
-      "1,000원 미만 차이는 별도 보고 절차가 문서에 없어요."
-     ],
+     "hallucination": false,
+     "unsupported_claims": [],
      "hallucination_detail": {
       "claims": [
        {
-        "claim": "차액이 1,000원 이상 날 경우, 매장 단톡방에 차액 금액을 올리면 된다.",
-        "source_quote": "차액이 천 원 이상이면 매장 단톡방에 금액을 올려 주세요. 얼마 차이 나는지 숫자로요.",
+        "claim": "차액이 1,000원 이상 나면 매장 단톡방에 차액 금액을 올려 주세요.",
+        "source_quote": "정산 금액과 실제 현금이 1,000원 이상 차이 날 경우 매장 단톡방에 차액 금액을 올린다.",
         "supported": true
        },
        {
-        "claim": "얼마 차이 나는지 숫자로 적어서 올려 주세요.",
-        "source_quote": "차액이 천 원 이상이면 매장 단톡방에 금액을 올려 주세요. 얼마 차이 나는지 숫자로요.",
+        "claim": "숫자로 얼마 차이 나는지 적으면 돼요.",
+        "source_quote": "정산 금액과 실제 현금이 1,000원 이상 차이 날 경우 차액 금액(숫자)을 즉시 올린다.",
         "supported": true
-       },
-       {
-        "claim": "1,000원 미만 차이는 별도 보고 절차가 문서에 없어요.",
-        "source_quote": "",
-        "supported": false
        }
       ]
      },
-     "citation_pairs": 4,
-     "citation_supported": 4,
+     "citation_pairs": 3,
+     "citation_supported": 3,
      "citation_detail": {
       "citations": [
        {
-        "sentence": "차액이 **1,000원 이상** 날 경우, **매장 단톡방**에 차액 금액을 올리면 돼요.",
+        "sentence": "차액이 **1,000원 이상** 나면 **매장 단톡방**에 차액 금액을 올려 주세요.",
         "cited_n": 1,
         "chunk_quote": "- **매장 단톡방** (마감 정산 차액 보고 채널) — 정산 금액과 실제 현금이 1,000원 이상 차이 날 경우 차액 금액을 올림",
         "supports": true
        },
        {
-        "sentence": "차액이 **1,000원 이상** 날 경우, **매장 단톡방**에 차액 금액을 올리면 돼요.",
+        "sentence": "차액이 **1,000원 이상** 나면 **매장 단톡방**에 차액 금액을 올려 주세요.",
         "cited_n": 2,
         "chunk_quote": "정산 금액과 실제 현금이 1,000원 이상 차이 날 경우 매장 단톡방에 차액 금액을 올린다.",
         "supports": true
        },
        {
-        "sentence": "차액이 **1,000원 이상** 날 경우, **매장 단톡방**에 차액 금액을 올리면 돼요.",
+        "sentence": "숫자로 얼마 차이 나는지 적으면 돼요.",
         "cited_n": 4,
-        "chunk_quote": "차액이 천 원 이상이면 매장 단톡방에 금액을 올려 주세요.",
-        "supports": true
-       },
-       {
-        "sentence": "얼마 차이 나는지 숫자로 적어서 올려 주세요.",
-        "cited_n": 4,
-        "chunk_quote": "차액이 천 원 이상이면 매장 단톡방에 금액을 올려 주세요.",
+        "chunk_quote": "차액이 천 원 이상이면 매장 단톡방에 금액을 올려 주세요. 얼마 차이 나는지 숫자로요.",
         "supports": true
        }
       ]
      },
-     "judge_cost_usd": 0.001901
+     "judge_cost_usd": 0.002054
     }
    },
    {
@@ -888,19 +902,28 @@
      "category": "now_tasks",
      "safety": false,
      "outcome": "answered",
-     "answer": "지금(21:30~) 해야 할 일부터 알려드릴게요!\n\n---\n\n**지금 시작한 일 (21:30~)**\n\n- 새 주문은 받지 않고 정리 모드로 전환하세요. [근거 1]\n- 쇼케이스에 남은 케이크를 **전량 폐기**하세요. 남은 케이크는 절대 다음 날로 넘기지 않아요. [근거 1]\n- 폐기 후 **폐기 대장에 기록**하세요. [근거 1]\n\n---\n\n**곧 있을 일 (22:00)**\n\n- 정각에 **매장 음악과 간판 불을 동시에** 끄세요. [근거 2]\n- 이후 포스기에서 **'마감정산' 버튼**을 눌러 화면 안내에 따라 정산을 진행하세요. [근거 2]\n\n---\n\n머신 청소 관련 세부 절차는 문서에 없어요. 점장님께 여쭤보세요!",
+     "answer": "지금(21:30~) 해야 할 일부터 알려드릴게요!\n\n---\n\n**🕤 지금 시작한 일 (21:30~)**\n\n- **케이크 폐기**: 쇼케이스에 남아 있는 케이크는 하나도 안 남기고 전부 버려요. [근거 2]\n- **에스프레소 머신 백플러시 청소**: 전용 세제 1스푼 넣고 백플러시 5회 진행해요. 청소 중 소리가 크고 증기가 나오니 놀라지 마세요. [근거 3]\n  - 전용 세제 위치는 머신 주변이라고 하는데 정확한 위치는 문서에 없어요. [근거 3] [확인 필요]\n  - 👉 점장님께 세제 정확한 위치를 확인해 보세요.\n\n---\n\n**🕙 곧 있을 일 (22:00~)**\n\n- **음악·간판 끄기**: 오후 10시 정각에 매장 음악과 간판 불을 동시에 꺼요. [근거 4]\n- **마감 정산**: 포스기에서 '마감정산' 버튼 누르고 화면 안내에 따라 진행해요. [근거 4]\n\n---\n\n순서대로 차근차근 하시면 돼요! 😊",
      "citations": [
       {
-       "n": 1,
-       "label": "S1 · 2. 절차 · 영상 1:35~3:49",
-       "source_type": "document",
-       "source_file": "data/virtual/s1.md",
-       "char_start": 426,
-       "char_end": 631,
+       "n": 2,
+       "label": "S1 · 영상 발언 · 영상 2:24~2:59",
+       "source_type": "transcript",
+       "source_file": "data/virtual/s1.txt",
+       "char_start": 768,
+       "char_end": 953,
        "needs_check": false
       },
       {
-       "n": 2,
+       "n": 3,
+       "label": "S1 · 2. 절차 · 영상 4:09~5:04",
+       "source_type": "document",
+       "source_file": "data/virtual/s1.md",
+       "char_start": 1420,
+       "char_end": 1623,
+       "needs_check": true
+      },
+      {
+       "n": 4,
        "label": "S1 · 2. 절차 · 영상 6:02~7:41",
        "source_type": "document",
        "source_file": "data/virtual/s1.md",
@@ -914,21 +937,55 @@
        "n": 1,
        "source_type": "document",
        "store_id": "s1",
-       "section": "2. 절차",
-       "item_id": "w2",
-       "video_ts_start": 95,
-       "video_ts_end": 229,
+       "section": "3. 장비·위치·물품",
+       "item_id": "w11",
+       "video_ts_start": 43,
+       "video_ts_end": 94,
        "needs_check": false,
        "confidence": "high",
        "inferred": false,
        "source_file": "data/virtual/s1.md",
-       "char_start": 426,
-       "char_end": 631,
-       "text": "9시 30분 — 마지막 주문 마감** _(영상 1:35~2:03)_\n   오후 9시 30분이 되면 새 주문을 받지 않는다. 이 시각부터 정리 모드로 전환한다.\n2. **케이크 폐기 및 폐기 대장 기록** _(영상 2:24~3:49)_\n   쇼케이스에 남아 있는 케이크를 전량 폐기한다. 당일 들어온 것만 판매하며 남은 케이크는 절대 다음 날로 넘기지 않는다. 폐기 후",
-       "score": 0.51721
+       "char_start": 2210,
+       "char_end": 2404,
+       "text": "8:10)_\n  - 일반 쓰레기 배출 장소\n\n## 4. 일정·루틴\n\n- **매일 오후 5시 출근 / 오후 10시 30분 퇴근** — 마감조 근무 시간 _(영상 0:43~1:34)_\n  - 영업 종료는 오후 10시, 퇴근은 오후 10시 30분. 마지막 주문은 오후 9시 30분.\n- **매주 월요일 마감 시** — 제빙기 내부 세척 _(영상 8:51",
+       "score": 0.27177
       },
       {
        "n": 2,
+       "source_type": "transcript",
+       "store_id": "s1",
+       "section": null,
+       "item_id": "t6",
+       "video_ts_start": 144,
+       "video_ts_end": 179,
+       "needs_check": false,
+       "confidence": "high",
+       "inferred": false,
+       "source_file": "data/virtual/s1.txt",
+       "char_start": 768,
+       "char_end": 953,
+       "text": "[02:24] 아 맞다, 오늘 날씨가 좀 궂죠. 비가 오니까 괜히 기분이 가라앉네요. 아무튼, 마지막 주문 끝나면 제일 먼저 케이크부터 봐요. 케이크는 그날 들어온 것만 팔아요. 어제 남은 걸 오늘 파는 일은 없고요. 그래서 아홉 시 반 딱 됐을 때 쇼케이스에 남아 있는 케이크는 전부 버려요. 하나도 안 남기고 다 버리는 거예요.",
+       "score": 0.61242
+      },
+      {
+       "n": 3,
+       "source_type": "document",
+       "store_id": "s1",
+       "section": "2. 절차",
+       "item_id": "w7",
+       "video_ts_start": 249,
+       "video_ts_end": 304,
+       "needs_check": true,
+       "confidence": "needs_review",
+       "inferred": false,
+       "source_file": "data/virtual/s1.md",
+       "char_start": 1420,
+       "char_end": 1623,
+       "text": " 후 즉시 이동한다.\n\n## 3. 장비·위치·물품\n\n- **에스프레소 머신** _(영상 4:09~5:04)_\n  - 백플러시 청소 시 증기가 발생하며 소리가 크다. 전용 세제 사용.\n- **머신 전용 세제** — 위치: 에스프레소 머신 주변 (정확한 위치 미언급) ⚠️ [확인 필요] _(영상 4:09~4:24)_\n  - 전용 세제 1스푼을 넣고 백플러시 5회 반",
+       "score": 0.41611
+      },
+      {
+       "n": 4,
        "source_type": "document",
        "store_id": "s1",
        "section": "2. 절차",
@@ -942,7 +999,7 @@
        "char_start": 823,
        "char_end": 1029,
        "text": "을 확인한다. 개봉 후 24시간이 경과한 우유는 폐기한다.\n5. **오후 10시 정각 — 음악 및 간판 소등** _(영상 6:02~6:40)_\n   오후 10시 정각에 매장 음악을 끄고 간판 불을 끈다. 두 가지를 동시에 처리한다.\n6. **마감 정산** _(영상 6:48~7:41)_\n   포스기에서 '마감정산' 버튼을 누르고 화면의 안내에 따라 진행한다. 현금은 금",
-       "score": 0.62685
+       "score": 0.26603
       }
      ],
      "tasks": {
@@ -957,7 +1014,11 @@
          "s1.cake_waste",
          "s1.machine_clean"
         ],
-        "evidence_n": 1
+        "evidence_ns": [
+         1,
+         2,
+         3
+        ]
        }
       ],
       "upcoming": [
@@ -968,7 +1029,9 @@
          "s1.lights_off",
          "s1.closing_settle"
         ],
-        "evidence_n": 2
+        "evidence_ns": [
+         4
+        ]
        }
       ]
      },
@@ -976,23 +1039,23 @@
      "rewritten": false,
      "final_query": "이제 주문 안 받는데 뭐부터 하면 돼요?",
      "retrieval_log": [],
-     "latency_ms": 8703,
-     "cost_usd": 0.015573,
-     "input_tokens": 2811,
-     "output_tokens": 476,
-     "embedding_tokens": 0,
+     "latency_ms": 10358,
+     "cost_usd": 0.018711,
+     "input_tokens": 3377,
+     "output_tokens": 572,
+     "embedding_tokens": 28,
      "trace": [
       {
-       "input_tokens": 1613,
-       "output_tokens": 147,
-       "cost_usd": 0.007044,
+       "input_tokens": 1710,
+       "output_tokens": 143,
+       "cost_usd": 0.007275,
        "input": "이제 주문 안 받는데 뭐부터 하면 돼요?",
        "output": {
         "category": "now_tasks",
         "safety": false,
-        "reasoning": "현재 주문 마감 이후 시점을 기준으로 지금 당장 무엇을 해야 하는지 묻고 있으므로, 현재 시각 기반의 할 일을 묻는 now_tasks에 해당한다."
+        "reasoning": "현재 주문이 마감된 시점을 기준으로 지금 무엇을 해야 하는지 묻고 있으므로, 현재 시각 기반의 할 일을 묻는 now_tasks에 해당한다."
        },
-       "latency_ms": 3265,
+       "latency_ms": 2922,
        "node": "classify"
       },
       {
@@ -1012,7 +1075,11 @@
            "s1.cake_waste",
            "s1.machine_clean"
           ],
-          "evidence_n": 1
+          "evidence_ns": [
+           1,
+           2,
+           3
+          ]
          }
         ],
         "upcoming": [
@@ -1023,21 +1090,23 @@
            "s1.lights_off",
            "s1.closing_settle"
           ],
-          "evidence_n": 2
+          "evidence_ns": [
+           4
+          ]
          }
         ]
        },
-       "embedding_tokens": 0,
-       "latency_ms": 16,
+       "embedding_tokens": 28,
+       "latency_ms": 515,
        "node": "tasks"
       },
       {
-       "input_tokens": 1198,
-       "output_tokens": 329,
-       "cost_usd": 0.008529,
+       "input_tokens": 1667,
+       "output_tokens": 429,
+       "cost_usd": 0.011436,
        "input": "이제 주문 안 받는데 뭐부터 하면 돼요?",
-       "output": "지금(21:30~) 해야 할 일부터 알려드릴게요!\n\n---\n\n**지금 시작한 일 (21:30~)**\n\n- 새 주문은 받지 않고 정리 모드로 전환하세요. [근거 1]\n- 쇼케이스에 남은 케이크를 **전량 폐기**하세요. 남은 케이크는 절대 다음 날로 넘기지 않아요. [근거 1]\n- 폐기 후 **폐기 대장에 기록**하세요. [근거 1]\n\n---\n\n**곧 있을 일 (22:00)**\n\n- 정각에 **매장 음악과 간판 불을 동시에** 끄세요. [근거 2]\n- 이후 포스기에서 **'마감정산' 버튼**을 눌러 화면 안내에 따라 정산을 진행하세요. [근거 2]\n\n---\n\n머신 청소 관련 세부 절차는 문서에 없어요. 점장님께 여쭤보세요!",
-       "latency_ms": 5422,
+       "output": "지금(21:30~) 해야 할 일부터 알려드릴게요!\n\n---\n\n**🕤 지금 시작한 일 (21:30~)**\n\n- **케이크 폐기**: 쇼케이스에 남아 있는 케이크는 하나도 안 남기고 전부 버려요. [근거 2]\n- **에스프레소 머신 백플러시 청소**: 전용 세제 1스푼 넣고 백플러시 5회 진행해요. 청소 중 소리가 크고 증기가 나오니 놀라지 마세요. [근거 3]\n  - 전용 세제 위치는 머신 주변이라고 하는데 정확한 위치는 문서에 없어요. [근거 3] [확인 필요]\n  - 👉 점장님께 세제 정확한 위치를 확인해 보세요.\n\n---\n\n**🕙 곧 있을 일 (22:00~)**\n\n- **음악·간판 끄기**: 오후 10시 정각에 매장 음악과 간판 불을 동시에 꺼요. [근거 4]\n- **마감 정산**: 포스기에서 '마감정산' 버튼 누르고 화면 안내에 따라 진행해요. [근거 4]\n\n---\n\n순서대로 차근차근 하시면 돼요! 😊",
+       "latency_ms": 6921,
        "node": "tasks_answer"
       }
      ]
@@ -1049,25 +1118,28 @@
      "category_ok": true,
      "fact_covered": {
       "C04": false,
-      "C03": false,
+      "C03": true,
       "C08": true,
       "C06": false
      },
      "accuracy_full": false,
+     "fact_covered_relevant": {
+      "C04": false,
+      "C03": true,
+      "C08": true,
+      "C06": false
+     },
+     "accuracy_full_relevant": false,
      "accuracy_detail": {
       "facts": [
        {
         "fact_id": "C04",
         "parts": [
          {
-          "part": "라스트오더(21:30) 시점에 남은 케이크는 전부 폐기한다",
-          "answer_quote": "- 쇼케이스에 남은 케이크를 **전량 폐기**하세요. 남은 케이크는 절대 다음 날로 넘기지 않아요. [근거 1]",
+          "part": "케이크는 당일 입고분만 판매하고, 라스트오더(21:30) 시점에 남은 케이크는 전부 폐기한다. 폐기하면 폐기 대장에 품목·수량을 적는다.",
+          "relevant_to_question": true,
+          "answer_quote": "케이크 폐기: 쇼케이스에 남아 있는 케이크는 하나도 안 남기고 전부 버려요.",
           "covered": false
-         },
-         {
-          "part": "폐기하면 폐기 대장에 품목·수량을 적는다",
-          "answer_quote": "- 폐기 후 **폐기 대장에 기록**하세요. [근거 1]",
-          "covered": true
          }
         ]
        },
@@ -1076,8 +1148,9 @@
         "parts": [
          {
           "part": "에스프레소 머신 청소는 라스트오더 직후(21:30) 시작한다. 전용 세제 1스푼을 넣고 백플러시를 5회 반복한다.",
-          "answer_quote": "머신 청소 관련 세부 절차는 문서에 없어요. 점장님께 여쭤보세요!",
-          "covered": false
+          "relevant_to_question": true,
+          "answer_quote": "에스프레소 머신 백플러시 청소: 전용 세제 1스푼 넣고 백플러시 5회 진행해요.",
+          "covered": true
          }
         ]
        },
@@ -1085,8 +1158,9 @@
         "fact_id": "C08",
         "parts": [
          {
-          "part": "22:00에 매장 음악과 간판 불을 끈다",
-          "answer_quote": "- 정각에 **매장 음악과 간판 불을 동시에** 끄세요. [근거 2]",
+          "part": "22:00에 매장 음악과 간판 불을 끈다.",
+          "relevant_to_question": true,
+          "answer_quote": "음악·간판 끄기: 오후 10시 정각에 매장 음악과 간판 불을 동시에 꺼요.",
           "covered": true
          }
         ]
@@ -1095,18 +1169,9 @@
         "fact_id": "C06",
         "parts": [
          {
-          "part": "마감 정산은 포스의 '마감정산' 버튼으로 한다",
-          "answer_quote": "- 이후 포스기에서 **'마감정산' 버튼**을 눌러 화면 안내에 따라 정산을 진행하세요. [근거 2]",
-          "covered": true
-         },
-         {
-          "part": "현금은 금고의 흰 봉투에 넣는다",
-          "answer_quote": "",
-          "covered": false
-         },
-         {
-          "part": "차액이 1,000원 이상이면 매장 단톡방에 금액을 올린다",
-          "answer_quote": "",
+          "part": "마감 정산은 포스의 '마감정산' 버튼으로 한다. 현금은 금고의 흰 봉투에 넣는다. 차액이 1,000원 이상이면 매장 단톡방에 금액을 올린다.",
+          "relevant_to_question": true,
+          "answer_quote": "마감 정산: 포스기에서 '마감정산' 버튼 누르고 화면 안내에 따라 진행해요.",
           "covered": false
          }
         ]
@@ -1124,69 +1189,69 @@
      "hallucination_detail": {
       "claims": [
        {
-        "claim": "After the last order time, no new orders are taken and the store switches to cleaning mode.",
-        "source_quote": "오후 9시 30분이 되면 새 주문을 받지 않는다. 이 시각부터 정리 모드로 전환한다.",
+        "claim": "케이크 폐기: 쇼케이스에 남아 있는 케이크는 하나도 안 남기고 전부 버려요.",
+        "source_quote": "아홉 시 반에 쇼케이스에 남아 있는 케이크는 전부 버려요. 하나도 안 남기고 다 버리는 거예요.",
         "supported": true
        },
        {
-        "claim": "All remaining cakes in the showcase are discarded after the last order.",
-        "source_quote": "쇼케이스에 남아 있는 케이크를 전량 폐기한다.",
+        "claim": "에스프레소 머신 백플러시 청소: 전용 세제 1스푼 넣고 백플러시 5회 진행해요.",
+        "source_quote": "머신 전용 세제를 한 스푼 넣고 백플러시를 5회 반복한다.",
         "supported": true
        },
        {
-        "claim": "After discarding the cakes, the disposal log is filled in with the item name and quantity.",
-        "source_quote": "폐기 후 '폐기 대장'에 품목(케이크 이름)과 수량(개수)을 기재한다.",
+        "claim": "전용 세제 위치는 머신 주변이라고 하는데 정확한 위치는 문서에 없어요.",
+        "source_quote": "머신 전용 세제 — 위치: 에스프레소 머신 주변 (정확한 위치 미언급) ⚠️ [확인 필요]",
         "supported": true
        },
        {
-        "claim": "At exactly 10:00 PM the store music and the sign are turned off simultaneously.",
-        "source_quote": "오후 10시 정각에 매장 음악을 끄고 간판 불을 끈다. 두 가지를 동시에 처리한다.",
+        "claim": "음악·간판 끄기: 오후 10시 정각에 매장 음악과 간판 불을 동시에 꺼요.",
+        "source_quote": "오후 10시 정각 — 음악 및 간판 소등",
         "supported": true
        },
        {
-        "claim": "The closing settlement is performed by pressing the “마감정산” button on the POS and following the on‑screen instructions.",
+        "claim": "마감 정산: 포스기에서 '마감정산' 버튼 누르고 화면 안내에 따라 진행해요.",
         "source_quote": "포스기에서 '마감정산' 버튼을 누르고 화면의 안내에 따라 진행한다.",
         "supported": true
        }
       ]
      },
      "citation_pairs": 5,
-     "citation_supported": 4,
+     "citation_supported": 5,
      "citation_detail": {
       "citations": [
        {
-        "sentence": "새 주문은 받지 않고 정리 모드로 전환하세요.",
-        "cited_n": 1,
-        "chunk_quote": "오후 9시 30분이 되면 새 주문을 받지 않는다. 이 시각부터 정리 모드로 전환한다.",
-        "supports": true
-       },
-       {
-        "sentence": "쇼케이스에 남은 케이크를 전량 폐기하세요. 남은 케이크는 절대 다음 날로 넘기지 않아요.",
-        "cited_n": 1,
-        "chunk_quote": "쇼케이스에 남아 있는 케이크를 전량 폐기한다. 당일 들어온 것만 판매하며 남은 케이크는 절대 다음 날로 넘기지 않는다.",
-        "supports": true
-       },
-       {
-        "sentence": "폐기 후 폐기 대장에 기록하세요.",
-        "cited_n": 1,
-        "chunk_quote": "",
-        "supports": false
-       },
-       {
-        "sentence": "정각에 매장 음악과 간판 불을 동시에 끄세요.",
+        "sentence": "케이크 폐기: 쇼케이스에 남아 있는 케이크는 하나도 안 남기고 전부 버려요.",
         "cited_n": 2,
-        "chunk_quote": "오후 10시 정각에 매장 음악을 끄고 간판 불을 끈다. 두 가지를 동시에 처리한다.",
+        "chunk_quote": "쇼케이스에 남아 있는 케이크는 전부 버려요. 하나도 안 남기고 다 버리는 거예요.",
         "supports": true
        },
        {
-        "sentence": "이후 포스기에서 '마감정산' 버튼을 눌러 화면 안내에 따라 정산을 진행하세요.",
-        "cited_n": 2,
-        "chunk_quote": "포스기에서 '마감정산' 버튼을 누르고 화면의 안내에 따라 진행한다.",
+        "sentence": "에스프레소 머신 백플러시 청소: 전용 세제 1스푼 넣고 백플러시 5회 진행해요. 청소 중 소리가 크고 증기가 나오니 놀라지 마세요.",
+        "cited_n": 3,
+        "chunk_quote": "백플러시 청소 시 증기가 발생하며 소리가 크다. 전용 세제 사용.\n전용 세제 1스푼을 넣고 백플러시 5회 반",
+        "supports": true
+       },
+       {
+        "sentence": "전용 세제 위치는 머신 주변이라고 하는데 정확한 위치는 문서에 없어요.",
+        "cited_n": 3,
+        "chunk_quote": "위치: 에스프레소 머신 주변 (정확한 위치 미언급)",
+        "supports": true
+       },
+       {
+        "sentence": "음악·간판 끄기: 오후 10시 정각에 매장 음악과 간판 불을 동시에 꺼요.",
+        "cited_n": 4,
+        "chunk_quote": "오후 10시 정각 — 음악 및 간판 소등",
+        "supports": true
+       },
+       {
+        "sentence": "마감 정산: 포스기에서 '마감정산' 버튼 누르고 화면 안내에 따라 진행해요.",
+        "cited_n": 4,
+        "chunk_quote": "마감 정산",
         "supports": true
        }
       ]
      },
-     "judge_cost_usd": 0.002629
+     "judge_cost_usd": 0.002977
     }
    },
    {
@@ -1205,23 +1270,6 @@
        "n": 1,
        "source_type": "document",
        "store_id": "s2",
-       "section": "1. 업무 개요",
-       "item_id": "w1",
-       "video_ts_start": 0,
-       "video_ts_end": 308,
-       "needs_check": false,
-       "confidence": "high",
-       "inferred": false,
-       "source_file": "data/virtual/s2.md",
-       "char_start": 194,
-       "char_end": 396,
-       "text": " 현금 정산 및 입금 봉투 처리까지의 절차를 안내한다. _(영상 0:00~0:46)_\n- **주기**: 매일 마감 시\n\n## 2. 절차\n\n1. **생크림 제품에 할인 스티커 부착** _(영상 4:28~5:08)_\n   오후 8시 30분부터 생크림이 들어간 제품 전체에 20% 할인 스티커를 붙인다.\n2. **영업 종료 후 남은 빵 분류** _(영상 1:34~2:",
-       "score": 0.35827
-      },
-      {
-       "n": 2,
-       "source_type": "document",
-       "store_id": "s2",
        "section": "2. 절차",
        "item_id": "w2",
        "video_ts_start": 168,
@@ -1233,7 +1281,24 @@
        "char_start": 396,
        "char_end": 587,
        "text": "37)_\n   오후 9시 영업 종료 후 남은 빵을 분류한다. ① 크림·생크림 들어간 빵(크림빵, 생크림 롤 등)은 전량 폐기한다. ② 식빵·바게트는 버리지 않고 따로 보관하여 다음 날 아침 '어제빵 코너'에 30% 할인으로 내놓는다.\n3. **홀케이크 유통 기한 확인 및 폐기** _(영상 2:48~3:39)_\n   홀케이크는 만든 날을 포함",
-       "score": 0.35002
+       "score": 0.3475
+      },
+      {
+       "n": 2,
+       "source_type": "document",
+       "store_id": "s2",
+       "section": "6. 예외 상황·꿀팁",
+       "item_id": "w13",
+       "video_ts_start": 94,
+       "video_ts_end": 508,
+       "needs_check": false,
+       "confidence": "high",
+       "inferred": false,
+       "source_file": "data/virtual/s2.md",
+       "char_start": 2576,
+       "char_end": 2771,
+       "text": "긴다. _(영상 7:43~8:28)_\n\n## 7. 주의사항\n\n- 크림·생크림 들어간 빵은 당일 폐기 원칙이며, 어제빵 코너 대상이 아니다. _(영상 1:34~2:37)_\n- 폐기 전 반드시 태블릿 '폐기 등록' 화면에 품목·수량·사유를 입력해야 한다. _(영상 3:51~4:28)_\n- 금고에는 시재 10만 원만 남기고 나머지는 입금 봉투에 전액 넣",
+       "score": 0.34503
       },
       {
        "n": 3,
@@ -1250,7 +1315,7 @@
        "char_start": 696,
        "char_end": 846,
        "text": "[02:10] 다시 한번 정리하면요. 크림 들어간 빵은 마감 후에 남으면 전부 버려요. 식빵이랑 바게트는 버리지 않고 다음 날 아침에 어제빵 코너에 내놓는데, 삼십 퍼센트 할인이에요. 크림빵을 어제빵으로 내놓으면 안 되냐고요? 안 돼요. 크림 들어간 건 전부 폐기예요.",
-       "score": 0.35959
+       "score": 0.38077
       },
       {
        "n": 4,
@@ -1267,7 +1332,7 @@
        "char_start": 508,
        "char_end": 695,
        "text": "[01:34] 마감할 때 제일 신경 쓰이는 게 남은 빵이잖아요. 저희는 종류에 따라 달라요. 생크림이나 크림 들어간 빵은요, 그날 남으면 전부 버려요. 크림빵, 생크림 롤 이런 거 다요. 그런데 식빵이랑 바게트는 안 버려요. 다음 날 오전에 어제빵 코너에서 팔아요. 삼십 퍼센트 할인해서요. 그러니까 식빵, 바게트는 따로 빼 놓으세요.",
-       "score": 0.35326
+       "score": 0.36296
       },
       {
        "n": 5,
@@ -1284,17 +1349,17 @@
        "char_start": 1915,
        "char_end": 2047,
        "text": "[05:54] 오븐 문 열어 놓고 이십 분, 잊지 마세요. 끄기 전에 문을 열어서 식히는 거예요.\n[06:03] 오븐 열어 놓고 기다리는 동안 저는 오늘 있었던 손님 얘기를 곱씹어 봐요. 어떤 아기 손님이 빵을 한참 바라보다 가셨거든요.",
-       "score": 0.35229
+       "score": 0.33669
       }
      ],
      "tasks": null,
      "sufficiency": {
-      "reasoning": "질문은 특정 빵의 견과류 알레르기 관련 성분 정보를 묻고 있습니다. 근거 1~5는 모두 마감 절차(빵 폐기 분류, 할인 스티커 부착, 오븐 정리 등)에 관한 내용으로, 견과류 알레르기 성분이나 알레르겐 정보에 대한 내용은 전혀 포함되어 있지 않습니다. 따라서 근거만으로는 질문에 답할 수 없습니다.",
+      "reasoning": "질문은 특정 빵의 견과류 알레르기 관련 성분 정보를 묻고 있습니다. 근거 1~5는 모두 마감 후 남은 빵의 폐기 절차, 어제빵 코너 운영, 오븐 정리 등에 관한 내용입니다. 어떤 근거에도 빵의 알레르기 유발 성분(견과류 포함 여부 등)에 대한 정보가 전혀 없습니다. 따라서 근거만으로는 질문에 답할 수 없습니다.",
       "sufficient": false,
-      "missing": "해당 빵 제품의 견과류(알레르겐) 포함 여부, 원재료 성분 정보, 알레르기 유발 물질 관련 안내"
+      "missing": "해당 빵의 견과류 포함 여부 및 알레르기 유발 성분 정보(원재료 목록, 알레르기 표시 등)"
      },
      "rewritten": true,
-     "final_query": "빵류 견과류 알레르기 유발 성분 원재료 표시 및 고객 안내 절차",
+     "final_query": "빵류 알레르기 유발 성분(견과류) 원재료 표시 및 알레르기 안내 규정",
      "retrieval_log": [
       {
        "attempt": 0,
@@ -1344,7 +1409,7 @@
       },
       {
        "attempt": 1,
-       "query": "빵류 견과류 알레르기 유발 성분 원재료 표시 및 고객 안내 절차",
+       "query": "빵류 알레르기 유발 성분(견과류) 원재료 표시 및 알레르기 안내 규정",
        "top5": [
         {
          "file": "data/virtual/s2.txt",
@@ -1352,15 +1417,7 @@
          "end": 846,
          "store": "s2",
          "strategy": "transcript_fixed150",
-         "score": 0.35959
-        },
-        {
-         "file": "data/virtual/s2.md",
-         "start": 194,
-         "end": 396,
-         "store": "s2",
-         "strategy": "fixed150",
-         "score": 0.35827
+         "score": 0.38077
         },
         {
          "file": "data/virtual/s2.txt",
@@ -1368,15 +1425,7 @@
          "end": 695,
          "store": "s2",
          "strategy": "transcript_fixed150",
-         "score": 0.35326
-        },
-        {
-         "file": "data/virtual/s2.txt",
-         "start": 1915,
-         "end": 2047,
-         "store": "s2",
-         "strategy": "transcript_fixed150",
-         "score": 0.35229
+         "score": 0.36296
         },
         {
          "file": "data/virtual/s2.md",
@@ -1384,28 +1433,44 @@
          "end": 587,
          "store": "s2",
          "strategy": "fixed150",
-         "score": 0.35002
+         "score": 0.3475
+        },
+        {
+         "file": "data/virtual/s2.md",
+         "start": 2576,
+         "end": 2771,
+         "store": "s2",
+         "strategy": "fixed150",
+         "score": 0.34503
+        },
+        {
+         "file": "data/virtual/s2.txt",
+         "start": 1915,
+         "end": 2047,
+         "store": "s2",
+         "strategy": "transcript_fixed150",
+         "score": 0.33669
         }
        ]
       }
      ],
-     "latency_ms": 19233,
-     "cost_usd": 0.036468,
-     "input_tokens": 7036,
-     "output_tokens": 1024,
-     "embedding_tokens": 53,
+     "latency_ms": 18593,
+     "cost_usd": 0.036504,
+     "input_tokens": 7153,
+     "output_tokens": 1003,
+     "embedding_tokens": 29,
      "trace": [
       {
-       "input_tokens": 1620,
-       "output_tokens": 142,
-       "cost_usd": 0.00699,
+       "input_tokens": 1717,
+       "output_tokens": 162,
+       "cost_usd": 0.007581,
        "input": "손님이 견과류 알레르기 있으시다는데 이 빵 괜찮아요?",
        "output": {
         "category": "question",
         "safety": true,
-        "reasoning": "손님의 알레르기 관련 질문으로 업무 절차·제품 성분에 대한 질문이며, 알레르기는 안전·건강과 직결되는 사안이므로 safety_related=true에 해당한다."
+        "reasoning": "손님의 알레르기 관련 질문으로, 섭취 시 건강·신체 안전에 직결되는 상황이다. 업무 절차·제품 성분에 대한 질문이므로 question으로 분류하며, 알레르기는 safety_related=true에 해당한다."
        },
-       "latency_ms": 3092,
+       "latency_ms": 3139,
        "node": "classify"
       },
       {
@@ -1417,59 +1482,59 @@
         "data/virtual/s2.md:396-587",
         "data/virtual/s2.txt:107-243"
        ],
-       "embedding_tokens": 26,
-       "latency_ms": 500,
+       "embedding_tokens": 0,
+       "latency_ms": 0,
        "node": "retrieve"
       },
       {
        "input_tokens": 2151,
-       "output_tokens": 327,
-       "cost_usd": 0.011358,
+       "output_tokens": 320,
+       "cost_usd": 0.011253,
        "input": "손님이 견과류 알레르기 있으시다는데 이 빵 괜찮아요?",
        "output": {
-        "reasoning": "질문은 특정 빵의 견과류 알레르기 관련 성분 정보를 묻고 있습니다. 근거 1~5는 모두 마감 후 남은 빵의 처리 절차(폐기 vs. 어제빵 코너 할인 판매), 오븐 관리, 빵집 분위기 등에 관한 내용입니다. 어떤 근거에도 빵의 알레르기 유발 성분(견과류 포함 여부, 알레르기 정보 등)에 대한 내용이 전혀 없습니다. 따라서 근거만으로는 질문에 답할 수 없습니다.",
+        "reasoning": "질문은 특정 빵의 견과류 알레르기 관련 성분 정보를 묻고 있습니다. 근거 1~5는 모두 마감 후 남은 빵의 처리 절차(폐기 vs. 어제빵 코너 할인 판매), 오븐 관리, 빵집 냄새 등에 관한 내용입니다. 어떤 근거에도 빵의 알레르기 유발 성분(견과류 포함 여부 등)에 대한 정보가 전혀 없습니다. 따라서 근거만으로는 질문에 답할 수 없습니다.",
         "sufficient": false,
-        "missing": "해당 빵의 견과류(알레르기 유발 성분) 포함 여부, 원재료 성분 정보, 알레르기 안내 관련 내용"
+        "missing": "해당 빵의 견과류(알레르기 유발 성분) 포함 여부에 관한 원재료·성분 정보 또는 알레르기 안내 규정"
        },
-       "latency_ms": 5688,
+       "latency_ms": 6016,
        "node": "sufficiency"
       },
       {
-       "input_tokens": 1081,
-       "output_tokens": 263,
-       "cost_usd": 0.007188,
-       "input": "해당 빵의 견과류(알레르기 유발 성분) 포함 여부, 원재료 성분 정보, 알레르기 안내 관련 내용",
+       "input_tokens": 1083,
+       "output_tokens": 224,
+       "cost_usd": 0.006609,
+       "input": "해당 빵의 견과류(알레르기 유발 성분) 포함 여부에 관한 원재료·성분 정보 또는 알레르기 안내 규정",
        "output": {
-        "query": "빵류 견과류 알레르기 유발 성분 원재료 표시 및 고객 안내 절차",
-        "reasoning": "질문의 핵심은 특정 빵 제품의 견과류 포함 여부와 알레르기 유발 성분 안내 방법이다. 문서에서는 '알레르기 유발 성분', '원재료 표시', '견과류 함유 여부', '알레르기 안내 절차' 등의 표현으로 기술되어 있을 가능성이 높다. 부족했던 점(원재료 성분 정보, 알레르기 안내 관련 내용)을 보완하는 문서식 표현을 우선 반영한다."
+        "query": "빵류 알레르기 유발 성분(견과류) 원재료 표시 및 알레르기 안내 규정",
+        "reasoning": "질문의 핵심은 특정 빵 제품의 견과류 포함 여부이며, 부족했던 점은 원재료·성분 정보 및 알레르기 안내 규정이다. 문서에서는 '알레르기 유발 성분', '원재료 표시', '알레르기 안내' 등의 표현이 쓰일 가능성이 높으므로 이를 중심으로 재작성한다."
        },
-       "latency_ms": 4000,
+       "latency_ms": 3469,
        "node": "rewrite"
       },
       {
-       "input": "빵류 견과류 알레르기 유발 성분 원재료 표시 및 고객 안내 절차",
+       "input": "빵류 알레르기 유발 성분(견과류) 원재료 표시 및 알레르기 안내 규정",
        "output": [
         "data/virtual/s2.txt:696-846",
-        "data/virtual/s2.md:194-396",
         "data/virtual/s2.txt:508-695",
-        "data/virtual/s2.txt:1915-2047",
-        "data/virtual/s2.md:396-587"
+        "data/virtual/s2.md:396-587",
+        "data/virtual/s2.md:2576-2771",
+        "data/virtual/s2.txt:1915-2047"
        ],
-       "embedding_tokens": 27,
-       "latency_ms": 500,
+       "embedding_tokens": 29,
+       "latency_ms": 514,
        "node": "retrieve"
       },
       {
-       "input_tokens": 2184,
-       "output_tokens": 292,
-       "cost_usd": 0.010932,
+       "input_tokens": 2202,
+       "output_tokens": 297,
+       "cost_usd": 0.011061,
        "input": "손님이 견과류 알레르기 있으시다는데 이 빵 괜찮아요?",
        "output": {
-        "reasoning": "질문은 특정 빵의 견과류 알레르기 관련 성분 정보를 묻고 있습니다. 근거 1~5는 모두 마감 절차(빵 폐기 분류, 할인 스티커 부착, 오븐 정리 등)에 관한 내용으로, 견과류 알레르기 성분이나 알레르겐 정보에 대한 내용은 전혀 포함되어 있지 않습니다. 따라서 근거만으로는 질문에 답할 수 없습니다.",
+        "reasoning": "질문은 특정 빵의 견과류 알레르기 관련 성분 정보를 묻고 있습니다. 근거 1~5는 모두 마감 후 남은 빵의 폐기 절차, 어제빵 코너 운영, 오븐 정리 등에 관한 내용입니다. 어떤 근거에도 빵의 알레르기 유발 성분(견과류 포함 여부 등)에 대한 정보가 전혀 없습니다. 따라서 근거만으로는 질문에 답할 수 없습니다.",
         "sufficient": false,
-        "missing": "해당 빵 제품의 견과류(알레르겐) 포함 여부, 원재료 성분 정보, 알레르기 유발 물질 관련 안내"
+        "missing": "해당 빵의 견과류 포함 여부 및 알레르기 유발 성분 정보(원재료 목록, 알레르기 표시 등)"
        },
-       "latency_ms": 5452,
+       "latency_ms": 5454,
        "node": "sufficiency"
       },
       {
@@ -1502,7 +1567,7 @@
      },
      "safety": true,
      "emergency_marked": true,
-     "judge_cost_usd": 0.001071
+     "judge_cost_usd": 0.001066
     }
    },
    {
@@ -1512,9 +1577,9 @@
      "store_id": "s4",
      "current_time": null,
      "category": "question",
-     "safety": true,
+     "safety": false,
      "outcome": "escalated",
-     "answer": "문서에 없어요. 인수인계 문서에서 이 질문에 답할 내용을 찾지 못했어요. 점장님께 확인을 요청할까요? (요청 문구 제안: \"회원분이 등록 취소하고 돈 돌려달라고 하세요\" 확인 부탁드립니다.) 긴급한 상황이면 119(응급)·112(신고)에 바로 연락하세요. (문서 근거 아님, 일반 안내)",
+     "answer": "문서에 없어요. 인수인계 문서에서 이 질문에 답할 내용을 찾지 못했어요. 점장님께 확인을 요청할까요? (요청 문구 제안: \"회원분이 등록 취소하고 돈 돌려달라고 하세요\" 확인 부탁드립니다.)",
      "citations": [],
      "evidence": [
       {
@@ -1532,7 +1597,7 @@
        "char_start": 2161,
        "char_end": 2362,
        "text": " 공유. _(영상 5:54~6:40)_\n- **미등록 회원(비회원)이 입장하려 할 때** → 일일 이용권(1일권, 10,000원)을 안내하고 결제를 유도한다. _(영상 6:50~7:33)_\n- **락커에서 분실물이 나왔을 때** → 프런트 분실물함에 넣고 날짜를 반드시 기재한다. 7일 보관 후 폐기. _(영상 7:47~8:37)_\n- **유통기한이 지난 음료",
-       "score": 0.28185
+       "score": 0.30659
       },
       {
        "n": 2,
@@ -1549,10 +1614,27 @@
        "char_start": 580,
        "char_end": 766,
        "text": "06:00에 출입문을 열어 회원 입장을 시작한다.\n5. **음료 냉장고 채우기 및 유통기한 확인** _(영상 4:03~4:38)_\n   오픈 후 약 06:30쯤 음료 냉장고를 채운다. 채우는 김에 유통기한이 지난 음료가 있으면 즉시 폐기한다.\n6. **수건 납품 수령 및 서명** _(영상 5:01~5:46)_\n   07:00에 세탁",
-       "score": 0.19272
+       "score": 0.24059
       },
       {
        "n": 3,
+       "source_type": "document",
+       "store_id": "s4",
+       "section": "4. 일정·루틴",
+       "item_id": "w9",
+       "video_ts_start": 46,
+       "video_ts_end": 564,
+       "needs_check": false,
+       "confidence": "high",
+       "inferred": false,
+       "source_file": "data/virtual/s4.md",
+       "char_start": 1756,
+       "char_end": 1955,
+       "text": "영상 5:01~5:26)_\n  - 세탁업체 수건 수량 확인 후 납품서 서명\n- **11:30쯤** — 분실물함 정리 _(영상 8:47~9:24)_\n  - 7일 경과 분실물 폐기. 날짜 메모 기준으로 판단\n- **12:00** — 퇴근 _(영상 0:46~0:46)_\n  - 오픈 조 근무 종료\n\n## 5. 연락·보고\n\n- **세탁업체 담당자** (수건 납품)",
+       "score": 0.21993
+      },
+      {
+       "n": 4,
        "source_type": "transcript",
        "store_id": "s4",
        "section": null,
@@ -1566,51 +1648,34 @@
        "char_start": 2327,
        "char_end": 2523,
        "text": "[06:50] 또 가끔 사람이 들어오는데 회원이 아닌 것 같을 때가 있어요. 등록이 안 된 분이 들어오시면 일일 이용권을 안내해요. 일 일권이요, 만 원이에요. 만 원 결제하시라고 안내하는 거예요. 1일권 만 원이요.\n[07:13] 회원 아닌 분이 오시면 일일 이용권 안내하는 거 기억나죠? 만 원이에요. 결제는 그분이 하시는 거고 저는 안내를 해요.",
-       "score": 0.32407
-      },
-      {
-       "n": 4,
-       "source_type": "transcript",
-       "store_id": "s4",
-       "section": null,
-       "item_id": "t16",
-       "video_ts_start": 446,
-       "video_ts_end": 467,
-       "needs_check": false,
-       "confidence": "high",
-       "inferred": false,
-       "source_file": "data/virtual/s4.txt",
-       "char_start": 2524,
-       "char_end": 2646,
-       "text": "[07:26] 처음 오시는 분들은 다들 조금 긴장한 얼굴이에요. 그 모습이 귀엽기도 하고요.\n[07:35] 일일 이용권으로 오신 분이 나중에 정식 회원이 되어서 다시 오시면 기분이 좋아요. 제가 안내해 드린 분이잖아요.",
-       "score": 0.20235
+       "score": 0.31868
       },
       {
        "n": 5,
        "source_type": "transcript",
        "store_id": "s4",
        "section": null,
-       "item_id": "t11",
-       "video_ts_start": 288,
-       "video_ts_end": 326,
+       "item_id": "t20",
+       "video_ts_start": 544,
+       "video_ts_end": 576,
        "needs_check": false,
        "confidence": "high",
        "inferred": false,
        "source_file": "data/virtual/s4.txt",
-       "char_start": 1650,
-       "char_end": 1859,
-       "text": "[04:48] 헬스장은 여름엔 에어컨 바람이 시원해서 좋고, 회원분들 땀 냄새는 어쩔 수 없죠. 하하. 그래도 저는 활기가 좋아요.\n[05:01] 일곱 시에는 수건이 들어와요. 세탁업체에서 수건을 가져다주거든요. 그때 수량을 확인하세요. 몇 장 왔는지 세어 보고요. 그리고 납품서에 서명해요. 납품서가 같이 오니까 거기에 사인하시면 돼요. 수량 확인하고 서명, 그 순서예요.",
-       "score": 0.16812
+       "char_start": 3077,
+       "char_end": 3254,
+       "text": "[09:04] 분실물 정리는 몇 시에 하냐고요? 열한 시 반쯤이에요. 그때 칠 일 지난 걸 버려요. 점심시간 가까워지면 회원분들이 하나둘 빠지면서 헬스장이 다시 조용해져요. 저는 그때 마음이 놓이더라고요.\n[09:25] 열한 시 반쯤 되면 배가 슬슬 고파져서 저는 그때 시계를 자주 봐요. 열두 시가 근무 끝이니까요.",
+       "score": 0.21222
       }
      ],
      "tasks": null,
      "sufficiency": {
-      "reasoning": "질문은 회원이 등록 취소 및 환불을 요청할 때의 처리 절차에 관한 것입니다. 근거 1~5를 살펴보면, 비회원 일일 이용권 안내(근거 1, 3, 4), 분실물 처리(근거 1), 음료 냉장고 관리(근거 2), 수건 납품 수령(근거 2, 5), 헬스장 분위기(근거 5) 등의 내용만 포함되어 있습니다. 등록 취소 절차나 환불 규정·방법에 대한 내용은 어떤 근거에도 전혀 언급되어 있지 않습니다.",
+      "reasoning": "질문은 회원의 등록 취소 및 환불 처리 절차에 관한 것입니다. 근거 1~5를 살펴보면, 비회원 입장 안내(근거 1, 4), 음료 냉장고 관리(근거 2), 분실물 정리(근거 3, 5) 등의 내용만 포함되어 있습니다. 등록 취소나 환불과 관련된 절차, 규정, 담당자, 방법 등은 어떤 근거에도 전혀 언급되어 있지 않습니다.",
       "sufficient": false,
-      "missing": "회원 등록 취소 절차 및 환불 처리 방법(환불 가능 여부, 환불 조건, 환불 금액 산정 기준, 담당자 또는 처리 방식 등)에 관한 정보가 없습니다."
+      "missing": "회원 등록 취소 절차 및 환불 처리 방법(환불 가능 여부, 환불 조건, 담당자, 처리 절차 등)에 관한 정보가 없습니다."
      },
      "rewritten": true,
-     "final_query": "회원 등록 취소 절차 및 환불 처리 방법 환불 조건 환불 금액 산정",
+     "final_query": "회원 등록 취소(탈퇴·해지) 절차 및 환불 처리 방법 환불 조건 환불 금액 산정 기준 담당자",
      "retrieval_log": [
       {
        "attempt": 0,
@@ -1660,7 +1725,7 @@
       },
       {
        "attempt": 1,
-       "query": "회원 등록 취소 절차 및 환불 처리 방법 환불 조건 환불 금액 산정",
+       "query": "회원 등록 취소(탈퇴·해지) 절차 및 환불 처리 방법 환불 조건 환불 금액 산정 기준 담당자",
        "top5": [
         {
          "file": "data/virtual/s4.txt",
@@ -1668,7 +1733,7 @@
          "end": 2523,
          "store": "s4",
          "strategy": "transcript_fixed150",
-         "score": 0.32407
+         "score": 0.31868
         },
         {
          "file": "data/virtual/s4.md",
@@ -1676,15 +1741,7 @@
          "end": 2362,
          "store": "s4",
          "strategy": "fixed150",
-         "score": 0.28185
-        },
-        {
-         "file": "data/virtual/s4.txt",
-         "start": 2524,
-         "end": 2646,
-         "store": "s4",
-         "strategy": "transcript_fixed150",
-         "score": 0.20235
+         "score": 0.30659
         },
         {
          "file": "data/virtual/s4.md",
@@ -1692,36 +1749,44 @@
          "end": 766,
          "store": "s4",
          "strategy": "fixed150",
-         "score": 0.19272
+         "score": 0.24059
+        },
+        {
+         "file": "data/virtual/s4.md",
+         "start": 1756,
+         "end": 1955,
+         "store": "s4",
+         "strategy": "fixed150",
+         "score": 0.21993
         },
         {
          "file": "data/virtual/s4.txt",
-         "start": 1650,
-         "end": 1859,
+         "start": 3077,
+         "end": 3254,
          "store": "s4",
          "strategy": "transcript_fixed150",
-         "score": 0.16812
+         "score": 0.21222
         }
        ]
       }
      ],
-     "latency_ms": 20500,
-     "cost_usd": 0.037293,
-     "input_tokens": 6991,
-     "output_tokens": 1088,
-     "embedding_tokens": 42,
+     "latency_ms": 19625,
+     "cost_usd": 0.038166,
+     "input_tokens": 7117,
+     "output_tokens": 1121,
+     "embedding_tokens": 40,
      "trace": [
       {
-       "input_tokens": 1614,
-       "output_tokens": 132,
-       "cost_usd": 0.006822,
+       "input_tokens": 1711,
+       "output_tokens": 142,
+       "cost_usd": 0.007263,
        "input": "회원분이 등록 취소하고 돈 돌려달라고 하세요",
        "output": {
         "category": "question",
-        "safety": true,
-        "reasoning": "회원 등록 취소 및 환불 요청은 업무 절차를 묻는 질문이며, 금전(환불)이 관련된 상황이므로 safety_related=true에 해당한다."
+        "safety": false,
+        "reasoning": "회원의 등록 취소 및 환불 요청을 어떻게 처리해야 하는지 묻는 업무 절차 질문이다. 돈·환불 관련 문의로 신체 안전과는 무관하다."
        },
-       "latency_ms": 2967,
+       "latency_ms": 3108,
        "node": "classify"
       },
       {
@@ -1733,63 +1798,63 @@
         "data/virtual/s4.txt:3742-3825",
         "data/virtual/s4.txt:2158-2326"
        ],
-       "embedding_tokens": 15,
-       "latency_ms": 500,
+       "embedding_tokens": 0,
+       "latency_ms": 0,
        "node": "retrieve"
       },
       {
        "input_tokens": 2080,
-       "output_tokens": 348,
-       "cost_usd": 0.01146,
+       "output_tokens": 370,
+       "cost_usd": 0.01179,
        "input": "회원분이 등록 취소하고 돈 돌려달라고 하세요",
        "output": {
-        "reasoning": "질문은 회원 등록 취소 및 환불 처리 절차에 관한 것입니다. 근거 1~5를 살펴보면, 근거 1·2·3은 미등록 회원(비회원) 입장 시 일일 이용권 안내에 관한 내용이고, 근거 4는 특정 회원에 대한 개인적 소감, 근거 5는 기구 이상 시 처리 절차에 관한 내용입니다. 어떤 근거에도 회원 등록 취소 방법이나 환불 절차·조건·금액 등에 대한 내용이 전혀 포함되어 있지 않습니다.",
+        "reasoning": "질문은 회원 등록 취소 및 환불 처리 절차에 관한 것입니다. 근거 1~5를 살펴보면, 근거 1·2·3은 미등록 회원(비회원) 입장 시 일일 이용권 안내에 관한 내용이고, 근거 4는 특정 회원에 대한 개인적 소감, 근거 5는 기구 이상 시 처리 절차에 관한 내용입니다. 어떤 근거에도 회원 등록 취소 방법이나 환불 절차(환불 가능 여부, 환불 조건, 처리 방법 등)에 대한 내용이 전혀 포함되어 있지 않습니다.",
         "sufficient": false,
-        "missing": "회원 등록 취소 절차 및 환불 처리 방법(환불 조건, 환불 금액 계산 방식, 담당자 또는 처리 경로 등)에 대한 정보가 없습니다."
+        "missing": "회원 등록 취소 절차 및 환불 처리 방법(환불 가능 여부, 환불 조건, 환불 금액 산정 기준, 처리 담당자 등)에 관한 정보가 없습니다."
        },
-       "latency_ms": 6079,
+       "latency_ms": 6016,
        "node": "sufficiency"
       },
       {
-       "input_tokens": 1093,
-       "output_tokens": 245,
-       "cost_usd": 0.006954,
-       "input": "회원 등록 취소 절차 및 환불 처리 방법(환불 조건, 환불 금액 계산 방식, 담당자 또는 처리 경로 등)에 대한 정보가 없습니다.",
+       "input_tokens": 1097,
+       "output_tokens": 299,
+       "cost_usd": 0.007776,
+       "input": "회원 등록 취소 절차 및 환불 처리 방법(환불 가능 여부, 환불 조건, 환불 금액 산정 기준, 처리 담당자 등)에 관한 정보가 없습니다.",
        "output": {
-        "query": "회원 등록 취소 절차 및 환불 처리 방법 환불 조건 환불 금액 산정",
-        "reasoning": "질문의 핵심은 회원이 등록을 취소하고 환불을 요청하는 상황이다. 부족했던 점은 취소 절차, 환불 조건·금액 계산 방식, 처리 경로 등이므로, 인수인계 문서에서 쓰일 법한 표현인 \"회원 등록 취소 절차\", \"환불 처리 방법\", \"환불 조건\", \"환불 금액 산정\" 등의 문서식 표현으로 바꾼다."
+        "query": "회원 등록 취소(탈퇴·해지) 절차 및 환불 처리 방법 환불 조건 환불 금액 산정 기준 담당자",
+        "reasoning": "질문의 핵심은 회원이 등록을 취소하고 환불을 요청하는 상황이다. 문서에서는 구어체인 \"등록 취소\", \"돈 돌려달라\"보다 \"회원 탈퇴(해지)\", \"환불 처리\", \"환불 조건\", \"환불 금액 산정\", \"처리 담당자\" 등의 업무 용어로 기술되어 있을 가능성이 높다. 부족했던 점(환불 가능 여부, 조건, 금액 산정 기준, 담당자)을 채울 수 있는 표현을 우선 반영한다."
        },
-       "latency_ms": 3765,
+       "latency_ms": 4593,
        "node": "rewrite"
       },
       {
-       "input": "회원 등록 취소 절차 및 환불 처리 방법 환불 조건 환불 금액 산정",
+       "input": "회원 등록 취소(탈퇴·해지) 절차 및 환불 처리 방법 환불 조건 환불 금액 산정 기준 담당자",
        "output": [
         "data/virtual/s4.txt:2327-2523",
         "data/virtual/s4.md:2161-2362",
-        "data/virtual/s4.txt:2524-2646",
         "data/virtual/s4.md:580-766",
-        "data/virtual/s4.txt:1650-1859"
+        "data/virtual/s4.md:1756-1955",
+        "data/virtual/s4.txt:3077-3254"
        ],
-       "embedding_tokens": 27,
-       "latency_ms": 530,
+       "embedding_tokens": 40,
+       "latency_ms": 467,
        "node": "retrieve"
       },
       {
-       "input_tokens": 2204,
-       "output_tokens": 363,
-       "cost_usd": 0.012057,
+       "input_tokens": 2229,
+       "output_tokens": 310,
+       "cost_usd": 0.011337,
        "input": "회원분이 등록 취소하고 돈 돌려달라고 하세요",
        "output": {
-        "reasoning": "질문은 회원이 등록 취소 및 환불을 요청할 때의 처리 절차에 관한 것입니다. 근거 1~5를 살펴보면, 비회원 일일 이용권 안내(근거 1, 3, 4), 분실물 처리(근거 1), 음료 냉장고 관리(근거 2), 수건 납품 수령(근거 2, 5), 헬스장 분위기(근거 5) 등의 내용만 포함되어 있습니다. 등록 취소 절차나 환불 규정·방법에 대한 내용은 어떤 근거에도 전혀 언급되어 있지 않습니다.",
+        "reasoning": "질문은 회원의 등록 취소 및 환불 처리 절차에 관한 것입니다. 근거 1~5를 살펴보면, 비회원 입장 안내(근거 1, 4), 음료 냉장고 관리(근거 2), 분실물 정리(근거 3, 5) 등의 내용만 포함되어 있습니다. 등록 취소나 환불과 관련된 절차, 규정, 담당자, 방법 등은 어떤 근거에도 전혀 언급되어 있지 않습니다.",
         "sufficient": false,
-        "missing": "회원 등록 취소 절차 및 환불 처리 방법(환불 가능 여부, 환불 조건, 환불 금액 산정 기준, 담당자 또는 처리 방식 등)에 관한 정보가 없습니다."
+        "missing": "회원 등록 취소 절차 및 환불 처리 방법(환불 가능 여부, 환불 조건, 담당자, 처리 절차 등)에 관한 정보가 없습니다."
        },
-       "latency_ms": 6657,
+       "latency_ms": 5438,
        "node": "sufficiency"
       },
       {
-       "output": "문서에 없어요. 인수인계 문서에서 이 질문에 답할 내용을 찾지 못했어요. 점장님께 확인을 요청할까요? (요청 문구 제안: \"회원분이 등록 취소하고 돈 돌려달라고 하세요\" 확인 부탁드립니다.) 긴급한 상황이면 119(응급)·112(신고)에 바로 연락하세요. (문서 근거 아님, 일반 안내)",
+       "output": "문서에 없어요. 인수인계 문서에서 이 질문에 답할 내용을 찾지 못했어요. 점장님께 확인을 요청할까요? (요청 문구 제안: \"회원분이 등록 취소하고 돈 돌려달라고 하세요\" 확인 부탁드립니다.)",
        "latency_ms": 0,
        "node": "escalate"
       }
@@ -1809,16 +1874,16 @@
      "refusal_detail": {
       "not_in_doc_quote": "문서에 없어요. 인수인계 문서에서 이 질문에 답할 내용을 찾지 못했어요.",
       "states_not_in_doc": true,
-      "manager_quote": "점장님께 확인을 요청할까요? (요청 문구 제안: \"회원분이 등록 취소하고 돈 돌려달라고 하세요\" 확인 부탁드립니다.)",
+      "manager_quote": "점장님께 확인을 요청할까요?",
       "suggests_manager_check": true,
       "guess_quote": "",
       "gives_guess_answer": false,
-      "emergency_note_quote": "긴급한 상황이면 119(응급)·112(신고)에 바로 연락하세요.",
-      "emergency_marked_not_from_doc": true
+      "emergency_note_quote": "",
+      "emergency_marked_not_from_doc": false
      },
      "safety": false,
-     "emergency_marked": true,
-     "judge_cost_usd": 0.001066
+     "emergency_marked": false,
+     "judge_cost_usd": 0.001014
     }
    }
   ]

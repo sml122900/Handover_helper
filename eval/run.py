@@ -332,6 +332,7 @@ def main() -> None:
     ap.add_argument("--subset", default=None, help="쉼표로 구분한 문항 ID (예: F04,T01)")
     ap.add_argument("--n5", action="store_true", help=f"개발용 5문항 {DEV_SUBSET}")
     ap.add_argument("--runs", type=int, default=1)
+    ap.add_argument("--no-judge", action="store_true", help="질문 응답만 생성·캐시하고 채점은 나중에")
     ap.add_argument("--label", default="baseline")
     args = ap.parse_args()
 
@@ -355,24 +356,61 @@ def main() -> None:
     spans = retrieval.load_spans()
     fact_texts = load_fact_texts()
 
+    # 실행 결과 캐시: 질문 응답(Claude 비용)과 채점(Groq 한도)을 분리해 중단돼도 이어서 실행할 수 있다
+    cache_dir = ROOT / "eval" / "results" / ".cache"
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    rec_cache, ev_cache = cache_dir / f"{label}-recs.jsonl", cache_dir / f"{label}-evs.jsonl"
+
+    def load(path: Path) -> dict:
+        if not path.exists():
+            return {}
+        rows = [json.loads(x) for x in path.read_text(encoding="utf-8").splitlines() if x]
+        return {(x["run"], x["id"]): x["data"] for x in rows}
+
+    def save(path: Path, run: int, qid: str, data: dict) -> None:
+        with path.open("a", encoding="utf-8") as f:
+            f.write(json.dumps({"run": run, "id": qid, "data": data}, ensure_ascii=False) + "\n")
+
+    recs, evs = load(rec_cache), load(ev_cache)
     runs: list[list[dict]] = []
+    incomplete = False
     try:
         for n in range(args.runs):
             rows = []
             for q in golden:
-                rec = run_question(app, q["question"], q["store"], q.get("current_time"))
-                ev = evaluate_question(q, rec, judge, spans, fact_texts)
-                rows.append({"q": q, "rec": rec, "ev": ev})
+                key = (n, q["id"])
+                if key not in recs:
+                    recs[key] = run_question(app, q["question"], q["store"], q.get("current_time"))
+                    save(rec_cache, n, q["id"], recs[key])
+                rec = recs[key]
+                if key not in evs and not args.no_judge:
+                    try:
+                        evs[key] = evaluate_question(q, rec, judge, spans, fact_texts)
+                        save(ev_cache, n, q["id"], evs[key])
+                    except (
+                        RuntimeError
+                    ) as e:  # 채점 한도(예: Groq 일일 토큰) 소진 등 — 지금까지의 결과는 캐시에 남는다
+                        print(f"[채점 중단] {q[id]}: {e}")
+                        incomplete = True
+                        break
+                if key in evs:
+                    rows.append({"q": q, "rec": rec, "ev": evs[key]})
                 print(
-                    f"[run {n + 1}] {q['id']} {rec['outcome']} {rec['latency_ms']}ms ${rec['cost_usd']:.4f}",
+                    f"[run {n + 1}] {q['id']} {rec['outcome']} {rec['latency_ms']}ms ${rec['cost_usd']:.4f} "
+                    + ("채점 완료" if key in evs else "채점 대기"),
                     flush=True,
                 )
+            if incomplete:
+                break
             runs.append(rows)
     except CostBudgetExceeded as e:
         print(f"[중단] {e}")
         sys.exit(2)
-    finally:
-        pass
+    if args.no_judge or incomplete:
+        print(
+            "응답 결과를 캐시에 저장했다. 채점은 같은 명령을 --no-judge 없이 다시 실행하면 이어서 진행한다."
+        )
+        sys.exit(0 if args.no_judge else 3)
 
     ledger = ledger_totals()
     res = {

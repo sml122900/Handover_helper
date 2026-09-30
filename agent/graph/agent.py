@@ -60,6 +60,7 @@ class State(TypedDict, total=False):
     sufficiency: dict
     answer: str
     citations: list[dict]
+    rewrite_failed: bool
     outcome: str  # answered | escalated | record_request | out_of_scope | no_tasks
     retrieval_log: Annotated[list[dict], operator.add]
     trace: Annotated[list[dict], operator.add]
@@ -250,14 +251,17 @@ def build_agent(deps: AgentDeps):
 
     def rewrite(state: State) -> dict:
         user = f"[원래 질문]\n{state['question']}\n\n[부족했던 점]\n{state['sufficiency']['missing']}"
-        res, info = llm.structured(
-            system=prompts.REWRITE_SYSTEM,
-            user=user,
-            schema=Rewrite,
-            tool_name="submit_rewrite",
-            max_tokens=300,
-            tag="rewrite",
-        )
+        try:
+            res, info = llm.structured(
+                system=prompts.REWRITE_SYSTEM,
+                user=user,
+                schema=Rewrite,
+                tool_name="submit_rewrite",
+                max_tokens=600,
+                tag="rewrite",
+            )
+        except RuntimeError as e:  # 구조화 출력이 재시도 후에도 검증 실패 → 재검색 없이 에스컬레이션
+            return {"attempt": state["attempt"] + 1, "rewrite_failed": True, "_trace": {"error": str(e)}}
         return {
             "query": res.query,
             "attempt": state["attempt"] + 1,
@@ -394,7 +398,7 @@ def build_agent(deps: AgentDeps):
     g.add_conditional_edges("classify", after_classify)
     g.add_edge("retrieve", "sufficiency")
     g.add_conditional_edges("sufficiency", after_sufficiency)
-    g.add_edge("rewrite", "retrieve")
+    g.add_conditional_edges("rewrite", lambda st: "escalate" if st.get("rewrite_failed") else "retrieve")
     g.add_conditional_edges("tasks", after_tasks)
     for end_node in ("answer", "escalate", "tasks_answer", "record_reply", "out_of_scope_reply"):
         g.add_edge(end_node, END)
@@ -402,22 +406,39 @@ def build_agent(deps: AgentDeps):
 
 
 def run_question(app, question: str, store_id: str, current_time: str | None = None) -> dict:
-    """한 질문을 흐름에 통과시키고 실행 기록(JSON 직렬화 가능)을 돌려준다."""
+    """한 질문을 흐름에 통과시키고 실행 기록(JSON 직렬화 가능)을 돌려준다.
+
+    구조화 출력이 재시도 후에도 실패하는 등 노드가 실패하면 outcome="failed"로 기록한다 (CLAUDE.md: 1회 재시도 후 failed 처리).
+    """
     started = time.monotonic()
-    final = app.invoke(
-        {
-            "question": question,
-            "store_id": store_id.lower(),
-            "current_time": current_time,
-            "trace": [],
+    base = {"question": question, "store_id": store_id.lower(), "current_time": current_time}
+    try:
+        final = app.invoke({**base, "trace": [], "retrieval_log": []})
+    except RuntimeError as e:
+        return {
+            **base,
+            "category": None,
+            "safety": False,
+            "outcome": "failed",
+            "error": str(e),
+            "answer": "",
+            "citations": [],
+            "evidence": [],
+            "tasks": None,
+            "sufficiency": None,
+            "rewritten": False,
+            "final_query": None,
             "retrieval_log": [],
+            "latency_ms": int((time.monotonic() - started) * 1000),
+            "cost_usd": 0.0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "embedding_tokens": 0,
+            "trace": [],
         }
-    )
     trace = final["trace"]
     return {
-        "question": question,
-        "store_id": store_id.lower(),
-        "current_time": current_time,
+        **base,
         "category": final.get("category"),
         "safety": final.get("safety", False),
         "outcome": final.get("outcome"),

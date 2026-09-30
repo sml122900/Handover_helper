@@ -20,3 +20,6 @@ agent/.cache/
 __pycache__/
 .pytest_cache/
 .ruff_cache/
+
+# 평가 실행 캐시(질문 응답·채점 중간 결과)
+eval/results/.cache/

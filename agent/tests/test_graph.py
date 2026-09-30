@@ -208,3 +208,30 @@ def test_now_tasks_multiple_distinct_evidence_chunks(tmp_path):
     numbers = {n for i in rec["tasks"]["now"] + rec["tasks"]["upcoming"] for n in i["evidence_ns"]}
     assert len(rec["evidence"]) >= 2  # 서로 다른 근거 청크가 둘 이상이어야 이 회귀 테스트가 의미 있다
     assert numbers <= {e["n"] for e in rec["evidence"]} and len(numbers) >= 2
+
+
+def test_rewrite_structured_failure_escalates_instead_of_crashing(tmp_path):
+    class FailingRewriteLLM(ScriptedLLM):
+        def structured(self, *, system, user, schema, tool_name, max_tokens=1024, tag=""):
+            if tag == "rewrite":
+                self.calls.append(tag)
+                raise RuntimeError("구조화 출력 검증 실패")
+            return super().structured(
+                system=system, user=user, schema=schema, tool_name=tool_name, max_tokens=max_tokens, tag=tag
+            )
+
+    suf = Sufficiency(reasoning="r", sufficient=False, missing="x")
+    llm = FailingRewriteLLM({"classify": [cls("question")], "sufficiency": [suf]})
+    app, _ = make_app(tmp_path, llm)
+    rec = run_question(app, "이건 문서에 없는 질문", "s1")
+    assert rec["outcome"] == "escalated" and len(rec["retrieval_log"]) == 1  # 재검색 없이 에스컬레이션
+
+
+def test_node_failure_is_recorded_as_failed(tmp_path):
+    class BrokenLLM(ScriptedLLM):
+        def structured(self, **kw):
+            raise RuntimeError("검증 실패")
+
+    app, _ = make_app(tmp_path, BrokenLLM({}))
+    rec = run_question(app, "질문", "s1")
+    assert rec["outcome"] == "failed" and "검증 실패" in rec["error"] and rec["answer"] == ""
