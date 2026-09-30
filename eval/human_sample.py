@@ -30,6 +30,25 @@ def load_jsonl(path: Path) -> list[dict]:
     return [json.loads(x) for x in path.read_text(encoding="utf-8").splitlines() if x]
 
 
+def evidence_section(rec: dict) -> list[str]:
+    """에이전트가 이 답변을 만들면서 실제로 받은 근거를 항상 보이게 나열한다 (청크 본문 또는 도구 결과)."""
+    out = ["### 에이전트가 받은 근거", ""]
+    chunks = received_chunks(rec)
+    has_tasks = bool(rec.get("tasks") and rec["tasks"].get("found"))
+    if rec["outcome"] == "escalated":
+        out += [
+            "(검색 결과를 받았지만 고정 문구로 답해 답변에는 쓰이지 않았다. 재검색 전·후 검색 결과 모두 표시)",
+            "",
+        ]
+    for i, c in enumerate(chunks, start=1):
+        out += [f"**[청크 {i}]**", "", "> " + c.replace("\n", "\n> "), ""]
+    if has_tasks:  # 시각 문항: 도구가 준 일정
+        out += ["**[일정 도구 결과]**", "", "> " + tasks_evidence(rec["tasks"]).replace("\n", "\n> "), ""]
+    if not chunks and not has_tasks:
+        out += ["(받은 근거 없음)", ""]
+    return out
+
+
 def main() -> None:
     sys.stdout.reconfigure(encoding="utf-8")
     gold = {q["id"]: q for q in load_jsonl(ROOT / "eval" / "golden.jsonl")}
@@ -68,6 +87,7 @@ def main() -> None:
             [f"**현재 시각**: {q['current_time']}"] if q.get("current_time") else []
         )
         out += ["", "**답변**:", "", "> " + rec["answer"].replace("\n", "\n> "), ""]
+        out += evidence_section(rec)  # 채점 칸보다 앞, 접히지 않게
         if q["expected_facts"]:
             out += ["**정답 사실별 포함** (O/X)", "", "| 사실 | 내용 | 포함 O/X |", "|---|---|---|"]
             out += [f"| {f} | {fact_text[f]} | |" for f in q["expected_facts"]]
@@ -84,13 +104,6 @@ def main() -> None:
                 "",
             ]
         out += ["**근거 없는 사실 있음** (O/X): ", "", "**메모**: ", ""]
-        chunks = received_chunks(rec)
-        if rec.get("tasks") and rec["tasks"].get("found"):  # 시각 문항: 도구가 준 일정도 에이전트가 받은 근거
-            chunks = [*chunks, tasks_evidence(rec["tasks"])]
-        if chunks:
-            out += ["<details><summary>에이전트가 받은 근거 (펼치기)</summary>", ""]
-            out += [f"[근거 {i}] {c}" + "\n" for i, c in enumerate(chunks, start=1)]
-            out += ["</details>", ""]
         ev = evs.get(qid)
         if ev:
             model[qid] = {k: v for k, v in ev.items() if not k.endswith("_detail")}
