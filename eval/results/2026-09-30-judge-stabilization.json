@@ -1,0 +1,98 @@
+{
+ "label": "baseline",
+ "questions_compared": 105,
+ "metrics": {
+  "답변 정확도(주, 문항 완전)": {
+   "changed": 2,
+   "total": 75,
+   "ids": [
+    "run1:F19",
+    "run1:T01"
+   ]
+  },
+  "답변 정확도(보조, 문항 완전)": {
+   "changed": 3,
+   "total": 75,
+   "ids": [
+    "run1:F19",
+    "run1:T01",
+    "run2:F08"
+   ]
+  },
+  "정답 사실별 포함(사실 단위)": {
+   "changed": 4,
+   "total": 99,
+   "ids": [
+    "run1:F19:C10",
+    "run1:T01:C06",
+    "run2:F04:C03",
+    "run3:T02:B01"
+   ]
+  },
+  "근거 충실도 위반": {
+   "changed": 4,
+   "total": 105,
+   "ids": [
+    "run1:F02",
+    "run1:F05",
+    "run2:F05",
+    "run3:F16"
+   ]
+  },
+  "거절 정확도": {
+   "changed": 0,
+   "total": 30,
+   "ids": []
+  },
+  "출처 일치(지지 수, 쌍 수)": {
+   "changed": 9,
+   "total": 105,
+   "ids": [
+    "run1:F08",
+    "run1:F12",
+    "run1:F13",
+    "run2:F04",
+    "run2:F08",
+    "run2:T02",
+    "run3:F01",
+    "run3:F02",
+    "run3:F04"
+   ]
+  }
+ },
+ "by_run": {
+  "run1": {
+   "questions": 35,
+   "questions_with_any_change": 7
+  },
+  "run2": {
+   "questions": 35,
+   "questions_with_any_change": 4
+  },
+  "run3": {
+   "questions": 35,
+   "questions_with_any_change": 5
+  }
+ },
+ "questions_with_any_change": 16,
+ "disagreement": {
+  "accuracy": {
+   "needed_third": 6,
+   "items": 75
+  },
+  "faithfulness": {
+   "needed_third": 3,
+   "items": 71
+  },
+  "citations": {
+   "needed_third": 5,
+   "items": 71
+  },
+  "refusal": {
+   "needed_third": 0,
+   "items": 30
+  }
+ },
+ "stable_judge_cost_usd": 0.2554,
+ "single_judge_cost_usd": 0.1221
+}

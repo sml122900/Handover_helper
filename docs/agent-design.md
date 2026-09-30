@@ -145,7 +145,7 @@
 |---|---|---|---|---|
 | `get_current_tasks` | `store_id`, `current_time`(선택, 기본 Asia/Seoul 현재) | 지금 해야 할 일, 30분 내 다가오는 일 (각 항목에 근거 청크) | 읽기 | 매장 일정 없음 → "일정 정보가 문서에 없어요" |
 | `log_checklist` | `store_id`, `step_id`, `note`(선택) | 기록 ID, 시각 | 쓰기 | step_id 불명 → 후보 3개 제시 후 재확인 |
-| `waste_log` | 조회: `store_id`, `date` / 기록: `store_id`, `item`, `qty`, `reason` | 조회 목록 또는 기록 ID | 조회=읽기, 기록=쓰기 | 수량·품목 누락 → 되물음 |
+| `waste_log` | 조회: `store_id`, `date` / 기록: `store_id`, `item`, `qty`, `reason`(선택 — 질문에 없으면 추정하지 않고 "사유 미기재") | 조회 목록 또는 기록 ID | 조회=읽기, 기록=쓰기 | 수량·품목 누락 → 되물음 |
 | `notify_manager` | `store_id`, `message`, `urgency`(normal/urgent) | 모의 발송 ID (실제 발송 없음, 로그만) | 쓰기(모의) | 항상 성공(모의) |
 
 - 체크리스트 `step_id`와 일정표는 가상 코퍼스 사양의 사실표에서 생성한다(`data/virtual/schedules.json`).
