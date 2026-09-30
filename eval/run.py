@@ -134,10 +134,14 @@ def template_kind(q: dict, rec: dict) -> str | None:
     return None
 
 
-def judge_eval(q: dict, rec: dict, judge: GroqJudge, fact_texts, stable: bool = False) -> dict:
+def judge_eval(
+    q: dict, rec: dict, judge: GroqJudge, fact_texts, stable: bool = False, reuse: dict | None = None
+) -> dict:
     """채점 모델(Groq) 호출 부분: 답변 정확도·근거 충실도·출처 일치·거절. 집계는 코드가 한다.
 
     stable=True면 모든 항목을 2회 채점하고 엇갈리면 3회째로 다수결한다 (기존 단일 채점은 stable=False).
+    reuse: 이전 채점 결과. 프롬프트가 바뀌지 않은 항목(출처 일치·거절)은 다시 채점하지 않고 이 값을 가져온다
+    (채점 기준 보완 재채점, 2026-10-01 — 정확도·근거 충실도만 새 기준으로 다시 채점).
     """
     ev: dict = {}
     answer = rec["answer"]
@@ -192,7 +196,11 @@ def judge_eval(q: dict, rec: dict, judge: GroqJudge, fact_texts, stable: bool = 
         ev["faithfulness_chunks"] = len(chunks)
         votes_log["faithfulness"] = {"calls": v.calls, "third": v.third}
 
-    if rec["citations"] or re.search(r"\[근거 \d+\]", answer):
+    if reuse is not None:
+        for key in ("citation_supported", "citation_pairs", "citation_detail"):
+            if key in reuse:
+                ev[key] = reuse[key]
+    elif rec["citations"] or re.search(r"\[근거 \d+\]", answer):
         evidence_text = "\n\n".join(f"[근거 {e['n']}]\n{e['text']}" for e in rec["evidence"])
 
         def cit_key(cit) -> tuple:
@@ -206,7 +214,11 @@ def judge_eval(q: dict, rec: dict, judge: GroqJudge, fact_texts, stable: bool = 
         ev["citation_detail"] = rep.model_dump()
         votes_log["citations"] = {"calls": v.calls, "third": v.third}
 
-    if q["type"] == "absent":
+    if q["type"] == "absent" and reuse is not None:
+        for key in ("refusal_correct", "refusal_detail", "safety", "emergency_marked"):
+            if key in reuse:
+                ev[key] = reuse[key]
+    elif q["type"] == "absent":
 
         def ref_key(ref) -> tuple:
             return (refusal_correct(ref), ref.emergency_marked_not_from_doc)
@@ -509,6 +521,16 @@ def main() -> None:
     )
     ap.add_argument("--integrated", action="store_true", help="실험 G: 충분성 판단을 답변 노드에 통합")
     ap.add_argument(
+        "--criteria-v2",
+        action="store_true",
+        help="채점 기준 보완 재채점: 정확도·근거 충실도만 새 기준으로 다시 채점(안정화), 출처·거절은 기존 결과 재사용",
+    )
+    ap.add_argument(
+        "--no-generate",
+        action="store_true",
+        help="응답이 캐시에 없으면 생성하지 않고 오류 (Claude 호출 0회 보장)",
+    )
+    ap.add_argument(
         "--stable",
         action="store_true",
         help="채점 안정화: 모든 항목 2회 채점, 엇갈리면 3회째 다수결 (2026-10-01 결정)",
@@ -555,7 +577,10 @@ def main() -> None:
     # 실행 결과 캐시: 질문 응답(Claude 비용)과 채점(Groq 한도)을 분리해 중단돼도 이어서 실행할 수 있다
     cache_dir = ROOT / "eval" / "results" / ".cache"
     cache_dir.mkdir(parents=True, exist_ok=True)
-    out_label = f"{label}-stable" if args.stable else label  # 결과 파일 라벨 (안정화 채점은 별도 결과)
+    if args.criteria_v2:
+        args.stable = True
+    suffix = "-stable-v2" if args.criteria_v2 else ("-stable" if args.stable else "")
+    out_label = f"{label}{suffix}"  # 결과 파일 라벨 (안정화 채점은 별도 결과)
     rec_cache, ev_cache = cache_dir / f"{label}-recs.jsonl", cache_dir / f"{out_label}-evs.jsonl"
 
     def load(path: Path) -> dict:
@@ -590,6 +615,12 @@ def main() -> None:
             keep = [x for x in lines if json.loads(x)["id"] not in rejudge_ids]
             ev_cache.write_text("\n".join(keep) + ("\n" if keep else ""), encoding="utf-8")
     recs, evs = load(rec_cache), load(ev_cache)
+    prev: dict = {}
+    if args.criteria_v2:  # 재사용할 이전 채점: 안정화 채점이 있으면 그것, 없으면 단일 채점
+        for name in (f"{label}-stable-evs.jsonl", f"{label}-evs.jsonl"):
+            if (cache_dir / name).exists():
+                prev = load(cache_dir / name)
+                break
     runs: list[list[dict]] = []
     judge_stopped = False
     try:
@@ -598,13 +629,17 @@ def main() -> None:
             for q in golden:
                 key = (n, q["id"])
                 if key not in recs:
+                    if args.no_generate:
+                        raise SystemExit(f"응답 캐시 없음(--no-generate): {label} 실행 {n + 1} {q['id']}")
                     recs[key] = run_question(app, q["question"], q["store"], q.get("current_time"))
                     save(rec_cache, n, q["id"], recs[key])
                 rec = recs[key]
                 base = base_eval(q, rec, spans)
                 if key not in evs and not args.no_judge and not judge_stopped:
                     try:
-                        evs[key] = judge_eval(q, rec, judge, fact_texts, stable=args.stable)
+                        evs[key] = judge_eval(
+                            q, rec, judge, fact_texts, stable=args.stable, reuse=prev.get(key)
+                        )
                         save(ev_cache, n, q["id"], evs[key])
                     except (
                         RuntimeError
@@ -634,7 +669,9 @@ def main() -> None:
     res = {
         "config": {
             "label": out_label,
-            "judge_mode": "stable(2회+다수결)" if args.stable else "single",
+            "judge_mode": "stable-v2(보완 기준: 정확도·충실도 2회+다수결 재채점, 출처·거절은 기존 채점 재사용)"
+            if args.criteria_v2
+            else ("stable(2회+다수결)" if args.stable else "single"),
             "date": date.today().isoformat(),
             "agent_model": llm.describe(),
             "llm_preset": args.preset,
