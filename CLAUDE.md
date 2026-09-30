@@ -195,6 +195,7 @@ Phase 0 + Phase 1 + Phase 2(결제·cron·랜딩·UI 다듬기) 완료. Phase 3 
 - 같은 에러 3회면 건너뛰고 기록. git push 금지
 - 세션마다 명시된 API 실호출 한도 준수. 테스트는 전부 mock(HANDOVER_STT=mock, 모델 mock)
 - 문서 스키마 v2 변경 금지. 골든셋 내용, scripts/evaluate.ts, scripts/build-checklist.ts 로직 수정 금지
+- eval/golden.jsonl(확정 골든셋) 수정은 docs/decisions/agent-extension.md 결정 로그에 사유를 남기는 경우에만 허용
 - 기존 랜딩·앱 문구는 오탈자 외 수정 금지. 새 화면 문구만 작성하고 "사용자 검토 필요"로 목록화
 - 실데이터(private-data/, 비공개 골든셋)는 공개 데모·스크린샷·README에 노출 금지 (실제 매장 정보 포함). golden/에는 가상 샘플만
 - README·문서의 품질 지표(누락률 등)는 비공개 골든셋 기준임을 명시. sample-demo 점수는 지표로 인용 금지
