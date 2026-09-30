@@ -20,6 +20,15 @@ class Settings(BaseSettings):
         default=None, validation_alias=AliasChoices("supabase_url", "NEXT_PUBLIC_SUPABASE_URL")
     )
     supabase_service_role_key: str | None = None
+    anthropic_api_key: str | None = None
+    # 답변·분류·충분성 판단 모델 — 기존 앱과 같은 HANDOVER_MODEL (기본 claude-sonnet-4-6)
+    agent_model: str = Field(
+        default="claude-sonnet-4-6", validation_alias=AliasChoices("agent_model", "HANDOVER_MODEL")
+    )
+    # 실행당 Claude 비용 상한(USD). 넘으면 그 실행을 중단하고 사용량을 보고한다
+    agent_cost_budget_usd: float = 5.0
+    # 채점 모델 (Groq, Claude 계열 금지 — 설계 7-3). 모델명은 설정값
+    judge_model: str = "openai/gpt-oss-120b"
     embedding_provider: Literal["voyage", "local"] = "voyage"
     voyage_api_key: str | None = None
     groq_api_key: str | None = None  # 채점 모델(Groq) 호출용 — 채점 스크립트에서만 필수

@@ -1,0 +1,181 @@
+"""Claude(Anthropic SDK) 호출 래퍼 — 구조화 출력(도구 호출 강제) + 비용 기록·실행당 비용 상한.
+
+구조화 출력은 pydantic 모델로 검증하고, 실패하면 1회 재시도한다 (CLAUDE.md의 파이프라인 규칙과 동일).
+필드 순서는 모델 정의 순서를 그대로 JSON 스키마에 싣는다 (근거 필드를 판정보다 먼저 두기 위함).
+"""
+
+import json
+import time
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Protocol, TypeVar
+
+import anthropic
+from pydantic import BaseModel, ValidationError
+
+from settings import ROOT
+
+T = TypeVar("T", bound=BaseModel)
+
+# 1M 토큰당 (입력, 출력) USD. Claude는 공식 가격표, Groq는 gpt-oss-120b 공개 가격(집계용 추정치)
+PRICES: dict[str, tuple[float, float]] = {
+    "claude-sonnet-4-6": (3.0, 15.0),
+    "claude-haiku-4-5": (1.0, 5.0),
+    "openai/gpt-oss-120b": (0.15, 0.60),
+}
+LEDGER = ROOT / "agent" / ".cache" / "llm_usage.jsonl"
+
+
+class CostBudgetExceeded(RuntimeError):
+    pass
+
+
+@dataclass
+class CallInfo:
+    model: str
+    latency_ms: int
+    input_tokens: int
+    output_tokens: int
+    cost_usd: float
+
+
+def cost_of(model: str, input_tokens: int, output_tokens: int) -> float:
+    pin, pout = PRICES.get(model, (0.0, 0.0))
+    return (input_tokens * pin + output_tokens * pout) / 1_000_000
+
+
+class CostTracker:
+    """서비스별 비용 기록(파일 누적) + 이 실행의 상한. 상한을 넘기면 다음 호출 전에 중단한다."""
+
+    def __init__(self, budget_usd: float | None, service: str, ledger: Path = LEDGER):
+        self.budget_usd = budget_usd
+        self.service = service
+        self.ledger = ledger
+        self.run_cost = 0.0
+        self.run_calls = 0
+
+    def check(self) -> None:
+        if self.budget_usd is not None and self.run_cost >= self.budget_usd:
+            raise CostBudgetExceeded(
+                f"이 실행의 {self.service} 비용 상한(AGENT_COST_BUDGET_USD=${self.budget_usd:.2f})에 도달해 중단합니다. "
+                f"이 실행 사용: ${self.run_cost:.4f} ({self.run_calls}회 호출)."
+            )
+
+    def record(self, info: CallInfo, tag: str = "") -> None:
+        self.run_cost += info.cost_usd
+        self.run_calls += 1
+        self.ledger.parent.mkdir(parents=True, exist_ok=True)
+        with self.ledger.open("a", encoding="utf-8") as f:
+            row = {
+                "service": self.service,
+                "model": info.model,
+                "in": info.input_tokens,
+                "out": info.output_tokens,
+                "usd": round(info.cost_usd, 6),
+                "tag": tag,
+            }
+            f.write(json.dumps(row, ensure_ascii=False) + "\n")
+
+
+def ledger_totals(ledger: Path = LEDGER) -> dict[str, dict]:
+    """서비스별 누적 (호출 수, 입력·출력 토큰, USD)."""
+    out: dict[str, dict] = {}
+    if not ledger.exists():
+        return out
+    for line in ledger.read_text(encoding="utf-8").splitlines():
+        if not line:
+            continue
+        r = json.loads(line)
+        t = out.setdefault(r["service"], {"calls": 0, "in": 0, "out": 0, "usd": 0.0})
+        t["calls"] += 1
+        t["in"] += r["in"]
+        t["out"] += r["out"]
+        t["usd"] += r["usd"]
+    return out
+
+
+class LLM(Protocol):
+    model: str
+
+    def structured(
+        self,
+        *,
+        system: str,
+        user: str,
+        schema: type[T],
+        tool_name: str,
+        max_tokens: int = 1024,
+        tag: str = "",
+    ) -> tuple[T, CallInfo]: ...
+
+    def text(
+        self, *, system: str, user: str, max_tokens: int = 1024, tag: str = ""
+    ) -> tuple[str, CallInfo]: ...
+
+
+class ClaudeClient:
+    def __init__(self, api_key: str, model: str, tracker: CostTracker):
+        self.model = model
+        self.tracker = tracker
+        self._client = anthropic.Anthropic(api_key=api_key, max_retries=2)
+
+    def _info(self, resp, started: float) -> CallInfo:
+        u = resp.usage
+        return CallInfo(
+            model=self.model,
+            latency_ms=int((time.monotonic() - started) * 1000),
+            input_tokens=u.input_tokens,
+            output_tokens=u.output_tokens,
+            cost_usd=cost_of(self.model, u.input_tokens, u.output_tokens),
+        )
+
+    def structured(self, *, system, user, schema, tool_name, max_tokens=1024, tag=""):
+        tool = {
+            "name": tool_name,
+            "description": "결과를 이 도구의 입력으로 제출한다. 필드는 정의된 순서대로 채운다.",
+            "input_schema": schema.model_json_schema(),
+        }
+        last_err: Exception | None = None
+        total_in = total_out = 0
+        started = time.monotonic()
+        for _attempt in range(2):  # 검증 실패 시 1회 재시도
+            self.tracker.check()
+            resp = self._client.messages.create(
+                model=self.model,
+                max_tokens=max_tokens,
+                temperature=0,
+                system=system,
+                messages=[{"role": "user", "content": user}],
+                tools=[tool],
+                tool_choice={"type": "tool", "name": tool_name},
+            )
+            info = self._info(resp, started)
+            total_in += info.input_tokens
+            total_out += info.output_tokens
+            self.tracker.record(info, tag)
+            block = next((b for b in resp.content if b.type == "tool_use"), None)
+            try:
+                if block is None:
+                    raise ValueError("도구 호출 없음")
+                parsed = schema.model_validate(block.input)
+                total = CallInfo(
+                    self.model, info.latency_ms, total_in, total_out, cost_of(self.model, total_in, total_out)
+                )
+                return parsed, total
+            except (ValidationError, ValueError) as e:
+                last_err = e
+        raise RuntimeError(f"구조화 출력 검증 실패(재시도 1회 후): {last_err}")
+
+    def text(self, *, system, user, max_tokens=1024, tag=""):
+        self.tracker.check()
+        started = time.monotonic()
+        resp = self._client.messages.create(
+            model=self.model,
+            max_tokens=max_tokens,
+            temperature=0,
+            system=system,
+            messages=[{"role": "user", "content": user}],
+        )
+        info = self._info(resp, started)
+        self.tracker.record(info, tag)
+        return "".join(b.text for b in resp.content if b.type == "text"), info
