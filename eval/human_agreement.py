@@ -48,10 +48,6 @@ def main() -> None:
     sys.stdout.reconfigure(encoding="utf-8")
     human = parse_human(HUMAN.read_text(encoding="utf-8"))
     model = load_model()
-        json.loads(x)["id"]: json.loads(x)["data"]
-        for x in RECS.read_text(encoding="utf-8").splitlines()
-        if x and json.loads(x)["run"] == 0
-    }
     items: list[dict] = []
 
     def add(kind, qid, item, h, m, m_quote, strict_note=""):
