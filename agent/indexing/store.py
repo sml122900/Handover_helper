@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Protocol
 
 import numpy as np
 
@@ -9,6 +10,12 @@ from indexing.types import MaskedChunk
 class Hit:
     chunk: MaskedChunk
     score: float
+
+
+class VectorStore(Protocol):
+    def add(self, chunks: list[MaskedChunk], vectors: np.ndarray) -> None: ...
+
+    def search(self, query_vec: np.ndarray, k: int, strategy: str, store_id: str | None) -> list[Hit]: ...
 
 
 class MemoryStore:

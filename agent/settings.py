@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Literal
 
-from pydantic import model_validator
+from pydantic import AliasChoices, Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -10,8 +10,16 @@ ROOT = Path(__file__).resolve().parent.parent
 class Settings(BaseSettings):
     """환경 변수 설정. 필수 키가 없으면 부팅(생성) 시점에 실패한다."""
 
-    model_config = SettingsConfigDict(env_file=ROOT / ".env", env_file_encoding="utf-8-sig", extra="ignore")
+    model_config = SettingsConfigDict(
+        env_file=ROOT / ".env", env_file_encoding="utf-8-sig", extra="ignore", populate_by_name=True
+    )
 
+    # 검색 저장소: memory(기본, 평가 재현용) | pg(0012 handover_chunks, service_role)
+    agent_store: Literal["memory", "pg"] = "memory"
+    supabase_url: str | None = Field(
+        default=None, validation_alias=AliasChoices("supabase_url", "NEXT_PUBLIC_SUPABASE_URL")
+    )
+    supabase_service_role_key: str | None = None
     embedding_provider: Literal["voyage", "local"] = "voyage"
     voyage_api_key: str | None = None
     groq_api_key: str | None = None  # 채점 모델(Groq) 호출용 — 채점 스크립트에서만 필수
@@ -25,6 +33,10 @@ class Settings(BaseSettings):
     def _check(self) -> "Settings":
         if self.embedding_provider == "voyage" and not self.voyage_api_key:
             raise ValueError("EMBEDDING_PROVIDER=voyage 이면 VOYAGE_API_KEY가 필요합니다.")
+        if self.agent_store == "pg" and not (self.supabase_url and self.supabase_service_role_key):
+            raise ValueError(
+                "AGENT_STORE=pg 이면 NEXT_PUBLIC_SUPABASE_URL·SUPABASE_SERVICE_ROLE_KEY가 필요합니다."
+            )
         if self.embedding_model is None:
             self.embedding_model = "voyage-4" if self.embedding_provider == "voyage" else "BAAI/bge-m3"
         return self

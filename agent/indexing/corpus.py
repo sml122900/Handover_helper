@@ -37,3 +37,10 @@ def build_chunks(sources: list[SourceFile], model: str) -> list[RawChunk]:
             for strategy in STRATEGIES:
                 chunks += chunk_document(src.store_id, src.file, src.text, strategy, model)
     return chunks
+
+
+def build_masked_index(embedder, chunks: list[RawChunk] | None = None):
+    """(마스킹된 청크, 문서 임베딩) — 임베딩은 디스크 캐시를 먼저 쓴다. 색인은 마스킹 후 청크만 받는다."""
+    raw = chunks if chunks is not None else build_chunks(load_sources(), embedder.model)
+    masked = [c.to_masked() for c in raw]
+    return masked, embedder.embed([m.embed_text for m in masked], "document")
