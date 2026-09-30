@@ -124,6 +124,14 @@ describe.skipIf(!enabled)("RLS: 다른 사용자 데이터 접근 차단", () =>
     expect(data?.stage).toBeNull();
   });
 
+  it("A는 videos.status_changed_at을 수정할 수 없다 (0011 — 멈춤 감지 기준 시각)", async () => {
+    const { data: before, error: e1 } = await admin.from("videos").select("status_changed_at").eq("id", ids.video).single();
+    expect(e1, "0011_video_status_changed_at.sql 적용 필요").toBeNull();
+    await a.from("videos").update({ status_changed_at: "2000-01-01T00:00:00Z" }).eq("id", ids.video);
+    const { data: after } = await admin.from("videos").select("status_changed_at").eq("id", ids.video).single();
+    expect(after?.status_changed_at).toBe(before?.status_changed_at);
+  });
+
   it("A는 keyframes·transcripts·videos를 직접 insert할 수 없다", async () => {
     const kf = await a.from("keyframes").insert({ video_id: ids.video, timestamp_seconds: 2, image_path: "victim/x.jpg" });
     const tr = await a.from("transcripts").insert({ video_id: ids.video, segments: [] });
