@@ -244,5 +244,32 @@
   "C_정답사실_누락": true,
   "D_수치변조": true
  },
- "cost_usd": 0.003009
+ "time_cases": {
+  "E_시각_일정없음_정답": {
+   "answer": "지금 시작한 일은 없어요. 곧 07:00에 수건 입고·서명이 있어요.",
+   "expect_unfaithful": false,
+   "unfaithful": false,
+   "unsupported_claims": [],
+   "ok": true
+  },
+  "F_시각_일정있는데_없다고함": {
+   "answer": "지금 시작한 일도, 30분 안에 예정된 일도 없어요.",
+   "expect_unfaithful": true,
+   "unfaithful": true,
+   "unsupported_claims": [
+    "30분 안에 예정된 일이 없다."
+   ],
+   "ok": true
+  },
+  "G_시각_없는데_있다고함": {
+   "answer": "지금 06:40에 시작한 음료 냉장고 채우기를 하고 계시면 돼요.",
+   "expect_unfaithful": true,
+   "unfaithful": true,
+   "unsupported_claims": [
+    "지금 06:40에 시작한 음료 냉장고 채우기를 하고 계시면 돼요."
+   ],
+   "ok": true
+  }
+ },
+ "cost_usd": 0.003669
 }

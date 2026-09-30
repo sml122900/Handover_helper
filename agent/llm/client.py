@@ -21,6 +21,7 @@ T = TypeVar("T", bound=BaseModel)
 PRICES: dict[str, tuple[float, float]] = {
     "claude-sonnet-4-6": (3.0, 15.0),
     "claude-haiku-4-5": (1.0, 5.0),
+    "claude-haiku-4-5-20251001": (1.0, 5.0),
     "openai/gpt-oss-120b": (0.15, 0.60),
 }
 LEDGER = ROOT / "agent" / ".cache" / "llm_usage.jsonl"
@@ -181,3 +182,44 @@ class ClaudeClient:
         info = self._info(resp, started)
         self.tracker.record(info, tag)
         return "".join(b.text for b in resp.content if b.type == "text"), info
+
+
+HAIKU = "claude-haiku-4-5-20251001"  # Models API로 확인한 Haiku 4.5 (2026-10-01)
+AUX_NODES = ("classify", "sufficiency", "rewrite")  # 보조 노드 = 분류·충분성·재작성. 답변 노드는 tag "answer"
+
+# 실험 C 조건: 전 노드 Sonnet(기준) / 답변만 Sonnet·보조 노드 전부 Haiku / 전 노드 Haiku
+PRESETS = ("sonnet", "aux-haiku", "haiku")
+
+
+class RoutedLLM:
+    """노드(tag)별로 다른 모델 클라이언트를 고른다 (실험 C). 한 실행의 비용은 공유 CostTracker에 합산된다."""
+
+    def __init__(self, default: "LLM", overrides: dict[str, "LLM"] | None = None):
+        self._default = default
+        self._overrides = overrides or {}
+        self.model = default.model
+
+    def _pick(self, tag: str):
+        return self._overrides.get(tag, self._default)
+
+    def structured(self, *, tag: str = "", **kw):
+        return self._pick(tag).structured(tag=tag, **kw)
+
+    def text(self, *, tag: str = "", **kw):
+        return self._pick(tag).text(tag=tag, **kw)
+
+    def describe(self) -> str:
+        parts = {tag: c.model for tag, c in self._overrides.items()}
+        return f"기본 {self._default.model}" + (f", 재정의 {parts}" if parts else "")
+
+
+def make_llm(preset: str, api_key: str, sonnet: str, tracker: CostTracker) -> "RoutedLLM":
+    if preset not in PRESETS:
+        raise ValueError(f"알 수 없는 프리셋: {preset}")
+    son = ClaudeClient(api_key, sonnet, tracker)
+    if preset == "sonnet":
+        return RoutedLLM(son)
+    hai = ClaudeClient(api_key, HAIKU, tracker)
+    if preset == "haiku":
+        return RoutedLLM(hai)
+    return RoutedLLM(son, {tag: hai for tag in AUX_NODES})

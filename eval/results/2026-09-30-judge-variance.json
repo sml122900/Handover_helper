@@ -1,0 +1,68 @@
+{
+ "label": "baseline",
+ "run": 1,
+ "judge_model": "openai/gpt-oss-120b",
+ "metrics": {
+  "답변 정확도(주, 문항 완전)": {
+   "changed": 2,
+   "total": 25,
+   "ids": [
+    "F19",
+    "T01"
+   ]
+  },
+  "답변 정확도(보조, 문항 완전)": {
+   "changed": 3,
+   "total": 25,
+   "ids": [
+    "F08",
+    "F19",
+    "T01"
+   ]
+  },
+  "정답 사실별 포함(사실 단위)": {
+   "changed": 2,
+   "total": 33,
+   "ids": [
+    "F19:C10",
+    "T01:C06"
+   ]
+  },
+  "근거 충실도 위반": {
+   "changed": 2,
+   "total": 35,
+   "ids": [
+    "F02",
+    "F05"
+   ]
+  },
+  "거절 정확도": {
+   "changed": 0,
+   "total": 10,
+   "ids": []
+  },
+  "출처 일치(문항 내 지지 수)": {
+   "changed": 3,
+   "total": 35,
+   "ids": [
+    "F08",
+    "F12",
+    "T05"
+   ]
+  }
+ },
+ "questions_with_any_change": {
+  "count": 7,
+  "total": 35,
+  "ids": [
+   "F02",
+   "F05",
+   "F08",
+   "F12",
+   "F19",
+   "T01",
+   "T05"
+  ]
+ },
+ "cost_usd": 0.0418
+}

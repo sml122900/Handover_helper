@@ -1,0 +1,366 @@
+{
+ "missed_with_retrieval_hit": [
+  {
+   "run": 1,
+   "id": "F05",
+   "kind": "fact",
+   "fact": "C05",
+   "type": "detail",
+   "note": "주제는 답했지만 근거의 세부(수치·시각·절차)를 생략",
+   "uncovered": [
+    "개봉한 우유는 뚜껑에 개봉 시각을 적고"
+   ],
+   "covered": [
+    "개봉 후 24시간이 지나면 폐기한다."
+   ],
+   "uncovered_relevant": [
+    "개봉한 우유는 뚜껑에 개봉 시각을 적고"
+   ],
+   "judge_quote_nonempty": false
+  },
+  {
+   "run": 1,
+   "id": "F07",
+   "kind": "fact",
+   "fact": "B06",
+   "type": "irrelevant",
+   "note": "빠진 조각이 질문이 묻는 내용과 무관 — 정답을 해도 주 지표에서는 누락으로 셈",
+   "uncovered": [
+    "진열 트레이는 전부 빼서 세척실에서 닦고"
+   ],
+   "covered": [
+    "빵 집게는 소독수에 30분 담가 둔다"
+   ],
+   "uncovered_relevant": [],
+   "judge_quote_nonempty": false
+  },
+  {
+   "run": 1,
+   "id": "F08",
+   "kind": "fact",
+   "fact": "M04",
+   "type": "irrelevant",
+   "note": "빠진 조각이 질문이 묻는 내용과 무관 — 정답을 해도 주 지표에서는 누락으로 셈",
+   "uncovered": [
+    "02:00에 음료가 입고된다."
+   ],
+   "covered": [
+    "수량을 검수한 뒤",
+    "냉장고 뒤쪽부터 채운다",
+    "(먼저 들어온 것이 앞으로)"
+   ],
+   "uncovered_relevant": [],
+   "judge_quote_nonempty": false
+  },
+  {
+   "run": 1,
+   "id": "F09",
+   "kind": "fact",
+   "fact": "M03",
+   "type": "premise",
+   "note": "질문에 이미 나온 상황이라도 규칙의 적용 조건·주체 조각을 답변이 다시 밝히지 않음",
+   "uncovered": [
+    "교대할 때 시재 점검을 한다."
+   ],
+   "covered": [
+    "차액이 나오면 교대자와 같이 다시 세고,",
+    "그래도 차이가 있으면 근무일지에 금액을 적는다."
+   ],
+   "uncovered_relevant": [
+    "교대할 때 시재 점검을 한다."
+   ],
+   "judge_quote_nonempty": false
+  },
+  {
+   "run": 1,
+   "id": "F10",
+   "kind": "fact",
+   "fact": "C06",
+   "type": "irrelevant",
+   "note": "빠진 조각이 질문이 묻는 내용과 무관 — 정답을 해도 주 지표에서는 누락으로 셈",
+   "uncovered": [
+    "마감 정산은 포스의 '마감정산' 버튼으로 한다.",
+    "현금은 금고의 흰 봉투에 넣는다."
+   ],
+   "covered": [
+    "차액이 1,000원 이상이면 매장 단톡방에 금액을 올린다."
+   ],
+   "uncovered_relevant": [],
+   "judge_quote_nonempty": false
+  },
+  {
+   "run": 1,
+   "id": "F14",
+   "kind": "fact",
+   "fact": "G06",
+   "type": "premise",
+   "note": "질문에 이미 나온 상황이라도 규칙의 적용 조건·주체 조각을 답변이 다시 밝히지 않음",
+   "uncovered": [
+    "회원 등록이 안 된 사람이 들어오면"
+   ],
+   "covered": [
+    "1일권(1만 원) 결제를 안내한다."
+   ],
+   "uncovered_relevant": [
+    "회원 등록이 안 된 사람이 들어오면"
+   ],
+   "judge_quote_nonempty": false
+  },
+  {
+   "run": 1,
+   "id": "F16",
+   "kind": "fact",
+   "fact": "L03",
+   "type": "premise",
+   "note": "질문에 이미 나온 상황이라도 규칙의 적용 조건·주체 조각을 답변이 다시 밝히지 않음",
+   "uncovered": [
+    "박스마다 바코드를 스캔한다."
+   ],
+   "covered": [
+    "'이중 스캔' 경고가 뜨면 그 박스를 옆으로 빼고 반장을 부른다."
+   ],
+   "uncovered_relevant": [
+    "박스마다 바코드를 스캔한다."
+   ],
+   "judge_quote_nonempty": false
+  },
+  {
+   "run": 1,
+   "id": "F19",
+   "kind": "fact",
+   "fact": "C10",
+   "type": "premise",
+   "note": "'마지막 퇴근자가 경비를 설정한다'(주체) 조각 생략. 카드키·30초는 답함",
+   "uncovered": [
+    "마지막 퇴근자가 보안 경비를 설정한다."
+   ],
+   "covered": [
+    "출입구 옆 단말기에 카드키를 태그하고 30초 안에 나간다."
+   ],
+   "uncovered_relevant": [
+    "마지막 퇴근자가 보안 경비를 설정한다."
+   ],
+   "judge_quote_nonempty": false
+  },
+  {
+   "run": 1,
+   "id": "T04",
+   "kind": "time",
+   "fact": "G04",
+   "type": "detail",
+   "note": "07:00 수건 입고는 말했지만 수량 확인·납품서 서명을 생략",
+   "uncovered": [
+    "세탁업체 수건이 07:00에 들어온다. 수량을 확인하고 납품서에 서명한다."
+   ],
+   "covered": [],
+   "uncovered_relevant": [
+    "세탁업체 수건이 07:00에 들어온다. 수량을 확인하고 납품서에 서명한다."
+   ],
+   "judge_quote_nonempty": true
+  },
+  {
+   "run": 1,
+   "id": "T05",
+   "kind": "time",
+   "fact": "L05",
+   "type": "transcript_only",
+   "note": "도구 근거로 받은 청크가 트랜스크립트 하나뿐이고 인용도 그것뿐. 03:00 휴식도 생략",
+   "uncovered": [
+    "식사 시간은 23:30~00:00, 03:00에 10분 휴식이 있다."
+   ],
+   "covered": [],
+   "uncovered_relevant": [
+    "식사 시간은 23:30~00:00, 03:00에 10분 휴식이 있다."
+   ],
+   "judge_quote_nonempty": true
+  },
+  {
+   "run": 2,
+   "id": "F04",
+   "kind": "fact",
+   "fact": "C03",
+   "type": "detail",
+   "note": "주제는 답했지만 근거의 세부(수치·시각·절차)를 생략",
+   "uncovered": [
+    "에스프레소 머신 청소는 라스트오더 직후(21:30) 시작한다."
+   ],
+   "covered": [
+    "전용 세제 1스푼을 넣는다.",
+    "백플러시를 5회 반복한다."
+   ],
+   "uncovered_relevant": [
+    "에스프레소 머신 청소는 라스트오더 직후(21:30) 시작한다."
+   ],
+   "judge_quote_nonempty": true
+  },
+  {
+   "run": 2,
+   "id": "F07",
+   "kind": "fact",
+   "fact": "B06",
+   "type": "irrelevant",
+   "note": "빠진 조각이 질문이 묻는 내용과 무관 — 정답을 해도 주 지표에서는 누락으로 셈",
+   "uncovered": [
+    "진열 트레이는 전부 빼서 세척실에서 닦고"
+   ],
+   "covered": [
+    "빵 집게는 소독수에 30분 담가 둔다"
+   ],
+   "uncovered_relevant": [],
+   "judge_quote_nonempty": false
+  },
+  {
+   "run": 2,
+   "id": "F08",
+   "kind": "fact",
+   "fact": "M04",
+   "type": "irrelevant",
+   "note": "빠진 조각이 질문이 묻는 내용과 무관 — 정답을 해도 주 지표에서는 누락으로 셈",
+   "uncovered": [
+    "02:00에 음료가 입고된다."
+   ],
+   "covered": [
+    "수량을 검수한 뒤 냉장고 뒤쪽부터 채운다(먼저 들어온 것이 앞으로)."
+   ],
+   "uncovered_relevant": [],
+   "judge_quote_nonempty": false
+  },
+  {
+   "run": 2,
+   "id": "F09",
+   "kind": "fact",
+   "fact": "M03",
+   "type": "premise",
+   "note": "질문에 이미 나온 상황이라도 규칙의 적용 조건·주체 조각을 답변이 다시 밝히지 않음",
+   "uncovered": [
+    "교대할 때 시재 점검을 한다."
+   ],
+   "covered": [
+    "차액이 나오면 교대자와 같이 다시 세고,",
+    "그래도 차이가 있으면 근무일지에 금액을 적는다."
+   ],
+   "uncovered_relevant": [
+    "교대할 때 시재 점검을 한다."
+   ],
+   "judge_quote_nonempty": false
+  },
+  {
+   "run": 2,
+   "id": "F10",
+   "kind": "fact",
+   "fact": "C06",
+   "type": "irrelevant",
+   "note": "빠진 조각이 질문이 묻는 내용과 무관 — 정답을 해도 주 지표에서는 누락으로 셈",
+   "uncovered": [
+    "마감 정산은 포스의 '마감정산' 버튼으로 한다.",
+    "현금은 금고의 흰 봉투에 넣는다."
+   ],
+   "covered": [
+    "차액이 1,000원 이상이면 매장 단톡방에 금액을 올린다."
+   ],
+   "uncovered_relevant": [],
+   "judge_quote_nonempty": false
+  },
+  {
+   "run": 2,
+   "id": "F14",
+   "kind": "fact",
+   "fact": "G06",
+   "type": "premise",
+   "note": "질문에 이미 나온 상황이라도 규칙의 적용 조건·주체 조각을 답변이 다시 밝히지 않음",
+   "uncovered": [
+    "회원 등록이 안 된 사람이 들어오면"
+   ],
+   "covered": [
+    "1일권(1만 원) 결제를 안내한다."
+   ],
+   "uncovered_relevant": [
+    "회원 등록이 안 된 사람이 들어오면"
+   ],
+   "judge_quote_nonempty": false
+  },
+  {
+   "run": 2,
+   "id": "F16",
+   "kind": "fact",
+   "fact": "L03",
+   "type": "premise",
+   "note": "질문에 이미 나온 상황이라도 규칙의 적용 조건·주체 조각을 답변이 다시 밝히지 않음",
+   "uncovered": [
+    "박스마다 바코드를 스캔한다."
+   ],
+   "covered": [
+    "'이중 스캔' 경고가 뜨면 그 박스를 옆으로 빼고 반장을 부른다."
+   ],
+   "uncovered_relevant": [
+    "박스마다 바코드를 스캔한다."
+   ],
+   "judge_quote_nonempty": false
+  },
+  {
+   "run": 2,
+   "id": "T02",
+   "kind": "time",
+   "fact": "B04",
+   "type": "detail",
+   "note": "'20:30부터'(시작 시각)를 생략. 답변은 스티커 작업은 정확히 말했으므로 채점 경계 가능",
+   "uncovered": [
+    "20:30부터 생크림 제품에 20% 할인 스티커를 붙인다."
+   ],
+   "covered": [],
+   "uncovered_relevant": [
+    "20:30부터 생크림 제품에 20% 할인 스티커를 붙인다."
+   ],
+   "judge_quote_nonempty": true
+  }
+ ],
+ "by_type": {
+  "detail": 4,
+  "irrelevant": 6,
+  "premise": 7,
+  "transcript_only": 1
+ },
+ "faithfulness_violations": [
+  {
+   "run": 1,
+   "id": "F02",
+   "claim": "어제 만든 거라면 오늘이 이틀째이므로 오늘까지는 내놓아도 된다.",
+   "type": "inference"
+  },
+  {
+   "run": 1,
+   "id": "F05",
+   "claim": "어제 낮에 개봉했다면 이미 24시간이 넘었을 가능성이 높으니, 뚜껑에 적힌 개봉 시각을 확인해 보세요. 24시간이 지났으면 바로 버려 주세요.",
+   "type": "inference"
+  },
+  {
+   "run": 1,
+   "id": "F13",
+   "claim": "이상 있는 기구는 바로 사용 중단시켜야 한다.",
+   "type": "common_sense"
+  },
+  {
+   "run": 1,
+   "id": "F16",
+   "claim": "반장님이 오실 때까지 그 박스는 건드리지 말고 기다리세요.",
+   "type": "common_sense"
+  },
+  {
+   "run": 2,
+   "id": "F12",
+   "claim": "매일 오전 11시 30분쯤 분실물함을 정리하면서, 날짜 보고 7일 지난 건 그때 버리시면 돼요.",
+   "type": "judge_edge"
+  },
+  {
+   "run": 2,
+   "id": "F13",
+   "claim": "이상이 생긴 기구는 바로 사용 중단시켜야 한다.",
+   "type": "common_sense"
+  }
+ ],
+ "faithfulness_by_type": {
+  "inference": 2,
+  "common_sense": 3,
+  "judge_edge": 1
+ }
+}

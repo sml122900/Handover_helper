@@ -25,6 +25,8 @@ class Settings(BaseSettings):
     agent_model: str = Field(
         default="claude-sonnet-4-6", validation_alias=AliasChoices("agent_model", "HANDOVER_MODEL")
     )
+    # 답변 프롬프트 버전: v1(기준선) | v2(실험 D' 개선안)
+    agent_answer_prompt: str = "v1"
     # 실행당 Claude 비용 상한(USD). 넘으면 그 실행을 중단하고 사용량을 보고한다
     agent_cost_budget_usd: float = 5.0
     # 채점 모델 (Groq, Claude 계열 금지 — 설계 7-3). 모델명은 설정값

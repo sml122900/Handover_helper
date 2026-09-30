@@ -36,7 +36,7 @@ from graph.agent import (  # noqa: E402  # noqa: E402
     escalation_text,
     run_question,
 )
-from graph.prompts import PROMPT_VERSION  # noqa: E402
+from graph.prompts import PROMPT_VERSIONS  # noqa: E402
 from indexing.corpus import build_masked_index  # noqa: E402
 from indexing.factory import make_store  # noqa: E402
 from judge.groq import GroqJudge  # noqa: E402
@@ -49,7 +49,7 @@ from judge.tasks import (  # noqa: E402
     run_faithfulness,
     run_refusal,
 )
-from llm.client import ClaudeClient, CostBudgetExceeded, CostTracker, ledger_totals  # noqa: E402
+from llm.client import PRESETS, CostBudgetExceeded, CostTracker, ledger_totals, make_llm  # noqa: E402
 from settings import get_settings  # noqa: E402
 
 DEV_SUBSET = ["F04", "F10", "T01", "N03", "N07"]  # 사실(어려움)·사실(매장 혼동)·시각·없음(안전★)·없음
@@ -171,7 +171,7 @@ def judge_eval(q: dict, rec: dict, judge: GroqJudge, fact_texts) -> dict:
             "found"
         ):  # 시각 문항: 에이전트가 받은 도구 결과(일정)도 근거다
             evidence_text += "\n\n" + tasks_evidence(rec["tasks"])
-        fai, info = run_faithfulness(judge, answer, evidence_text)
+        fai, info = run_faithfulness(judge, answer, evidence_text, "tasks" if q["type"] == "time" else "doc")
         judge_cost += info.cost_usd
         ev["unfaithful"] = any(not c.supported for c in fai.claims)
         ev["unsupported_claims"] = [c.claim for c in fai.claims if not c.supported]
@@ -480,6 +480,10 @@ def main() -> None:
     )
     ap.add_argument("--no-judge", action="store_true", help="질문 응답만 생성·캐시하고 채점은 나중에")
     ap.add_argument("--label", default="baseline")
+    ap.add_argument("--preset", default="sonnet", choices=PRESETS, help="실험 C: 노드별 모델 조합")
+    ap.add_argument(
+        "--answer-prompt", default=None, choices=["v1", "v2"], help="실험 D': 답변 프롬프트 (기본은 설정값)"
+    )
     args = ap.parse_args()
 
     s = get_settings()
@@ -496,9 +500,14 @@ def main() -> None:
     store.add(masked, vecs)
     claude_tracker = CostTracker(s.agent_cost_budget_usd, "anthropic")
     judge_tracker = CostTracker(None, "groq")
-    llm = ClaudeClient(s.anthropic_api_key, s.agent_model, claude_tracker)
+    llm = make_llm(args.preset, s.anthropic_api_key, s.agent_model, claude_tracker)
+    answer_prompt = args.answer_prompt or s.agent_answer_prompt
     judge = GroqJudge(s.groq_api_key, s.judge_model, judge_tracker)
-    app = build_agent(AgentDeps(llm=llm, embedder=embedder, store=store, strategy=DEFAULT_STRATEGY))
+    app = build_agent(
+        AgentDeps(
+            llm=llm, embedder=embedder, store=store, strategy=DEFAULT_STRATEGY, answer_prompt=answer_prompt
+        )
+    )
     spans = retrieval.load_spans()
     fact_texts = load_fact_texts()
 
@@ -584,8 +593,10 @@ def main() -> None:
         "config": {
             "label": label,
             "date": date.today().isoformat(),
-            "agent_model": s.agent_model,
-            "prompt_version": PROMPT_VERSION,
+            "agent_model": llm.describe(),
+            "llm_preset": args.preset,
+            "answer_prompt": answer_prompt,
+            "prompt_version": PROMPT_VERSIONS[answer_prompt],
             "embedding": f"{embedder.provider}/{embedder.model}",
             "chunking": DEFAULT_STRATEGY + " (문서) + 트랜스크립트 고정 창",
             "store_filter": "켬(고정)",

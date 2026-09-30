@@ -72,6 +72,7 @@ class AgentDeps:
     embedder: Embedder
     store: VectorStore
     strategy: str = DEFAULT_STRATEGY
+    answer_prompt: str = "v1"  # v1(기준선) | v2(실험 D' 개선안)
     schedules: dict = field(default_factory=load_schedules)
 
 
@@ -283,7 +284,7 @@ def build_agent(deps: AgentDeps):
         }
 
     def answer(state: State) -> dict:
-        return write_answer(state, prompts.ANSWER_SYSTEM)
+        return write_answer(state, prompts.answer_system(deps.answer_prompt))
 
     def escalate(state: State) -> dict:
         text = escalation_text(state["question"], state.get("safety", False))
@@ -346,7 +347,7 @@ def build_agent(deps: AgentDeps):
             )
 
         extra = f"[일정] 현재 시각 {t['current_time']}\n지금 시작한 일(최근 30분):\n{lines(t['now'])}\n곧 있을 일(30분 이내):\n{lines(t['upcoming'])}\n\n"
-        return write_answer(state, prompts.TASKS_ANSWER_SYSTEM, extra)
+        return write_answer(state, prompts.tasks_answer_system(deps.answer_prompt), extra)
 
     def record_reply(state: State) -> dict:
         return {

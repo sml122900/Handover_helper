@@ -94,6 +94,31 @@ def main() -> None:
         "D_수치변조": (False, True),
     }
     out["passed"] = {k: (v["fact_covered"], v["unfaithful"]) == exp[k] for k, v in out["cases"].items()}
+
+    # 시각 문항: "일정 없음" 부재 진술도 도구 결과와 대조되는지 (2026-10-01 결정)
+    tool = (
+        "[일정 도구 결과] 현재 시각 06:50\n지금 시작한 일(최근 30분):\n- (없음)\n"
+        "곧 있을 일(30분 이내):\n- 07:00 수건 입고·서명"
+    )
+    time_cases = {
+        "E_시각_일정없음_정답": ("지금 시작한 일은 없어요. 곧 07:00에 수건 입고·서명이 있어요.", False),
+        "F_시각_일정있는데_없다고함": ("지금 시작한 일도, 30분 안에 예정된 일도 없어요.", True),
+        "G_시각_없는데_있다고함": ("지금 06:40에 시작한 음료 냉장고 채우기를 하고 계시면 돼요.", True),
+    }
+    out["time_cases"] = {}
+    for name, (answer, expect_unfaithful) in time_cases.items():
+        fai, _ = run_faithfulness(judge, answer, tool, "tasks")
+        bad = [c.claim for c in fai.claims if not c.supported]
+        out["time_cases"][name] = {
+            "answer": answer,
+            "expect_unfaithful": expect_unfaithful,
+            "unfaithful": bool(bad),
+            "unsupported_claims": bad,
+            "ok": bool(bad) == expect_unfaithful,
+        }
+        print(
+            f"{name}: 근거밖={bool(bad)} {bad} → 기대 {expect_unfaithful} {'OK' if bool(bad) == expect_unfaithful else 'FAIL'}"
+        )
     out["cost_usd"] = round(tracker.run_cost, 6)
     print("기대와 일치:", out["passed"], "| 채점 호출", tracker.run_calls, "회, $", out["cost_usd"])
     path = ROOT / "eval" / "results" / f"{date.today().isoformat()}-judge-selftest.json"

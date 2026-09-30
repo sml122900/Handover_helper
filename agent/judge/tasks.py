@@ -70,6 +70,15 @@ FAITHFULNESS_SYSTEM = """너는 근거 충실도 검증자다. [답변]에 든 �
 - 답변에 사실 주장이 하나도 없으면 claims는 빈 배열."""
 
 
+# 시각 문항용: "지금·곧 해당 일정이 없다"도 사실 주장이므로 [검색 근거]에 든 [일정 도구 결과]와 대조한다 (2026-10-01 결정)
+FAITHFULNESS_TASKS_SYSTEM = """너는 근거 충실도 검증자다. [답변]에 든 사실 주장을 하나씩 뽑아 [검색 근거](에이전트가 이 답변을 쓰면서 실제로 받은 문서 청크와 [일정 도구 결과])와 대조한다.
+- 각 주장마다 검색 근거에서 뒷받침 문장을 그대로 인용한 뒤(source_quote) supported를 정한다. 검색 근거에 없거나 수치·시각이 다르면 false.
+- **일정에 관한 주장은 부재 진술도 사실 주장이다**: "지금 시작한 일이 없다", "30분 안에 예정된 일이 없다", "그 시각에 ○○이 있다/없다"는 [일정 도구 결과]의 지금·곧 목록과 대조한다. 목록에 있는데 없다고 하거나, 없는데 있다고 하면 false.
+- 사실 주장이 아닌 것은 뽑지 않는다: 문서 세부 내용이 "문서에 없어요"·"나와 있지 않아요"라는 진술, 점장님께 확인·요청하라는 안내, 인사, [확인 필요] 표시, 답변 형식 문구.
+- 긴급 신고(119·112) 일반 안내가 "문서 근거 아님"이라고 표시돼 있으면 뽑지 않는다.
+- 답변에 사실 주장이 하나도 없으면 claims는 빈 배열."""
+
+
 # ---- 3. 출처 일치: 인용한 근거가 그 문장을 실제로 뒷받침하는지 ----
 class CitationCheck(_Strict):
     sentence: str = Field(description="[근거 n]이 붙은 답변 문장")
@@ -126,10 +135,10 @@ def run_accuracy(
     )
 
 
-def run_faithfulness(judge: GroqJudge, answer: str, evidence_text: str):
+def run_faithfulness(judge: GroqJudge, answer: str, evidence_text: str, mode: str = "doc"):
     user = f"[검색 근거]\n{evidence_text}\n\n[답변]\n{answer}"
     return judge.structured(
-        system=FAITHFULNESS_SYSTEM,
+        system=FAITHFULNESS_TASKS_SYSTEM if mode == "tasks" else FAITHFULNESS_SYSTEM,
         user=user,
         schema=FaithfulnessResult,
         name="faithfulness",
