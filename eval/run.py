@@ -70,13 +70,29 @@ def hit_dict(entries: list[dict], spans: list[tuple[str, int, int]]) -> bool:
     )
 
 
-def evaluate_question(q: dict, rec: dict, judge: GroqJudge, spans, fact_texts) -> dict:
-    """한 질문의 채점 결과. 집계는 코드가 한다."""
+def base_eval(q: dict, rec: dict, spans) -> dict:
+    """채점 모델 없이 계산하는 부분: 분류·검색 적중·도구 근거 적중."""
     ev: dict = {"id": q["id"], "type": q["type"], "excluded": q["type"] == "tool"}
     ev["category_ok"] = rec["category"] == EXPECTED_CATEGORY[q["type"]]
+    if q["type"] == "fact":
+        first = rec["retrieval_log"][0]["top5"] if rec["retrieval_log"] else []
+        last = rec["retrieval_log"][-1]["top5"] if rec["retrieval_log"] else []
+        ev["retrieval_first"] = {f: hit_dict(first, spans[f]) for f in q["expected_facts"]}
+        ev["retrieval_final"] = {f: hit_dict(last, spans[f]) for f in q["expected_facts"]}
+    if q["type"] == "time":
+        tool_ev = [
+            {"file": e["source_file"], "start": e["char_start"], "end": e["char_end"]}
+            for e in rec["evidence"]
+        ]
+        ev["tool_evidence_hit"] = {f: hit_dict(tool_ev, spans[f]) for f in q["expected_facts"]}
+    return ev
+
+
+def judge_eval(q: dict, rec: dict, judge: GroqJudge, fact_texts) -> dict:
+    """채점 모델(Groq) 호출 부분: 답변 정확도·환각·출처 일치·거절. 집계는 코드가 한다."""
+    ev: dict = {}
     answer = rec["answer"]
     judge_cost = 0.0
-
     if q["type"] == "tool":
         return ev
 
@@ -96,25 +112,13 @@ def evaluate_question(q: dict, rec: dict, judge: GroqJudge, spans, fact_texts) -
         ev["accuracy_full_relevant"] = all(ev["fact_covered_relevant"].values())
         ev["accuracy_detail"] = acc.model_dump()
 
-    if q["type"] == "fact":
-        first = rec["retrieval_log"][0]["top5"] if rec["retrieval_log"] else []
-        last = rec["retrieval_log"][-1]["top5"] if rec["retrieval_log"] else []
-        ev["retrieval_first"] = {f: hit_dict(first, spans[f]) for f in q["expected_facts"]}
-        ev["retrieval_final"] = {f: hit_dict(last, spans[f]) for f in q["expected_facts"]}
-    if q["type"] == "time":
-        tool_ev = [
-            {"file": e["source_file"], "start": e["char_start"], "end": e["char_end"]}
-            for e in rec["evidence"]
-        ]
-        ev["tool_evidence_hit"] = {f: hit_dict(tool_ev, spans[f]) for f in q["expected_facts"]}
-
     hal, info = run_hallucination(judge, answer, store_source(q["store"].lower()))
     judge_cost += info.cost_usd
     ev["hallucination"] = any(not c.supported for c in hal.claims)
     ev["unsupported_claims"] = [c.claim for c in hal.claims if not c.supported]
     ev["hallucination_detail"] = hal.model_dump()
 
-    if rec["citations"] or re.search(r"\[근거 \d+\]", answer):
+    if rec["citations"] or re.search(r"[근거 d+]", answer):
         evidence_text = "\n\n".join(f"[근거 {e['n']}]\n{e['text']}" for e in rec["evidence"])
         cit, info = run_citations(judge, answer, evidence_text)
         judge_cost += info.cost_usd
@@ -171,52 +175,56 @@ def summarize(rows: list[dict]) -> dict:
     }
 
     ft = fq + tq
-    out["answer_accuracy"] = {
-        "facts_covered": sum(sum(ev[i]["fact_covered"].values()) for i in ft),
-        "facts": sum(len(ev[i]["fact_covered"]) for i in ft),
-        "questions_full": sum(ev[i]["accuracy_full"] for i in ft),
-        "questions": len(ft),
-        "relevant_only": {
-            "facts_covered": sum(sum(ev[i]["fact_covered_relevant"].values()) for i in ft),
-            "facts": sum(len(ev[i]["fact_covered_relevant"]) for i in ft),
-            "questions_full": sum(ev[i]["accuracy_full_relevant"] for i in ft),
-            "questions": len(ft),
-            "fact20_covered": sum(sum(ev[i]["fact_covered_relevant"].values()) for i in fq),
-            "fact20_facts": sum(len(ev[i]["fact_covered_relevant"]) for i in fq),
-        },
-        "fact20": {
-            "covered": sum(sum(ev[i]["fact_covered"].values()) for i in fq),
-            "facts": sum(len(ev[i]["fact_covered"]) for i in fq),
-            "questions_full": sum(ev[i]["accuracy_full"] for i in fq),
-            "questions": len(fq),
-        },
-        "time5": {
-            "covered": sum(sum(ev[i]["fact_covered"].values()) for i in tq),
-            "facts": sum(len(ev[i]["fact_covered"]) for i in tq),
-            "questions_full": sum(ev[i]["accuracy_full"] for i in tq),
-            "questions": len(tq),
-        },
-    }
     graded = ft + ids("absent")
-    out["hallucination"] = {
-        "answers_with_unsupported": sum(ev[i]["hallucination"] for i in graded),
-        "answers": len(graded),
-        "ids": [i for i in graded if ev[i]["hallucination"]],
-    }
-    pairs = sum(ev[i].get("citation_pairs", 0) for i in graded)
-    out["citation_match"] = {
-        "supported": sum(ev[i].get("citation_supported", 0) for i in graded),
-        "pairs": pairs,
-        "answers_without_citation": [i for i in ft if not ev[i].get("citation_pairs")],
-    }
-    aq = ids("absent")
-    out["refusal_accuracy"] = {
-        "correct": sum(ev[i]["refusal_correct"] for i in aq),
-        "total": len(aq),
-        "wrong": [i for i in aq if not ev[i]["refusal_correct"]],
-        "safety_with_emergency_marked": [i for i in aq if ev[i]["safety"] and ev[i]["emergency_marked"]],
-        "safety_ids": [i for i in aq if ev[i]["safety"]],
-    }
+    out["judged"] = judged = all(
+        "hallucination" in ev[i] for i in graded
+    )  # 채점 결과가 모두 있어야 채점 지표를 계산
+    if judged:
+        out["answer_accuracy"] = {
+            "facts_covered": sum(sum(ev[i]["fact_covered"].values()) for i in ft),
+            "facts": sum(len(ev[i]["fact_covered"]) for i in ft),
+            "questions_full": sum(ev[i]["accuracy_full"] for i in ft),
+            "questions": len(ft),
+            "relevant_only": {
+                "facts_covered": sum(sum(ev[i]["fact_covered_relevant"].values()) for i in ft),
+                "facts": sum(len(ev[i]["fact_covered_relevant"]) for i in ft),
+                "questions_full": sum(ev[i]["accuracy_full_relevant"] for i in ft),
+                "questions": len(ft),
+                "fact20_covered": sum(sum(ev[i]["fact_covered_relevant"].values()) for i in fq),
+                "fact20_facts": sum(len(ev[i]["fact_covered_relevant"]) for i in fq),
+            },
+            "fact20": {
+                "covered": sum(sum(ev[i]["fact_covered"].values()) for i in fq),
+                "facts": sum(len(ev[i]["fact_covered"]) for i in fq),
+                "questions_full": sum(ev[i]["accuracy_full"] for i in fq),
+                "questions": len(fq),
+            },
+            "time5": {
+                "covered": sum(sum(ev[i]["fact_covered"].values()) for i in tq),
+                "facts": sum(len(ev[i]["fact_covered"]) for i in tq),
+                "questions_full": sum(ev[i]["accuracy_full"] for i in tq),
+                "questions": len(tq),
+            },
+        }
+        out["hallucination"] = {
+            "answers_with_unsupported": sum(ev[i]["hallucination"] for i in graded),
+            "answers": len(graded),
+            "ids": [i for i in graded if ev[i]["hallucination"]],
+        }
+        pairs = sum(ev[i].get("citation_pairs", 0) for i in graded)
+        out["citation_match"] = {
+            "supported": sum(ev[i].get("citation_supported", 0) for i in graded),
+            "pairs": pairs,
+            "answers_without_citation": [i for i in ft if not ev[i].get("citation_pairs")],
+        }
+        aq = ids("absent")
+        out["refusal_accuracy"] = {
+            "correct": sum(ev[i]["refusal_correct"] for i in aq),
+            "total": len(aq),
+            "wrong": [i for i in aq if not ev[i]["refusal_correct"]],
+            "safety_with_emergency_marked": [i for i in aq if ev[i]["safety"] and ev[i]["emergency_marked"]],
+            "safety_ids": [i for i in aq if ev[i]["safety"]],
+        }
     rewritten = [i for i in ev if recs[i]["rewritten"]]
     out["rewrite"] = {
         "questions_rewritten": rewritten,
@@ -278,18 +286,26 @@ def flip_report(runs: list[list[dict]]) -> dict:
     return {"questions": len(by_id), "questions_with_any_flip": len(flips), "flips": flips}
 
 
+def judge_rows(s: dict) -> list[str]:
+    aa, h, c, rf = s["answer_accuracy"], s["hallucination"], s["citation_match"], s["refusal_accuracy"]
+    ro = aa["relevant_only"]
+    return [
+        f"| 답변 정확도 (사실+시각) | 사실 {aa['facts_covered']}/{aa['facts']}, 문항 완전 {aa['questions_full']}/{aa['questions']} (사실20 {aa['fact20']['covered']}/{aa['fact20']['facts']}, 시각5 {aa['time5']['covered']}/{aa['time5']['facts']}). 정의: 정답 사실 내용을 모두 포함(시각 문항은 일 단위) |",
+        f"| 답변 정확도 — 보조(질문이 묻는 조각만) | 사실 {ro['facts_covered']}/{ro['facts']}, 문항 완전 {ro['questions_full']}/{ro['questions']} (사실20 {ro['fact20_covered']}/{ro['fact20_facts']}) |",
+        f"| 출처 일치율 | {c['supported']}/{c['pairs']} = {rate(c['supported'], c['pairs'])} |",
+        f"| 환각률 (사실주장 근거 없음 1개 이상) | {h['answers_with_unsupported']}/{h['answers']} {h['ids']} |",
+        f"| 거절 정확도 (없음 10) | {rf['correct']}/{rf['total']} 오답 {rf['wrong']} |",
+        f"| 안전★ 긴급 안내에 '문서 근거 아님' 표시 | {len(rf['safety_with_emergency_marked'])}/{len(rf['safety_ids'])} |",
+    ]
+
+
 def to_markdown(res: dict) -> str:
     cfg = res["config"]
     L = [f"# 에이전트 평가 — {cfg['label']} ({cfg['date']})", "", "## 설정", ""]
     L += [f"- {k}: {v}" for k, v in cfg.items() if k not in ("label", "date")]
     for n, s in enumerate(res["summaries"], start=1):
-        ra, aa, h, c, rf = (
-            s["recall_at_5_fact20"],
-            s["answer_accuracy"],
-            s["hallucination"],
-            s["citation_match"],
-            s["refusal_accuracy"],
-        )
+        ra = s["recall_at_5_fact20"]
+        judged = s.get("judged", False)
         L += [
             "",
             f"## 실행 {n}",
@@ -298,12 +314,13 @@ def to_markdown(res: dict) -> str:
             "|---|---|",
             f"| Recall@5 사실 20문항 (재검색 후) | {ra['final_facts_hit']}/{ra['facts']} = {rate(ra['final_facts_hit'], ra['facts'])} (첫 검색 {ra['first_facts_hit']}/{ra['facts']}, 문항 완전 적중 {ra['final_questions_full']}/{ra['questions']}) |",
             f"| 시각 5문항 도구 근거 적중 (검색 점수와 분리) | {s['time5_tool_evidence']['facts_hit']}/{s['time5_tool_evidence']['facts']} |",
-            f"| 답변 정확도 (사실+시각) | 사실 {aa['facts_covered']}/{aa['facts']}, 문항 완전 {aa['questions_full']}/{aa['questions']} (사실20 {aa['fact20']['covered']}/{aa['fact20']['facts']}, 시각5 {aa['time5']['covered']}/{aa['time5']['facts']}). 정의: 정답 사실 내용을 모두 포함(시각 문항은 일 단위) |",
-            f"| 답변 정확도 — 보조(질문이 묻는 조각만) | 사실 {aa['relevant_only']['facts_covered']}/{aa['relevant_only']['facts']}, 문항 완전 {aa['relevant_only']['questions_full']}/{aa['relevant_only']['questions']} (사실20 {aa['relevant_only']['fact20_covered']}/{aa['relevant_only']['fact20_facts']}) |",
-            f"| 출처 일치율 | {c['supported']}/{c['pairs']} = {rate(c['supported'], c['pairs'])} |",
-            f"| 환각률 (사실주장 근거 없음 1개 이상) | {h['answers_with_unsupported']}/{h['answers']} {h['ids']} |",
-            f"| 거절 정확도 (없음 10) | {rf['correct']}/{rf['total']} 오답 {rf['wrong']} |",
-            f"| 안전★ 긴급 안내에 '문서 근거 아님' 표시 | {len(rf['safety_with_emergency_marked'])}/{len(rf['safety_ids'])} |",
+            *(
+                judge_rows(s)
+                if judged
+                else [
+                    "| 채점 지표 (답변 정확도·출처 일치·환각·거절) | **채점 대기** — Groq 일일 토큰 한도로 미완료 |"
+                ]
+            ),
             f"| 분류 정확도 (도구 문항 포함) | {s['classification']['correct']}/{s['classification']['total']} {s['classification']['mismatches']} |",
             f"| 지연 p50 / p95 (채점 제외) | {s['latency_ms']['p50']} ms / {s['latency_ms']['p95']} ms |",
             f"| 질문당 Claude 비용 | 평균 ${s['cost_per_question_usd']['mean']} (최대 ${s['cost_per_question_usd']['max']}, 합계 ${s['cost_per_question_usd']['claude_total']}) |",
@@ -373,7 +390,7 @@ def main() -> None:
 
     recs, evs = load(rec_cache), load(ev_cache)
     runs: list[list[dict]] = []
-    incomplete = False
+    judge_stopped = False
     try:
         for n in range(args.runs):
             rows = []
@@ -383,34 +400,34 @@ def main() -> None:
                     recs[key] = run_question(app, q["question"], q["store"], q.get("current_time"))
                     save(rec_cache, n, q["id"], recs[key])
                 rec = recs[key]
-                if key not in evs and not args.no_judge:
+                base = base_eval(q, rec, spans)
+                if key not in evs and not args.no_judge and not judge_stopped:
                     try:
-                        evs[key] = evaluate_question(q, rec, judge, spans, fact_texts)
+                        evs[key] = judge_eval(q, rec, judge, fact_texts)
                         save(ev_cache, n, q["id"], evs[key])
                     except (
                         RuntimeError
                     ) as e:  # 채점 한도(예: Groq 일일 토큰) 소진 등 — 지금까지의 결과는 캐시에 남는다
-                        print(f"[채점 중단] {q[id]}: {e}")
-                        incomplete = True
-                        break
-                if key in evs:
-                    rows.append({"q": q, "rec": rec, "ev": evs[key]})
+                        print(f"[채점 중단] {q['id']}: {e}")
+                        judge_stopped = True
+                rows.append({"q": q, "rec": rec, "ev": {**base, **evs.get(key, {})}})
                 print(
                     f"[run {n + 1}] {q['id']} {rec['outcome']} {rec['latency_ms']}ms ${rec['cost_usd']:.4f} "
                     + ("채점 완료" if key in evs else "채점 대기"),
                     flush=True,
                 )
-            if incomplete:
-                break
             runs.append(rows)
     except CostBudgetExceeded as e:
         print(f"[중단] {e}")
         sys.exit(2)
-    if args.no_judge or incomplete:
+    pending = sum(
+        1 for n in range(args.runs) for q in golden if q["type"] != "tool" and (n, q["id"]) not in evs
+    )
+    if pending:
         print(
-            "응답 결과를 캐시에 저장했다. 채점은 같은 명령을 --no-judge 없이 다시 실행하면 이어서 진행한다."
+            f"채점 대기 {pending}건 — 결과 파일에는 채점 지표 없이 저장한다. "
+            "같은 명령을 --no-judge 없이 다시 실행하면 캐시된 응답을 재사용해 채점을 이어서 진행한다."
         )
-        sys.exit(0 if args.no_judge else 3)
 
     ledger = ledger_totals()
     res = {
