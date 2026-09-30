@@ -1,0 +1,92 @@
+"""채점기 네거티브 테스트 (설계 7-3): 정답 답변에 가짜 사실을 넣으면 환각으로, 정답 사실을 빼면 누락으로 잡는지 확인.
+
+실행: uv run --directory agent python ../eval/judge_selftest.py   (Groq 채점 호출 8회, Claude 호출 없음)
+"""
+
+import json
+import re
+import sys
+from datetime import date
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT / "agent"))
+
+from judge.groq import GroqJudge  # noqa: E402
+from judge.tasks import fact_covered, run_accuracy, run_hallucination  # noqa: E402
+from llm.client import CostTracker  # noqa: E402
+from settings import get_settings  # noqa: E402
+
+CORRECT = (
+    "마감 정산은 포스의 '마감정산' 버튼으로 해요. 현금은 금고의 흰 봉투에 넣어요. "
+    "정산 금액과 실제 현금이 1,000원 이상 차이 나면 매장 단톡방에 차액을 올려요."
+)
+CASES = {
+    "A_정답": (CORRECT, "정답 그대로 → 누락 없음·환각 없음이어야 함"),
+    "B_가짜사실_추가": (
+        CORRECT + " 차액이 5,000원 이상이면 점장님께 전화로 바로 보고해야 해요.",
+        "정답 + 원문에 없는 사실 1개 → 환각으로 잡혀야 함 (누락은 없음)",
+    ),
+    "C_정답사실_누락": (
+        "마감 정산은 포스의 '마감정산' 버튼으로 해요. 정산 금액과 실제 현금이 1,000원 이상 차이 나면 매장 단톡방에 차액을 올려요.",
+        "'현금은 금고의 흰 봉투' 조각을 뺌 → 누락으로 잡혀야 함 (환각은 없음)",
+    ),
+    "D_수치변조": (
+        CORRECT.replace("1,000원", "3,000원"),
+        "차액 기준 1,000원 → 3,000원으로 바꿈 → 누락(수치 불일치)과 환각이 모두 잡혀야 함",
+    ),
+}
+
+
+def main() -> None:
+    sys.stdout.reconfigure(encoding="utf-8")
+    s = get_settings()
+    assert s.groq_api_key, "GROQ_API_KEY 필요"
+    tracker = CostTracker(None, "groq")
+    judge = GroqJudge(s.groq_api_key, s.judge_model, tracker)
+
+    spec = (ROOT / "data" / "virtual" / "corpus-spec.md").read_text(encoding="utf-8")
+    fact_text = re.search(r"^\| C06 \| (.+?) \|", spec, re.M).group(1)
+    source = "\n\n".join(
+        (ROOT / "data" / "virtual" / f"s1.{e}").read_text(encoding="utf-8") for e in ("md", "txt")
+    )
+
+    out = {
+        "date": date.today().isoformat(),
+        "judge_model": s.judge_model,
+        "fact": {"C06": fact_text},
+        "cases": {},
+    }
+    for name, (answer, expect) in CASES.items():
+        acc, _ = run_accuracy(judge, answer, {"C06": fact_text})
+        hal, _ = run_hallucination(judge, answer, source)
+        fc = acc.facts[0]
+        unsupported = [c.claim for c in hal.claims if not c.supported]
+        out["cases"][name] = {
+            "expect": expect,
+            "answer": answer,
+            "fact_covered": fact_covered(fc),
+            "uncovered_parts": [p.part for p in fc.parts if not p.covered],
+            "hallucination": bool(unsupported),
+            "unsupported_claims": unsupported,
+            "detail": {"accuracy": acc.model_dump(), "hallucination": hal.model_dump()},
+        }
+        c = out["cases"][name]
+        print(
+            f"{name}: 사실 포함={c['fact_covered']} 누락 조각={c['uncovered_parts']} | 환각={c['hallucination']} {unsupported}"
+        )
+    exp = {
+        "A_정답": (True, False),
+        "B_가짜사실_추가": (True, True),
+        "C_정답사실_누락": (False, False),
+        "D_수치변조": (False, True),
+    }
+    out["passed"] = {k: (v["fact_covered"], v["hallucination"]) == exp[k] for k, v in out["cases"].items()}
+    out["cost_usd"] = round(tracker.run_cost, 6)
+    print("기대와 일치:", out["passed"], "| 채점 호출", tracker.run_calls, "회, $", out["cost_usd"])
+    path = ROOT / "eval" / "results" / f"{date.today().isoformat()}-judge-selftest.json"
+    path.write_text(json.dumps(out, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+
+
+if __name__ == "__main__":
+    main()
