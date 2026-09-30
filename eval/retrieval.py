@@ -121,6 +121,9 @@ def run(out_path: Path | None = None) -> dict:
                     "id": q["id"],
                     "facts": fact_hit,
                     "full": all(fact_hit.values()),
+                    "type": q["type"],
+                    "random_facts": rf,
+                    "random_full": rq,
                     "pool": len(pool),
                     "top5": [
                         {
@@ -143,6 +146,27 @@ def run(out_path: Path | None = None) -> dict:
                     row |= {"other_store_chunks": n_other, "confusable_in_top5": conf}
                 per_q.append(row)
             n_q = len(golden)
+            groups = {}
+            for kind in ("fact", "time"):
+                rows_k = [r for r in per_q if r["type"] == kind]
+                nf = sum(len(r["facts"]) for r in rows_k)
+                hf = sum(sum(r["facts"].values()) for r in rows_k)
+                groups[kind] = {
+                    "questions": len(rows_k),
+                    "facts": nf,
+                    "hit_facts": hf,
+                    "recall_at_5_fact": round(hf / nf, 4),
+                    "full_hits": sum(r["full"] for r in rows_k),
+                    "full_hit_rate": round(sum(r["full"] for r in rows_k) / len(rows_k), 4),
+                    "random_recall_fact": round(sum(r["random_facts"] for r in rows_k) / nf, 4),
+                    "random_full_hit_rate": round(sum(r["random_full"] for r in rows_k) / len(rows_k), 4),
+                }
+                if not use_filter:
+                    groups[kind] |= {
+                        "other_store_chunks_in_top5": sum(r["other_store_chunks"] for r in rows_k),
+                        "questions_with_other_store": sum(r["other_store_chunks"] > 0 for r in rows_k),
+                        "questions_with_confusable_in_top5": sum(r["confusable_in_top5"] for r in rows_k),
+                    }
             conditions.append(
                 {
                     "strategy": strategy,
@@ -156,6 +180,7 @@ def run(out_path: Path | None = None) -> dict:
                     "random_recall_fact": round(rnd_facts / n_facts, 4),
                     "random_full_hit_rate": round(rnd_full / n_q, 4),
                     "mean_pool": round(sum(r["pool"] for r in per_q) / n_q, 1),
+                    "groups": groups,
                     **(
                         {}
                         if use_filter
@@ -205,34 +230,52 @@ def to_markdown(r: dict) -> str:
         lines.append(f"| {s} | " + " | ".join(str(per[st]) for st in STORES) + " |")
     lines += [
         "",
-        "## Recall@5",
+        "## Recall@5 — 사실 20문항 (검색 점수. 시각 문항과 분리 보고)",
         "",
         "| 청킹 | 매장 필터 | 사실 Recall@5 | (무작위) | 문항 완전 적중 | (무작위) | 평균 검색 풀 |",
         "|---|---|---|---|---|---|---|",
     ]
     for c in r["conditions"]:
+        g = c["groups"]["fact"]
         lines.append(
-            f"| {c['strategy']} | {'켬' if c['store_filter'] else '끔'} | {c['hit_facts']}/{c['facts']} = {c['recall_at_5_fact']:.1%}"
-            f" | {c['random_recall_fact']:.1%} | {c['full_hits']}/{c['questions']} = {c['full_hit_rate']:.0%}"
-            f" | {c['random_full_hit_rate']:.0%} | {c['mean_pool']} |"
+            f"| {c['strategy']} | {'켬' if c['store_filter'] else '끔'} | {g['hit_facts']}/{g['facts']} = {g['recall_at_5_fact']:.1%}"
+            f" | {g['random_recall_fact']:.1%} | {g['full_hits']}/{g['questions']} = {g['full_hit_rate']:.0%}"
+            f" | {g['random_full_hit_rate']:.0%} | {c['mean_pool']} |"
         )
     lines += [
         "",
-        "## 매장 필터 끔 — 매장 혼동",
+        "## 참고: 시각 5문항 (get_current_tasks 도구 경로 대상 — 검색 점수로 해석하지 않음)",
         "",
-        "| 청킹 | 상위5 중 다른 매장 청크 (합계/125) | 다른 매장 청크가 든 문항 | confusable 구간이 든 문항 |",
-        "|---|---|---|---|",
+        "| 청킹 | 매장 필터 | 사실 Recall@5 | (무작위) | 문항 완전 적중 | (무작위) |",
+        "|---|---|---|---|---|---|",
+    ]
+    for c in r["conditions"]:
+        g = c["groups"]["time"]
+        lines.append(
+            f"| {c['strategy']} | {'켬' if c['store_filter'] else '끔'} | {g['hit_facts']}/{g['facts']} = {g['recall_at_5_fact']:.1%}"
+            f" | {g['random_recall_fact']:.1%} | {g['full_hits']}/{g['questions']} = {g['full_hit_rate']:.0%}"
+            f" | {g['random_full_hit_rate']:.0%} |"
+        )
+    lines += [
+        "",
+        "## 매장 필터 끔 — 매장 혼동 (사실 20문항 / 시각 5문항)",
+        "",
+        "| 청킹 | 문항군 | 상위5 중 다른 매장 청크 | 다른 매장 청크가 든 문항 | confusable 구간이 든 문항 |",
+        "|---|---|---|---|---|",
     ]
     for c in r["conditions"]:
         if not c["store_filter"]:
-            lines.append(
-                f"| {c['strategy']} | {c['other_store_chunks_in_top5']}/{c['questions'] * r['k']} "
-                f"| {c['questions_with_other_store']}/{c['questions']} | {c['questions_with_confusable_in_top5']}/{c['questions']} |"
-            )
+            for kind, label in (("fact", "사실"), ("time", "시각")):
+                g = c["groups"][kind]
+                lines.append(
+                    f"| {c['strategy']} | {label} | {g['other_store_chunks_in_top5']}/{g['questions'] * r['k']} "
+                    f"| {g['questions_with_other_store']}/{g['questions']} | {g['questions_with_confusable_in_top5']}/{g['questions']} |"
+                )
     run = r["run"]
     lines += [
         "",
         f"- 이 실행의 임베딩 API 배치 호출: {run['api_batches']}회 (캐시 적중 시 0), 누적 임베딩 토큰: {run['embedding_tokens_total_used']:,}",
+        "- 임베딩은 D1 첫 실행(13배치, 51,475토큰)에서 만들었고, 사실/시각 분리 표는 D2에서 캐시로 재집계했다(API 0회).",
     ]
     return "\n".join(lines) + "\n"
 
