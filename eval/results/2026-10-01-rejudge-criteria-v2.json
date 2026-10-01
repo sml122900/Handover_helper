@@ -1,0 +1,140 @@
+{
+ "experiments": [
+  {
+   "name": "D' 답변 프롬프트 v2 (기준선 대비)",
+   "old": {
+    "acc_diffs": [
+     3,
+     0,
+     2
+    ],
+    "fai_diffs": [
+     -2,
+     0,
+     -2
+    ],
+    "main": "차이 없음(오차 범위)",
+    "side_ok": true,
+    "proposal": "기본값 유지(미충족)"
+   },
+   "new": {
+    "acc_diffs": [
+     2,
+     0,
+     2
+    ],
+    "fai_diffs": [
+     -2,
+     1,
+     -5
+    ],
+    "main": "차이 없음(오차 범위)",
+    "side_ok": true,
+    "proposal": "기본값 유지(미충족)"
+   },
+   "verdict_changed": false
+  },
+  {
+   "name": "C 답변만 Sonnet·보조 노드 Haiku",
+   "old": {
+    "acc_diffs": [
+     -4,
+     -7,
+     -4
+    ],
+    "fai_diffs": [
+     -2,
+     1,
+     -2
+    ],
+    "main": "악화",
+    "side_ok": true,
+    "proposal": "기본값 유지(미충족)"
+   },
+   "new": {
+    "acc_diffs": [
+     -4,
+     -6,
+     -6
+    ],
+    "fai_diffs": [
+     1,
+     1,
+     -4
+    ],
+    "main": "악화",
+    "side_ok": true,
+    "proposal": "기본값 유지(미충족)"
+   },
+   "verdict_changed": false
+  },
+  {
+   "name": "C 전 노드 Haiku",
+   "old": {
+    "acc_diffs": [
+     -2,
+     -5,
+     -4
+    ],
+    "fai_diffs": [
+     -2,
+     1,
+     1
+    ],
+    "main": "악화",
+    "side_ok": true,
+    "proposal": "기본값 유지(미충족)"
+   },
+   "new": {
+    "acc_diffs": [
+     -3,
+     -3,
+     -4
+    ],
+    "fai_diffs": [
+     1,
+     1,
+     -2
+    ],
+    "main": "악화",
+    "side_ok": true,
+    "proposal": "기본값 유지(미충족)"
+   },
+   "verdict_changed": false
+  },
+  {
+   "name": "G 충분성 판단 통합",
+   "old": {
+    "acc_diffs": [
+     4,
+     -2,
+     0
+    ],
+    "fai_diffs": [
+     3,
+     0,
+     -1
+    ],
+    "main": "차이 없음(오차 범위)",
+    "side_ok": false,
+    "proposal": "기본값 유지(미충족)"
+   },
+   "new": {
+    "acc_diffs": [
+     5,
+     0,
+     0
+    ],
+    "fai_diffs": [
+     6,
+     4,
+     -3
+    ],
+    "main": "차이 없음(오차 범위)",
+    "side_ok": false,
+    "proposal": "기본값 유지(미충족)"
+   },
+   "verdict_changed": false
+  }
+ ]
+}
