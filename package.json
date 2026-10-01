@@ -23,7 +23,8 @@
     "agent:lint": "uv run --directory agent ruff check . ../eval",
     "agent:retrieval": "uv run --project agent python eval/retrieval.py",
     "agent:serve": "uv run --directory agent python serve.py",
-    "agent:mcp": "uv run --directory agent python mcp_server.py"
+    "agent:mcp": "uv run --directory agent python mcp_server.py",
+    "screenshots:agent-demo": "tsx scripts/agent-demo-screenshots.ts"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.0",
@@ -33,6 +34,7 @@
     "@types/sanitize-html": "^2.16.1",
     "eslint": "^9.39.5",
     "eslint-config-next": "^16.3.6",
+    "playwright": "^1.63.0",
     "tailwindcss": "^4.3.0",
     "tsx": "^4.22.4",
     "typescript": "^6.0.3",
