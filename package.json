@@ -22,7 +22,8 @@
     "agent:test": "uv run --project agent pytest agent/tests",
     "agent:lint": "uv run --directory agent ruff check . ../eval",
     "agent:retrieval": "uv run --project agent python eval/retrieval.py",
-    "agent:serve": "uv run --directory agent python serve.py"
+    "agent:serve": "uv run --directory agent python serve.py",
+    "agent:mcp": "uv run --directory agent python mcp_server.py"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.0",

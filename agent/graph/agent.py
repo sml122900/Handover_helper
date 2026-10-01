@@ -151,6 +151,16 @@ def render_evidence(evidence: list[dict]) -> str:
     return "\n\n".join(parts)
 
 
+def evidence_label(e: dict) -> str:
+    """근거 출처 표기 `매장 · 섹션 · 영상 m:ss` (설계 5-4)."""
+    parts = (
+        e["store_id"].upper(),
+        e["section"] or "영상 발언",
+        fmt_ts(e["video_ts_start"], e["video_ts_end"]),
+    )
+    return " · ".join(x for x in parts if x)
+
+
 def citation_view(evidence: list[dict], answer: str) -> list[dict]:
     """답변에 실제로 쓰인 [근거 n]을 `매장 · 섹션 · 영상 m:ss` 형태로 풀어 준다 (설계 5-4)."""
     used = sorted({int(n) for n in re.findall(r"\[근거 (\d+)\]", answer)})
@@ -160,15 +170,7 @@ def citation_view(evidence: list[dict], answer: str) -> list[dict]:
         e = by_n.get(n)
         if not e:
             continue
-        label = " · ".join(
-            x
-            for x in (
-                e["store_id"].upper(),
-                e["section"] or "영상 발언",
-                fmt_ts(e["video_ts_start"], e["video_ts_end"]),
-            )
-            if x
-        )
+        label = evidence_label(e)
         out.append(
             {
                 "n": n,
