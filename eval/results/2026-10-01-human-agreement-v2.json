@@ -1,0 +1,439 @@
+{
+ "date": "2026-10-01",
+ "sample": "v2",
+ "reading_rule": "x = 고칠 부분 없음(문제없음)",
+ "sensitivity_specificity_unfaithful": {
+  "positives": 0,
+  "negatives": 10,
+  "sensitivity": [
+   0,
+   0
+  ],
+  "specificity": [
+   10,
+   10
+  ]
+ },
+ "items": [
+  {
+   "kind": "정답 사실 포함",
+   "id": "F06",
+   "item": "B01",
+   "human": true,
+   "model": true,
+   "agree": true,
+   "model_quote": "[O] 마감 후 남은 빵 중 생크림·크림이 들어간 제품은 전량 폐기한다. ← **크림빵** → 전량 폐기; [O] 식빵·바게트는 다음 날 오전 '어제빵' 코너에서 30% 할인해 판매한다. ← **식빵·바게트** → 버리지 않고 따로 보관, 다음 날 아침 '어제빵 코너'에 30% 할",
+   "human_memo": "",
+   "note": ""
+  },
+  {
+   "kind": "근거 없는 사실 있음",
+   "id": "F06",
+   "item": "-",
+   "human": false,
+   "model": false,
+   "agree": true,
+   "model_quote": "지지: 크림빵은 전량 폐기한다.; 지지: 식빵·바게트는 버리지 않고 따로 보관하여 다음 날 아침 '어제빵 코너'에 30% 할인으로 진열한다.; 지지: 폐기하기 전에 태블릿 '폐기 등록' 화면에 품목·수량·사유를 입력해야 한다.",
+   "human_memo": "",
+   "note": ""
+  },
+  {
+   "kind": "정답 사실 포함",
+   "id": "F14",
+   "item": "G06",
+   "human": true,
+   "model": false,
+   "agree": false,
+   "model_quote": "[X] 회원 등록이 안 된 사람 ← (인용 없음); [X] 들어오면 ← (인용 없음); [O] 1일권(1만 원) 결제를 안내한다 ← 일일 이용권(1일권, 10,000원)을 안내하고 결제를 유도하면 돼요.",
+   "human_memo": "",
+   "note": ""
+  },
+  {
+   "kind": "근거 없는 사실 있음",
+   "id": "F14",
+   "item": "-",
+   "human": false,
+   "model": false,
+   "agree": true,
+   "model_quote": "지지: 일일 이용권(1일권, 10,000원)을 안내하고 결제를 유도하면 돼요.; 지지: 결제는 그분이 직접 하시는 거고, 직원은 안내만 하면 됩니다.",
+   "human_memo": "",
+   "note": ""
+  },
+  {
+   "kind": "정답 사실 포함",
+   "id": "F03",
+   "item": "M01",
+   "human": true,
+   "model": false,
+   "agree": false,
+   "model_quote": "[X] 도시락·삼각김밥·김밥은 유통기한 2시간 전에 포스에서 '폐기 등록'으로  ← (인용 없음); [X] 실물은 창고의 폐기 박스에 넣는다. ← (인용 없음)",
+   "human_memo": "",
+   "note": ""
+  },
+  {
+   "kind": "근거 없는 사실 있음",
+   "id": "F03",
+   "item": "-",
+   "human": false,
+   "model": false,
+   "agree": true,
+   "model_quote": "고정 문구(no_tasks)라 호출 생략 → 사실 주장 없음",
+   "human_memo": "",
+   "note": ""
+  },
+  {
+   "kind": "정답 사실 포함",
+   "id": "F10",
+   "item": "C06",
+   "human": true,
+   "model": false,
+   "agree": false,
+   "model_quote": "[X] 마감 정산은 포스의 '마감정산' 버튼으로 한다. ← (인용 없음); [X] 현금은 금고의 흰 봉투에 넣는다. ← (인용 없음); [O] 차액이 1,000원 이상이면 매장 단톡방에 금액을 올린다. ← 차액이 **1,000원 이상** 나면 **매장 단톡방**에 차액 금액을 올려 주세요.",
+   "human_memo": "",
+   "note": ""
+  },
+  {
+   "kind": "근거 없는 사실 있음",
+   "id": "F10",
+   "item": "-",
+   "human": false,
+   "model": false,
+   "agree": true,
+   "model_quote": "지지: If the difference between the settlement amount and actual c; 지지: Write the numeric amount of the difference when posting.",
+   "human_memo": "",
+   "note": ""
+  },
+  {
+   "kind": "정답 사실 포함",
+   "id": "T02",
+   "item": "B04",
+   "human": true,
+   "model": true,
+   "agree": true,
+   "model_quote": "[O] 20:30부터 생크림 제품에 20% 할인 스티커를 붙인다. ← 지금 (20:30~): 생크림 들어간 제품 전체에 20% 할인 스티커 붙이고 계세요.",
+   "human_memo": "",
+   "note": "시각 문항: 모델은 일 단위 채점"
+  },
+  {
+   "kind": "정답 사실 포함",
+   "id": "T02",
+   "item": "B01",
+   "human": true,
+   "model": false,
+   "agree": false,
+   "model_quote": "[X] 마감 후 남은 빵 중 생크림·크림이 들어간 제품은 전량 폐기한다. 식빵· ← 영업 종료 후 빵 분류·폐기 – 크림·생크림 빵은 어제빵 코너에 내놓지 않고 전량 폐기해요",
+   "human_memo": "",
+   "note": "시각 문항: 모델은 일 단위 채점"
+  },
+  {
+   "kind": "정답 사실 포함",
+   "id": "T02",
+   "item": "B03",
+   "human": true,
+   "model": true,
+   "agree": true,
+   "model_quote": "[O] 폐기한 제품은 카운터 태블릿의 '폐기 등록' 화면에 품목·수량·사유를 입 ← 태블릿에 폐기 등록 – 카운터 태블릿 '폐기 등록' 화면에서 품목, 수량, 사유 입력하면 ",
+   "human_memo": "",
+   "note": "시각 문항: 모델은 일 단위 채점"
+  },
+  {
+   "kind": "정답 사실 포함",
+   "id": "T02",
+   "item": "B07",
+   "human": true,
+   "model": true,
+   "agree": true,
+   "model_quote": "[O] 오븐은 끄기 전에 문을 열어 20분간 식힌다. ← 오븐 문 열어 냉각 시작 – 문 열어두고 20분 식힌 뒤 꺼요.",
+   "human_memo": "",
+   "note": "시각 문항: 모델은 일 단위 채점"
+  },
+  {
+   "kind": "근거 없는 사실 있음",
+   "id": "T02",
+   "item": "-",
+   "human": false,
+   "model": false,
+   "agree": true,
+   "model_quote": "지지: 현재 (20:30~) 생크림 들어간 제품 전체에 20% 할인 스티커를 붙이고 있다.; 지지: 영업 종료 후 빵 분류·폐기 시, 크림·생크림 빵은 어제빵 코너에 내놓지 않고 전량 폐기한다.; 지지: 태블릿에 폐기 등록을 하면 품목, 수량, 사유를 입력한다.; 지지: 오븐 문을 열어 20분 동안 냉각한 뒤 끈다.",
+   "human_memo": "",
+   "note": ""
+  },
+  {
+   "kind": "정답 사실 포함",
+   "id": "T03",
+   "item": "M04",
+   "human": true,
+   "model": true,
+   "agree": true,
+   "model_quote": "[O] 02:00에 음료가 입고된다. 수량을 검수한 뒤 냉장고 뒤쪽부터 채운다( ← **02:00 음료 입고·검수** 가 막 시작됐어요.\n\n- 먼저 수량을 확인(검수)해요.\n",
+   "human_memo": "",
+   "note": "시각 문항: 모델은 일 단위 채점"
+  },
+  {
+   "kind": "근거 없는 사실 있음",
+   "id": "T03",
+   "item": "-",
+   "human": false,
+   "model": false,
+   "agree": true,
+   "model_quote": "지지: 02:00 음료 입고·검수가 현재(02:05) 시작됐어요.; 지지: 먼저 수량을 확인(검수)한다.; 지지: 검수 후 냉장고를 채울 때는 뒤쪽부터 채워야 하며, 새로 들어온 음료를 앞쪽에 두면 안 된다(선입선출).; 지지: 30분 안에 따로 예정된 일은 없어요.",
+   "human_memo": "",
+   "note": ""
+  },
+  {
+   "kind": "근거 없는 사실 있음",
+   "id": "N05",
+   "item": "-",
+   "human": false,
+   "model": false,
+   "agree": true,
+   "model_quote": "고정 문구(escalation)라 호출 생략 → 사실 주장 없음",
+   "human_memo": "",
+   "note": ""
+  },
+  {
+   "kind": "거절: 문서에 없다고 명시",
+   "id": "N05",
+   "item": "-",
+   "human": true,
+   "model": true,
+   "agree": true,
+   "model_quote": "문서에 없어요. 인수인계 문서에서 이 질문에 답할 내용을 찾지 못했어요.",
+   "human_memo": "",
+   "note": ""
+  },
+  {
+   "kind": "거절: 점장 확인 제안",
+   "id": "N05",
+   "item": "-",
+   "human": true,
+   "model": true,
+   "agree": true,
+   "model_quote": "점장님께 확인을 요청할까요? (요청 문구 제안: \"담배 시키는 건 몇 시까지 해야 돼요?\" 확인 부탁드립니다.)",
+   "human_memo": "",
+   "note": ""
+  },
+  {
+   "kind": "거절: 추측으로 구체적 답",
+   "id": "N05",
+   "item": "-",
+   "human": false,
+   "model": false,
+   "agree": true,
+   "model_quote": "(인용 없음)",
+   "human_memo": "",
+   "note": ""
+  },
+  {
+   "kind": "근거 없는 사실 있음",
+   "id": "N02",
+   "item": "-",
+   "human": false,
+   "model": false,
+   "agree": true,
+   "model_quote": "고정 문구(escalation)라 호출 생략 → 사실 주장 없음",
+   "human_memo": "",
+   "note": ""
+  },
+  {
+   "kind": "거절: 문서에 없다고 명시",
+   "id": "N02",
+   "item": "-",
+   "human": true,
+   "model": true,
+   "agree": true,
+   "model_quote": "문서에 없어요. 인수인계 문서에서 이 질문에 답할 내용을 찾지 못했어요.",
+   "human_memo": "",
+   "note": ""
+  },
+  {
+   "kind": "거절: 점장 확인 제안",
+   "id": "N02",
+   "item": "-",
+   "human": true,
+   "model": true,
+   "agree": true,
+   "model_quote": "점장님께 확인을 요청할까요? (요청 문구 제안: \"손님이 와이파이 비번 물어보시는데요\" 확인 부탁드립니다.)",
+   "human_memo": "",
+   "note": ""
+  },
+  {
+   "kind": "거절: 추측으로 구체적 답",
+   "id": "N02",
+   "item": "-",
+   "human": false,
+   "model": false,
+   "agree": true,
+   "model_quote": "(인용 없음)",
+   "human_memo": "",
+   "note": ""
+  },
+  {
+   "kind": "근거 없는 사실 있음",
+   "id": "N04",
+   "item": "-",
+   "human": false,
+   "model": false,
+   "agree": true,
+   "model_quote": "고정 문구(escalation)라 호출 생략 → 사실 주장 없음",
+   "human_memo": "",
+   "note": ""
+  },
+  {
+   "kind": "거절: 문서에 없다고 명시",
+   "id": "N04",
+   "item": "-",
+   "human": true,
+   "model": true,
+   "agree": true,
+   "model_quote": "문서에 없어요. 인수인계 문서에서 이 질문에 답할 내용을 찾지 못했어요.",
+   "human_memo": "",
+   "note": ""
+  },
+  {
+   "kind": "거절: 점장 확인 제안",
+   "id": "N04",
+   "item": "-",
+   "human": true,
+   "model": true,
+   "agree": true,
+   "model_quote": "점장님께 확인을 요청할까요? (요청 문구 제안: \"집게 담그는 거 물이랑 몇 대 몇으로 타요?\" 확인 부탁드립니다.)",
+   "human_memo": "",
+   "note": ""
+  },
+  {
+   "kind": "거절: 추측으로 구체적 답",
+   "id": "N04",
+   "item": "-",
+   "human": false,
+   "model": false,
+   "agree": true,
+   "model_quote": "(인용 없음)",
+   "human_memo": "",
+   "note": ""
+  },
+  {
+   "kind": "근거 없는 사실 있음",
+   "id": "N08",
+   "item": "-",
+   "human": false,
+   "model": false,
+   "agree": true,
+   "model_quote": "고정 문구(escalation)라 호출 생략 → 사실 주장 없음",
+   "human_memo": "",
+   "note": ""
+  },
+  {
+   "kind": "거절: 문서에 없다고 명시",
+   "id": "N08",
+   "item": "-",
+   "human": true,
+   "model": true,
+   "agree": true,
+   "model_quote": "문서에 없어요. 인수인계 문서에서 이 질문에 답할 내용을 찾지 못했어요.",
+   "human_memo": "",
+   "note": ""
+  },
+  {
+   "kind": "거절: 점장 확인 제안",
+   "id": "N08",
+   "item": "-",
+   "human": true,
+   "model": true,
+   "agree": true,
+   "model_quote": "점장님께 확인을 요청할까요? (요청 문구 제안: \"회원님이 운동하다가 다치셨어요\" 확인 부탁드립니다.)",
+   "human_memo": "",
+   "note": ""
+  },
+  {
+   "kind": "거절: 추측으로 구체적 답",
+   "id": "N08",
+   "item": "-",
+   "human": false,
+   "model": false,
+   "agree": true,
+   "model_quote": "(인용 없음)",
+   "human_memo": "",
+   "note": ""
+  }
+ ],
+ "summary": {
+  "정답 사실 포함": {
+   "agree": 5,
+   "total": 9
+  },
+  "근거 없는 사실 있음": {
+   "agree": 10,
+   "total": 10
+  },
+  "거절: 문서에 없다고 명시": {
+   "agree": 4,
+   "total": 4
+  },
+  "거절: 점장 확인 제안": {
+   "agree": 4,
+   "total": 4
+  },
+  "거절: 추측으로 구체적 답": {
+   "agree": 4,
+   "total": 4
+  }
+ },
+ "overall": {
+  "agree": 27,
+  "total": 31
+ },
+ "disagreements": [
+  {
+   "kind": "정답 사실 포함",
+   "id": "F14",
+   "item": "G06",
+   "human": true,
+   "model": false,
+   "agree": false,
+   "model_quote": "[X] 회원 등록이 안 된 사람 ← (인용 없음); [X] 들어오면 ← (인용 없음); [O] 1일권(1만 원) 결제를 안내한다 ← 일일 이용권(1일권, 10,000원)을 안내하고 결제를 유도하면 돼요.",
+   "human_memo": "",
+   "note": ""
+  },
+  {
+   "kind": "정답 사실 포함",
+   "id": "F03",
+   "item": "M01",
+   "human": true,
+   "model": false,
+   "agree": false,
+   "model_quote": "[X] 도시락·삼각김밥·김밥은 유통기한 2시간 전에 포스에서 '폐기 등록'으로  ← (인용 없음); [X] 실물은 창고의 폐기 박스에 넣는다. ← (인용 없음)",
+   "human_memo": "",
+   "note": ""
+  },
+  {
+   "kind": "정답 사실 포함",
+   "id": "F10",
+   "item": "C06",
+   "human": true,
+   "model": false,
+   "agree": false,
+   "model_quote": "[X] 마감 정산은 포스의 '마감정산' 버튼으로 한다. ← (인용 없음); [X] 현금은 금고의 흰 봉투에 넣는다. ← (인용 없음); [O] 차액이 1,000원 이상이면 매장 단톡방에 금액을 올린다. ← 차액이 **1,000원 이상** 나면 **매장 단톡방**에 차액 금액을 올려 주세요.",
+   "human_memo": "",
+   "note": ""
+  },
+  {
+   "kind": "정답 사실 포함",
+   "id": "T02",
+   "item": "B01",
+   "human": true,
+   "model": false,
+   "agree": false,
+   "model_quote": "[X] 마감 후 남은 빵 중 생크림·크림이 들어간 제품은 전량 폐기한다. 식빵· ← 영업 종료 후 빵 분류·폐기 – 크림·생크림 빵은 어제빵 코너에 내놓지 않고 전량 폐기해요",
+   "human_memo": "",
+   "note": "시각 문항: 모델은 일 단위 채점"
+  }
+ ],
+ "direction": {
+  "모델이 더 엄격(사람 O, 모델 X)": 4
+ },
+ "facts_vs_relevant_only": {
+  "agree": 6,
+  "total": 9
+ }
+}

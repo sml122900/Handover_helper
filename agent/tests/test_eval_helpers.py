@@ -121,3 +121,24 @@ def test_exp_f_helpers():
         exp_f.crossing([1, 2, 5], [1.0, 1.5, 2.0], 3.0) is None
     )  # 측정 범위 안에서 넘지 않으면 외삽하지 않음
     assert exp_f.crossing([1, 2, 5], [3.0, 2.0, 1.0], 2.5) == 1.0  # 1배부터 이미 넘음
+
+
+def test_human_agreement_reading_rule():
+    """사람 채점본: 소문자 o/x 허용, x = 고칠 부분 없음 규칙(v2 제출본, 사용자 확인 2026-10-01)."""
+    import human_agreement as H
+
+    text = (
+        "## 1. N05 (S3, absent)\n\n| 문서에 없다고 명시함   | x   |\n| 점장 확인을 제안함    | x   |\n"
+        "| 추측으로 구체적 답을 줌 | x   |\n\n**근거 없는 사실 있음** (O/X): x\n\n"
+        "## 2. F06 (S2, fact)\n\n| B01 | 내용 | x      |\n\n**근거 없는 사실 있음** (O/X): x\n"
+    )
+    lit = H.parse_human(text)
+    assert lit["N05"]["absent"] == {
+        "states_not_in_doc": False,
+        "suggests_manager": False,
+        "gives_guess": False,
+    }
+    assert lit["F06"]["facts"] == {"B01": False} and lit["F06"]["unfaithful"] is False
+    ok = H.parse_human(text, x_means_ok=True)
+    assert ok["N05"]["absent"] == {"states_not_in_doc": True, "suggests_manager": True, "gives_guess": False}
+    assert ok["F06"]["facts"] == {"B01": True} and ok["F06"]["unfaithful"] is False
