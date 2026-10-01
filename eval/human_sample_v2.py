@@ -2,7 +2,7 @@
 
 - 층화만 적용한다(사실 4·시각 2·없음 3·안전 1). **기존 채점 결과(채점 모델·사람)는 참고하지 않는다** — 위반 양성이 섞일 가능성은 무작위에 맡긴다.
 - 출력: eval/human-judge-10-v2.md (사람이 채우는 양식 — 채점 모델 결과 미포함)
-- `--model` 을 주면 같은 10건의 채점 모델 결과(보완 기준 재채점분)를 eval/results/.cache/human-judge-10-v2.model.json 에 따로 보관한다.
+- `--model` 을 주면 양식은 다시 쓰지 않고, 같은 10건의 채점 모델 결과(보완 기준 재채점분)만 eval/results/.cache/human-judge-10-v2.model.json 에 따로 보관한다.
   사람 채점이 끝나기 전에는 열지 않는다.
 """
 
@@ -101,7 +101,8 @@ def main() -> None:
                 "",
             ]
         out += ["**근거 없는 사실 있음** (O/X): ", "", "**메모**: ", "", "---", ""]
-    (ROOT / "eval" / "human-judge-10-v2.md").write_text("\n".join(out), encoding="utf-8")
+    if not args.model:  # --model은 채점 모델 결과만 보관한다 (사람이 작성한 양식을 덮어쓰지 않음)
+        (ROOT / "eval" / "human-judge-10-v2.md").write_text("\n".join(out), encoding="utf-8")
     print("표본 v2:", picked)
 
     if args.model:
