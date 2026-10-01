@@ -60,6 +60,8 @@ def run_stats(rows: list[dict]) -> dict:
         "refusal_n": s.get("refusal_accuracy", {}).get("total"),
         "escalated": s["outcomes"].get("escalated", 0),
         "cost": float(np.mean([r["cost_usd"] for r in recs])),
+        # 도구 문항 제외: 09-30 기준선에는 D3 도구 계획 호출이 없었다 (비교 보정용)
+        "cost_no_tool": float(np.mean([r["rec"]["cost_usd"] for r in rows if r["q"]["type"] != "tool"])),
         "cost_nocache": float(np.mean([no_cache_cost(r) for r in recs])),
         "cost_warm": float(np.mean(warm)) if warm else None,
         "cache_write": sum(r.get("cache_write_tokens", 0) for r in recs),
@@ -84,9 +86,15 @@ def facts_only(rows: list[dict]) -> list[dict]:
 
 
 def crossing(xs: list[float], ys: list[float], target: float) -> float | None:
-    """최소제곱 직선 y = a + b·x가 target과 만나는 x (기울기가 0 이하이면 없음)."""
-    b, a = np.polyfit(xs, ys, 1)
-    return (target - a) / b if b > 0 else None
+    """측정한 점 사이를 직선으로 이어 y가 처음 target 이상이 되는 x (측정 범위 안에서만, 외삽하지 않음).
+    첫 점부터 이미 target 이상이면 xs[0], 끝까지 넘지 않으면 None."""
+    if ys[0] >= target:
+        return float(xs[0])
+    pts = list(zip(xs, ys, strict=True))
+    for (x0, y0), (x1, y1) in zip(pts, pts[1:], strict=False):
+        if y1 >= target > y0:
+            return x0 + (target - y0) / (y1 - y0) * (x1 - x0)
+    return None
 
 
 def main() -> None:
@@ -94,6 +102,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--rag", required=True)
     ap.add_argument("--full", required=True)
+    ap.add_argument("--reference", default=None, help="참고 열 (판정·교차점에 쓰지 않음). 예: RAG 통합 노드")
     ap.add_argument("--scale", action="append", default=[], help='"배수=라벨:번호" (사실 20문항 실행)')
     args = ap.parse_args()
 
@@ -102,10 +111,24 @@ def main() -> None:
     full_name, full_runs = load_spec(args.full, gold)
     rag = [run_stats(r) for r in rag_runs]
     full = [run_stats(r) for r in full_runs]
+    ref_name, ref = None, None
+    if args.reference:
+        ref_name, ref_runs = load_spec(args.reference, gold)
+        ref = [run_stats(r) for r in ref_runs]
 
-    def cells(ms: list[dict], key: str, fmt: str = "{}") -> str:
+    def cells(ms: list[dict] | None, key: str, fmt: str | None = None) -> str:
+        if ms is None:
+            return "-"
         vals = [m[key] for m in ms]
-        return " / ".join(fmt.format(v) for v in vals) + f" (평균 {fmt.format(float(np.mean(vals)))})"
+        f = fmt or "{}"
+        return (
+            " / ".join(f.format(v) for v in vals)
+            + f" (평균 {(fmt or '{:.1f}').format(float(np.mean(vals)))})"
+        )
+
+    def row(label: str, key: str, fmt: str | None = None) -> str:
+        cols = [cells(rag, key, fmt), cells(full, key, fmt)] + ([cells(ref, key, fmt)] if ref else [])
+        return f"| {label} | " + " | ".join(cols) + " |"
 
     L = [
         f"# 실험 F 컨텍스트 방식: RAG vs 매장 원문 전체 ({date.today().isoformat()})",
@@ -114,18 +137,20 @@ def main() -> None:
         "",
         "## 조건별 3회 값 (실행 1·2·3 / 평균)",
         "",
-        f"| 지표 | {rag_name} | {full_name} |",
-        "|---|---|---|",
-        f"| 답변 정확도(주) 문항 완전 /25 | {cells(rag, 'acc_full')} | {cells(full, 'acc_full')} |",
-        f"| └ 사실 20문항 문항 완전 /20 | {cells(rag, 'f20_full')} | {cells(full, 'f20_full')} |",
-        f"| └ 사실 20문항 정답 사실 /22 | {cells(rag, 'f20_facts')} | {cells(full, 'f20_facts')} |",
-        f"| 근거 충실도 위반 문항 /35 (낮을수록 좋음) | {cells(rag, 'unfaithful')} | {cells(full, 'unfaithful')} |",
-        f"| 거절 정확도 /10 | {cells(rag, 'refusal')} | {cells(full, 'refusal')} |",
-        f"| 질문당 Claude 비용 (실측, 캐시 반영) | {cells(rag, 'cost', '${:.4f}')} | {cells(full, 'cost', '${:.4f}')} |",
-        f"| 질문당 비용 — 캐시 없다고 가정 | {cells(rag, 'cost_nocache', '${:.4f}')} | {cells(full, 'cost_nocache', '${:.4f}')} |",
-        f"| 캐시 쓰기 / 읽기 토큰 (실행 합계) | - | {' / '.join(f'{m["cache_write"]:,}·{m["cache_read"]:,}' for m in full)} |",
-        f"| 지연 p50 (ms) | {cells(rag, 'p50', '{:.0f}')} | {cells(full, 'p50', '{:.0f}')} |",
-        f"| 지연 p95 (ms) — 목표 8000 | {cells(rag, 'p95', '{:.0f}')} | {cells(full, 'p95', '{:.0f}')} |",
+        f"| 지표 | {rag_name} | {full_name} |" + (f" 참고: {ref_name} |" if ref else ""),
+        "|---|---|---|" + ("---|" if ref else ""),
+        row("답변 정확도(주) 문항 완전 /25", "acc_full"),
+        row("└ 사실 20문항 문항 완전 /20", "f20_full"),
+        row("└ 사실 20문항 정답 사실 /22", "f20_facts"),
+        row("근거 충실도 위반 문항 /35 (낮을수록 좋음)", "unfaithful"),
+        row("거절 정확도 /10", "refusal"),
+        row("질문당 Claude 비용 (실측, 캐시 반영)", "cost", "${:.4f}"),
+        row("└ 도구 5문항 제외 (09-30 기준선엔 도구 계획 호출 없음)", "cost_no_tool", "${:.4f}"),
+        row("질문당 비용 — 캐시 없다고 가정", "cost_nocache", "${:.4f}"),
+        f"| 캐시 쓰기·읽기 토큰 (실행 합계) | - | {' / '.join(f'{m["cache_write"]:,}·{m["cache_read"]:,}' for m in full)} |"
+        + (" - |" if ref else ""),
+        row("지연 p50 (ms)", "p50", "{:.0f}"),
+        row("지연 p95 (ms) — 목표 8000", "p95", "{:.0f}"),
         "",
         "## 쌍별 차이: 전체 컨텍스트 − RAG (실행 번호끼리)",
         "",
@@ -140,7 +165,11 @@ def main() -> None:
     ):
         d = [full[i][key] - rag[i][key] for i in range(3)]
         L.append(f"| {label} | " + " | ".join(f"{x:+d}" for x in d) + f" | {np.mean(d):+.1f} |")
-    for label, key in (("지연 p50 (ms)", "p50"), ("질문당 비용 ($)", "cost")):
+    for label, key in (
+        ("지연 p50 (ms)", "p50"),
+        ("질문당 비용 ($)", "cost"),
+        ("질문당 비용, 도구 문항 제외 ($)", "cost_no_tool"),
+    ):
         d = [full[i][key] - rag[i][key] for i in range(3)]
         rel = np.mean([full[i][key] for i in range(3)]) / np.mean([rag[i][key] for i in range(3)]) - 1
         L.append(
@@ -184,14 +213,14 @@ def main() -> None:
 
         def fx(x: float | None) -> str:
             if x is None:
-                return "배수에 따라 늘지 않음(교차 없음)"
-            return f"약 {x:.1f}배" if x >= 1 else "1배 이하(현재 규모에서 이미 RAG가 낮음)"
+                return f"측정 범위({xs[-1]}배) 안에서 역전 없음"
+            return f"약 {x:.1f}배" if x > xs[0] else f"{xs[0]}배에서 이미 RAG 이상"
 
         L += [
             "",
-            "- 직선 근사(최소제곱, 배수 1·2·5)로 RAG 값과 만나는 배수: "
-            f"질문당 비용(실측) {fx(cross_cost)}, 캐시 적중 질문만 {fx(cross_warm)}, 지연 p50 {fx(cross_p50)}. "
-            "점 3개·1회 측정이라 거친 추정이다. 정확도는 외삽하지 않고 추이만 본다",
+            "- 전체 컨텍스트가 RAG(3회 평균)보다 비싸지거나 느려지는 배수 (측정한 점 사이 직선 보간, 외삽 없음): "
+            f"질문당 비용 실측 {fx(cross_cost)}, 캐시 적중 질문만 {fx(cross_warm)}, 지연 p50 {fx(cross_p50)}. "
+            "배수별 1회·20문항이라 거친 추정이다. 정확도는 추이만 본다",
         ]
     out = ROOT / "eval" / "results" / f"{date.today().isoformat()}-exp-F.md"
     out.write_text("\n".join(L) + "\n", encoding="utf-8")

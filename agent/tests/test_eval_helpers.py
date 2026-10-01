@@ -117,4 +117,7 @@ def test_exp_f_helpers():
     }
     assert exp_f.other_store_citations(rec) == 1
     assert exp_f.crossing([1, 2, 5], [1.0, 2.0, 5.0], 3.0) == pytest.approx(3.0)
-    assert exp_f.crossing([1, 2, 5], [3.0, 2.0, 1.0], 2.5) is None  # 배수에 따라 줄면 교차 없음
+    assert (
+        exp_f.crossing([1, 2, 5], [1.0, 1.5, 2.0], 3.0) is None
+    )  # 측정 범위 안에서 넘지 않으면 외삽하지 않음
+    assert exp_f.crossing([1, 2, 5], [3.0, 2.0, 1.0], 2.5) == 1.0  # 1배부터 이미 넘음
