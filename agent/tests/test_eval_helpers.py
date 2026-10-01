@@ -142,3 +142,29 @@ def test_human_agreement_reading_rule():
     ok = H.parse_human(text, x_means_ok=True)
     assert ok["N05"]["absent"] == {"states_not_in_doc": True, "suggests_manager": True, "gives_guess": False}
     assert ok["F06"]["facts"] == {"B01": True} and ok["F06"]["unfaithful"] is False
+
+
+def test_word_mark_form_roundtrip():
+    """새 양식(2026-10-02): 칸은 O/X 대신 포함/미포함·있음/없음 단어 — 생성한 양식을 채우면 그대로 읽힌다."""
+    import human_agreement as H
+    import human_sample as S
+
+    fact = S.grading_section({"expected_facts": ["B01", "B03"]}, {"B01": "내용 포함 조건", "B03": "내용"})
+    absent = S.grading_section({"expected_facts": []}, {})
+    assert not any("O/X" in line for line in fact + absent)
+
+    def fill(lines, marks, claim):
+        it = iter(marks)
+        out = [line[:-2] + f" {next(it)} |" if line.endswith("| |") else line for line in lines]
+        return [line + claim if line.startswith("**근거 없는 사실**") else line for line in out]
+
+    text = (
+        "## 1. F06 (S2, fact)\n\n"
+        + "\n".join(fill(fact, ["미포함", "포함"], "있음"))
+        + "\n## 2. N05 (S3, absent)\n\n"
+        + "\n".join(fill(absent, ["있음", "없음", "없음"], "없음"))
+    )
+    h = H.parse_human(text, x_means_ok=True)  # 단어 표기에는 x 규칙이 적용되지 않는다
+    assert h["F06"]["facts"] == {"B01": False, "B03": True} and h["F06"]["unfaithful"] is True
+    assert h["N05"]["absent"] == {"states_not_in_doc": True, "suggests_manager": False, "gives_guess": False}
+    assert h["N05"]["unfaithful"] is False

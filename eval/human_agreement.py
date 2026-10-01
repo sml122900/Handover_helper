@@ -21,34 +21,40 @@ MODEL_V2 = ROOT / "eval" / "results" / ".cache" / "human-judge-10-v2.model.json"
 
 
 def parse_human(text: str, x_means_ok: bool = False) -> dict:
-    """채점본 파싱. 마크다운 표(`| 사실 | ... | O |`)와 탭으로 구분된 붙여넣기 서식을 모두 지원한다. O/X는 대소문자 구분 없음.
+    """채점본 파싱. 마크다운 표(`| 사실 | ... | 포함 |`)와 탭으로 구분된 붙여넣기 서식을 모두 지원한다.
 
-    x_means_ok: 제출자가 x를 "고칠 부분 없음(문제없음)"으로 쓴 경우의 읽는 규칙(v2 제출본, 사용자 확인 2026-10-01).
+    칸 표기: 단어(포함/미포함, 있음/없음 — 2026-10-02 이후 양식) 또는 이전 양식의 O/X(대소문자 구분 없음).
+    x_means_ok: 제출자가 x를 "고칠 부분 없음(문제없음)"으로 쓴 경우의 읽는 규칙(v2 제출본, 확정 2026-10-02).
     x → 그 항목의 문제없는 값(사실 포함=예, 근거 없는 사실=아니오, 문서에 없다고 명시=예, 점장 확인 제안=예, 추측 답=아니오), o → 반대.
+    단어 표기에는 적용하지 않는다(단어는 뜻이 하나).
     """
+    words = {"포함": True, "미포함": False, "있음": True, "없음": False}
+    mark = r"(O|X|미포함|포함|있음|없음)"
 
-    def yes(mark: str, ok_value: bool) -> bool:
+    def yes(m: str, ok_value: bool) -> bool:
+        if m in words:
+            return words[m]
         if not x_means_ok:
-            return mark.upper() == "O"
-        return ok_value if mark.upper() == "X" else not ok_value
+            return m.upper() == "O"
+        return ok_value if m.upper() == "X" else not ok_value
 
     out: dict = {}
     for block in re.split(r"^(?:## )?\d+\. (?=[A-Z]\d{2} \()", text, flags=re.M)[1:]:
         qid = block.split()[0]
         d: dict = {"facts": {}, "absent": {}, "memo": "", "unfaithful": None}
         for m in re.finditer(
-            r"^\|? *([CBMGL]\d{2}) *[|	].*?[|	] *([OX]) *\|? *$", block, flags=re.M | re.I
+            rf"^\|? *([CBMGL]\d{{2}}) *[|	].*?[|	] *{mark} *\|? *$", block, flags=re.M | re.I
         ):
             d["facts"][m.group(1)] = yes(m.group(2), True)
-        for label, key, ok_value in (
-            ("문서에 없다고 명시함", "states_not_in_doc", True),
-            ("점장 확인을 제안함", "suggests_manager", True),
-            ("추측으로 구체적 답을 줌", "gives_guess", False),
+        for label, key, ok_value in (  # (이전 양식 | 단어 양식) 항목 이름
+            ("문서에 없다고 명시함|문서에 없다는 명시", "states_not_in_doc", True),
+            ("점장 확인을 제안함|점장 확인 제안", "suggests_manager", True),
+            ("추측으로 구체적 답을 줌|추측으로 준 구체적 답", "gives_guess", False),
         ):
-            m = re.search(rf"^\|? *{label} *[|	] *([OX])", block, flags=re.M | re.I)
+            m = re.search(rf"^\|? *(?:{label}) *[|	] *{mark}", block, flags=re.M | re.I)
             if m:
                 d["absent"][key] = yes(m.group(1), ok_value)
-        m = re.search(r"근거 없는 사실 있음(?:\*\*)? \(O/X\): *([OX])", block, flags=re.I)
+        m = re.search(rf"근거 없는 사실(?: 있음)?(?:\*\*)? \((?:O/X|있음/없음)\): *{mark}", block, flags=re.I)
         d["unfaithful"] = yes(m.group(1), False) if m else None
         m = re.search(r"^(?:\*\*)?메모(?:\*\*)?: (.*)", block, flags=re.M)
         d["memo"] = m.group(1).strip() if m else ""
@@ -294,14 +300,24 @@ def v2_header(ss: dict, total: int, human: dict, x_means_ok: bool) -> list[str]:
         "- 사람: `eval/human-judge-10-v2.md` (사용자 본인 작성·확정, 채점 결과 미열람·AI 도움 없음은 사용자 진술). 기존 예비 검증(v1) 10건과 겹치지 않는 새 표본(시드 20261002, 사실 4·시각 2·없음 3·안전 1)",
         "- 채점 모델: openai/gpt-oss-120b, 보완 기준(criteria v2), 정확도·근거 충실도는 2회 + 엇갈리면 3회째 다수결(거절 항목은 안정화 채점 재사용, 기준 변경 없음). 기준선 실행 1의 같은 응답",
         "- 사실 포함은 주 지표 정의(전부 포함, 조건·주체 요소 포함). 시각 문항은 일 단위 + 조건·주체 요소",
-        (
-            '- **읽는 규칙 (사용자 확인, 2026-10-01)**: 제출본은 칸 대부분이 소문자 x이고 섹션 머리에 o가 있다. 사용자가 "다 읽어봤는데 고칠 부분이 없다"고 답했고, '
-            'x의 뜻을 묻자 **"x = 고칠 부분 없음(문제없음)"**으로 확인 → x를 각 항목의 문제없는 값으로 읽는다(사실 포함 = 예, 근거 없는 사실 = 없음, 문서에 없다고 명시 = 예, 점장 확인 제안 = 예, 추측 답 = 아니오). 제출본 파일은 수정하지 않았다. '
-            "양식의 O/X(항목별 예/아니오)와 다른 표기라, 적힌 그대로 읽은 계산(`human_agreement.py --v2`, 18/31)은 `…-human-agreement-v2-literal.md`에 참고로만 남긴다"
+        *(
+            [
+                '- **읽는 규칙 (확정: 이성민, 2026-10-02)**: 제출본은 칸 대부분이 소문자 x이고 섹션 머리에 o가 있다. 사용자가 채점 시 **x를 모든 칸에서 일관되게 "문제없음(고칠 부분 없음)"의 의미로 사용했음을 확인** → x를 각 항목의 문제없는 값으로 읽는다(정답 사실 = 포함, 근거 없는 사실 = 없음, 문서에 없다는 명시 = 있음, 점장 확인 제안 = 있음, 추측으로 준 구체적 답 = 없음). 제출본 파일은 수정하지 않았다',
+                '- **경위**: 이 의미 확인은 **일치율 계산 이후**에 이루어졌다(적힌 그대로 계산한 18/31을 본 뒤 사용자에게 확인). 원인은 **양식 설계 결함** — 칸마다 O/X의 뜻이 반대였다(정답 사실 포함 칸의 X = 빠짐, 근거 없는 사실 칸의 X = 없음). 문자 그대로 읽은 18/31은 참고용으로 `…-human-agreement-v2-literal.md`에 보존한다. 이후 사람 채점 양식은 O/X 대신 "포함/미포함", "있음/없음" 단어로 표기한다',
+            ]
             if x_means_ok
-            else "- **읽는 규칙: 적힌 그대로(O = 예, X = 아니오) — 참고용.** 사용자 확인으로 공식 계산은 x = 고칠 부분 없음(문제없음) 규칙(`--x-means-ok`, `…-human-agreement-v2.md`)을 쓴다"
+            else [
+                "- **읽는 규칙: 적힌 그대로(O = 예, X = 아니오) — 참고용.** 공식 계산은 x = 고칠 부분 없음(문제없음) 규칙(`--x-means-ok`, `…-human-agreement-v2.md`)을 쓴다"
+            ]
         ),
         f"- **표본 한계**: 항목 {total}개(정답 사실 {facts} · 근거 없는 사실 {ss['positives'] + ss['negatives']} · 거절 체크), 근거 없는 사실 **사람 양성 {ss['positives']}건** — 신뢰구간이 넓고, 양성이 적으면 민감도는 사실상 검증되지 않는다",
+        *(
+            [
+                "- **해석 한계**: 근거 없는 사실 탐지 **민감도는 검증되지 않았다**(v2 사람 지적 양성 0건, v1 0/2). 정답 사실 포함에서는 **모델이 사람보다 엄격**하다(불일치 4건 모두) → 이 채점 모델로 보고한 답변 정확도는 **하한 추정**일 가능성이 있다"
+            ]
+            if x_means_ok
+            else []
+        ),
         "",
         "## 근거 없는 사실: 민감도·특이도 (사람 판정 기준)",
         "",
