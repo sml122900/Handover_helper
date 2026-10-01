@@ -1,6 +1,7 @@
 """LangGraph 에이전트 흐름 (설계 문서 5절).
 
 분류 → (질문) 검색 → 충분성 판단 → [부족 시 질의 재작성 → 재검색 1회] → 답변 | 에스컬레이션 제안
+        (실험 F 전체 컨텍스트: 검색 없이 매장 원문 전체 → 답변(답변 가능 판정 포함) | 에스컬레이션 제안)
       → (지금 할 일) get_current_tasks → 답변
       → (기록 요청) 도구 계획 → 되물음 | 조회 | 중복 안내 | 확인 대기(interrupt) → 승인 시 실행 / 거절 시 "기록하지 않았어요"
       → (범위 밖) 거절 안내
@@ -25,6 +26,7 @@ from embedding.base import Embedder
 from graph import prompts
 from graph.schemas import Classification, IntegratedAnswer, Rewrite, Sufficiency
 from graph.tools import get_current_tasks, load_schedules
+from indexing.corpus import STORES
 from indexing.store import Hit, VectorStore
 from llm.client import LLM
 from privacy.mask import mask_text
@@ -40,6 +42,14 @@ NO_TASKS_REPLY = (
     "지금 시작한 일정도, 30분 안에 다가오는 일정도 문서에 없어요. "
     "지금 뭘 해야 하는지 확실하지 않다면 점장님께 확인을 요청해 볼까요?"
 )
+
+
+def context_stores(own: str, scale: int) -> tuple[str, ...]:
+    """실험 F 교차점: 자기 매장 + 다음 매장(순환) scale−1개를 고정 순서(s1→s5)로 놓는다.
+    다른 매장 원문은 표시 없이 같은 매장 문서처럼 덧붙인다(설계 7-6). 5배면 모든 질문이 같은 컨텍스트."""
+    i = STORES.index(own)
+    picked = {STORES[(i + j) % len(STORES)] for j in range(scale)}
+    return tuple(s for s in STORES if s in picked)
 
 
 def escalation_text(question: str, safety: bool) -> str:
@@ -82,6 +92,8 @@ class AgentDeps:
     store: VectorStore
     strategy: str = DEFAULT_STRATEGY
     integrated: bool = False  # 실험 G: 충분성 판단을 답변 노드에 통합
+    context: str = "rag"  # 실험 F: rag(검색 상위 5개) | full(매장 원문 전체, 프롬프트 캐싱)
+    context_scale: int = 1  # 실험 F 교차점: 컨텍스트 매장 수(1·2·5배)
     answer_prompt: str = "v1"  # v1(기준선) | v2(실험 D' 개선안)
     schedules: dict = field(default_factory=load_schedules)
     tool_store: ToolStore = field(default_factory=MemoryToolStore)  # 쓰기 도구 저장소 (0013 적용 전 메모리)
@@ -184,6 +196,11 @@ def _llm_trace(info, **extra) -> dict:
     return {
         "input_tokens": info.input_tokens,
         "output_tokens": info.output_tokens,
+        **(
+            {"cache_write_tokens": info.cache_write_tokens, "cache_read_tokens": info.cache_read_tokens}
+            if info.cache_write_tokens or info.cache_read_tokens
+            else {}
+        ),
         "cost_usd": round(info.cost_usd, 6),
         **extra,
     }
@@ -321,6 +338,56 @@ def build_agent(deps: AgentDeps):
             }
         return out
 
+    full_ctx: dict[tuple[str, ...], tuple[list[dict], str]] = {}
+
+    def full_context(store_id: str) -> tuple[tuple[str, ...], list[dict], str]:
+        """매장 원문 전체 = 문서(기본 청킹)·트랜스크립트 청크 전부를 원문 순서로 (마스킹된 색인 청크, 빈틈 없이 원문을 덮음)."""
+        key = context_stores(store_id, deps.context_scale)
+        if key not in full_ctx:
+            chunks = [
+                c
+                for c in store.chunks
+                if c.raw.store_id in key
+                and (c.raw.source_type == "transcript" or c.raw.chunking_strategy == deps.strategy)
+            ]
+            chunks.sort(key=lambda c: (key.index(c.raw.store_id), c.raw.source_type, c.raw.char_start))
+            ev = to_evidence([Hit(c, 0.0) for c in chunks])
+            full_ctx[key] = (ev, f"[근거]\n{render_evidence(ev)}")
+        return key, *full_ctx[key]
+
+    def answer_full(state: State) -> dict:
+        key, evidence, ctx = full_context(state["store_id"])
+        res, info = (
+            llm.structured(  # 같은 프롬프트(실험 G 통합 답변), 근거 블록을 캐시하고 질문은 그 뒤에 둔다
+                system=prompts.INTEGRATED_ANSWER_SYSTEM,
+                cache_prefix=ctx,
+                user=f"[질문]\n{state['question']}",
+                schema=IntegratedAnswer,
+                tool_name="submit_answer",
+                max_tokens=1500,
+                tag="answer",
+            )
+        )
+        answerable = res.answerable and bool(res.answer.strip())
+        out: dict = {
+            "evidence": evidence,
+            "sufficiency": {"reasoning": res.reasoning, "sufficient": answerable, "missing": res.reasoning},
+            "_trace": _llm_trace(
+                info,
+                input=state["question"],
+                output=res.model_dump(),
+                context_stores=list(key),
+                context_chunks=len(evidence),
+            ),
+        }
+        if answerable:
+            out |= {
+                "answer": res.answer.strip(),
+                "citations": citation_view(evidence, res.answer),
+                "outcome": "answered",
+            }
+        return out
+
     def escalate(state: State) -> dict:
         text = escalation_text(state["question"], state.get("safety", False))
         return {"answer": text, "citations": [], "outcome": "escalated", "_trace": {"output": text}}
@@ -453,7 +520,7 @@ def build_agent(deps: AgentDeps):
 
     def after_classify(state: State) -> str:
         return {
-            "question": "retrieve",
+            "question": "answer" if deps.context == "full" else "retrieve",
             "now_tasks": "tasks",
             "record_request": "tool_plan",
             "out_of_scope": "out_of_scope_reply",
@@ -475,8 +542,6 @@ def build_agent(deps: AgentDeps):
     g = StateGraph(State)
     nodes = [
         ("classify", classify),
-        ("retrieve", retrieve),
-        ("rewrite", rewrite),
         ("escalate", escalate),
         ("tasks", tasks),
         ("tasks_answer", tasks_answer),
@@ -484,16 +549,27 @@ def build_agent(deps: AgentDeps):
         ("confirm", confirm),
         ("out_of_scope_reply", out_of_scope_reply),
     ]
-    nodes += (
-        [("answer", answer_integrated)]
-        if deps.integrated
-        else [("sufficiency", sufficiency), ("answer", answer)]
-    )
+    if deps.context == "full":
+        nodes += [("answer", answer_full)]
+    elif deps.integrated:
+        nodes += [("retrieve", retrieve), ("rewrite", rewrite), ("answer", answer_integrated)]
+    else:
+        nodes += [
+            ("retrieve", retrieve),
+            ("rewrite", rewrite),
+            ("sufficiency", sufficiency),
+            ("answer", answer),
+        ]
     for name, fn in nodes:
         g.add_node(name, _timed(name, fn))
     g.add_edge(START, "classify")
     g.add_conditional_edges("classify", after_classify)
-    if deps.integrated:  # 실험 G: retrieve → answer(충분성 판정 통합) → 답변 / 재작성 / 에스컬레이션
+    if (
+        deps.context == "full"
+    ):  # 실험 F: answer(원문 전체, 답변 가능 판정 통합) → 답변 / 에스컬레이션 (다시 할 검색이 없음)
+        g.add_conditional_edges("answer", lambda st: END if st["sufficiency"]["sufficient"] else "escalate")
+        end_nodes = ("escalate", "tasks_answer", "confirm", "out_of_scope_reply")
+    elif deps.integrated:  # 실험 G: retrieve → answer(충분성 판정 통합) → 답변 / 재작성 / 에스컬레이션
         g.add_edge("retrieve", "answer")
         g.add_conditional_edges("answer", after_integrated)
         end_nodes = ("escalate", "tasks_answer", "confirm", "out_of_scope_reply")
@@ -501,7 +577,8 @@ def build_agent(deps: AgentDeps):
         g.add_edge("retrieve", "sufficiency")
         g.add_conditional_edges("sufficiency", after_sufficiency)
         end_nodes = ("answer", "escalate", "tasks_answer", "confirm", "out_of_scope_reply")
-    g.add_conditional_edges("rewrite", lambda st: "escalate" if st.get("rewrite_failed") else "retrieve")
+    if deps.context != "full":
+        g.add_conditional_edges("rewrite", lambda st: "escalate" if st.get("rewrite_failed") else "retrieve")
     g.add_conditional_edges("tasks", after_tasks)
     g.add_conditional_edges("tool_plan", lambda st: "confirm" if st.get("pending") else END)
     for end_node in end_nodes:
@@ -530,6 +607,8 @@ def _record(final: dict, base: dict, started: float) -> dict:
         "cost_usd": round(sum(t.get("cost_usd", 0.0) for t in trace), 6),
         "input_tokens": sum(t.get("input_tokens", 0) for t in trace),
         "output_tokens": sum(t.get("output_tokens", 0) for t in trace),
+        "cache_write_tokens": sum(t.get("cache_write_tokens", 0) for t in trace),
+        "cache_read_tokens": sum(t.get("cache_read_tokens", 0) for t in trace),
         "embedding_tokens": sum(t.get("embedding_tokens", 0) for t in trace),
         "trace": trace,
     }

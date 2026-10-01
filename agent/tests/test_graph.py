@@ -305,3 +305,68 @@ def test_integrated_true_but_empty_answer_counts_as_not_answerable(tmp_path):
     )
     rec = run_question(make_integrated(tmp_path, llm), "무언가", "s1")
     assert rec["outcome"] == "escalated"
+
+
+class FullContextLLM(ScriptedLLM):
+    """실험 F: 캐시할 원문 블록(cache_prefix)을 기록한다."""
+
+    def structured(self, *, system, user, schema, tool_name, max_tokens=1024, tag="", cache_prefix=None):
+        self.prefixes = [*getattr(self, "prefixes", []), cache_prefix]
+        self.last_user = user
+        return super().structured(
+            system=system, user=user, schema=schema, tool_name=tool_name, max_tokens=max_tokens, tag=tag
+        )
+
+
+def make_full(tmp_path, llm, scale=1):
+    emb = HashEmbedder("m", tmp_path)
+    chunks = [
+        chunk("s1", "transcript", "케이크 남으면 다 버려요", 100),
+        chunk("s1", "document", "우유 개봉 후 24시간 폐기", 200, "2. 절차"),
+        chunk("s1", "document", "케이크 남으면 전부 폐기", 0, "2. 절차"),
+        chunk("s1", "document", "다른 청킹 조건 청크", 0, "2. 절차", strategy="procedure"),
+        chunk("s2", "document", "홀케이크 3일째 폐기", 0, "2. 절차"),
+        chunk("s5", "document", "야간 식사 23:30", 0, "2. 절차"),
+    ]
+    store = MemoryStore()
+    store.add(chunks, emb.embed([c.embed_text for c in chunks], "document"))
+    return build_agent(AgentDeps(llm=llm, embedder=emb, store=store, context="full", context_scale=scale))
+
+
+def test_context_stores_cyclic_selection_in_fixed_order():
+    from graph.agent import context_stores
+
+    assert context_stores("s1", 1) == ("s1",)
+    assert context_stores("s1", 2) == ("s1", "s2")
+    assert context_stores("s5", 2) == ("s1", "s5")  # 순환 선택, 순서는 s1→s5 고정
+    assert context_stores("s3", 5) == context_stores("s1", 5) == ("s1", "s2", "s3", "s4", "s5")
+
+
+def test_full_context_answers_from_whole_store_without_retrieval(tmp_path):
+    from graph.schemas import IntegratedAnswer
+
+    yes = IntegratedAnswer(reasoning="[근거 1]", answerable=True, answer="전부 폐기해요. [근거 1]")
+    llm = FullContextLLM({"classify": [cls("question")], "answer": [yes]})
+    rec = run_question(make_full(tmp_path, llm), "케이크 남으면?", "s1")
+    assert rec["outcome"] == "answered" and rec["retrieval_log"] == []
+    assert [t["node"] for t in rec["trace"]] == ["classify", "answer"]
+    # 기본 청킹 문서 → 트랜스크립트, 각 원문 순서. 다른 청킹 조건·다른 매장 청크는 없다
+    assert [e["text"] for e in rec["evidence"]] == [
+        "케이크 남으면 전부 폐기",
+        "우유 개봉 후 24시간 폐기",
+        "케이크 남으면 다 버려요",
+    ]
+    assert llm.prefixes == [None, llm.prefixes[1]] and llm.prefixes[1].startswith("[근거]\n[근거 1]")
+    assert llm.last_user == "[질문]\n케이크 남으면?"  # 원문은 캐시 블록, 질문은 그 뒤
+    assert rec["citations"][0]["n"] == 1
+
+
+def test_full_context_not_answerable_escalates_without_rewrite(tmp_path):
+    from graph.schemas import IntegratedAnswer
+
+    no = IntegratedAnswer(reasoning="없다", answerable=False, answer="")
+    llm = FullContextLLM({"classify": [cls("question")], "answer": [no]})
+    rec = run_question(make_full(tmp_path, llm, scale=2), "주차 등록은?", "s1")
+    assert rec["outcome"] == "escalated" and llm.calls == ["classify", "answer"]
+    assert {e["store_id"] for e in rec["evidence"]} == {"s1", "s2"}  # 2배: 다음 매장 원문을 덧붙임
+    assert rec["trace"][1]["context_stores"] == ["s1", "s2"]

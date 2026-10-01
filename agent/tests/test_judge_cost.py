@@ -72,3 +72,9 @@ def test_cost_tracker_budget_and_ledger(tmp_path):
     assert "AGENT_COST_BUDGET_USD=$0.01" in str(e.value)
     tot = ledger_totals(ledger)["anthropic"]
     assert tot["calls"] == 1 and tot["in"] == 2000 and tot["usd"] == pytest.approx(0.0135)
+
+
+def test_cost_of_prompt_cache_write_and_read():
+    # 캐시 쓰기 1.25배, 읽기 0.1배 (Sonnet 입력 $3/M)
+    assert cost_of("claude-sonnet-4-6", 100, 0, cache_write=1000) == pytest.approx((300 + 3750) / 1e6)
+    assert cost_of("claude-sonnet-4-6", 100, 0, cache_read=1000) == pytest.approx((300 + 300) / 1e6)

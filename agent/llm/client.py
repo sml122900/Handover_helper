@@ -24,6 +24,8 @@ PRICES: dict[str, tuple[float, float]] = {
     "claude-haiku-4-5-20251001": (1.0, 5.0),
     "openai/gpt-oss-120b": (0.15, 0.60),
 }
+# 프롬프트 캐시(5분 TTL) 단가 배수: 쓰기 1.25배, 읽기 0.1배 (공식 문서, 실험 F)
+CACHE_WRITE_X, CACHE_READ_X = 1.25, 0.1
 LEDGER = ROOT / "agent" / ".cache" / "llm_usage.jsonl"
 
 
@@ -38,11 +40,16 @@ class CallInfo:
     input_tokens: int
     output_tokens: int
     cost_usd: float
+    cache_write_tokens: int = 0  # input_tokens에 포함되지 않는 캐시 쓰기 토큰
+    cache_read_tokens: int = 0  # input_tokens에 포함되지 않는 캐시 읽기 토큰
 
 
-def cost_of(model: str, input_tokens: int, output_tokens: int) -> float:
+def cost_of(
+    model: str, input_tokens: int, output_tokens: int, cache_write: int = 0, cache_read: int = 0
+) -> float:
     pin, pout = PRICES.get(model, (0.0, 0.0))
-    return (input_tokens * pin + output_tokens * pout) / 1_000_000
+    cached = cache_write * pin * CACHE_WRITE_X + cache_read * pin * CACHE_READ_X
+    return (input_tokens * pin + output_tokens * pout + cached) / 1_000_000
 
 
 class CostTracker:
@@ -72,6 +79,11 @@ class CostTracker:
                 "model": info.model,
                 "in": info.input_tokens,
                 "out": info.output_tokens,
+                **(
+                    {"cw": info.cache_write_tokens, "cr": info.cache_read_tokens}
+                    if info.cache_write_tokens or info.cache_read_tokens
+                    else {}
+                ),
                 "usd": round(info.cost_usd, 6),
                 "tag": tag,
             }
@@ -107,6 +119,7 @@ class LLM(Protocol):
         tool_name: str,
         max_tokens: int = 1024,
         tag: str = "",
+        cache_prefix: str | None = None,
     ) -> tuple[T, CallInfo]: ...
 
     def text(
@@ -122,22 +135,31 @@ class ClaudeClient:
 
     def _info(self, resp, started: float) -> CallInfo:
         u = resp.usage
+        cw, cr = u.cache_creation_input_tokens or 0, u.cache_read_input_tokens or 0
         return CallInfo(
             model=self.model,
             latency_ms=int((time.monotonic() - started) * 1000),
             input_tokens=u.input_tokens,
             output_tokens=u.output_tokens,
-            cost_usd=cost_of(self.model, u.input_tokens, u.output_tokens),
+            cost_usd=cost_of(self.model, u.input_tokens, u.output_tokens, cw, cr),
+            cache_write_tokens=cw,
+            cache_read_tokens=cr,
         )
 
-    def structured(self, *, system, user, schema, tool_name, max_tokens=1024, tag=""):
+    def structured(self, *, system, user, schema, tool_name, max_tokens=1024, tag="", cache_prefix=None):
+        """cache_prefix: 시스템 프롬프트 뒤에 붙여 캐시할 고정 문맥(실험 F 전체 컨텍스트). 질문은 user에 둔다."""
         tool = {
             "name": tool_name,
             "description": "결과를 이 도구의 입력으로 제출한다. 필드는 정의된 순서대로 채운다.",
             "input_schema": schema.model_json_schema(),
         }
+        if cache_prefix is not None:
+            system = [
+                {"type": "text", "text": system},
+                {"type": "text", "text": cache_prefix, "cache_control": {"type": "ephemeral"}},
+            ]
         last_err: Exception | None = None
-        total_in = total_out = 0
+        total_in = total_out = total_cw = total_cr = 0
         started = time.monotonic()
         for _attempt in range(2):  # 검증 실패 시 1회 재시도
             self.tracker.check()
@@ -155,6 +177,8 @@ class ClaudeClient:
             info = self._info(resp, started)
             total_in += info.input_tokens
             total_out += info.output_tokens
+            total_cw += info.cache_write_tokens
+            total_cr += info.cache_read_tokens
             self.tracker.record(info, tag)
             block = next((b for b in resp.content if b.type == "tool_use"), None)
             try:
@@ -162,7 +186,13 @@ class ClaudeClient:
                     raise ValueError("도구 호출 없음")
                 parsed = schema.model_validate(block.input)
                 total = CallInfo(
-                    self.model, info.latency_ms, total_in, total_out, cost_of(self.model, total_in, total_out)
+                    self.model,
+                    info.latency_ms,
+                    total_in,
+                    total_out,
+                    cost_of(self.model, total_in, total_out, total_cw, total_cr),
+                    total_cw,
+                    total_cr,
                 )
                 return parsed, total
             except (ValidationError, ValueError) as e:
