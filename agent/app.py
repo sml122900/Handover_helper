@@ -12,7 +12,16 @@ from typing import Literal
 from fastapi import Depends, FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
-from graph.agent import AgentDeps, build_agent, pending_confirmation, resume_question, run_question
+from graph.agent import (
+    EMERGENCY_NOTE,
+    NOT_IN_DOC,
+    AgentDeps,
+    build_agent,
+    manager_request_text,
+    pending_confirmation,
+    resume_question,
+    run_question,
+)
 from settings import get_settings
 
 get_settings()  # 필수 키 누락 시 부팅 실패
@@ -47,10 +56,15 @@ class AskResponse(BaseModel):
     status: str  # answered | escalated | no_tasks | out_of_scope | needs_confirmation | clarify | tool_result | duplicate | tool_done | tool_rejected | failed
     answer: str
     category: str | None = None
-    citations: list[dict] = []
+    citations: list[
+        dict
+    ] = []  # 답변에 쓰인 [근거 n]: n, label(매장·섹션·영상 m:ss), needs_check, text(근거 조각, 마스킹됨)
     confirmation: dict | None = None  # needs_confirmation일 때 {tool, args, text}
     options: list[str] = []
     safety: bool = False
+    escalation: dict | None = (
+        None  # escalated일 때 {not_in_doc, manager_request, emergency} — 화면에서 구분해 보여 준다
+    )
 
 
 @lru_cache(maxsize=1)
@@ -86,15 +100,26 @@ def _response(rec: dict) -> AskResponse:
     if rec["outcome"] == "failed":
         log.error("agent 실패: %s", rec.get("error"))
         return AskResponse(thread_id=rec["thread_id"], status="failed", answer=FAILED_TEXT)
+    by_n = {e["n"]: e for e in rec.get("evidence", [])}
+    escalation = None
+    if rec["outcome"] == "escalated":
+        escalation = {
+            "not_in_doc": NOT_IN_DOC,
+            "manager_request": manager_request_text(rec["question"]),
+            "emergency": EMERGENCY_NOTE if rec.get("safety") else None,
+        }
     return AskResponse(
         thread_id=rec["thread_id"],
         status=rec["outcome"],
         answer=rec["answer"],
         category=rec.get("category"),
-        citations=rec.get("citations", []),
+        citations=[
+            {**c, "text": by_n[c["n"]]["text"]} if c["n"] in by_n else c for c in rec.get("citations", [])
+        ],
         confirmation=rec.get("confirmation") if rec["outcome"] == "needs_confirmation" else None,
         options=rec.get("options", []),
         safety=rec.get("safety", False),
+        escalation=escalation,
     )
 
 

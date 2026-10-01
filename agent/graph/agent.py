@@ -52,13 +52,19 @@ def context_stores(own: str, scale: int) -> tuple[str, ...]:
     return tuple(s for s in STORES if s in picked)
 
 
+NOT_IN_DOC = "문서에 없어요. 인수인계 문서에서 이 질문에 답할 내용을 찾지 못했어요."
+EMERGENCY_NOTE = "긴급한 상황이면 119(응급)·112(신고)에 바로 연락하세요. (문서 근거 아님, 일반 안내)"
+
+
+def manager_request_text(question: str) -> str:
+    """에스컬레이션 때 점장에게 보낼 요청 문구 제안."""
+    return f'"{question.strip()}" 확인 부탁드립니다.'
+
+
 def escalation_text(question: str, safety: bool) -> str:
-    text = (
-        "문서에 없어요. 인수인계 문서에서 이 질문에 답할 내용을 찾지 못했어요. "
-        f'점장님께 확인을 요청할까요? (요청 문구 제안: "{question.strip()}" 확인 부탁드립니다.)'
-    )
+    text = f"{NOT_IN_DOC} 점장님께 확인을 요청할까요? (요청 문구 제안: {manager_request_text(question)})"
     if safety:
-        text += " 긴급한 상황이면 119(응급)·112(신고)에 바로 연락하세요. (문서 근거 아님, 일반 안내)"
+        text += f" {EMERGENCY_NOTE}"
     return text
 
 

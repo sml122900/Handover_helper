@@ -104,3 +104,40 @@ def test_serve_refuses_non_local_host():
     for bad in ("0.0.0.0", "192.168.0.10", "example.com"):
         with pytest.raises(SystemExit):
             serve.check_host(bad)
+
+
+def test_response_adds_citation_text_and_escalation_fields():
+    """질문 화면용: [근거 n]에 근거 조각 본문, 에스컬레이션은 문서에 없음·점장 확인 제안·긴급 안내를 나눠 준다."""
+    from graph.agent import escalation_text
+
+    base = {"thread_id": "t", "category": "question", "options": [], "question": " 손님이 다쳤어요 "}
+    ans = app_module._response(
+        {
+            **base,
+            "outcome": "answered",
+            "answer": "닦아요. [근거 1]",
+            "citations": [{"n": 1, "label": "S1 · 2. 절차 · 영상 1:00", "needs_check": True}],
+            "evidence": [{"n": 1, "text": "근거 조각 본문"}, {"n": 2, "text": "안 쓴 근거"}],
+        }
+    )
+    assert ans.citations == [
+        {"n": 1, "label": "S1 · 2. 절차 · 영상 1:00", "needs_check": True, "text": "근거 조각 본문"}
+    ]
+    assert ans.escalation is None
+    esc = app_module._response(
+        {
+            **base,
+            "outcome": "escalated",
+            "safety": True,
+            "answer": escalation_text(base["question"], True),
+            "citations": [],
+            "evidence": [],
+        }
+    )
+    assert esc.escalation["manager_request"] == '"손님이 다쳤어요" 확인 부탁드립니다.'
+    assert "119" in esc.escalation["emergency"] and esc.escalation["not_in_doc"].startswith("문서에 없어요")
+    # 고정 문구 자체는 바뀌지 않았다 (평가의 템플릿 완전 일치 판정이 이 문구에 의존)
+    assert escalation_text("질문", True) == (
+        '문서에 없어요. 인수인계 문서에서 이 질문에 답할 내용을 찾지 못했어요. 점장님께 확인을 요청할까요? (요청 문구 제안: "질문" 확인 부탁드립니다.) '
+        "긴급한 상황이면 119(응급)·112(신고)에 바로 연락하세요. (문서 근거 아님, 일반 안내)"
+    )
