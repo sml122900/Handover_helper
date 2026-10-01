@@ -96,6 +96,11 @@ class GroqJudge:
                 wait = float(r.headers.get("retry-after", 5 * (attempt + 1)))
                 time.sleep(min(wait, 90) + 1)
                 continue
+            if (
+                r.status_code == 400 and "json_validate_failed" in r.text
+            ):  # 서버 측 JSON 생성 실패 = 형식 오류와 같이 재시도
+                last_err = RuntimeError(f"Groq json_validate_failed: {r.text[:200]}")
+                continue
             if r.status_code >= 400:
                 raise RuntimeError(f"Groq 채점 호출 실패 {r.status_code}: {r.text[:300]}")
             data = r.json()
