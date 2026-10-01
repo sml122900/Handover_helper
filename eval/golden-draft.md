@@ -50,7 +50,7 @@
 | U01 | S1 | 티라미수 2개 폐기했어요, 기록 좀 해주세요 | `waste_log(record, store=S1, item=티라미수, qty=2)` | 예 | |
 | U02 | S3 | 어제 폐기 뭐 했는지 보여줘요 | `waste_log(query, store=S3, date=어제)` | 아니오 | |
 | U03 | S1 | 머신 청소 끝났어요, 체크해주세요 | `log_checklist(store=S1, step_id=s1.machine_clean)` | 예 | |
-| U04 | S4 | 3번 러닝머신 벨트가 미끄러져요. 매니저님한테 알려주세요 | `notify_manager(store=S4, message=3번 러닝머신 벨트 미끄러짐, urgency=normal)` | 예 | |
+| U04 | S4 | 3번 러닝머신 벨트가 미끄러져요. 매니저님한테 알려주세요 | `notify_manager(store=S4, message=3번 러닝머신 벨트 미끄러짐, urgency=urgent)` | 예 | |
 | U05 | S3 | 김밥 3개 폐기 등록했어요, 대장에도 남겨줘요 | `waste_log(record, store=S3, item=김밥, qty=3)` | 예 | |
 
 ## D. 문서에 없는 질문 (10)
