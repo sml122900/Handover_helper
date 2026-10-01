@@ -10,7 +10,7 @@ from graph.schemas import Classification
 from graph.tools import get_current_tasks, load_schedules
 from indexing.store import MemoryStore
 from llm.client import CallInfo
-from tools.plan import ToolPlan
+from tools.plan import TOOL_PLAN_SYSTEM, ToolPlan
 from tools.service import REASON_PROMPT, REJECT_TEXT
 from tools.store import DuplicateChecklist, MemoryToolStore
 from tools.timeutil import SEOUL, slot_for, work_date
@@ -238,3 +238,19 @@ def test_tasks_node_reads_completed_steps_from_tool_store(tmp_path):
     assert (
         rec["tasks"]["now"] == [] and rec["tasks"]["upcoming"]
     )  # 완료된 일정은 지금에서 빠지고 곧(22:00)만 남는다
+
+
+def test_tool_plan_prompt_has_no_golden_wording():
+    """도구 계획 프롬프트(스키마 설명 포함)는 일반 규칙만 담는다: 골든셋 도구 문항의 문구·인자 값·step_id·
+    U03(머신 청소↔제빙기 세척)·U04(러닝머신 벨트)를 맞추려고 넣기 쉬운 단어가 없어야 한다 (평가 누수 방지, 2026-10-01)."""
+    import json
+
+    prompt = TOOL_PLAN_SYSTEM + json.dumps(ToolPlan.model_json_schema(), ensure_ascii=False)
+    root = pathlib.Path(__file__).resolve().parents[2]
+    gold = [json.loads(x) for x in (root / "eval" / "golden.jsonl").read_text(encoding="utf-8").splitlines()]
+    terms = {"머신", "제빙기", "청소", "세척", "러닝머신", "벨트", "미끄러"}
+    for q in (q for q in gold if q["type"] == "tool"):
+        assert q["question"][:8] not in prompt
+        terms |= {str(v) for k, v in q["args"].items() if k in ("item", "step_id", "message")}
+    terms |= {sid for store in load_schedules().values() for it in store["items"] for sid in it["step_ids"]}
+    assert not {t for t in terms if t in prompt}
