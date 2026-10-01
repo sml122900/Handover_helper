@@ -2,6 +2,8 @@ import importlib.util
 import sys
 from pathlib import Path
 
+import pytest
+
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "eval"))
 _spec = importlib.util.spec_from_file_location("eval_run", ROOT / "eval" / "run.py")
@@ -69,3 +71,50 @@ def test_latency_breakdown_rewrite_path_share():
     assert a["mean_total_ms"] == 570 and a["mean_rewrite_path_ms"] == 260  # rewrite+retrieve+sufficiency
     assert a["mean_without_rewrite_path_ms"] == 310
     assert lb["nodes"]["sufficiency"]["calls"] == 2
+
+
+def test_g_confirm_criteria():
+    """실험 G 확인 실행 사전 기준 a~d (결정 로그 2026-10-01)."""
+    import compare
+
+    def m(acc, unf_ids, p50, refusal=10):
+        return {
+            "acc_full": acc,
+            "unfaithful": len(unf_ids),
+            "unfaithful_ids": unf_ids,
+            "p50": p50,
+            "refusal": refusal,
+        }
+
+    ref = [m(14, ["F05"], 13000), m(14, ["F05", "F07"], 13000), m(14, [], 13000)]
+    ok = [m(13, ["F05"], 10000), m(15, ["F09"], 10000), m(12, ["F07"], 10000)]  # 쌍3이 -2
+    _, passed = compare.g_confirm(ref, ok)
+    assert not passed  # b: 쌍3이 -2
+    ok[2] = m(13, ["F07"], 10000)
+    _, passed = compare.g_confirm(ref, ok)
+    assert passed  # F09는 통합에서 1/3뿐
+    only = [m(14, ["F09"], 10000), m(14, ["F09"], 10000), m(14, [], 10000)]
+    lines, passed = compare.g_confirm(ref, only)
+    assert not passed and any("['F09']" in x for x in lines)  # c: 통합에서만 2/3
+    slow = [m(14, [], 10000), m(14, [], 13500), m(14, [], 10000)]
+    assert not compare.g_confirm(ref, slow)[1]  # d: 쌍2가 느림
+    refusal = [m(14, [], 10000, 9), m(14, [], 10000), m(14, [], 10000)]
+    assert not compare.g_confirm(ref, refusal)[1]  # a
+    many = [m(14, ["F01", "F02", "F10"], 10000), m(14, ["F03", "F04", "F06"], 10000), m(14, ["F08"], 10000)]
+    assert not compare.g_confirm(ref, many)[1]  # c: 평균 차이 +1.33
+
+
+def test_exp_f_helpers():
+    """실험 F: 캐시 없다고 가정한 비용, 다른 매장 근거 인용 수, 직선 교차 배수."""
+    import exp_f
+
+    r = {"input_tokens": 1000, "cache_write_tokens": 0, "cache_read_tokens": 9000, "output_tokens": 100}
+    assert exp_f.no_cache_cost(r) == pytest.approx((10000 * 3 + 100 * 15) / 1e6)
+    rec = {
+        "store_id": "s1",
+        "evidence": [{"n": 1, "store_id": "s1"}, {"n": 2, "store_id": "s2"}],
+        "citations": [{"n": 1}, {"n": 2}],
+    }
+    assert exp_f.other_store_citations(rec) == 1
+    assert exp_f.crossing([1, 2, 5], [1.0, 2.0, 5.0], 3.0) == pytest.approx(3.0)
+    assert exp_f.crossing([1, 2, 5], [3.0, 2.0, 1.0], 2.5) is None  # 배수에 따라 줄면 교차 없음

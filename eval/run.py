@@ -120,6 +120,11 @@ def received_chunks(rec: dict) -> list[str]:
     return list(seen.values())
 
 
+def full_context(rec: dict) -> bool:
+    """실험 F 전체 컨텍스트로 답한 기록인지 (답변 노드 trace에 컨텍스트 매장이 남는다)."""
+    return any("context_stores" in t for t in rec["trace"])
+
+
 def template_kind(q: dict, rec: dict) -> str | None:
     """답변이 고정 문구와 완전히 일치하면 그 종류 (그 외에는 None)."""
     a = rec["answer"]
@@ -201,7 +206,13 @@ def judge_eval(
             if key in reuse:
                 ev[key] = reuse[key]
     elif rec["citations"] or re.search(r"\[근거 \d+\]", answer):
-        evidence_text = "\n\n".join(f"[근거 {e['n']}]\n{e['text']}" for e in rec["evidence"])
+        evidence = rec["evidence"]
+        if full_context(
+            rec
+        ):  # 실험 F: 원문 전체 대신 답변이 인용한 근거만 (인용 판정에는 인용된 근거만 필요)
+            cited = {c["n"] for c in rec["citations"]}
+            evidence = [e for e in evidence if e["n"] in cited]
+        evidence_text = "\n\n".join(f"[근거 {e['n']}]\n{e['text']}" for e in evidence)
 
         def cit_key(cit) -> tuple:
             return (sum(c.supports for c in cit.citations), len(cit.citations))
@@ -456,7 +467,9 @@ def to_markdown(res: dict) -> str:
             "",
             "| 지표 | 값 |",
             "|---|---|",
-            f"| Recall@5 사실 20문항 (재검색 후) | {ra['final_facts_hit']}/{ra['facts']} = {rate(ra['final_facts_hit'], ra['facts'])} (첫 검색 {ra['first_facts_hit']}/{ra['facts']}, 문항 완전 적중 {ra['final_questions_full']}/{ra['questions']}) |",
+            f"| Recall@5 사실 20문항 (재검색 후) | {ra['final_facts_hit']}/{ra['facts']} = {rate(ra['final_facts_hit'], ra['facts'])} (첫 검색 {ra['first_facts_hit']}/{ra['facts']}, 문항 완전 적중 {ra['final_questions_full']}/{ra['questions']}) |"
+            if cfg.get("context", "rag") == "rag"
+            else "| Recall@5 사실 20문항 | 해당 없음 (전체 컨텍스트: 검색 없이 매장 원문 전체를 받음) |",
             f"| 시각 5문항 도구 근거 적중 (검색 점수와 분리) | {s['time5_tool_evidence']['facts_hit']}/{s['time5_tool_evidence']['facts']} |",
             *(
                 judge_rows(s)
@@ -512,6 +525,12 @@ def main() -> None:
     ap.add_argument("--n5", action="store_true", help=f"개발용 5문항 {DEV_SUBSET}")
     ap.add_argument("--runs", type=int, default=1)
     ap.add_argument(
+        "--run-index",
+        type=int,
+        default=None,
+        help="이 실행 번호(0부터)만 처리 — 채점을 실행별 프로세스로 나눠 돌릴 때. 끝나면 이 옵션 없이 다시 실행해 캐시로 결과 파일을 합친다",
+    )
+    ap.add_argument(
         "--regen", default=None, help="쉼표로 구분한 문항 ID의 캐시를 보존용으로 옮기고 다시 생성"
     )
     ap.add_argument(
@@ -520,6 +539,10 @@ def main() -> None:
         help="쉼표로 구분한 문항 ID의 채점 캐시를 보존용으로 옮기고 다시 채점(응답은 유지)",
     )
     ap.add_argument("--integrated", action="store_true", help="실험 G: 충분성 판단을 답변 노드에 통합")
+    ap.add_argument(
+        "--context", default="rag", choices=["rag", "full"], help="실험 F: rag | full(매장 원문 전체, 캐싱)"
+    )
+    ap.add_argument("--context-scale", type=int, default=1, help="실험 F 교차점: 컨텍스트 매장 수(1·2·5배)")
     ap.add_argument(
         "--criteria-v2",
         action="store_true",
@@ -569,6 +592,8 @@ def main() -> None:
             strategy=DEFAULT_STRATEGY,
             answer_prompt=answer_prompt,
             integrated=args.integrated,
+            context=args.context,
+            context_scale=args.context_scale,
         )
     )
     spans = retrieval.load_spans()
@@ -625,6 +650,8 @@ def main() -> None:
     judge_stopped = False
     try:
         for n in range(args.runs):
+            if args.run_index is not None and n != args.run_index:
+                continue
             rows = []
             for q in golden:
                 key = (n, q["id"])
@@ -677,6 +704,15 @@ def main() -> None:
             "llm_preset": args.preset,
             "answer_prompt": answer_prompt,
             "graph": "integrated(충분성 통합)" if args.integrated else "split(충분성 노드 분리)",
+            "context": args.context,
+            **(
+                {
+                    "context_scale": args.context_scale,
+                    "context_note": "질문 경로만 검색 없이 매장 원문 전체(기본 청킹 문서+트랜스크립트 청크, 원문 순서)를 캐시 블록으로 받고, 답변 노드 1회가 답변 가능 판정과 답변을 함께 낸다(실험 G 통합 프롬프트). 답할 수 없으면 바로 에스컬레이션. 시각·도구·범위 밖 경로는 RAG와 같다. 배수>1이면 다른 매장 원문을 표시 없이 덧붙임. 근거 충실도는 넣어 준 원문 전체 기준, 출처 일치는 인용된 근거만 채점기에 줌",
+                }
+                if args.context == "full"
+                else {}
+            ),
             "prompt_version": PROMPT_VERSIONS[answer_prompt],
             "embedding": f"{embedder.provider}/{embedder.model}",
             "chunking": DEFAULT_STRATEGY + " (문서) + 트랜스크립트 고정 창",

@@ -12,6 +12,7 @@
 import argparse
 import json
 import sys
+from collections import Counter
 from datetime import date
 from pathlib import Path
 
@@ -53,6 +54,7 @@ def metrics(rows: list[dict]) -> dict:
         "acc_rel_full": aa["relevant_only"]["questions_full"],
         "unfaithful": fa["answers_with_unsupported"],
         "unfaithful_n": fa["answers"],
+        "unfaithful_ids": fa["ids"],
         "refusal": rf["correct"],
         "refusal_n": rf["total"],
         "cls": s["classification"]["correct"],
@@ -76,6 +78,51 @@ def verdict(diffs: list[int], higher_is_better: bool) -> str:
     return "차이 없음(오차 범위)"
 
 
+def g_confirm(ref: list[dict], cand: list[dict]) -> tuple[list[str], bool]:
+    """실험 G 확인 실행 사전 기준 a~d (결정 로그 2026-10-01, 확인 실행 전에 기록·커밋). 실행 번호끼리 3쌍.
+
+    a. 거절 정확도 3회 모두 10/10
+    b. 답변 정확도(주) 문항 완전: 어느 쌍에서도 통합 조건이 2문항 이상 낮지 않음
+    c. 근거 충실도 위반: 3회 평균 차이 +1 이하, 그리고 통합 조건에서만(통합 3회 중 2회 이상 위반 + 기준 3회 0회) 위반하는 문항이 없음
+    d. 지연 p50: 3쌍 모두 통합 조건이 더 빠름
+    """
+    k = 3
+    assert len(ref) == len(cand) == k, "확인 실행 판정은 조건당 3회"
+    a = all(m["refusal"] == 10 for m in cand)
+    acc = [cand[i]["acc_full"] - ref[i]["acc_full"] for i in range(k)]
+    b = all(d > -2 for d in acc)
+    fai = [cand[i]["unfaithful"] - ref[i]["unfaithful"] for i in range(k)]
+    cnt_c = Counter(q for m in cand for q in m["unfaithful_ids"])
+    cnt_r = Counter(q for m in ref for q in m["unfaithful_ids"])
+    only = sorted(q for q, n in cnt_c.items() if n >= 2 and cnt_r[q] == 0)
+    c = float(np.mean(fai)) <= 1 and not only
+    lat = [cand[i]["p50"] - ref[i]["p50"] for i in range(k)]
+    d = all(x < 0 for x in lat)
+    ok = a and b and c and d
+
+    def mark(x: bool) -> str:
+        return "충족" if x else "**미충족**"
+
+    lines = [
+        "| 기준 | 값 | 판정 |",
+        "|---|---|---|",
+        f"| a. 거절 정확도 3회 모두 10/10 | {[m['refusal'] for m in cand]} | {mark(a)} |",
+        f"| b. 답변 정확도(주) 어느 쌍에서도 -2 이상 하락 없음 | 쌍별 {', '.join(f'{x:+d}' for x in acc)} | {mark(b)} |",
+        f"| c. 충실도 위반 평균 차이 ≤ +1, 통합에서만 2/3 이상 위반 문항 없음 | 쌍별 {', '.join(f'{x:+d}' for x in fai)} (평균 {np.mean(fai):+.2f}), 통합에서만: {only or '없음'} | {mark(c)} |",
+        f"| d. 지연 p50 3쌍 모두 통합이 빠름 | 쌍별 {', '.join(f'{x:+d} ms' for x in lat)} | {mark(d)} |",
+        "",
+        f"- **판정(사전 기준): {'채택 기준 충족(제안: 통합 채택)' if ok else '채택 기준 미충족(제안: 기본값 유지)'}**. 실제 기본값 채택은 사용자 결정",
+        "",
+        "### 문항별 근거 충실도 위반 횟수 (3회 중)",
+        "",
+        "| 문항 | 기준 | 통합 |",
+        "|---|---|---|",
+    ]
+    for q in sorted(set(cnt_c) | set(cnt_r)):
+        lines.append(f"| {q} | {cnt_r[q]}/3 | {cnt_c[q]}/3 |")
+    return lines, ok
+
+
 def spec_runs(spec: str, gold: dict) -> tuple[list[dict], dict]:
     ms, cfg = [], {}
     for item in spec.split(","):
@@ -88,22 +135,29 @@ def spec_runs(spec: str, gold: dict) -> tuple[list[dict], dict]:
 def main() -> None:
     sys.stdout.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser()
-    ap.add_argument("--kind", choices=["D", "C", "G"], required=True)
+    ap.add_argument("--kind", choices=["D", "C", "G", "Gc"], required=True)
     ap.add_argument("--ref", required=True, help='"이름=라벨:번호,라벨:번호,라벨:번호"')
     ap.add_argument("--cand", action="append", required=True)
     ap.add_argument("--title", default=None)
     ap.add_argument("--header", default=None, help="머리말로 넣을 추가 마크다운 파일 경로")
+    ap.add_argument(
+        "--reference",
+        action="append",
+        default=[],
+        help="참고로만 표에 싣는 조건(판정 제외). 예: 탐색 실행",
+    )
     args = ap.parse_args()
 
     gold = {q["id"]: q for q in R.load_golden()}
     conds: dict[str, list[dict]] = {}
     cfgs: dict[str, dict] = {}
     order: list[str] = []
-    for spec in [args.ref, *args.cand]:
+    for spec in [args.ref, *args.cand, *args.reference]:
         name, body = spec.split("=", 1)
         conds[name], cfgs[name] = spec_runs(body, gold)
         order.append(name)
     ref = order[0]
+    judged = order[: 1 + len(args.cand)]  # 판정 대상 (참고 조건 제외)
 
     jv = ROOT / "eval" / "results"
     jv_files = sorted(jv.glob("*-judge-variance.json"))
@@ -113,7 +167,7 @@ def main() -> None:
         return len(conds[name])
 
     L = [
-        f"# {args.title or {'D': "실험 D' 답변 프롬프트", 'C': '실험 C 모델 비교', 'G': '실험 G 충분성 판단 통합'}[args.kind]} ({date.today().isoformat()})",
+        f"# {args.title or {'D': "실험 D' 답변 프롬프트", 'C': '실험 C 모델 비교', 'G': '실험 G 충분성 판단 통합', 'Gc': '실험 G 확인 실행 (사전 기준)'}[args.kind]} ({date.today().isoformat()})",
         "",
     ]
     if args.header:
@@ -124,10 +178,11 @@ def main() -> None:
         L.append(
             f"- **{name}**: 모델 {c.get('agent_model')} · 답변 프롬프트 {c.get('prompt_version')} · 임베딩 {c.get('embedding')} · 채점 {c.get('judge_model')} · {n_runs(name)}회"
         )
-    L += [
-        "- 판정 기준(결정 로그 2026-10-01): 실행 번호끼리 짝지은 3쌍 **모두 같은 방향으로 2문항 이상** 차이일 때만 개선/악화, 그 외는 차이 없음(오차 범위). "
-        "곁 지표: 근거 충실도 위반이 어느 쌍에서도 2문항 이상 늘지 않을 것",
-    ]
+    if args.kind != "Gc":
+        L += [
+            "- 판정 기준(결정 로그 2026-10-01): 실행 번호끼리 짝지은 3쌍 **모두 같은 방향으로 2문항 이상** 차이일 때만 개선/악화, 그 외는 차이 없음(오차 범위). "
+            "곁 지표: 근거 충실도 위반이 어느 쌍에서도 2문항 이상 늘지 않을 것",
+        ]
     if jvar:
         ch = jvar["metrics"]
         L.append(
@@ -169,12 +224,21 @@ def main() -> None:
             cells.append(" / ".join(fmt.format(v) for v in vals) + f" (평균 {fmt.format(np.mean(vals))})")
         L.append(f"| {label} | " + " | ".join(cells) + " |")
 
-    for name in order[1:]:
+    if args.reference:
+        for name in args.reference:
+            nm = name.split("=", 1)[0]
+            L.append(f"- **{nm}**: 참고로만 표기, 판정에 쓰지 않음")
+    if args.kind == "Gc":
+        lines, _ = g_confirm(conds[ref], conds[judged[1]])
+        L += ["", f"## 사전 기준 판정: {judged[1]} − {ref}", "", *lines]
+    for name in judged[1:]:
         L += [
             "",
             f"## 쌍별 비교: {name} − {ref}",
             "",
-            "| 지표 | 쌍1 | 쌍2 | 쌍3 | 3회 평균 차이 | 판정 |",
+            "| 지표 | 쌍1 | 쌍2 | 쌍3 | 3회 평균 차이 | "
+            + ("참고: 개선 실험 기준(판정 아님)" if args.kind == "Gc" else "판정")
+            + " |",
             "|---|---|---|---|---|---|",
         ]
         k = min(n_runs(name), n_runs(ref))
@@ -191,6 +255,8 @@ def main() -> None:
         p_new = np.mean([m["p50"] for m in conds[name]])
         L.append(f"| 질문당 비용 (평균) | | | | {c_new - c_ref:+.4f} ({(c_new / c_ref - 1):+.0%}) | 기록 |")
         L.append(f"| 지연 p50 (평균, ms) | | | | {p_new - p_ref:+.0f} ({(p_new / p_ref - 1):+.0%}) | 기록 |")
+        if args.kind == "Gc":  # 판정은 위 사전 기준 a~d로만 한다
+            continue
         acc = [conds[name][i]["acc_full"] - conds[ref][i]["acc_full"] for i in range(k)]
         fai = [conds[name][i]["unfaithful"] - conds[ref][i]["unfaithful"] for i in range(k)]
         main_v = verdict(acc, True)
@@ -232,7 +298,8 @@ def main() -> None:
             cells.append(f"{np.mean(vals):.0f}" if vals else "-")
         L.append(f"| {node} | " + " | ".join(cells) + " |")
 
-    out = ROOT / "eval" / "results" / f"{date.today().isoformat()}-exp-{args.kind}.md"
+    suffix = "G-confirm" if args.kind == "Gc" else args.kind
+    out = ROOT / "eval" / "results" / f"{date.today().isoformat()}-exp-{suffix}.md"
     out.write_text("\n".join(L) + "\n", encoding="utf-8")
     print("\n".join(L))
 
