@@ -1,4 +1,4 @@
-"""0013 적용 후: Supabase 도구 저장소가 메모리 구현과 같이 동작하는지 (환경변수 없으면 skip). 가상 매장 ID로 쓰고 지운다."""
+"""0013 적용 후: Supabase 도구 저장소가 메모리 구현과 같이 동작하는지 (환경변수 없으면 skip, 0013 미적용이면 실패). 가상 매장 ID로 쓰고 지운다."""
 
 from datetime import date, datetime
 
@@ -18,10 +18,6 @@ def test_supabase_store_matches_memory_behavior():
     from tools.supabase_store import SupabaseToolStore
 
     db = SupabaseToolStore(s.supabase_url, s.supabase_service_role_key)
-    try:
-        db.checklist_done(STORE, date(2026, 10, 1))
-    except RuntimeError:
-        pytest.skip("0013_agent_tool_logs.sql 미적용 — 적용 후 다시 실행")
     mem = MemoryToolStore()
     d, now = date(2026, 10, 1), datetime(2026, 10, 1, 21, 42, tzinfo=SEOUL)
     try:
